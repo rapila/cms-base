@@ -99,6 +99,8 @@ class UserTableMap extends TableMap
         $this->addRelation('RightRelatedByUpdatedBy', 'Right', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null, 'RightsRelatedByUpdatedBy');
         $this->addRelation('DocumentRelatedByCreatedBy', 'Document', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null, 'DocumentsRelatedByCreatedBy');
         $this->addRelation('DocumentRelatedByUpdatedBy', 'Document', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null, 'DocumentsRelatedByUpdatedBy');
+        $this->addRelation('DocumentDataRelatedByCreatedBy', 'DocumentData', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null, 'DocumentDatasRelatedByCreatedBy');
+        $this->addRelation('DocumentDataRelatedByUpdatedBy', 'DocumentData', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null, 'DocumentDatasRelatedByUpdatedBy');
         $this->addRelation('DocumentTypeRelatedByCreatedBy', 'DocumentType', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null, 'DocumentTypesRelatedByCreatedBy');
         $this->addRelation('DocumentTypeRelatedByUpdatedBy', 'DocumentType', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null, 'DocumentTypesRelatedByUpdatedBy');
         $this->addRelation('DocumentCategoryRelatedByCreatedBy', 'DocumentCategory', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null, 'DocumentCategorysRelatedByCreatedBy');

@@ -2,24 +2,24 @@
 
 
 /**
- * Base class that represents a row from the 'document_categories' table.
+ * Base class that represents a row from the 'document_data' table.
  *
  *
  *
  * @package    propel.generator.model.om
  */
-abstract class BaseDocumentCategory extends BaseObject implements Persistent
+abstract class BaseDocumentData extends BaseObject implements Persistent
 {
     /**
      * Peer class name
      */
-    const PEER = 'DocumentCategoryPeer';
+    const PEER = 'DocumentDataPeer';
 
     /**
      * The Peer class.
      * Instance provides a convenient way of calling static methods on a class
      * that calling code may not be able to identify.
-     * @var        DocumentCategoryPeer
+     * @var        DocumentDataPeer
      */
     protected static $peer;
 
@@ -30,42 +30,23 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
     protected $startCopy = false;
 
     /**
-     * The value for the id field.
-     * @var        int
-     */
-    protected $id;
-
-    /**
-     * The value for the name field.
+     * The value for the hash field.
      * @var        string
      */
-    protected $name;
+    protected $hash;
 
     /**
-     * The value for the sort field.
-     * @var        int
+     * The value for the data field.
+     * @var        resource
      */
-    protected $sort;
+    protected $data;
 
     /**
-     * The value for the max_width field.
-     * @var        int
-     */
-    protected $max_width;
-
-    /**
-     * The value for the is_externally_managed field.
-     * Note: this column has a database default value of: false
+     * Whether the lazy-loaded $data value has been loaded from database.
+     * This is necessary to avoid repeated lookups if $data column is null in the db.
      * @var        boolean
      */
-    protected $is_externally_managed;
-
-    /**
-     * The value for the is_inactive field.
-     * Note: this column has a database default value of: false
-     * @var        boolean
-     */
-    protected $is_inactive;
+    protected $data_isLoaded = false;
 
     /**
      * The value for the created_at field.
@@ -134,93 +115,63 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
     protected $documentsScheduledForDeletion = null;
 
     /**
-     * Applies default values to this object.
-     * This method should be called from the object's constructor (or
-     * equivalent initialization method).
-     * @see        __construct()
-     */
-    public function applyDefaultValues()
-    {
-        $this->is_externally_managed = false;
-        $this->is_inactive = false;
-    }
-
-    /**
-     * Initializes internal state of BaseDocumentCategory object.
-     * @see        applyDefaults()
-     */
-    public function __construct()
-    {
-        parent::__construct();
-        $this->applyDefaultValues();
-    }
-
-    /**
-     * Get the [id] column value.
-     *
-     * @return int
-     */
-    public function getId()
-    {
-
-        return $this->id;
-    }
-
-    /**
-     * Get the [name] column value.
+     * Get the [hash] column value.
      *
      * @return string
      */
-    public function getName()
+    public function getHash()
     {
 
-        return $this->name;
+        return $this->hash;
     }
 
     /**
-     * Get the [sort] column value.
+     * Get the [data] column value.
      *
-     * @return int
+     * @param PropelPDO $con An optional PropelPDO connection to use for fetching this lazy-loaded column.
+     * @return resource
      */
-    public function getSort()
+    public function getData(PropelPDO $con = null)
     {
+        if (!$this->data_isLoaded && $this->data === null && !$this->isNew()) {
+            $this->loadData($con);
+        }
 
-        return $this->sort;
+
+        return $this->data;
     }
 
     /**
-     * Get the [max_width] column value.
+     * Load the value for the lazy-loaded [data] column.
      *
-     * @return int
-     */
-    public function getMaxWidth()
-    {
-
-        return $this->max_width;
-    }
-
-    /**
-     * Get the [is_externally_managed] column value.
+     * This method performs an additional query to return the value for
+     * the [data] column, since it is not populated by
+     * the hydrate() method.
      *
-     * @return boolean
+     * @param  PropelPDO $con (optional) The PropelPDO connection to use.
+     * @return void
+     * @throws PropelException - any underlying error will be wrapped and re-thrown.
      */
-    public function getIsExternallyManaged()
+    protected function loadData(PropelPDO $con = null)
     {
-
-        return $this->is_externally_managed;
+        $c = $this->buildPkeyCriteria();
+        $c->addSelectColumn(DocumentDataPeer::DATA);
+        try {
+            $stmt = DocumentDataPeer::doSelectStmt($c, $con);
+            $row = $stmt->fetch(PDO::FETCH_NUM);
+            $stmt->closeCursor();
+            if ($row[0] !== null) {
+                $this->data = fopen('php://memory', 'r+');
+                fwrite($this->data, $row[0]);
+                rewind($this->data);
+            } else {
+                $this->data = null;
+            }
+            $this->data_isLoaded = true;
+        } catch (Exception $e) {
+            throw new PropelException("Error loading value for [data] column on demand.", $e);
+        }
     }
-
-    /**
-     * Get the [is_inactive] column value.
-     *
-     * @return boolean
-     */
-    public function getIsInactive()
-    {
-
-        return $this->is_inactive;
-    }
-
     /**
      * Get the [optionally formatted] temporal [created_at] column value.
      *
@@ -324,153 +275,67 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
     }
 
     /**
-     * Set the value of [id] column.
-     *
-     * @param  int $v new value
-     * @return DocumentCategory The current object (for fluent API support)
-     */
-    public function setId($v)
-    {
-        if ($v !== null && is_numeric($v)) {
-            $v = (int) $v;
-        }
-
-        if ($this->id !== $v) {
-            $this->id = $v;
-            $this->modifiedColumns[] = DocumentCategoryPeer::ID;
-        }
-
-
-        return $this;
-    } // setId()
-
-    /**
-     * Set the value of [name] column.
+     * Set the value of [hash] column.
      *
      * @param  string $v new value
-     * @return DocumentCategory The current object (for fluent API support)
+     * @return DocumentData The current object (for fluent API support)
      */
-    public function setName($v)
+    public function setHash($v)
     {
         if ($v !== null) {
             $v = (string) $v;
         }
 
-        if ($this->name !== $v) {
-            $this->name = $v;
-            $this->modifiedColumns[] = DocumentCategoryPeer::NAME;
+        if ($this->hash !== $v) {
+            $this->hash = $v;
+            $this->modifiedColumns[] = DocumentDataPeer::HASH;
         }
 
 
         return $this;
-    } // setName()
+    } // setHash()
 
     /**
-     * Set the value of [sort] column.
+     * Set the value of [data] column.
      *
-     * @param  int $v new value
-     * @return DocumentCategory The current object (for fluent API support)
+     * @param  resource $v new value
+     * @return DocumentData The current object (for fluent API support)
      */
-    public function setSort($v)
+    public function setData($v)
     {
-        if ($v !== null && is_numeric($v)) {
-            $v = (int) $v;
+        // Allow unsetting the lazy loaded column even when its not loaded.
+        if (!$this->data_isLoaded && $v === null) {
+            $this->modifiedColumns[] = DocumentDataPeer::DATA;
         }
 
-        if ($this->sort !== $v) {
-            $this->sort = $v;
-            $this->modifiedColumns[] = DocumentCategoryPeer::SORT;
+        // explicitly set the is-loaded flag to true for this lazy load col;
+        // it doesn't matter if the value is actually set or not (logic below) as
+        // any attempt to set the value means that no db lookup should be performed
+        // when the getData() method is called.
+        $this->data_isLoaded = true;
+
+        // Because BLOB columns are streams in PDO we have to assume that they are
+        // always modified when a new value is passed in.  For example, the contents
+        // of the stream itself may have changed externally.
+        if (!is_resource($v) && $v !== null) {
+            $this->data = fopen('php://memory', 'r+');
+            fwrite($this->data, $v);
+            rewind($this->data);
+        } else { // it's already a stream
+            $this->data = $v;
         }
+        $this->modifiedColumns[] = DocumentDataPeer::DATA;
 
 
         return $this;
-    } // setSort()
-
-    /**
-     * Set the value of [max_width] column.
-     *
-     * @param  int $v new value
-     * @return DocumentCategory The current object (for fluent API support)
-     */
-    public function setMaxWidth($v)
-    {
-        if ($v !== null && is_numeric($v)) {
-            $v = (int) $v;
-        }
-
-        if ($this->max_width !== $v) {
-            $this->max_width = $v;
-            $this->modifiedColumns[] = DocumentCategoryPeer::MAX_WIDTH;
-        }
-
-
-        return $this;
-    } // setMaxWidth()
-
-    /**
-     * Sets the value of the [is_externally_managed] column.
-     * Non-boolean arguments are converted using the following rules:
-     *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
-     *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
-     * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
-     *
-     * @param boolean|integer|string $v The new value
-     * @return DocumentCategory The current object (for fluent API support)
-     */
-    public function setIsExternallyManaged($v)
-    {
-        if ($v !== null) {
-            if (is_string($v)) {
-                $v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
-            } else {
-                $v = (boolean) $v;
-            }
-        }
-
-        if ($this->is_externally_managed !== $v) {
-            $this->is_externally_managed = $v;
-            $this->modifiedColumns[] = DocumentCategoryPeer::IS_EXTERNALLY_MANAGED;
-        }
-
-
-        return $this;
-    } // setIsExternallyManaged()
-
-    /**
-     * Sets the value of the [is_inactive] column.
-     * Non-boolean arguments are converted using the following rules:
-     *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
-     *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
-     * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
-     *
-     * @param boolean|integer|string $v The new value
-     * @return DocumentCategory The current object (for fluent API support)
-     */
-    public function setIsInactive($v)
-    {
-        if ($v !== null) {
-            if (is_string($v)) {
-                $v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
-            } else {
-                $v = (boolean) $v;
-            }
-        }
-
-        if ($this->is_inactive !== $v) {
-            $this->is_inactive = $v;
-            $this->modifiedColumns[] = DocumentCategoryPeer::IS_INACTIVE;
-        }
-
-
-        return $this;
-    } // setIsInactive()
+    } // setData()
 
     /**
      * Sets the value of [created_at] column to a normalized version of the date/time value specified.
      *
      * @param mixed $v string, integer (timestamp), or DateTime value.
      *               Empty strings are treated as null.
-     * @return DocumentCategory The current object (for fluent API support)
+     * @return DocumentData The current object (for fluent API support)
      */
     public function setCreatedAt($v)
     {
@@ -480,7 +345,7 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
             $newDateAsString = $dt ? $dt->format('Y-m-d H:i:s') : null;
             if ($currentDateAsString !== $newDateAsString) {
                 $this->created_at = $newDateAsString;
-                $this->modifiedColumns[] = DocumentCategoryPeer::CREATED_AT;
+                $this->modifiedColumns[] = DocumentDataPeer::CREATED_AT;
             }
         } // if either are not null
 
@@ -493,7 +358,7 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
      *
      * @param mixed $v string, integer (timestamp), or DateTime value.
      *               Empty strings are treated as null.
-     * @return DocumentCategory The current object (for fluent API support)
+     * @return DocumentData The current object (for fluent API support)
      */
     public function setUpdatedAt($v)
     {
@@ -503,7 +368,7 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
             $newDateAsString = $dt ? $dt->format('Y-m-d H:i:s') : null;
             if ($currentDateAsString !== $newDateAsString) {
                 $this->updated_at = $newDateAsString;
-                $this->modifiedColumns[] = DocumentCategoryPeer::UPDATED_AT;
+                $this->modifiedColumns[] = DocumentDataPeer::UPDATED_AT;
             }
         } // if either are not null
 
@@ -515,7 +380,7 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
      * Set the value of [created_by] column.
      *
      * @param  int $v new value
-     * @return DocumentCategory The current object (for fluent API support)
+     * @return DocumentData The current object (for fluent API support)
      */
     public function setCreatedBy($v)
     {
@@ -525,7 +390,7 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
 
         if ($this->created_by !== $v) {
             $this->created_by = $v;
-            $this->modifiedColumns[] = DocumentCategoryPeer::CREATED_BY;
+            $this->modifiedColumns[] = DocumentDataPeer::CREATED_BY;
         }
 
         if ($this->aUserRelatedByCreatedBy !== null && $this->aUserRelatedByCreatedBy->getId() !== $v) {
@@ -540,7 +405,7 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
      * Set the value of [updated_by] column.
      *
      * @param  int $v new value
-     * @return DocumentCategory The current object (for fluent API support)
+     * @return DocumentData The current object (for fluent API support)
      */
     public function setUpdatedBy($v)
     {
@@ -550,7 +415,7 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
 
         if ($this->updated_by !== $v) {
             $this->updated_by = $v;
-            $this->modifiedColumns[] = DocumentCategoryPeer::UPDATED_BY;
+            $this->modifiedColumns[] = DocumentDataPeer::UPDATED_BY;
         }
 
         if ($this->aUserRelatedByUpdatedBy !== null && $this->aUserRelatedByUpdatedBy->getId() !== $v) {
@@ -571,14 +436,6 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
      */
     public function hasOnlyDefaultValues()
     {
-            if ($this->is_externally_managed !== false) {
-                return false;
-            }
-
-            if ($this->is_inactive !== false) {
-                return false;
-            }
-
         // otherwise, everything was equal, so return true
         return true;
     } // hasOnlyDefaultValues()
@@ -601,16 +458,11 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
     {
         try {
 
-            $this->id = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
-            $this->name = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
-            $this->sort = ($row[$startcol + 2] !== null) ? (int) $row[$startcol + 2] : null;
-            $this->max_width = ($row[$startcol + 3] !== null) ? (int) $row[$startcol + 3] : null;
-            $this->is_externally_managed = ($row[$startcol + 4] !== null) ? (boolean) $row[$startcol + 4] : null;
-            $this->is_inactive = ($row[$startcol + 5] !== null) ? (boolean) $row[$startcol + 5] : null;
-            $this->created_at = ($row[$startcol + 6] !== null) ? (string) $row[$startcol + 6] : null;
-            $this->updated_at = ($row[$startcol + 7] !== null) ? (string) $row[$startcol + 7] : null;
-            $this->created_by = ($row[$startcol + 8] !== null) ? (int) $row[$startcol + 8] : null;
-            $this->updated_by = ($row[$startcol + 9] !== null) ? (int) $row[$startcol + 9] : null;
+            $this->hash = ($row[$startcol + 0] !== null) ? (string) $row[$startcol + 0] : null;
+            $this->created_at = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
+            $this->updated_at = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
+            $this->created_by = ($row[$startcol + 3] !== null) ? (int) $row[$startcol + 3] : null;
+            $this->updated_by = ($row[$startcol + 4] !== null) ? (int) $row[$startcol + 4] : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -620,10 +472,10 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
             }
             $this->postHydrate($row, $startcol, $rehydrate);
 
-            return $startcol + 10; // 10 = DocumentCategoryPeer::NUM_HYDRATE_COLUMNS.
+            return $startcol + 5; // 5 = DocumentDataPeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException("Error populating DocumentCategory object", $e);
+            throw new PropelException("Error populating DocumentData object", $e);
         }
     }
 
@@ -672,19 +524,23 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
         }
 
         if ($con === null) {
-            $con = Propel::getConnection(DocumentCategoryPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+            $con = Propel::getConnection(DocumentDataPeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $stmt = DocumentCategoryPeer::doSelectStmt($this->buildPkeyCriteria(), $con);
+        $stmt = DocumentDataPeer::doSelectStmt($this->buildPkeyCriteria(), $con);
         $row = $stmt->fetch(PDO::FETCH_NUM);
         $stmt->closeCursor();
         if (!$row) {
             throw new PropelException('Cannot find matching row in the database to reload object values.');
         }
         $this->hydrate($row, 0, true); // rehydrate
+
+        // Reset the data lazy-load column
+        $this->data = null;
+        $this->data_isLoaded = false;
 
         if ($deep) {  // also de-associate any related objects?
 
@@ -712,21 +568,17 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
         }
 
         if ($con === null) {
-            $con = Propel::getConnection(DocumentCategoryPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+            $con = Propel::getConnection(DocumentDataPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
         }
 
         $con->beginTransaction();
         try {
-            $deleteQuery = DocumentCategoryQuery::create()
+            $deleteQuery = DocumentDataQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
-            // referenceable behavior
-            if(ReferencePeer::hasReference($this)) {
-                throw new PropelException("Exception in ".__METHOD__.": tried removing an instance from the database even though it is still referenced.", new StillReferencedException($this));
-            }
             // denyable behavior
-            if(!(DocumentCategoryPeer::isIgnoringRights() || $this->mayOperate("delete"))) {
-                throw new PropelException(new NotPermittedException("delete.by_role", array("role_key" => "documents")));
+            if(!(DocumentDataPeer::isIgnoringRights() || $this->mayOperate("delete"))) {
+                throw new PropelException(new NotPermittedException("delete.by_role", array("role_key" => "document_data")));
             }
 
             if ($ret) {
@@ -764,7 +616,7 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
         }
 
         if ($con === null) {
-            $con = Propel::getConnection(DocumentCategoryPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+            $con = Propel::getConnection(DocumentDataPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
         }
 
         $con->beginTransaction();
@@ -774,24 +626,24 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
             if ($isInsert) {
                 $ret = $ret && $this->preInsert($con);
                 // denyable behavior
-                if(!(DocumentCategoryPeer::isIgnoringRights() || $this->mayOperate("insert"))) {
-                    throw new PropelException(new NotPermittedException("insert.by_role", array("role_key" => "documents")));
+                if(!(DocumentDataPeer::isIgnoringRights() || $this->mayOperate("insert"))) {
+                    throw new PropelException(new NotPermittedException("insert.by_role", array("role_key" => "document_data")));
                 }
 
                 // extended_timestampable behavior
-                if (!$this->isColumnModified(DocumentCategoryPeer::CREATED_AT)) {
+                if (!$this->isColumnModified(DocumentDataPeer::CREATED_AT)) {
                     $this->setCreatedAt(time());
                 }
-                if (!$this->isColumnModified(DocumentCategoryPeer::UPDATED_AT)) {
+                if (!$this->isColumnModified(DocumentDataPeer::UPDATED_AT)) {
                     $this->setUpdatedAt(time());
                 }
                 // attributable behavior
 
                 if(Session::getSession()->isAuthenticated()) {
-                    if (!$this->isColumnModified(DocumentCategoryPeer::CREATED_BY)) {
+                    if (!$this->isColumnModified(DocumentDataPeer::CREATED_BY)) {
                         $this->setCreatedBy(Session::getSession()->getUser()->getId());
                     }
-                    if (!$this->isColumnModified(DocumentCategoryPeer::UPDATED_BY)) {
+                    if (!$this->isColumnModified(DocumentDataPeer::UPDATED_BY)) {
                         $this->setUpdatedBy(Session::getSession()->getUser()->getId());
                     }
                 }
@@ -799,18 +651,18 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
             } else {
                 $ret = $ret && $this->preUpdate($con);
                 // denyable behavior
-                if(!(DocumentCategoryPeer::isIgnoringRights() || $this->mayOperate("update"))) {
-                    throw new PropelException(new NotPermittedException("update.by_role", array("role_key" => "documents")));
+                if(!(DocumentDataPeer::isIgnoringRights() || $this->mayOperate("update"))) {
+                    throw new PropelException(new NotPermittedException("update.by_role", array("role_key" => "document_data")));
                 }
 
                 // extended_timestampable behavior
-                if ($this->isModified() && !$this->isColumnModified(DocumentCategoryPeer::UPDATED_AT)) {
+                if ($this->isModified() && !$this->isColumnModified(DocumentDataPeer::UPDATED_AT)) {
                     $this->setUpdatedAt(time());
                 }
                 // attributable behavior
 
                 if(Session::getSession()->isAuthenticated()) {
-                    if ($this->isModified() && !$this->isColumnModified(DocumentCategoryPeer::UPDATED_BY)) {
+                    if ($this->isModified() && !$this->isColumnModified(DocumentDataPeer::UPDATED_BY)) {
                         $this->setUpdatedBy(Session::getSession()->getUser()->getId());
                     }
                 }
@@ -823,7 +675,7 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                DocumentCategoryPeer::addInstanceToPool($this);
+                DocumentDataPeer::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -880,15 +732,19 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
                     $this->doUpdate($con);
                 }
                 $affectedRows += 1;
+                // Rewind the data LOB column, since PDO does not rewind after inserting value.
+                if ($this->data !== null && is_resource($this->data)) {
+                    rewind($this->data);
+                }
+
                 $this->resetModified();
             }
 
             if ($this->documentsScheduledForDeletion !== null) {
                 if (!$this->documentsScheduledForDeletion->isEmpty()) {
-                    foreach ($this->documentsScheduledForDeletion as $document) {
-                        // need to save related object because we set the relation to null
-                        $document->save($con);
-                    }
+                    DocumentQuery::create()
+                        ->filterByPrimaryKeys($this->documentsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
                     $this->documentsScheduledForDeletion = null;
                 }
             }
@@ -921,45 +777,29 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
         $modifiedColumns = array();
         $index = 0;
 
-        $this->modifiedColumns[] = DocumentCategoryPeer::ID;
-        if (null !== $this->id) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . DocumentCategoryPeer::ID . ')');
-        }
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(DocumentCategoryPeer::ID)) {
-            $modifiedColumns[':p' . $index++]  = '`id`';
+        if ($this->isColumnModified(DocumentDataPeer::HASH)) {
+            $modifiedColumns[':p' . $index++]  = '`hash`';
         }
-        if ($this->isColumnModified(DocumentCategoryPeer::NAME)) {
-            $modifiedColumns[':p' . $index++]  = '`name`';
+        if ($this->isColumnModified(DocumentDataPeer::DATA)) {
+            $modifiedColumns[':p' . $index++]  = '`data`';
         }
-        if ($this->isColumnModified(DocumentCategoryPeer::SORT)) {
-            $modifiedColumns[':p' . $index++]  = '`sort`';
-        }
-        if ($this->isColumnModified(DocumentCategoryPeer::MAX_WIDTH)) {
-            $modifiedColumns[':p' . $index++]  = '`max_width`';
-        }
-        if ($this->isColumnModified(DocumentCategoryPeer::IS_EXTERNALLY_MANAGED)) {
-            $modifiedColumns[':p' . $index++]  = '`is_externally_managed`';
-        }
-        if ($this->isColumnModified(DocumentCategoryPeer::IS_INACTIVE)) {
-            $modifiedColumns[':p' . $index++]  = '`is_inactive`';
-        }
-        if ($this->isColumnModified(DocumentCategoryPeer::CREATED_AT)) {
+        if ($this->isColumnModified(DocumentDataPeer::CREATED_AT)) {
             $modifiedColumns[':p' . $index++]  = '`created_at`';
         }
-        if ($this->isColumnModified(DocumentCategoryPeer::UPDATED_AT)) {
+        if ($this->isColumnModified(DocumentDataPeer::UPDATED_AT)) {
             $modifiedColumns[':p' . $index++]  = '`updated_at`';
         }
-        if ($this->isColumnModified(DocumentCategoryPeer::CREATED_BY)) {
+        if ($this->isColumnModified(DocumentDataPeer::CREATED_BY)) {
             $modifiedColumns[':p' . $index++]  = '`created_by`';
         }
-        if ($this->isColumnModified(DocumentCategoryPeer::UPDATED_BY)) {
+        if ($this->isColumnModified(DocumentDataPeer::UPDATED_BY)) {
             $modifiedColumns[':p' . $index++]  = '`updated_by`';
         }
 
         $sql = sprintf(
-            'INSERT INTO `document_categories` (%s) VALUES (%s)',
+            'INSERT INTO `document_data` (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -968,23 +808,14 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
             $stmt = $con->prepare($sql);
             foreach ($modifiedColumns as $identifier => $columnName) {
                 switch ($columnName) {
-                    case '`id`':
-                        $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
+                    case '`hash`':
+                        $stmt->bindValue($identifier, $this->hash, PDO::PARAM_STR);
                         break;
-                    case '`name`':
-                        $stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
-                        break;
-                    case '`sort`':
-                        $stmt->bindValue($identifier, $this->sort, PDO::PARAM_INT);
-                        break;
-                    case '`max_width`':
-                        $stmt->bindValue($identifier, $this->max_width, PDO::PARAM_INT);
-                        break;
-                    case '`is_externally_managed`':
-                        $stmt->bindValue($identifier, (int) $this->is_externally_managed, PDO::PARAM_INT);
-                        break;
-                    case '`is_inactive`':
-                        $stmt->bindValue($identifier, (int) $this->is_inactive, PDO::PARAM_INT);
+                    case '`data`':
+                        if (is_resource($this->data)) {
+                            rewind($this->data);
+                        }
+                        $stmt->bindValue($identifier, $this->data, PDO::PARAM_LOB);
                         break;
                     case '`created_at`':
                         $stmt->bindValue($identifier, $this->created_at, PDO::PARAM_STR);
@@ -1005,13 +836,6 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
             Propel::log($e->getMessage(), Propel::LOG_ERR);
             throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
         }
-
-        try {
-            $pk = $con->lastInsertId();
-        } catch (Exception $e) {
-            throw new PropelException('Unable to get autoincrement id.', $e);
-        }
-        $this->setId($pk);
 
         $this->setNew(false);
     }
@@ -1110,7 +934,7 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
             }
 
 
-            if (($retval = DocumentCategoryPeer::doValidate($this, $columns)) !== true) {
+            if (($retval = DocumentDataPeer::doValidate($this, $columns)) !== true) {
                 $failureMap = array_merge($failureMap, $retval);
             }
 
@@ -1142,7 +966,7 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
      */
     public function getByName($name, $type = BasePeer::TYPE_PHPNAME)
     {
-        $pos = DocumentCategoryPeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
+        $pos = DocumentDataPeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -1159,33 +983,21 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
     {
         switch ($pos) {
             case 0:
-                return $this->getId();
+                return $this->getHash();
                 break;
             case 1:
-                return $this->getName();
+                return $this->getData();
                 break;
             case 2:
-                return $this->getSort();
-                break;
-            case 3:
-                return $this->getMaxWidth();
-                break;
-            case 4:
-                return $this->getIsExternallyManaged();
-                break;
-            case 5:
-                return $this->getIsInactive();
-                break;
-            case 6:
                 return $this->getCreatedAt();
                 break;
-            case 7:
+            case 3:
                 return $this->getUpdatedAt();
                 break;
-            case 8:
+            case 4:
                 return $this->getCreatedBy();
                 break;
-            case 9:
+            case 5:
                 return $this->getUpdatedBy();
                 break;
             default:
@@ -1211,22 +1023,18 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
      */
     public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
-        if (isset($alreadyDumpedObjects['DocumentCategory'][$this->getPrimaryKey()])) {
+        if (isset($alreadyDumpedObjects['DocumentData'][$this->getPrimaryKey()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['DocumentCategory'][$this->getPrimaryKey()] = true;
-        $keys = DocumentCategoryPeer::getFieldNames($keyType);
+        $alreadyDumpedObjects['DocumentData'][$this->getPrimaryKey()] = true;
+        $keys = DocumentDataPeer::getFieldNames($keyType);
         $result = array(
-            $keys[0] => $this->getId(),
-            $keys[1] => $this->getName(),
-            $keys[2] => $this->getSort(),
-            $keys[3] => $this->getMaxWidth(),
-            $keys[4] => $this->getIsExternallyManaged(),
-            $keys[5] => $this->getIsInactive(),
-            $keys[6] => $this->getCreatedAt(),
-            $keys[7] => $this->getUpdatedAt(),
-            $keys[8] => $this->getCreatedBy(),
-            $keys[9] => $this->getUpdatedBy(),
+            $keys[0] => $this->getHash(),
+            $keys[1] => ($includeLazyLoadColumns) ? $this->getData() : null,
+            $keys[2] => $this->getCreatedAt(),
+            $keys[3] => $this->getUpdatedAt(),
+            $keys[4] => $this->getCreatedBy(),
+            $keys[5] => $this->getUpdatedBy(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1261,7 +1069,7 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
      */
     public function setByName($name, $value, $type = BasePeer::TYPE_PHPNAME)
     {
-        $pos = DocumentCategoryPeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
+        $pos = DocumentDataPeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
 
         $this->setByPosition($pos, $value);
     }
@@ -1278,33 +1086,21 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
     {
         switch ($pos) {
             case 0:
-                $this->setId($value);
+                $this->setHash($value);
                 break;
             case 1:
-                $this->setName($value);
+                $this->setData($value);
                 break;
             case 2:
-                $this->setSort($value);
-                break;
-            case 3:
-                $this->setMaxWidth($value);
-                break;
-            case 4:
-                $this->setIsExternallyManaged($value);
-                break;
-            case 5:
-                $this->setIsInactive($value);
-                break;
-            case 6:
                 $this->setCreatedAt($value);
                 break;
-            case 7:
+            case 3:
                 $this->setUpdatedAt($value);
                 break;
-            case 8:
+            case 4:
                 $this->setCreatedBy($value);
                 break;
-            case 9:
+            case 5:
                 $this->setUpdatedBy($value);
                 break;
         } // switch()
@@ -1329,18 +1125,14 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
      */
     public function fromArray($arr, $keyType = BasePeer::TYPE_PHPNAME)
     {
-        $keys = DocumentCategoryPeer::getFieldNames($keyType);
+        $keys = DocumentDataPeer::getFieldNames($keyType);
 
-        if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
-        if (array_key_exists($keys[1], $arr)) $this->setName($arr[$keys[1]]);
-        if (array_key_exists($keys[2], $arr)) $this->setSort($arr[$keys[2]]);
-        if (array_key_exists($keys[3], $arr)) $this->setMaxWidth($arr[$keys[3]]);
-        if (array_key_exists($keys[4], $arr)) $this->setIsExternallyManaged($arr[$keys[4]]);
-        if (array_key_exists($keys[5], $arr)) $this->setIsInactive($arr[$keys[5]]);
-        if (array_key_exists($keys[6], $arr)) $this->setCreatedAt($arr[$keys[6]]);
-        if (array_key_exists($keys[7], $arr)) $this->setUpdatedAt($arr[$keys[7]]);
-        if (array_key_exists($keys[8], $arr)) $this->setCreatedBy($arr[$keys[8]]);
-        if (array_key_exists($keys[9], $arr)) $this->setUpdatedBy($arr[$keys[9]]);
+        if (array_key_exists($keys[0], $arr)) $this->setHash($arr[$keys[0]]);
+        if (array_key_exists($keys[1], $arr)) $this->setData($arr[$keys[1]]);
+        if (array_key_exists($keys[2], $arr)) $this->setCreatedAt($arr[$keys[2]]);
+        if (array_key_exists($keys[3], $arr)) $this->setUpdatedAt($arr[$keys[3]]);
+        if (array_key_exists($keys[4], $arr)) $this->setCreatedBy($arr[$keys[4]]);
+        if (array_key_exists($keys[5], $arr)) $this->setUpdatedBy($arr[$keys[5]]);
     }
 
     /**
@@ -1350,18 +1142,14 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(DocumentCategoryPeer::DATABASE_NAME);
+        $criteria = new Criteria(DocumentDataPeer::DATABASE_NAME);
 
-        if ($this->isColumnModified(DocumentCategoryPeer::ID)) $criteria->add(DocumentCategoryPeer::ID, $this->id);
-        if ($this->isColumnModified(DocumentCategoryPeer::NAME)) $criteria->add(DocumentCategoryPeer::NAME, $this->name);
-        if ($this->isColumnModified(DocumentCategoryPeer::SORT)) $criteria->add(DocumentCategoryPeer::SORT, $this->sort);
-        if ($this->isColumnModified(DocumentCategoryPeer::MAX_WIDTH)) $criteria->add(DocumentCategoryPeer::MAX_WIDTH, $this->max_width);
-        if ($this->isColumnModified(DocumentCategoryPeer::IS_EXTERNALLY_MANAGED)) $criteria->add(DocumentCategoryPeer::IS_EXTERNALLY_MANAGED, $this->is_externally_managed);
-        if ($this->isColumnModified(DocumentCategoryPeer::IS_INACTIVE)) $criteria->add(DocumentCategoryPeer::IS_INACTIVE, $this->is_inactive);
-        if ($this->isColumnModified(DocumentCategoryPeer::CREATED_AT)) $criteria->add(DocumentCategoryPeer::CREATED_AT, $this->created_at);
-        if ($this->isColumnModified(DocumentCategoryPeer::UPDATED_AT)) $criteria->add(DocumentCategoryPeer::UPDATED_AT, $this->updated_at);
-        if ($this->isColumnModified(DocumentCategoryPeer::CREATED_BY)) $criteria->add(DocumentCategoryPeer::CREATED_BY, $this->created_by);
-        if ($this->isColumnModified(DocumentCategoryPeer::UPDATED_BY)) $criteria->add(DocumentCategoryPeer::UPDATED_BY, $this->updated_by);
+        if ($this->isColumnModified(DocumentDataPeer::HASH)) $criteria->add(DocumentDataPeer::HASH, $this->hash);
+        if ($this->isColumnModified(DocumentDataPeer::DATA)) $criteria->add(DocumentDataPeer::DATA, $this->data);
+        if ($this->isColumnModified(DocumentDataPeer::CREATED_AT)) $criteria->add(DocumentDataPeer::CREATED_AT, $this->created_at);
+        if ($this->isColumnModified(DocumentDataPeer::UPDATED_AT)) $criteria->add(DocumentDataPeer::UPDATED_AT, $this->updated_at);
+        if ($this->isColumnModified(DocumentDataPeer::CREATED_BY)) $criteria->add(DocumentDataPeer::CREATED_BY, $this->created_by);
+        if ($this->isColumnModified(DocumentDataPeer::UPDATED_BY)) $criteria->add(DocumentDataPeer::UPDATED_BY, $this->updated_by);
 
         return $criteria;
     }
@@ -1376,30 +1164,30 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
      */
     public function buildPkeyCriteria()
     {
-        $criteria = new Criteria(DocumentCategoryPeer::DATABASE_NAME);
-        $criteria->add(DocumentCategoryPeer::ID, $this->id);
+        $criteria = new Criteria(DocumentDataPeer::DATABASE_NAME);
+        $criteria->add(DocumentDataPeer::HASH, $this->hash);
 
         return $criteria;
     }
 
     /**
      * Returns the primary key for this object (row).
-     * @return int
+     * @return string
      */
     public function getPrimaryKey()
     {
-        return $this->getId();
+        return $this->getHash();
     }
 
     /**
-     * Generic method to set the primary key (id column).
+     * Generic method to set the primary key (hash column).
      *
-     * @param  int $key Primary key.
+     * @param  string $key Primary key.
      * @return void
      */
     public function setPrimaryKey($key)
     {
-        $this->setId($key);
+        $this->setHash($key);
     }
 
     /**
@@ -1409,7 +1197,7 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
     public function isPrimaryKeyNull()
     {
 
-        return null === $this->getId();
+        return null === $this->getHash();
     }
 
     /**
@@ -1418,18 +1206,14 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param object $copyObj An object of DocumentCategory (or compatible) type.
+     * @param object $copyObj An object of DocumentData (or compatible) type.
      * @param boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setName($this->getName());
-        $copyObj->setSort($this->getSort());
-        $copyObj->setMaxWidth($this->getMaxWidth());
-        $copyObj->setIsExternallyManaged($this->getIsExternallyManaged());
-        $copyObj->setIsInactive($this->getIsInactive());
+        $copyObj->setData($this->getData());
         $copyObj->setCreatedAt($this->getCreatedAt());
         $copyObj->setUpdatedAt($this->getUpdatedAt());
         $copyObj->setCreatedBy($this->getCreatedBy());
@@ -1454,7 +1238,7 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
 
         if ($makeNew) {
             $copyObj->setNew(true);
-            $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
+            $copyObj->setHash(NULL); // this is a auto-increment column, so set to default value
         }
     }
 
@@ -1467,7 +1251,7 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
      * objects.
      *
      * @param boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return DocumentCategory Clone of current object.
+     * @return DocumentData Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1487,12 +1271,12 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
      * same instance for all member of this class. The method could therefore
      * be static, but this would prevent one from overriding the behavior.
      *
-     * @return DocumentCategoryPeer
+     * @return DocumentDataPeer
      */
     public function getPeer()
     {
         if (self::$peer === null) {
-            self::$peer = new DocumentCategoryPeer();
+            self::$peer = new DocumentDataPeer();
         }
 
         return self::$peer;
@@ -1502,7 +1286,7 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
      * Declares an association between this object and a User object.
      *
      * @param                  User $v
-     * @return DocumentCategory The current object (for fluent API support)
+     * @return DocumentData The current object (for fluent API support)
      * @throws PropelException
      */
     public function setUserRelatedByCreatedBy(User $v = null)
@@ -1518,7 +1302,7 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
         // Add binding for other direction of this n:n relationship.
         // If this object has already been added to the User object, it will not be re-added.
         if ($v !== null) {
-            $v->addDocumentCategoryRelatedByCreatedBy($this);
+            $v->addDocumentDataRelatedByCreatedBy($this);
         }
 
 
@@ -1543,7 +1327,7 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aUserRelatedByCreatedBy->addDocumentCategorysRelatedByCreatedBy($this);
+                $this->aUserRelatedByCreatedBy->addDocumentDatasRelatedByCreatedBy($this);
              */
         }
 
@@ -1554,7 +1338,7 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
      * Declares an association between this object and a User object.
      *
      * @param                  User $v
-     * @return DocumentCategory The current object (for fluent API support)
+     * @return DocumentData The current object (for fluent API support)
      * @throws PropelException
      */
     public function setUserRelatedByUpdatedBy(User $v = null)
@@ -1570,7 +1354,7 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
         // Add binding for other direction of this n:n relationship.
         // If this object has already been added to the User object, it will not be re-added.
         if ($v !== null) {
-            $v->addDocumentCategoryRelatedByUpdatedBy($this);
+            $v->addDocumentDataRelatedByUpdatedBy($this);
         }
 
 
@@ -1595,7 +1379,7 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aUserRelatedByUpdatedBy->addDocumentCategorysRelatedByUpdatedBy($this);
+                $this->aUserRelatedByUpdatedBy->addDocumentDatasRelatedByUpdatedBy($this);
              */
         }
 
@@ -1624,7 +1408,7 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return DocumentCategory The current object (for fluent API support)
+     * @return DocumentData The current object (for fluent API support)
      * @see        addDocuments()
      */
     public function clearDocuments()
@@ -1672,7 +1456,7 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
      * If the $criteria is not null, it is used to always fetch the results from the database.
      * Otherwise the results are fetched from the database the first time, then cached.
      * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this DocumentCategory is new, it will return
+     * If this DocumentData is new, it will return
      * an empty collection or the current collection; the criteria is ignored on a new object.
      *
      * @param Criteria $criteria optional Criteria object to narrow the query
@@ -1689,7 +1473,7 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
                 $this->initDocuments();
             } else {
                 $collDocuments = DocumentQuery::create(null, $criteria)
-                    ->filterByDocumentCategory($this)
+                    ->filterByDocumentData($this)
                     ->find($con);
                 if (null !== $criteria) {
                     if (false !== $this->collDocumentsPartial && count($collDocuments)) {
@@ -1733,7 +1517,7 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
      *
      * @param PropelCollection $documents A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return DocumentCategory The current object (for fluent API support)
+     * @return DocumentData The current object (for fluent API support)
      */
     public function setDocuments(PropelCollection $documents, PropelPDO $con = null)
     {
@@ -1743,7 +1527,7 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
         $this->documentsScheduledForDeletion = $documentsToDelete;
 
         foreach ($documentsToDelete as $documentRemoved) {
-            $documentRemoved->setDocumentCategory(null);
+            $documentRemoved->setDocumentData(null);
         }
 
         $this->collDocuments = null;
@@ -1783,7 +1567,7 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
             }
 
             return $query
-                ->filterByDocumentCategory($this)
+                ->filterByDocumentData($this)
                 ->count($con);
         }
 
@@ -1795,7 +1579,7 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
      * through the Document foreign key attribute.
      *
      * @param    Document $l Document
-     * @return DocumentCategory The current object (for fluent API support)
+     * @return DocumentData The current object (for fluent API support)
      */
     public function addDocument(Document $l)
     {
@@ -1821,12 +1605,12 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
     protected function doAddDocument($document)
     {
         $this->collDocuments[]= $document;
-        $document->setDocumentCategory($this);
+        $document->setDocumentData($this);
     }
 
     /**
      * @param	Document $document The document object to remove.
-     * @return DocumentCategory The current object (for fluent API support)
+     * @return DocumentData The current object (for fluent API support)
      */
     public function removeDocument($document)
     {
@@ -1836,8 +1620,8 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
                 $this->documentsScheduledForDeletion = clone $this->collDocuments;
                 $this->documentsScheduledForDeletion->clear();
             }
-            $this->documentsScheduledForDeletion[]= $document;
-            $document->setDocumentCategory(null);
+            $this->documentsScheduledForDeletion[]= clone $document;
+            $document->setDocumentData(null);
         }
 
         return $this;
@@ -1847,13 +1631,13 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
     /**
      * If this collection has already been initialized with
      * an identical criteria, it returns the collection.
-     * Otherwise if this DocumentCategory is new, it will return
-     * an empty collection; or if this DocumentCategory has previously
+     * Otherwise if this DocumentData is new, it will return
+     * an empty collection; or if this DocumentData has previously
      * been saved, it will retrieve related Documents from storage.
      *
      * This method is protected by default in order to keep the public
      * api reasonable.  You can provide public methods for those you
-     * actually need in DocumentCategory.
+     * actually need in DocumentData.
      *
      * @param Criteria $criteria optional Criteria object to narrow the query
      * @param PropelPDO $con optional connection object
@@ -1872,13 +1656,13 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
     /**
      * If this collection has already been initialized with
      * an identical criteria, it returns the collection.
-     * Otherwise if this DocumentCategory is new, it will return
-     * an empty collection; or if this DocumentCategory has previously
+     * Otherwise if this DocumentData is new, it will return
+     * an empty collection; or if this DocumentData has previously
      * been saved, it will retrieve related Documents from storage.
      *
      * This method is protected by default in order to keep the public
      * api reasonable.  You can provide public methods for those you
-     * actually need in DocumentCategory.
+     * actually need in DocumentData.
      *
      * @param Criteria $criteria optional Criteria object to narrow the query
      * @param PropelPDO $con optional connection object
@@ -1897,13 +1681,13 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
     /**
      * If this collection has already been initialized with
      * an identical criteria, it returns the collection.
-     * Otherwise if this DocumentCategory is new, it will return
-     * an empty collection; or if this DocumentCategory has previously
+     * Otherwise if this DocumentData is new, it will return
+     * an empty collection; or if this DocumentData has previously
      * been saved, it will retrieve related Documents from storage.
      *
      * This method is protected by default in order to keep the public
      * api reasonable.  You can provide public methods for those you
-     * actually need in DocumentCategory.
+     * actually need in DocumentData.
      *
      * @param Criteria $criteria optional Criteria object to narrow the query
      * @param PropelPDO $con optional connection object
@@ -1922,23 +1706,23 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
     /**
      * If this collection has already been initialized with
      * an identical criteria, it returns the collection.
-     * Otherwise if this DocumentCategory is new, it will return
-     * an empty collection; or if this DocumentCategory has previously
+     * Otherwise if this DocumentData is new, it will return
+     * an empty collection; or if this DocumentData has previously
      * been saved, it will retrieve related Documents from storage.
      *
      * This method is protected by default in order to keep the public
      * api reasonable.  You can provide public methods for those you
-     * actually need in DocumentCategory.
+     * actually need in DocumentData.
      *
      * @param Criteria $criteria optional Criteria object to narrow the query
      * @param PropelPDO $con optional connection object
      * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return PropelObjectCollection|Document[] List of Document objects
      */
-    public function getDocumentsJoinDocumentData($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    public function getDocumentsJoinDocumentCategory($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
     {
         $query = DocumentQuery::create(null, $criteria);
-        $query->joinWith('DocumentData', $join_behavior);
+        $query->joinWith('DocumentCategory', $join_behavior);
 
         return $this->getDocuments($query, $con);
     }
@@ -1947,13 +1731,13 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
     /**
      * If this collection has already been initialized with
      * an identical criteria, it returns the collection.
-     * Otherwise if this DocumentCategory is new, it will return
-     * an empty collection; or if this DocumentCategory has previously
+     * Otherwise if this DocumentData is new, it will return
+     * an empty collection; or if this DocumentData has previously
      * been saved, it will retrieve related Documents from storage.
      *
      * This method is protected by default in order to keep the public
      * api reasonable.  You can provide public methods for those you
-     * actually need in DocumentCategory.
+     * actually need in DocumentData.
      *
      * @param Criteria $criteria optional Criteria object to narrow the query
      * @param PropelPDO $con optional connection object
@@ -1972,13 +1756,13 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
     /**
      * If this collection has already been initialized with
      * an identical criteria, it returns the collection.
-     * Otherwise if this DocumentCategory is new, it will return
-     * an empty collection; or if this DocumentCategory has previously
+     * Otherwise if this DocumentData is new, it will return
+     * an empty collection; or if this DocumentData has previously
      * been saved, it will retrieve related Documents from storage.
      *
      * This method is protected by default in order to keep the public
      * api reasonable.  You can provide public methods for those you
-     * actually need in DocumentCategory.
+     * actually need in DocumentData.
      *
      * @param Criteria $criteria optional Criteria object to narrow the query
      * @param PropelPDO $con optional connection object
@@ -1998,12 +1782,9 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
      */
     public function clear()
     {
-        $this->id = null;
-        $this->name = null;
-        $this->sort = null;
-        $this->max_width = null;
-        $this->is_externally_managed = null;
-        $this->is_inactive = null;
+        $this->hash = null;
+        $this->data = null;
+        $this->data_isLoaded = false;
         $this->created_at = null;
         $this->updated_at = null;
         $this->created_by = null;
@@ -2012,7 +1793,6 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
         $this->alreadyInValidation = false;
         $this->alreadyInClearAllReferencesDeep = false;
         $this->clearAllReferences();
-        $this->applyDefaultValues();
         $this->resetModified();
         $this->setNew(true);
         $this->setDeleted(false);
@@ -2061,7 +1841,7 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
      */
     public function __toString()
     {
-        return (string) $this->exportTo(DocumentCategoryPeer::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(DocumentDataPeer::DEFAULT_STRING_FORMAT);
     }
 
     /**
@@ -2074,27 +1854,18 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
         return $this->alreadyInSave;
     }
 
-    // referenceable behavior
-
-    /**
-     * @return A list of References (not Objects) which reference this DocumentCategory
-     */
-    public function getReferees()
-    {
-        return ReferencePeer::getReferences($this);
-    }
     // denyable behavior
     public function mayOperate($sOperation, $oUser = false) {
         if($oUser === false) {
             $oUser = Session::getSession()->getUser();
         }
         $bIsAllowed = false;
-        if($oUser && ($this->isNew() || $this->getCreatedBy() === $oUser->getId()) && DocumentCategoryPeer::mayOperateOnOwn($oUser, $this, $sOperation)) {
+        if($oUser && ($this->isNew() || $this->getCreatedBy() === $oUser->getId()) && DocumentDataPeer::mayOperateOnOwn($oUser, $this, $sOperation)) {
             $bIsAllowed = true;
-        } else if(DocumentCategoryPeer::mayOperateOn($oUser, $this, $sOperation)) {
+        } else if(DocumentDataPeer::mayOperateOn($oUser, $this, $sOperation)) {
             $bIsAllowed = true;
         }
-        FilterModule::getFilters()->handleDocumentCategoryOperationCheck($sOperation, $this, $oUser, array(&$bIsAllowed));
+        FilterModule::getFilters()->handleDocumentDataOperationCheck($sOperation, $this, $oUser, array(&$bIsAllowed));
         return $bIsAllowed;
     }
     public function mayBeInserted($oUser = false) {
@@ -2112,11 +1883,11 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
     /**
      * Mark the current object so that the update date doesn't get updated during next save
      *
-     * @return     DocumentCategory The current object (for fluent API support)
+     * @return     DocumentData The current object (for fluent API support)
      */
     public function keepUpdateDateUnchanged()
     {
-        $this->modifiedColumns[] = DocumentCategoryPeer::UPDATED_AT;
+        $this->modifiedColumns[] = DocumentDataPeer::UPDATED_AT;
 
         return $this;
     }
@@ -2164,11 +1935,11 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
     /**
      * Mark the current object so that the updated user doesn't get updated during next save
      *
-     * @return     DocumentCategory The current object (for fluent API support)
+     * @return     DocumentData The current object (for fluent API support)
      */
     public function keepUpdateUserUnchanged()
     {
-        $this->modifiedColumns[] = DocumentCategoryPeer::UPDATED_BY;
+        $this->modifiedColumns[] = DocumentDataPeer::UPDATED_BY;
         return $this;
     }
 
