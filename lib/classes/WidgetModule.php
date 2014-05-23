@@ -1,6 +1,8 @@
 <?php
 abstract class WidgetModule extends Module {
 	
+	const USE_NAMESPACED_CSS = true;
+	
 	const WIDGET_SESSION_KEY = 'widget_storage';
 	
 	protected static $MODULE_TYPE = 'widget';
