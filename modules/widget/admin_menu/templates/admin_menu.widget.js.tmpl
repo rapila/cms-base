@@ -191,6 +191,8 @@ Widget.types.admin_menu = {
 
 		tag: function() {
 			var element = jQuery('<span/>').addClass('open-tag-panel rapila-icon').html('&#xf100;');
+			var title = "{{writeString=wns.tag_panel.button_title}}"
+			if(title) element.attr('title', title);
 			return {element: element, callback: function(event) {
 				Widget.create('tag_panel', function(tag_panel) {
 					tag_panel.settings.panel_style = {width: '300px'}
