@@ -89,7 +89,7 @@ div.inner-tab-panel-content .ui-tabs-nav.ui-widget-header{border-bottom:1px soli
 .item-action{background-image:url("../../images/admin/action.png")}
 .print_area{background-image:url("../../images/admin/print.gif");width:24px}
 .preview_edit{cursor:pointer}
-.rapila-icon{font-family:'Rapila-Icons'}
+.rapila-icon{font-family:'Rapila-Icons';cursor: pointer;}
 .help{cursor:help}
 ol.ui-editable-items-list{list-style-type:none;margin:3em 0 .5em 0;padding:0;}
 ol.ui-editable-items-list select{margin-bottom:.3em}
