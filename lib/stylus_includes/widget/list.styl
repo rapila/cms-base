@@ -101,6 +101,23 @@ th.ui-list-heading
 	&.sortable
 		cursor pointer
 
+/* Thumbnail lists */
+
+.ui-list.ui-thumbnail-list
+	tbody
+		display flex
+		flex-wrap wrap
+		justify-content space-between
+		min-width 100%
+		tr
+			display flex
+			flex-direction column
+			width 300px
+			height 450px
+			flex-grow 1
+			td
+				display block
+
 // Editable-items lists
 ol.ui-editable-items-list
 	list-style-type none
