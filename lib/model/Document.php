@@ -155,6 +155,15 @@ class Document extends BaseDocument {
 			$mData = stream_get_contents($mData);
 		}
 		$sHash = sha1($mData);
+		$sPreviousHash = $this->getHash();
+		if($sHash === $sPreviousHash) {
+			return;
+		}
+		$oOldDocumentData = $this->getDocumentData();
+		if($oOldDocumentData && $oOldDocumentData->countDocuments() <= 1) {
+			// Only remaining document is the one to be updated
+			$oOldDocumentData->delete();
+		}
 		$oDocumentData = DocumentDataQuery::create()->findPk($sHash);
 		if($oDocumentData === null) {
 			$oDocumentData = new DocumentData();
