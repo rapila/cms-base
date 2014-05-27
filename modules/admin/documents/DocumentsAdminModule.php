@@ -9,7 +9,7 @@ class DocumentsAdminModule extends AdminModule {
 	private $oInputWidget;
 
 	public function __construct() {
-		$this->oListWidget = new DocumentsViewWidgetModule();
+		$this->oListWidget = new DocumentListWidgetModule();
 		if(isset($_REQUEST['document_category_id'])) {
 			$this->oListWidget->setDocumentCategoryId($_REQUEST['document_category_id']);
 		}
