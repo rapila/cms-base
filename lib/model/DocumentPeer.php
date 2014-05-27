@@ -131,6 +131,37 @@ class DocumentPeer extends BaseDocumentPeer {
 		return round($iDocLength/$fOutputDividor, $iRoundCount)." ".$sFormat;
 	}
 
+	public static function doDelete($values, PropelPDO $con = null) {
+		if ($con === null) {
+			$con = Propel::getConnection(PagePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+		}
+
+		if($values instanceof Criteria) {
+			// rename for clarity
+			$criteria = clone $values;
+		} elseif ($values instanceof Document) { // it's a model object
+			// create criteria based on pk values
+			$criteria = $values->buildPkeyCriteria();
+		} else { // it's a primary key, or an array of pks
+			$criteria = new Criteria(self::DATABASE_NAME);
+			$criteria->add(PagePeer::ID, (array) $values, Criteria::IN);
+		}
+
+		$oHashCriteria = clone $criteria;
+		$stmt = DocumentPeer::doSelectStmt($oHashCriteria->clearSelectColumns()->addSelectColumn(DocumentPeer::HASH));
+		while(($row = $stmt->fetch(PDO::FETCH_NUM)) !== false) {
+			$sHash = $row[0];
+			$oDocumentData = DocumentDataQuery::create()->findPk($sHash);
+			if($oDocumentData && $oDocumentData->countDocuments() <= 1) {
+				// Only remaining document is the one to be deleted
+				$oDocumentData->delete();
+			}
+		}
+		$stmt->closeCursor();
+
+		return parent::doDelete($criteria, $con);
+	}
+
 	/**
 	* @deprecated
 	* use query methods of DocumentQuery and document related query classes and query notation in general directly

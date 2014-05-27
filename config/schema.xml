@@ -281,12 +281,24 @@
 	<column name="is_inactive" type="boolean" size="1" default="0" />
 	<column name="is_protected" type="boolean" size="1" default="0" />
 	<column name="sort" type="integer" />
-	<column name="data" type="blob" lazyLoad="true" />
 	<behavior name="referenceable" />
 	<behavior name="taggable" />
 	<behavior name="denyable">
 		<parameter name="mode" value="by_role" />
 		<parameter name="owner_allowed" value="true" />
+	</behavior>
+	<column name="hash" type="varchar" required="true" size="40" />
+	<foreign-key foreignTable="document_data" onDelete="restrict">
+		<reference local="hash" foreign="hash" />
+	</foreign-key>
+</table>
+
+<table name="document_data" phpName="DocumentData">
+	<column name="hash" type="varchar" size="40" required="true" primaryKey="true" />
+	<column name="data" type="blob" lazyLoad="true" />
+	<!-- There should never be any code that directly handles DocumentData objects so we don’t have to be cautious here. -->
+	<behavior name="denyable">
+		<parameter name="mode" value="allow" />
 	</behavior>
 </table>
 

@@ -351,6 +351,18 @@ abstract class BaseUser extends BaseObject implements Persistent
     protected $collDocumentsRelatedByUpdatedByPartial;
 
     /**
+     * @var        PropelObjectCollection|DocumentData[] Collection to store aggregation of DocumentData objects.
+     */
+    protected $collDocumentDatasRelatedByCreatedBy;
+    protected $collDocumentDatasRelatedByCreatedByPartial;
+
+    /**
+     * @var        PropelObjectCollection|DocumentData[] Collection to store aggregation of DocumentData objects.
+     */
+    protected $collDocumentDatasRelatedByUpdatedBy;
+    protected $collDocumentDatasRelatedByUpdatedByPartial;
+
+    /**
      * @var        PropelObjectCollection|DocumentType[] Collection to store aggregation of DocumentType objects.
      */
     protected $collDocumentTypesRelatedByCreatedBy;
@@ -657,6 +669,18 @@ abstract class BaseUser extends BaseObject implements Persistent
      * @var		PropelObjectCollection
      */
     protected $documentsRelatedByUpdatedByScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var		PropelObjectCollection
+     */
+    protected $documentDatasRelatedByCreatedByScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var		PropelObjectCollection
+     */
+    protected $documentDatasRelatedByUpdatedByScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
@@ -1658,6 +1682,10 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             $this->collDocumentsRelatedByUpdatedBy = null;
 
+            $this->collDocumentDatasRelatedByCreatedBy = null;
+
+            $this->collDocumentDatasRelatedByUpdatedBy = null;
+
             $this->collDocumentTypesRelatedByCreatedBy = null;
 
             $this->collDocumentTypesRelatedByUpdatedBy = null;
@@ -1907,9 +1935,10 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             if ($this->documentsRelatedByOwnerIdScheduledForDeletion !== null) {
                 if (!$this->documentsRelatedByOwnerIdScheduledForDeletion->isEmpty()) {
-                    DocumentQuery::create()
-                        ->filterByPrimaryKeys($this->documentsRelatedByOwnerIdScheduledForDeletion->getPrimaryKeys(false))
-                        ->delete($con);
+                    foreach ($this->documentsRelatedByOwnerIdScheduledForDeletion as $documentRelatedByOwnerId) {
+                        // need to save related object because we set the relation to null
+                        $documentRelatedByOwnerId->save($con);
+                    }
                     $this->documentsRelatedByOwnerIdScheduledForDeletion = null;
                 }
             }
@@ -2473,6 +2502,42 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             if ($this->collDocumentsRelatedByUpdatedBy !== null) {
                 foreach ($this->collDocumentsRelatedByUpdatedBy as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->documentDatasRelatedByCreatedByScheduledForDeletion !== null) {
+                if (!$this->documentDatasRelatedByCreatedByScheduledForDeletion->isEmpty()) {
+                    foreach ($this->documentDatasRelatedByCreatedByScheduledForDeletion as $documentDataRelatedByCreatedBy) {
+                        // need to save related object because we set the relation to null
+                        $documentDataRelatedByCreatedBy->save($con);
+                    }
+                    $this->documentDatasRelatedByCreatedByScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collDocumentDatasRelatedByCreatedBy !== null) {
+                foreach ($this->collDocumentDatasRelatedByCreatedBy as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->documentDatasRelatedByUpdatedByScheduledForDeletion !== null) {
+                if (!$this->documentDatasRelatedByUpdatedByScheduledForDeletion->isEmpty()) {
+                    foreach ($this->documentDatasRelatedByUpdatedByScheduledForDeletion as $documentDataRelatedByUpdatedBy) {
+                        // need to save related object because we set the relation to null
+                        $documentDataRelatedByUpdatedBy->save($con);
+                    }
+                    $this->documentDatasRelatedByUpdatedByScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collDocumentDatasRelatedByUpdatedBy !== null) {
+                foreach ($this->collDocumentDatasRelatedByUpdatedBy as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -3262,6 +3327,22 @@ abstract class BaseUser extends BaseObject implements Persistent
                     }
                 }
 
+                if ($this->collDocumentDatasRelatedByCreatedBy !== null) {
+                    foreach ($this->collDocumentDatasRelatedByCreatedBy as $referrerFK) {
+                        if (!$referrerFK->validate($columns)) {
+                            $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+                        }
+                    }
+                }
+
+                if ($this->collDocumentDatasRelatedByUpdatedBy !== null) {
+                    foreach ($this->collDocumentDatasRelatedByUpdatedBy as $referrerFK) {
+                        if (!$referrerFK->validate($columns)) {
+                            $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+                        }
+                    }
+                }
+
                 if ($this->collDocumentTypesRelatedByCreatedBy !== null) {
                     foreach ($this->collDocumentTypesRelatedByCreatedBy as $referrerFK) {
                         if (!$referrerFK->validate($columns)) {
@@ -3621,6 +3702,12 @@ abstract class BaseUser extends BaseObject implements Persistent
             }
             if (null !== $this->collDocumentsRelatedByUpdatedBy) {
                 $result['DocumentsRelatedByUpdatedBy'] = $this->collDocumentsRelatedByUpdatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collDocumentDatasRelatedByCreatedBy) {
+                $result['DocumentDatasRelatedByCreatedBy'] = $this->collDocumentDatasRelatedByCreatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collDocumentDatasRelatedByUpdatedBy) {
+                $result['DocumentDatasRelatedByUpdatedBy'] = $this->collDocumentDatasRelatedByUpdatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
             if (null !== $this->collDocumentTypesRelatedByCreatedBy) {
                 $result['DocumentTypesRelatedByCreatedBy'] = $this->collDocumentTypesRelatedByCreatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
@@ -4115,6 +4202,18 @@ abstract class BaseUser extends BaseObject implements Persistent
                 }
             }
 
+            foreach ($this->getDocumentDatasRelatedByCreatedBy() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addDocumentDataRelatedByCreatedBy($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getDocumentDatasRelatedByUpdatedBy() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addDocumentDataRelatedByUpdatedBy($relObj->copy($deepCopy));
+                }
+            }
+
             foreach ($this->getDocumentTypesRelatedByCreatedBy() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
                     $copyObj->addDocumentTypeRelatedByCreatedBy($relObj->copy($deepCopy));
@@ -4413,6 +4512,12 @@ abstract class BaseUser extends BaseObject implements Persistent
         }
         if ('DocumentRelatedByUpdatedBy' == $relationName) {
             $this->initDocumentsRelatedByUpdatedBy();
+        }
+        if ('DocumentDataRelatedByCreatedBy' == $relationName) {
+            $this->initDocumentDatasRelatedByCreatedBy();
+        }
+        if ('DocumentDataRelatedByUpdatedBy' == $relationName) {
+            $this->initDocumentDatasRelatedByUpdatedBy();
         }
         if ('DocumentTypeRelatedByCreatedBy' == $relationName) {
             $this->initDocumentTypesRelatedByCreatedBy();
@@ -5182,7 +5287,7 @@ abstract class BaseUser extends BaseObject implements Persistent
                 $this->documentsRelatedByOwnerIdScheduledForDeletion = clone $this->collDocumentsRelatedByOwnerId;
                 $this->documentsRelatedByOwnerIdScheduledForDeletion->clear();
             }
-            $this->documentsRelatedByOwnerIdScheduledForDeletion[]= clone $documentRelatedByOwnerId;
+            $this->documentsRelatedByOwnerIdScheduledForDeletion[]= $documentRelatedByOwnerId;
             $documentRelatedByOwnerId->setUserRelatedByOwnerId(null);
         }
 
@@ -5260,6 +5365,31 @@ abstract class BaseUser extends BaseObject implements Persistent
     {
         $query = DocumentQuery::create(null, $criteria);
         $query->joinWith('DocumentCategory', $join_behavior);
+
+        return $this->getDocumentsRelatedByOwnerId($query, $con);
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this User is new, it will return
+     * an empty collection; or if this User has previously
+     * been saved, it will retrieve related DocumentsRelatedByOwnerId from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in User.
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Document[] List of Document objects
+     */
+    public function getDocumentsRelatedByOwnerIdJoinDocumentData($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = DocumentQuery::create(null, $criteria);
+        $query->joinWith('DocumentData', $join_behavior);
 
         return $this->getDocumentsRelatedByOwnerId($query, $con);
     }
@@ -12939,6 +13069,31 @@ abstract class BaseUser extends BaseObject implements Persistent
         return $this->getDocumentsRelatedByCreatedBy($query, $con);
     }
 
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this User is new, it will return
+     * an empty collection; or if this User has previously
+     * been saved, it will retrieve related DocumentsRelatedByCreatedBy from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in User.
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Document[] List of Document objects
+     */
+    public function getDocumentsRelatedByCreatedByJoinDocumentData($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = DocumentQuery::create(null, $criteria);
+        $query->joinWith('DocumentData', $join_behavior);
+
+        return $this->getDocumentsRelatedByCreatedBy($query, $con);
+    }
+
     /**
      * Clears out the collDocumentsRelatedByUpdatedBy collection
      *
@@ -13237,6 +13392,481 @@ abstract class BaseUser extends BaseObject implements Persistent
         $query->joinWith('DocumentCategory', $join_behavior);
 
         return $this->getDocumentsRelatedByUpdatedBy($query, $con);
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this User is new, it will return
+     * an empty collection; or if this User has previously
+     * been saved, it will retrieve related DocumentsRelatedByUpdatedBy from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in User.
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Document[] List of Document objects
+     */
+    public function getDocumentsRelatedByUpdatedByJoinDocumentData($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = DocumentQuery::create(null, $criteria);
+        $query->joinWith('DocumentData', $join_behavior);
+
+        return $this->getDocumentsRelatedByUpdatedBy($query, $con);
+    }
+
+    /**
+     * Clears out the collDocumentDatasRelatedByCreatedBy collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return User The current object (for fluent API support)
+     * @see        addDocumentDatasRelatedByCreatedBy()
+     */
+    public function clearDocumentDatasRelatedByCreatedBy()
+    {
+        $this->collDocumentDatasRelatedByCreatedBy = null; // important to set this to null since that means it is uninitialized
+        $this->collDocumentDatasRelatedByCreatedByPartial = null;
+
+        return $this;
+    }
+
+    /**
+     * reset is the collDocumentDatasRelatedByCreatedBy collection loaded partially
+     *
+     * @return void
+     */
+    public function resetPartialDocumentDatasRelatedByCreatedBy($v = true)
+    {
+        $this->collDocumentDatasRelatedByCreatedByPartial = $v;
+    }
+
+    /**
+     * Initializes the collDocumentDatasRelatedByCreatedBy collection.
+     *
+     * By default this just sets the collDocumentDatasRelatedByCreatedBy collection to an empty array (like clearcollDocumentDatasRelatedByCreatedBy());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initDocumentDatasRelatedByCreatedBy($overrideExisting = true)
+    {
+        if (null !== $this->collDocumentDatasRelatedByCreatedBy && !$overrideExisting) {
+            return;
+        }
+        $this->collDocumentDatasRelatedByCreatedBy = new PropelObjectCollection();
+        $this->collDocumentDatasRelatedByCreatedBy->setModel('DocumentData');
+    }
+
+    /**
+     * Gets an array of DocumentData objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this User is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @return PropelObjectCollection|DocumentData[] List of DocumentData objects
+     * @throws PropelException
+     */
+    public function getDocumentDatasRelatedByCreatedBy($criteria = null, PropelPDO $con = null)
+    {
+        $partial = $this->collDocumentDatasRelatedByCreatedByPartial && !$this->isNew();
+        if (null === $this->collDocumentDatasRelatedByCreatedBy || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collDocumentDatasRelatedByCreatedBy) {
+                // return empty collection
+                $this->initDocumentDatasRelatedByCreatedBy();
+            } else {
+                $collDocumentDatasRelatedByCreatedBy = DocumentDataQuery::create(null, $criteria)
+                    ->filterByUserRelatedByCreatedBy($this)
+                    ->find($con);
+                if (null !== $criteria) {
+                    if (false !== $this->collDocumentDatasRelatedByCreatedByPartial && count($collDocumentDatasRelatedByCreatedBy)) {
+                      $this->initDocumentDatasRelatedByCreatedBy(false);
+
+                      foreach ($collDocumentDatasRelatedByCreatedBy as $obj) {
+                        if (false == $this->collDocumentDatasRelatedByCreatedBy->contains($obj)) {
+                          $this->collDocumentDatasRelatedByCreatedBy->append($obj);
+                        }
+                      }
+
+                      $this->collDocumentDatasRelatedByCreatedByPartial = true;
+                    }
+
+                    $collDocumentDatasRelatedByCreatedBy->getInternalIterator()->rewind();
+
+                    return $collDocumentDatasRelatedByCreatedBy;
+                }
+
+                if ($partial && $this->collDocumentDatasRelatedByCreatedBy) {
+                    foreach ($this->collDocumentDatasRelatedByCreatedBy as $obj) {
+                        if ($obj->isNew()) {
+                            $collDocumentDatasRelatedByCreatedBy[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collDocumentDatasRelatedByCreatedBy = $collDocumentDatasRelatedByCreatedBy;
+                $this->collDocumentDatasRelatedByCreatedByPartial = false;
+            }
+        }
+
+        return $this->collDocumentDatasRelatedByCreatedBy;
+    }
+
+    /**
+     * Sets a collection of DocumentDataRelatedByCreatedBy objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param PropelCollection $documentDatasRelatedByCreatedBy A Propel collection.
+     * @param PropelPDO $con Optional connection object
+     * @return User The current object (for fluent API support)
+     */
+    public function setDocumentDatasRelatedByCreatedBy(PropelCollection $documentDatasRelatedByCreatedBy, PropelPDO $con = null)
+    {
+        $documentDatasRelatedByCreatedByToDelete = $this->getDocumentDatasRelatedByCreatedBy(new Criteria(), $con)->diff($documentDatasRelatedByCreatedBy);
+
+
+        $this->documentDatasRelatedByCreatedByScheduledForDeletion = $documentDatasRelatedByCreatedByToDelete;
+
+        foreach ($documentDatasRelatedByCreatedByToDelete as $documentDataRelatedByCreatedByRemoved) {
+            $documentDataRelatedByCreatedByRemoved->setUserRelatedByCreatedBy(null);
+        }
+
+        $this->collDocumentDatasRelatedByCreatedBy = null;
+        foreach ($documentDatasRelatedByCreatedBy as $documentDataRelatedByCreatedBy) {
+            $this->addDocumentDataRelatedByCreatedBy($documentDataRelatedByCreatedBy);
+        }
+
+        $this->collDocumentDatasRelatedByCreatedBy = $documentDatasRelatedByCreatedBy;
+        $this->collDocumentDatasRelatedByCreatedByPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related DocumentData objects.
+     *
+     * @param Criteria $criteria
+     * @param boolean $distinct
+     * @param PropelPDO $con
+     * @return int             Count of related DocumentData objects.
+     * @throws PropelException
+     */
+    public function countDocumentDatasRelatedByCreatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+    {
+        $partial = $this->collDocumentDatasRelatedByCreatedByPartial && !$this->isNew();
+        if (null === $this->collDocumentDatasRelatedByCreatedBy || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collDocumentDatasRelatedByCreatedBy) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getDocumentDatasRelatedByCreatedBy());
+            }
+            $query = DocumentDataQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByUserRelatedByCreatedBy($this)
+                ->count($con);
+        }
+
+        return count($this->collDocumentDatasRelatedByCreatedBy);
+    }
+
+    /**
+     * Method called to associate a DocumentData object to this object
+     * through the DocumentData foreign key attribute.
+     *
+     * @param    DocumentData $l DocumentData
+     * @return User The current object (for fluent API support)
+     */
+    public function addDocumentDataRelatedByCreatedBy(DocumentData $l)
+    {
+        if ($this->collDocumentDatasRelatedByCreatedBy === null) {
+            $this->initDocumentDatasRelatedByCreatedBy();
+            $this->collDocumentDatasRelatedByCreatedByPartial = true;
+        }
+
+        if (!in_array($l, $this->collDocumentDatasRelatedByCreatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddDocumentDataRelatedByCreatedBy($l);
+
+            if ($this->documentDatasRelatedByCreatedByScheduledForDeletion and $this->documentDatasRelatedByCreatedByScheduledForDeletion->contains($l)) {
+                $this->documentDatasRelatedByCreatedByScheduledForDeletion->remove($this->documentDatasRelatedByCreatedByScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param	DocumentDataRelatedByCreatedBy $documentDataRelatedByCreatedBy The documentDataRelatedByCreatedBy object to add.
+     */
+    protected function doAddDocumentDataRelatedByCreatedBy($documentDataRelatedByCreatedBy)
+    {
+        $this->collDocumentDatasRelatedByCreatedBy[]= $documentDataRelatedByCreatedBy;
+        $documentDataRelatedByCreatedBy->setUserRelatedByCreatedBy($this);
+    }
+
+    /**
+     * @param	DocumentDataRelatedByCreatedBy $documentDataRelatedByCreatedBy The documentDataRelatedByCreatedBy object to remove.
+     * @return User The current object (for fluent API support)
+     */
+    public function removeDocumentDataRelatedByCreatedBy($documentDataRelatedByCreatedBy)
+    {
+        if ($this->getDocumentDatasRelatedByCreatedBy()->contains($documentDataRelatedByCreatedBy)) {
+            $this->collDocumentDatasRelatedByCreatedBy->remove($this->collDocumentDatasRelatedByCreatedBy->search($documentDataRelatedByCreatedBy));
+            if (null === $this->documentDatasRelatedByCreatedByScheduledForDeletion) {
+                $this->documentDatasRelatedByCreatedByScheduledForDeletion = clone $this->collDocumentDatasRelatedByCreatedBy;
+                $this->documentDatasRelatedByCreatedByScheduledForDeletion->clear();
+            }
+            $this->documentDatasRelatedByCreatedByScheduledForDeletion[]= $documentDataRelatedByCreatedBy;
+            $documentDataRelatedByCreatedBy->setUserRelatedByCreatedBy(null);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Clears out the collDocumentDatasRelatedByUpdatedBy collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return User The current object (for fluent API support)
+     * @see        addDocumentDatasRelatedByUpdatedBy()
+     */
+    public function clearDocumentDatasRelatedByUpdatedBy()
+    {
+        $this->collDocumentDatasRelatedByUpdatedBy = null; // important to set this to null since that means it is uninitialized
+        $this->collDocumentDatasRelatedByUpdatedByPartial = null;
+
+        return $this;
+    }
+
+    /**
+     * reset is the collDocumentDatasRelatedByUpdatedBy collection loaded partially
+     *
+     * @return void
+     */
+    public function resetPartialDocumentDatasRelatedByUpdatedBy($v = true)
+    {
+        $this->collDocumentDatasRelatedByUpdatedByPartial = $v;
+    }
+
+    /**
+     * Initializes the collDocumentDatasRelatedByUpdatedBy collection.
+     *
+     * By default this just sets the collDocumentDatasRelatedByUpdatedBy collection to an empty array (like clearcollDocumentDatasRelatedByUpdatedBy());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initDocumentDatasRelatedByUpdatedBy($overrideExisting = true)
+    {
+        if (null !== $this->collDocumentDatasRelatedByUpdatedBy && !$overrideExisting) {
+            return;
+        }
+        $this->collDocumentDatasRelatedByUpdatedBy = new PropelObjectCollection();
+        $this->collDocumentDatasRelatedByUpdatedBy->setModel('DocumentData');
+    }
+
+    /**
+     * Gets an array of DocumentData objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this User is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @return PropelObjectCollection|DocumentData[] List of DocumentData objects
+     * @throws PropelException
+     */
+    public function getDocumentDatasRelatedByUpdatedBy($criteria = null, PropelPDO $con = null)
+    {
+        $partial = $this->collDocumentDatasRelatedByUpdatedByPartial && !$this->isNew();
+        if (null === $this->collDocumentDatasRelatedByUpdatedBy || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collDocumentDatasRelatedByUpdatedBy) {
+                // return empty collection
+                $this->initDocumentDatasRelatedByUpdatedBy();
+            } else {
+                $collDocumentDatasRelatedByUpdatedBy = DocumentDataQuery::create(null, $criteria)
+                    ->filterByUserRelatedByUpdatedBy($this)
+                    ->find($con);
+                if (null !== $criteria) {
+                    if (false !== $this->collDocumentDatasRelatedByUpdatedByPartial && count($collDocumentDatasRelatedByUpdatedBy)) {
+                      $this->initDocumentDatasRelatedByUpdatedBy(false);
+
+                      foreach ($collDocumentDatasRelatedByUpdatedBy as $obj) {
+                        if (false == $this->collDocumentDatasRelatedByUpdatedBy->contains($obj)) {
+                          $this->collDocumentDatasRelatedByUpdatedBy->append($obj);
+                        }
+                      }
+
+                      $this->collDocumentDatasRelatedByUpdatedByPartial = true;
+                    }
+
+                    $collDocumentDatasRelatedByUpdatedBy->getInternalIterator()->rewind();
+
+                    return $collDocumentDatasRelatedByUpdatedBy;
+                }
+
+                if ($partial && $this->collDocumentDatasRelatedByUpdatedBy) {
+                    foreach ($this->collDocumentDatasRelatedByUpdatedBy as $obj) {
+                        if ($obj->isNew()) {
+                            $collDocumentDatasRelatedByUpdatedBy[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collDocumentDatasRelatedByUpdatedBy = $collDocumentDatasRelatedByUpdatedBy;
+                $this->collDocumentDatasRelatedByUpdatedByPartial = false;
+            }
+        }
+
+        return $this->collDocumentDatasRelatedByUpdatedBy;
+    }
+
+    /**
+     * Sets a collection of DocumentDataRelatedByUpdatedBy objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param PropelCollection $documentDatasRelatedByUpdatedBy A Propel collection.
+     * @param PropelPDO $con Optional connection object
+     * @return User The current object (for fluent API support)
+     */
+    public function setDocumentDatasRelatedByUpdatedBy(PropelCollection $documentDatasRelatedByUpdatedBy, PropelPDO $con = null)
+    {
+        $documentDatasRelatedByUpdatedByToDelete = $this->getDocumentDatasRelatedByUpdatedBy(new Criteria(), $con)->diff($documentDatasRelatedByUpdatedBy);
+
+
+        $this->documentDatasRelatedByUpdatedByScheduledForDeletion = $documentDatasRelatedByUpdatedByToDelete;
+
+        foreach ($documentDatasRelatedByUpdatedByToDelete as $documentDataRelatedByUpdatedByRemoved) {
+            $documentDataRelatedByUpdatedByRemoved->setUserRelatedByUpdatedBy(null);
+        }
+
+        $this->collDocumentDatasRelatedByUpdatedBy = null;
+        foreach ($documentDatasRelatedByUpdatedBy as $documentDataRelatedByUpdatedBy) {
+            $this->addDocumentDataRelatedByUpdatedBy($documentDataRelatedByUpdatedBy);
+        }
+
+        $this->collDocumentDatasRelatedByUpdatedBy = $documentDatasRelatedByUpdatedBy;
+        $this->collDocumentDatasRelatedByUpdatedByPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related DocumentData objects.
+     *
+     * @param Criteria $criteria
+     * @param boolean $distinct
+     * @param PropelPDO $con
+     * @return int             Count of related DocumentData objects.
+     * @throws PropelException
+     */
+    public function countDocumentDatasRelatedByUpdatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+    {
+        $partial = $this->collDocumentDatasRelatedByUpdatedByPartial && !$this->isNew();
+        if (null === $this->collDocumentDatasRelatedByUpdatedBy || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collDocumentDatasRelatedByUpdatedBy) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getDocumentDatasRelatedByUpdatedBy());
+            }
+            $query = DocumentDataQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByUserRelatedByUpdatedBy($this)
+                ->count($con);
+        }
+
+        return count($this->collDocumentDatasRelatedByUpdatedBy);
+    }
+
+    /**
+     * Method called to associate a DocumentData object to this object
+     * through the DocumentData foreign key attribute.
+     *
+     * @param    DocumentData $l DocumentData
+     * @return User The current object (for fluent API support)
+     */
+    public function addDocumentDataRelatedByUpdatedBy(DocumentData $l)
+    {
+        if ($this->collDocumentDatasRelatedByUpdatedBy === null) {
+            $this->initDocumentDatasRelatedByUpdatedBy();
+            $this->collDocumentDatasRelatedByUpdatedByPartial = true;
+        }
+
+        if (!in_array($l, $this->collDocumentDatasRelatedByUpdatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddDocumentDataRelatedByUpdatedBy($l);
+
+            if ($this->documentDatasRelatedByUpdatedByScheduledForDeletion and $this->documentDatasRelatedByUpdatedByScheduledForDeletion->contains($l)) {
+                $this->documentDatasRelatedByUpdatedByScheduledForDeletion->remove($this->documentDatasRelatedByUpdatedByScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param	DocumentDataRelatedByUpdatedBy $documentDataRelatedByUpdatedBy The documentDataRelatedByUpdatedBy object to add.
+     */
+    protected function doAddDocumentDataRelatedByUpdatedBy($documentDataRelatedByUpdatedBy)
+    {
+        $this->collDocumentDatasRelatedByUpdatedBy[]= $documentDataRelatedByUpdatedBy;
+        $documentDataRelatedByUpdatedBy->setUserRelatedByUpdatedBy($this);
+    }
+
+    /**
+     * @param	DocumentDataRelatedByUpdatedBy $documentDataRelatedByUpdatedBy The documentDataRelatedByUpdatedBy object to remove.
+     * @return User The current object (for fluent API support)
+     */
+    public function removeDocumentDataRelatedByUpdatedBy($documentDataRelatedByUpdatedBy)
+    {
+        if ($this->getDocumentDatasRelatedByUpdatedBy()->contains($documentDataRelatedByUpdatedBy)) {
+            $this->collDocumentDatasRelatedByUpdatedBy->remove($this->collDocumentDatasRelatedByUpdatedBy->search($documentDataRelatedByUpdatedBy));
+            if (null === $this->documentDatasRelatedByUpdatedByScheduledForDeletion) {
+                $this->documentDatasRelatedByUpdatedByScheduledForDeletion = clone $this->collDocumentDatasRelatedByUpdatedBy;
+                $this->documentDatasRelatedByUpdatedByScheduledForDeletion->clear();
+            }
+            $this->documentDatasRelatedByUpdatedByScheduledForDeletion[]= $documentDataRelatedByUpdatedBy;
+            $documentDataRelatedByUpdatedBy->setUserRelatedByUpdatedBy(null);
+        }
+
+        return $this;
     }
 
     /**
@@ -16755,6 +17385,16 @@ abstract class BaseUser extends BaseObject implements Persistent
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collDocumentDatasRelatedByCreatedBy) {
+                foreach ($this->collDocumentDatasRelatedByCreatedBy as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collDocumentDatasRelatedByUpdatedBy) {
+                foreach ($this->collDocumentDatasRelatedByUpdatedBy as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
             if ($this->collDocumentTypesRelatedByCreatedBy) {
                 foreach ($this->collDocumentTypesRelatedByCreatedBy as $o) {
                     $o->clearAllReferences($deep);
@@ -16968,6 +17608,14 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->collDocumentsRelatedByUpdatedBy->clearIterator();
         }
         $this->collDocumentsRelatedByUpdatedBy = null;
+        if ($this->collDocumentDatasRelatedByCreatedBy instanceof PropelCollection) {
+            $this->collDocumentDatasRelatedByCreatedBy->clearIterator();
+        }
+        $this->collDocumentDatasRelatedByCreatedBy = null;
+        if ($this->collDocumentDatasRelatedByUpdatedBy instanceof PropelCollection) {
+            $this->collDocumentDatasRelatedByUpdatedBy->clearIterator();
+        }
+        $this->collDocumentDatasRelatedByUpdatedBy = null;
         if ($this->collDocumentTypesRelatedByCreatedBy instanceof PropelCollection) {
             $this->collDocumentTypesRelatedByCreatedBy->clearIterator();
         }

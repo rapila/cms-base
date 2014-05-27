@@ -10,8 +10,6 @@ class Document extends BaseDocument {
 	
 	private static $DOCUMENT_CATEGORIES = array();
 	
-	private $iDataSize = null;
-	
 	public function getMimetype() {
 		return $this->getDocumentType()->getMimetype();
 	}
@@ -148,14 +146,36 @@ class Document extends BaseDocument {
 		return null;
 	}
 	
-	public function getDataSize(PropelPDO $oConnection = null) {
-		if($this->iDataSize === null) {
-			$oCriteria = $this->buildPkeyCriteria();
-			$oCriteria->addSelectColumn('OCTET_LENGTH(data)');
-			$rs = DocumentPeer::doSelectStmt($oCriteria, $oConnection);
-			$this->iDataSize = (int)$rs->fetchColumn(0);
+	public function getData(PropelPDO $oConnection = null) {
+		return $this->getDocumentData()->getData($oConnection);
+	}
+	
+	public function setData($mData) {
+		if(is_resource($mData)) {
+			$mData = stream_get_contents($mData);
 		}
-		return $this->iDataSize;
+		$sHash = sha1($mData);
+		$sPreviousHash = $this->getHash();
+		if($sHash === $sPreviousHash) {
+			return;
+		}
+		$oOldDocumentData = $this->getDocumentData();
+		if($oOldDocumentData && $oOldDocumentData->countDocuments() <= 1) {
+			// Only remaining document is the one to be updated
+			$oOldDocumentData->delete();
+		}
+		$oDocumentData = DocumentDataQuery::create()->findPk($sHash);
+		if($oDocumentData === null) {
+			$oDocumentData = new DocumentData();
+			$oDocumentData->setHash($sHash);
+			$oDocumentData->setData($mData);
+		}
+		$this->setDocumentData($oDocumentData);
+		return $this;
+	}
+	
+	public function getDataSize(PropelPDO $oConnection = null) {
+		return $this->getDocumentData()->getDataSize($oConnection);
 	}
 
 	public function getFileInfo($sFilesizeFormat = 'auto_iso') {
