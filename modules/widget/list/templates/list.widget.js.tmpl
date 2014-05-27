@@ -578,6 +578,18 @@ Widget.types.list = {
 		return '{{writeLink=list_export;manager=FileManager}}/'+this._instanceInformation.session_id;
 	},
 	
+	thumbnail_view: function(value) {
+		if(arguments.length) {
+			if(value === 'toggle') {
+				this._element(!this.thumbnail_view());
+			} else {
+				this._element[value ? 'addClass' : 'removeClass']('ui-thumbnail-list');
+			}
+		} else {
+			return this._element.hasClass('ui-thumbnail-list');
+		}
+	},
+	
 	schema: null,
 	
 	types: {
