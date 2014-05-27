@@ -1,6 +1,20 @@
 Widget.types.list = {
 	prepare: function() {
 		this.row_prototype = jQuery(this._element.is('table') ? '<tr/>' : '<li/>').addClass('ui-list-row');
+
+		if(!this._element.is('table')) {
+			this.heading_element = this.body_element = this._element;
+		} else {
+			this.heading_element = this._element.find('> thead');
+			if(!this.heading_element.length) {
+				this.heading_element = jQuery('<thead/>').appendTo(this._element);
+			}
+			this.body_element = this._element.find('> tbody');
+			if(!this.body_element.length) {
+				this.body_element = jQuery('<tbody/>').appendTo(this._element);
+			}
+		}
+
 		var _this = this;
 
 		if(this.settings.row_model_drag_and_drop_identifier) {
@@ -155,9 +169,9 @@ Widget.types.list = {
 
 		if(!previousRow) {
 			if(isHeading) {
-				this._element.prepend(row);
+				this.heading_element.append(row);
 			} else {
-				this._element.append(row);
+				this.body_element.append(row);
 			}
 
 			if(this.settings.row_model_drag_and_drop_identifier && !isHeading) {
@@ -415,10 +429,9 @@ Widget.types.list = {
 		// store active rows by row data
 		var active_rows = !load_heading && this.settings.persist_active_rows && this.active_row_datas();
 		if(load_heading) {
-			this._element.empty();
-		} else {
-			this._element.find('.ui-list-row').remove();
+			this.heading_element.empty();
 		}
+		this.body_element.find('.ui-list-row').remove();
 		this.sort = this.getOrderColumnSort();
 		if(load_heading) {
 			this.schema = this.getSchema(load_heading === 'force');
