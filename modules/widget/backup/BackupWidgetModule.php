@@ -109,7 +109,8 @@ class BackupWidgetModule extends PersistentWidgetModule {
 	private static function detectMysqldumpLocation() {
 		// 1st: try config
 		$sMySqlDumpTool = Settings::getSetting('admin', 'mysql_dump_tool', null);
-		if($sMySqlDumpTool && is_executable($sMySqlDumpTool)) {
+		//if($sMySqlDumpTool && is_executable($sMySqlDumpTool)) {
+		if($sMySqlDumpTool) {
 			return $sMySqlDumpTool;
 		}
 
