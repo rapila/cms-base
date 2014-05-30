@@ -58,22 +58,14 @@ abstract class SystemPart {
 	}
 	
 	public function __sleep() {
-		$aObjects = array();
-		$this->aDependees->rewind();
-		while($this->aDependees->valid()) {
-			$aObjects[] = $this->aDependees->current();
-			$this->aDependees->next();
-		}
-		$this->aDependees = $aObjects;
+		$this->aDependees = iterator_to_array($this->aDependees);
 		return array_keys(get_object_vars($this));
 	}
 	
 	public function __wakeup() {
 		$aObjects = $this->aDependees;
 		$this->aDependees = new SplObjectStorage();
-		foreach($aObjects as $oDependee) {
-			$this->aDependees->attach($oDependee);
-		}
+		array_map(array($this->aDependees, 'attach'), $aObjects);
 	}
 
 	public static function getPart($sPrefix, $aInfo = null) {
