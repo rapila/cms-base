@@ -1,9 +1,9 @@
 <?php
 
 abstract class SystemPart {
-	private $sPrefix;
-	private $aInfo;
-	private $aDependees;
+	protected $sPrefix;
+	protected $aInfo;
+	protected $aDependees;
 	
 	protected function __construct($sPrefix, $aInfo = null) {
 		$this->sPrefix = $sPrefix;
@@ -55,6 +55,25 @@ abstract class SystemPart {
 	
 	public function getDependees() {
 		return $this->aDependees;
+	}
+	
+	public function __sleep() {
+		$aObjects = array();
+		$this->aDependees->rewind();
+		while($this->aDependees->valid()) {
+			$aObjects[] = $this->aDependees->current();
+			$this->aDependees->next();
+		}
+		$this->aDependees = $aObjects;
+		return array_keys(get_object_vars($this));
+	}
+	
+	public function __wakeup() {
+		$aObjects = $this->aDependees;
+		$this->aDependees = new SplObjectStorage();
+		foreach($aObjects as $oDependee) {
+			$this->aDependees->attach($oDependee);
+		}
 	}
 
 	public static function getPart($sPrefix, $aInfo = null) {
