@@ -11,7 +11,14 @@ class WidgetJsonFileModule extends FileModule {
 	public function renderFile() {
 		header("Content-Type: application/json;charset=utf-8");
 		$aRequest = array();
-		if(isset($_SERVER['CONTENT_TYPE']) && StringUtil::startsWith($_SERVER['CONTENT_TYPE'], 'application/json')) {
+		$sContentType = 'application/x-www-form-urlencoded';
+		if(isset($_SERVER['CONTENT_TYPE'])) {
+			$sContentType = $_SERVER['CONTENT_TYPE'];
+		}
+		if(isset($_SERVER['HTTP_CONTENT_TYPE'])) {
+			$sContentType = $_SERVER['HTTP_CONTENT_TYPE'];
+		}
+		if(StringUtil::startsWith($sContentType, 'application/json')) {
 			$aRequest = json_decode(file_get_contents('php://input'), true);
 		} else {
 			foreach($_REQUEST as $sKey => $sValue) {
@@ -116,6 +123,14 @@ class WidgetJsonFileModule extends FileModule {
 			return;
 		}
 		throw new LocalizedException('wns.file.widget_json.needs_login', null, 'needs_login');
+	}
+	
+	public static function jsonOrderedObject($aObject) {
+		$aResult = array();
+		foreach($aObject as $sKey => $mValue) {
+			$aResult[] = array('key' => $sKey, 'value' => $mValue);
+		}
+		return $aResult;
 	}
 	
 	public static function jsonBaseObjects($aBaseObjects, $aOriginalColumnNames) {

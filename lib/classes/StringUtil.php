@@ -65,7 +65,7 @@ class StringUtil {
 	}
 
 	public static function startsWith($str, $start) {
-		return substr($str, 0, strlen($start)) === $start;
+		return !strncmp($str, $start, strlen($start));
 	}
 
 	public static function truncate($sText, $iLength=20, $sPostfix="…", $iTolerance=3) {

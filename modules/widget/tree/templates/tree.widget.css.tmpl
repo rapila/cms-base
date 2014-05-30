@@ -88,29 +88,29 @@ li.jstree-last.jstree-leaf {
 *[data-widget-type=tree] li li,
 *[data-widget-type=tree] li li.ui-state-hover,
 *[data-widget-type=tree] li li.ui-state-active {
-  background-image: url("{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/tree_child_default.png");
+	background-image: url("{{writeDirectInclude=admin/tree_child_default.png;template=location_only}}");
   background-repeat: no-repeat;
   background-position: top left;
 }
 *[data-widget-type=tree] li ol ol {
-  background-image: url("{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/tree_child_line.png");
+	background-image: url("{{writeDirectInclude=admin/tree_child_line.png;template=location_only}}");
   background-repeat: repeat-y;
   background-position: top left;
 }
 *[data-widget-type=tree] li li:last-child {
-  background-image: url("{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/tree_child_last.png");
+	background-image: url("{{writeDirectInclude=admin/tree_child_last.png;template=location_only}}");
   background-repeat: no-repeat;
   background-position: left -975px;
 }
 *[data-widget-type=tree] li li.ui-state-hover:last-child,
 *[data-widget-type=tree] li li.ui-state-active:last-child {
-  background-image: url("{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/tree_child_last.png");
+	background-image: url("{{writeDirectInclude=admin/tree_child_last.png;template=location_only}}");
   background-repeat: no-repeat;
   background-position: bottom left;
 }
 *[data-widget-type=tree] li.opened:last-child,
 *[data-widget-type=tree] li.ui-state-hover.opened:last-child {
-  background-image: url("{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/tree_child_last_opener.png");
+	background-image: url("{{writeDirectInclude=admin/tree_child_last_opener.png;template=location_only}}");
   background-repeat: no-repeat;
   background-position: top left;
 }
@@ -141,7 +141,7 @@ li.jstree-last.jstree-leaf {
 *[data-widget-type=tree] .ui-state-hover ul,
 *[data-widget-type=tree] .ui-state-active ul {
 	background-color: #DFE1E3;
-	background-image: url("{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/tree_child_line.png");
+	background-image: url("{{writeDirectInclude=admin/tree_child_line.png;template=location_only}}");
 	background-repeat: repeat-y;
 	background-position: top left;
 }
@@ -150,30 +150,29 @@ li.jstree-last.jstree-leaf {
 	background: #DFE1E3;
 }
 
-
 *[data-widget-type=tree] .ui-icon.ui-icon-is-protected {
-	background: transparent url('{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/page_protected_default.png') no-repeat;
+	background: transparent url('{{writeDirectInclude=admin/page_protected_default.png;template=location_only}}') no-repeat;
 }
 .ui-state-default .ui-icon.ui-icon-is-protected {
-	background: transparent url('{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/page_protected_default.png') no-repeat;
+	background: transparent url('{{writeDirectInclude=admin/page_protected_default.png;template=location_only}}') no-repeat;
 }
 *[data-widget-type=tree] .ui-icon.ui-icon-is-hidden {
-	background: transparent url('{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/page_hidden_default.png') no-repeat;
+	background: transparent url('{{writeDirectInclude=admin/page_hidden_default.png;template=location_only}}') no-repeat;
 }
 .ui-state-default .ui-icon.ui-icon-is-hidden {
-	background: transparent url('{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/page_hidden_default.png') no-repeat;
+	background: transparent url('{{writeDirectInclude=admin/page_hidden_default.png;template=location_only}}') no-repeat;
 }
 .ui-state-hover > a > .ui-icon.ui-icon-is-protected {
-	background: transparent url('{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/page_protected_active.png') no-repeat;
+	background: transparent url('{{writeDirectInclude=admin/page_protected_active.png;template=location_only}}') no-repeat;
 }
 .ui-state-hover > a > .ui-icon.ui-icon-is-hidden {
-	background: transparent url('{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/page_hidden_active.png') no-repeat;
+	background: transparent url('{{writeDirectInclude=admin/page_hidden_active.png;template=location_only}}') no-repeat;
 }
 .ui-state-active > a > .ui-icon.ui-icon-is-protected {
-	background: transparent url('{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/page_protected_active.png') no-repeat;
+	background: transparent url('{{writeDirectInclude=admin/page_protected_active.png;template=location_only}}') no-repeat;
 }
 .ui-state-active > a > .ui-icon.ui-icon-is-hidden {
-	background: transparent url('{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/page_hidden_active.png') no-repeat;
+	background: transparent url('{{writeDirectInclude=admin/page_hidden_active.png;template=location_only}}') no-repeat;
 }
 
 #vakata-dragged {
@@ -191,7 +190,7 @@ body #jstree-marker {
 	color: #666;
 	height: 10px;
 	width: 10px;
-	font-size 15px; 
+	font-size: 15px; 
 	border-radius: 5px;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;

@@ -108,20 +108,20 @@ class UserListWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function getCriteria() {
-		$oCriteria = UserQuery::create()->distinct();
+		$oQuery = UserQuery::create()->distinct();
 		$sUserKind = $this->oDelegateProxy->getUserKind();
 		if($sUserKind !== CriteriaListWidgetDelegate::SELECT_ALL) {
 			if($sUserKind === User::IS_ADMIN_USER) {
-				$oCriteria->filterByIsAdmin(true);
+				$oQuery->filterByIsAdmin(true);
 			} else if($sUserKind === User::IS_BACKEND_LOGIN_ENABLED) {
-				$oCriteria->filterByIsBackendLoginEnabled(true);
+				$oQuery->filterByIsBackendLoginEnabled(true);
 			} else if($sUserKind === User::IS_ADMIN_LOGIN_ENABLED) {
-				$oCriteria->filterByIsBackendLoginEnabled(true)->filterByIsAdminLoginEnabled(true);
+				$oQuery->filterByIsBackendLoginEnabled(true)->filterByIsAdminLoginEnabled(true);
 			} else {
-				$oCriteria->filterByIsAdmin(false)->filterByIsBackendLoginEnabled(false)->filterByIsAdminLoginEnabled(false);
+				$oQuery->filterByIsAdmin(false)->filterByIsBackendLoginEnabled(false)->filterByIsAdminLoginEnabled(false);
 			}
 		}
-		$oCriteria->addJoin(UserPeer::ID, UserGroupPeer::USER_ID, Criteria::LEFT_JOIN);
-		return $oCriteria;
+		$oQuery->joinUserGroupRelatedByUserId(null, Criteria::LEFT_JOIN);
+		return $oQuery;
 	}
 }

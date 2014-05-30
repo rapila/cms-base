@@ -15,7 +15,7 @@ class PreviewManager extends FrontendManager {
 
 		$oResourceIncluder = ResourceIncluder::defaultIncluder();
 
-		$oResourceIncluder->addCustomJs('window.FILE_PREFIX = "'.MAIN_DIR_FE.Manager::getPrefixForManager('FileManager').'";');
+		$oResourceIncluder->addCustomJs('window.FILE_PREFIX = "'.MAIN_DIR_FE_PHP.Manager::getPrefixForManager('FileManager').'";');
 
 		//Fix JSON requests when using Prototype in the frontend
 		$oResourceIncluder->addReverseDependency('lib_prototype', false, 'preview/prototype_json_fix.js');
@@ -27,7 +27,7 @@ class PreviewManager extends FrontendManager {
 		$oResourceIncluder->addResource('widget/widget_skeleton.js'); //Provides some basic overrides for tooltip, notifyuser and stuff
 		//Override some site styles in specific regions
 		$oResourceIncluder->addResource('preview/preview-reset.css');
-		$oResourceIncluder->addResource('preview/theme/jquery-ui-1.10.2.custom.min.css');
+		$oResourceIncluder->addResource('admin/theme/jquery-ui-1.10.2.custom.min.css');
 		//Add the css that handles styles for all widgets but namespace it so it applies only to specific areas of the page (editable areas, dialogs, the admin menu, etc.)
 		$this->addNamespacedCss(array('widget', 'widget.css'));
 
@@ -35,8 +35,10 @@ class PreviewManager extends FrontendManager {
 		ResourceIncluder::defaultIncluder()->addResource('preview-interface.css', null, null, null, ResourceIncluder::PRIORITY_NORMAL, null, true);
 
 		//Include the resources of widgets we know we’re gonna use.
-		$oLoginWindowWidget = WidgetModule::getWidget('login_window');
-		LoginWindowWidgetModule::includeResources();
+		if($bShouldLogin) {
+			$oLoginWindowWidget = WidgetModule::getWidget('login_window');
+			LoginWindowWidgetModule::includeResources();
+		}
 		$this->oAdminMenuWidget = WidgetModule::getWidget('admin_menu');
 		AdminMenuWidgetModule::includeResources();
 		$this->oPageTypeWidget = WidgetModule::getWidget('page_type');

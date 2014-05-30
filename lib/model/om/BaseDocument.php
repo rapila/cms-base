@@ -24,7 +24,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
     protected static $peer;
 
     /**
-     * The flag var to prevent infinit loop in deep copy
+     * The flag var to prevent infinite loop in deep copy
      * @var       boolean
      */
     protected $startCopy = false;
@@ -123,17 +123,10 @@ abstract class BaseDocument extends BaseObject implements Persistent
     protected $sort;
 
     /**
-     * The value for the data field.
-     * @var        resource
+     * The value for the hash field.
+     * @var        string
      */
-    protected $data;
-
-    /**
-     * Whether the lazy-loaded $data value has been loaded from database.
-     * This is necessary to avoid repeated lookups if $data column is null in the db.
-     * @var        boolean
-     */
-    protected $data_isLoaded = false;
+    protected $hash;
 
     /**
      * The value for the created_at field.
@@ -178,6 +171,11 @@ abstract class BaseDocument extends BaseObject implements Persistent
      * @var        DocumentCategory
      */
     protected $aDocumentCategory;
+
+    /**
+     * @var        DocumentData
+     */
+    protected $aDocumentData;
 
     /**
      * @var        User
@@ -239,6 +237,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
      */
     public function getId()
     {
+
         return $this->id;
     }
 
@@ -249,6 +248,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
      */
     public function getName()
     {
+
         return $this->name;
     }
 
@@ -259,6 +259,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
      */
     public function getOriginalName()
     {
+
         return $this->original_name;
     }
 
@@ -269,6 +270,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
      */
     public function getDescription()
     {
+
         return $this->description;
     }
 
@@ -319,6 +321,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
      */
     public function getLicense()
     {
+
         return $this->license;
     }
 
@@ -329,6 +332,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
      */
     public function getAuthor()
     {
+
         return $this->author;
     }
 
@@ -339,6 +343,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
      */
     public function getLanguageId()
     {
+
         return $this->language_id;
     }
 
@@ -349,6 +354,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
      */
     public function getOwnerId()
     {
+
         return $this->owner_id;
     }
 
@@ -359,6 +365,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
      */
     public function getDocumentTypeId()
     {
+
         return $this->document_type_id;
     }
 
@@ -369,6 +376,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
      */
     public function getDocumentCategoryId()
     {
+
         return $this->document_category_id;
     }
 
@@ -379,6 +387,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
      */
     public function getIsPrivate()
     {
+
         return $this->is_private;
     }
 
@@ -389,6 +398,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
      */
     public function getIsInactive()
     {
+
         return $this->is_inactive;
     }
 
@@ -399,6 +409,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
      */
     public function getIsProtected()
     {
+
         return $this->is_protected;
     }
 
@@ -409,55 +420,21 @@ abstract class BaseDocument extends BaseObject implements Persistent
      */
     public function getSort()
     {
+
         return $this->sort;
     }
 
     /**
-     * Get the [data] column value.
+     * Get the [hash] column value.
      *
-     * @param PropelPDO $con An optional PropelPDO connection to use for fetching this lazy-loaded column.
-     * @return resource
+     * @return string
      */
-    public function getData(PropelPDO $con = null)
+    public function getHash()
     {
-        if (!$this->data_isLoaded && $this->data === null && !$this->isNew()) {
-            $this->loadData($con);
-        }
 
-        return $this->data;
+        return $this->hash;
     }
 
-    /**
-     * Load the value for the lazy-loaded [data] column.
-     *
-     * This method performs an additional query to return the value for
-     * the [data] column, since it is not populated by
-     * the hydrate() method.
-     *
-     * @param  PropelPDO $con (optional) The PropelPDO connection to use.
-     * @return void
-     * @throws PropelException - any underlying error will be wrapped and re-thrown.
-     */
-    protected function loadData(PropelPDO $con = null)
-    {
-        $c = $this->buildPkeyCriteria();
-        $c->addSelectColumn(DocumentPeer::DATA);
-        try {
-            $stmt = DocumentPeer::doSelectStmt($c, $con);
-            $row = $stmt->fetch(PDO::FETCH_NUM);
-            $stmt->closeCursor();
-            if ($row[0] !== null) {
-                $this->data = fopen('php://memory', 'r+');
-                fwrite($this->data, $row[0]);
-                rewind($this->data);
-            } else {
-                $this->data = null;
-            }
-            $this->data_isLoaded = true;
-        } catch (Exception $e) {
-            throw new PropelException("Error loading value for [data] column on demand.", $e);
-        }
-    }
     /**
      * Get the [optionally formatted] temporal [created_at] column value.
      *
@@ -545,6 +522,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
      */
     public function getCreatedBy()
     {
+
         return $this->created_by;
     }
 
@@ -555,13 +533,14 @@ abstract class BaseDocument extends BaseObject implements Persistent
      */
     public function getUpdatedBy()
     {
+
         return $this->updated_by;
     }
 
     /**
      * Set the value of [id] column.
      *
-     * @param int $v new value
+     * @param  int $v new value
      * @return Document The current object (for fluent API support)
      */
     public function setId($v)
@@ -582,12 +561,12 @@ abstract class BaseDocument extends BaseObject implements Persistent
     /**
      * Set the value of [name] column.
      *
-     * @param string $v new value
+     * @param  string $v new value
      * @return Document The current object (for fluent API support)
      */
     public function setName($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (string) $v;
         }
 
@@ -603,12 +582,12 @@ abstract class BaseDocument extends BaseObject implements Persistent
     /**
      * Set the value of [original_name] column.
      *
-     * @param string $v new value
+     * @param  string $v new value
      * @return Document The current object (for fluent API support)
      */
     public function setOriginalName($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (string) $v;
         }
 
@@ -624,12 +603,12 @@ abstract class BaseDocument extends BaseObject implements Persistent
     /**
      * Set the value of [description] column.
      *
-     * @param string $v new value
+     * @param  string $v new value
      * @return Document The current object (for fluent API support)
      */
     public function setDescription($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (string) $v;
         }
 
@@ -668,12 +647,12 @@ abstract class BaseDocument extends BaseObject implements Persistent
     /**
      * Set the value of [license] column.
      *
-     * @param string $v new value
+     * @param  string $v new value
      * @return Document The current object (for fluent API support)
      */
     public function setLicense($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (string) $v;
         }
 
@@ -689,12 +668,12 @@ abstract class BaseDocument extends BaseObject implements Persistent
     /**
      * Set the value of [author] column.
      *
-     * @param string $v new value
+     * @param  string $v new value
      * @return Document The current object (for fluent API support)
      */
     public function setAuthor($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (string) $v;
         }
 
@@ -710,12 +689,12 @@ abstract class BaseDocument extends BaseObject implements Persistent
     /**
      * Set the value of [language_id] column.
      *
-     * @param string $v new value
+     * @param  string $v new value
      * @return Document The current object (for fluent API support)
      */
     public function setLanguageId($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (string) $v;
         }
 
@@ -735,7 +714,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
     /**
      * Set the value of [owner_id] column.
      *
-     * @param int $v new value
+     * @param  int $v new value
      * @return Document The current object (for fluent API support)
      */
     public function setOwnerId($v)
@@ -760,7 +739,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
     /**
      * Set the value of [document_type_id] column.
      *
-     * @param int $v new value
+     * @param  int $v new value
      * @return Document The current object (for fluent API support)
      */
     public function setDocumentTypeId($v)
@@ -785,7 +764,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
     /**
      * Set the value of [document_category_id] column.
      *
-     * @param int $v new value
+     * @param  int $v new value
      * @return Document The current object (for fluent API support)
      */
     public function setDocumentCategoryId($v)
@@ -897,7 +876,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
     /**
      * Set the value of [sort] column.
      *
-     * @param int $v new value
+     * @param  int $v new value
      * @return Document The current object (for fluent API support)
      */
     public function setSort($v)
@@ -916,39 +895,29 @@ abstract class BaseDocument extends BaseObject implements Persistent
     } // setSort()
 
     /**
-     * Set the value of [data] column.
+     * Set the value of [hash] column.
      *
-     * @param resource $v new value
+     * @param  string $v new value
      * @return Document The current object (for fluent API support)
      */
-    public function setData($v)
+    public function setHash($v)
     {
-        // Allow unsetting the lazy loaded column even when its not loaded.
-        if (!$this->data_isLoaded && $v === null) {
-            $this->modifiedColumns[] = DocumentPeer::DATA;
+        if ($v !== null) {
+            $v = (string) $v;
         }
 
-        // explicitly set the is-loaded flag to true for this lazy load col;
-        // it doesn't matter if the value is actually set or not (logic below) as
-        // any attempt to set the value means that no db lookup should be performed
-        // when the getData() method is called.
-        $this->data_isLoaded = true;
-
-        // Because BLOB columns are streams in PDO we have to assume that they are
-        // always modified when a new value is passed in.  For example, the contents
-        // of the stream itself may have changed externally.
-        if (!is_resource($v) && $v !== null) {
-            $this->data = fopen('php://memory', 'r+');
-            fwrite($this->data, $v);
-            rewind($this->data);
-        } else { // it's already a stream
-            $this->data = $v;
+        if ($this->hash !== $v) {
+            $this->hash = $v;
+            $this->modifiedColumns[] = DocumentPeer::HASH;
         }
-        $this->modifiedColumns[] = DocumentPeer::DATA;
+
+        if ($this->aDocumentData !== null && $this->aDocumentData->getHash() !== $v) {
+            $this->aDocumentData = null;
+        }
 
 
         return $this;
-    } // setData()
+    } // setHash()
 
     /**
      * Sets the value of [created_at] column to a normalized version of the date/time value specified.
@@ -999,7 +968,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
     /**
      * Set the value of [created_by] column.
      *
-     * @param int $v new value
+     * @param  int $v new value
      * @return Document The current object (for fluent API support)
      */
     public function setCreatedBy($v)
@@ -1024,7 +993,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
     /**
      * Set the value of [updated_by] column.
      *
-     * @param int $v new value
+     * @param  int $v new value
      * @return Document The current object (for fluent API support)
      */
     public function setUpdatedBy($v)
@@ -1081,7 +1050,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
      * more tables.
      *
      * @param array $row The row returned by PDOStatement->fetch(PDO::FETCH_NUM)
-     * @param int $startcol 0-based offset column which indicates which restultset column to start with.
+     * @param int $startcol 0-based offset column which indicates which resultset column to start with.
      * @param boolean $rehydrate Whether this object is being re-hydrated from the database.
      * @return int             next starting column
      * @throws PropelException - Any caught Exception will be rewrapped as a PropelException.
@@ -1105,10 +1074,11 @@ abstract class BaseDocument extends BaseObject implements Persistent
             $this->is_inactive = ($row[$startcol + 12] !== null) ? (boolean) $row[$startcol + 12] : null;
             $this->is_protected = ($row[$startcol + 13] !== null) ? (boolean) $row[$startcol + 13] : null;
             $this->sort = ($row[$startcol + 14] !== null) ? (int) $row[$startcol + 14] : null;
-            $this->created_at = ($row[$startcol + 15] !== null) ? (string) $row[$startcol + 15] : null;
-            $this->updated_at = ($row[$startcol + 16] !== null) ? (string) $row[$startcol + 16] : null;
-            $this->created_by = ($row[$startcol + 17] !== null) ? (int) $row[$startcol + 17] : null;
-            $this->updated_by = ($row[$startcol + 18] !== null) ? (int) $row[$startcol + 18] : null;
+            $this->hash = ($row[$startcol + 15] !== null) ? (string) $row[$startcol + 15] : null;
+            $this->created_at = ($row[$startcol + 16] !== null) ? (string) $row[$startcol + 16] : null;
+            $this->updated_at = ($row[$startcol + 17] !== null) ? (string) $row[$startcol + 17] : null;
+            $this->created_by = ($row[$startcol + 18] !== null) ? (int) $row[$startcol + 18] : null;
+            $this->updated_by = ($row[$startcol + 19] !== null) ? (int) $row[$startcol + 19] : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -1117,7 +1087,8 @@ abstract class BaseDocument extends BaseObject implements Persistent
                 $this->ensureConsistency();
             }
             $this->postHydrate($row, $startcol, $rehydrate);
-            return $startcol + 19; // 19 = DocumentPeer::NUM_HYDRATE_COLUMNS.
+
+            return $startcol + 20; // 20 = DocumentPeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating Document object", $e);
@@ -1151,6 +1122,9 @@ abstract class BaseDocument extends BaseObject implements Persistent
         }
         if ($this->aDocumentCategory !== null && $this->document_category_id !== $this->aDocumentCategory->getId()) {
             $this->aDocumentCategory = null;
+        }
+        if ($this->aDocumentData !== null && $this->hash !== $this->aDocumentData->getHash()) {
+            $this->aDocumentData = null;
         }
         if ($this->aUserRelatedByCreatedBy !== null && $this->created_by !== $this->aUserRelatedByCreatedBy->getId()) {
             $this->aUserRelatedByCreatedBy = null;
@@ -1195,16 +1169,13 @@ abstract class BaseDocument extends BaseObject implements Persistent
         }
         $this->hydrate($row, 0, true); // rehydrate
 
-        // Reset the data lazy-load column
-        $this->data = null;
-        $this->data_isLoaded = false;
-
         if ($deep) {  // also de-associate any related objects?
 
             $this->aLanguage = null;
             $this->aUserRelatedByOwnerId = null;
             $this->aDocumentType = null;
             $this->aDocumentCategory = null;
+            $this->aDocumentData = null;
             $this->aUserRelatedByCreatedBy = null;
             $this->aUserRelatedByUpdatedBy = null;
         } // if (deep)
@@ -1369,7 +1340,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
             $this->alreadyInSave = true;
 
             // We call the save method on the following object(s) if they
-            // were passed to this object by their coresponding set
+            // were passed to this object by their corresponding set
             // method.  This object relates to these object(s) by a
             // foreign key reference.
 
@@ -1401,6 +1372,13 @@ abstract class BaseDocument extends BaseObject implements Persistent
                 $this->setDocumentCategory($this->aDocumentCategory);
             }
 
+            if ($this->aDocumentData !== null) {
+                if ($this->aDocumentData->isModified() || $this->aDocumentData->isNew()) {
+                    $affectedRows += $this->aDocumentData->save($con);
+                }
+                $this->setDocumentData($this->aDocumentData);
+            }
+
             if ($this->aUserRelatedByCreatedBy !== null) {
                 if ($this->aUserRelatedByCreatedBy->isModified() || $this->aUserRelatedByCreatedBy->isNew()) {
                     $affectedRows += $this->aUserRelatedByCreatedBy->save($con);
@@ -1423,11 +1401,6 @@ abstract class BaseDocument extends BaseObject implements Persistent
                     $this->doUpdate($con);
                 }
                 $affectedRows += 1;
-                // Rewind the data LOB column, since PDO does not rewind after inserting value.
-                if ($this->data !== null && is_resource($this->data)) {
-                    rewind($this->data);
-                }
-
                 $this->resetModified();
             }
 
@@ -1502,8 +1475,8 @@ abstract class BaseDocument extends BaseObject implements Persistent
         if ($this->isColumnModified(DocumentPeer::SORT)) {
             $modifiedColumns[':p' . $index++]  = '`sort`';
         }
-        if ($this->isColumnModified(DocumentPeer::DATA)) {
-            $modifiedColumns[':p' . $index++]  = '`data`';
+        if ($this->isColumnModified(DocumentPeer::HASH)) {
+            $modifiedColumns[':p' . $index++]  = '`hash`';
         }
         if ($this->isColumnModified(DocumentPeer::CREATED_AT)) {
             $modifiedColumns[':p' . $index++]  = '`created_at`';
@@ -1573,11 +1546,8 @@ abstract class BaseDocument extends BaseObject implements Persistent
                     case '`sort`':
                         $stmt->bindValue($identifier, $this->sort, PDO::PARAM_INT);
                         break;
-                    case '`data`':
-                        if (is_resource($this->data)) {
-                            rewind($this->data);
-                        }
-                        $stmt->bindValue($identifier, $this->data, PDO::PARAM_LOB);
+                    case '`hash`':
+                        $stmt->bindValue($identifier, $this->hash, PDO::PARAM_STR);
                         break;
                     case '`created_at`':
                         $stmt->bindValue($identifier, $this->created_at, PDO::PARAM_STR);
@@ -1671,10 +1641,10 @@ abstract class BaseDocument extends BaseObject implements Persistent
      *
      * In addition to checking the current object, all related objects will
      * also be validated.  If all pass then <code>true</code> is returned; otherwise
-     * an aggreagated array of ValidationFailed objects will be returned.
+     * an aggregated array of ValidationFailed objects will be returned.
      *
      * @param array $columns Array of column names to validate.
-     * @return mixed <code>true</code> if all validations pass; array of <code>ValidationFailed</code> objets otherwise.
+     * @return mixed <code>true</code> if all validations pass; array of <code>ValidationFailed</code> objects otherwise.
      */
     protected function doValidate($columns = null)
     {
@@ -1686,7 +1656,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
 
 
             // We call the validate method on the following object(s) if they
-            // were passed to this object by their coresponding set
+            // were passed to this object by their corresponding set
             // method.  This object relates to these object(s) by a
             // foreign key reference.
 
@@ -1711,6 +1681,12 @@ abstract class BaseDocument extends BaseObject implements Persistent
             if ($this->aDocumentCategory !== null) {
                 if (!$this->aDocumentCategory->validate($columns)) {
                     $failureMap = array_merge($failureMap, $this->aDocumentCategory->getValidationFailures());
+                }
+            }
+
+            if ($this->aDocumentData !== null) {
+                if (!$this->aDocumentData->validate($columns)) {
+                    $failureMap = array_merge($failureMap, $this->aDocumentData->getValidationFailures());
                 }
             }
 
@@ -1813,7 +1789,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
                 return $this->getSort();
                 break;
             case 15:
-                return $this->getData();
+                return $this->getHash();
                 break;
             case 16:
                 return $this->getCreatedAt();
@@ -1871,12 +1847,17 @@ abstract class BaseDocument extends BaseObject implements Persistent
             $keys[12] => $this->getIsInactive(),
             $keys[13] => $this->getIsProtected(),
             $keys[14] => $this->getSort(),
-            $keys[15] => ($includeLazyLoadColumns) ? $this->getData() : null,
+            $keys[15] => $this->getHash(),
             $keys[16] => $this->getCreatedAt(),
             $keys[17] => $this->getUpdatedAt(),
             $keys[18] => $this->getCreatedBy(),
             $keys[19] => $this->getUpdatedBy(),
         );
+        $virtualColumns = $this->virtualColumns;
+        foreach ($virtualColumns as $key => $virtualColumn) {
+            $result[$key] = $virtualColumn;
+        }
+
         if ($includeForeignObjects) {
             if (null !== $this->aLanguage) {
                 $result['Language'] = $this->aLanguage->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
@@ -1889,6 +1870,9 @@ abstract class BaseDocument extends BaseObject implements Persistent
             }
             if (null !== $this->aDocumentCategory) {
                 $result['DocumentCategory'] = $this->aDocumentCategory->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->aDocumentData) {
+                $result['DocumentData'] = $this->aDocumentData->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
             if (null !== $this->aUserRelatedByCreatedBy) {
                 $result['UserRelatedByCreatedBy'] = $this->aUserRelatedByCreatedBy->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
@@ -1976,7 +1960,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
                 $this->setSort($value);
                 break;
             case 15:
-                $this->setData($value);
+                $this->setHash($value);
                 break;
             case 16:
                 $this->setCreatedAt($value);
@@ -2029,7 +2013,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
         if (array_key_exists($keys[12], $arr)) $this->setIsInactive($arr[$keys[12]]);
         if (array_key_exists($keys[13], $arr)) $this->setIsProtected($arr[$keys[13]]);
         if (array_key_exists($keys[14], $arr)) $this->setSort($arr[$keys[14]]);
-        if (array_key_exists($keys[15], $arr)) $this->setData($arr[$keys[15]]);
+        if (array_key_exists($keys[15], $arr)) $this->setHash($arr[$keys[15]]);
         if (array_key_exists($keys[16], $arr)) $this->setCreatedAt($arr[$keys[16]]);
         if (array_key_exists($keys[17], $arr)) $this->setUpdatedAt($arr[$keys[17]]);
         if (array_key_exists($keys[18], $arr)) $this->setCreatedBy($arr[$keys[18]]);
@@ -2060,7 +2044,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
         if ($this->isColumnModified(DocumentPeer::IS_INACTIVE)) $criteria->add(DocumentPeer::IS_INACTIVE, $this->is_inactive);
         if ($this->isColumnModified(DocumentPeer::IS_PROTECTED)) $criteria->add(DocumentPeer::IS_PROTECTED, $this->is_protected);
         if ($this->isColumnModified(DocumentPeer::SORT)) $criteria->add(DocumentPeer::SORT, $this->sort);
-        if ($this->isColumnModified(DocumentPeer::DATA)) $criteria->add(DocumentPeer::DATA, $this->data);
+        if ($this->isColumnModified(DocumentPeer::HASH)) $criteria->add(DocumentPeer::HASH, $this->hash);
         if ($this->isColumnModified(DocumentPeer::CREATED_AT)) $criteria->add(DocumentPeer::CREATED_AT, $this->created_at);
         if ($this->isColumnModified(DocumentPeer::UPDATED_AT)) $criteria->add(DocumentPeer::UPDATED_AT, $this->updated_at);
         if ($this->isColumnModified(DocumentPeer::CREATED_BY)) $criteria->add(DocumentPeer::CREATED_BY, $this->created_by);
@@ -2142,7 +2126,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
         $copyObj->setIsInactive($this->getIsInactive());
         $copyObj->setIsProtected($this->getIsProtected());
         $copyObj->setSort($this->getSort());
-        $copyObj->setData($this->getData());
+        $copyObj->setHash($this->getHash());
         $copyObj->setCreatedAt($this->getCreatedAt());
         $copyObj->setUpdatedAt($this->getUpdatedAt());
         $copyObj->setCreatedBy($this->getCreatedBy());
@@ -2208,7 +2192,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
     /**
      * Declares an association between this object and a Language object.
      *
-     * @param             Language $v
+     * @param                  Language $v
      * @return Document The current object (for fluent API support)
      * @throws PropelException
      */
@@ -2260,7 +2244,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
     /**
      * Declares an association between this object and a User object.
      *
-     * @param             User $v
+     * @param                  User $v
      * @return Document The current object (for fluent API support)
      * @throws PropelException
      */
@@ -2312,7 +2296,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
     /**
      * Declares an association between this object and a DocumentType object.
      *
-     * @param             DocumentType $v
+     * @param                  DocumentType $v
      * @return Document The current object (for fluent API support)
      * @throws PropelException
      */
@@ -2364,7 +2348,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
     /**
      * Declares an association between this object and a DocumentCategory object.
      *
-     * @param             DocumentCategory $v
+     * @param                  DocumentCategory $v
      * @return Document The current object (for fluent API support)
      * @throws PropelException
      */
@@ -2414,9 +2398,61 @@ abstract class BaseDocument extends BaseObject implements Persistent
     }
 
     /**
+     * Declares an association between this object and a DocumentData object.
+     *
+     * @param                  DocumentData $v
+     * @return Document The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setDocumentData(DocumentData $v = null)
+    {
+        if ($v === null) {
+            $this->setHash(NULL);
+        } else {
+            $this->setHash($v->getHash());
+        }
+
+        $this->aDocumentData = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the DocumentData object, it will not be re-added.
+        if ($v !== null) {
+            $v->addDocument($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated DocumentData object
+     *
+     * @param PropelPDO $con Optional Connection object.
+     * @param $doQuery Executes a query to get the object if required
+     * @return DocumentData The associated DocumentData object.
+     * @throws PropelException
+     */
+    public function getDocumentData(PropelPDO $con = null, $doQuery = true)
+    {
+        if ($this->aDocumentData === null && (($this->hash !== "" && $this->hash !== null)) && $doQuery) {
+            $this->aDocumentData = DocumentDataQuery::create()->findPk($this->hash, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aDocumentData->addDocuments($this);
+             */
+        }
+
+        return $this->aDocumentData;
+    }
+
+    /**
      * Declares an association between this object and a User object.
      *
-     * @param             User $v
+     * @param                  User $v
      * @return Document The current object (for fluent API support)
      * @throws PropelException
      */
@@ -2468,7 +2504,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
     /**
      * Declares an association between this object and a User object.
      *
-     * @param             User $v
+     * @param                  User $v
      * @return Document The current object (for fluent API support)
      * @throws PropelException
      */
@@ -2537,8 +2573,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
         $this->is_inactive = null;
         $this->is_protected = null;
         $this->sort = null;
-        $this->data = null;
-        $this->data_isLoaded = false;
+        $this->hash = null;
         $this->created_at = null;
         $this->updated_at = null;
         $this->created_by = null;
@@ -2558,7 +2593,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
      *
      * This method is a user-space workaround for PHP's inability to garbage collect
      * objects with circular references (even in PHP 5.3). This is currently necessary
-     * when using Propel in certain daemon or large-volumne/high-memory operations.
+     * when using Propel in certain daemon or large-volume/high-memory operations.
      *
      * @param boolean $deep Whether to also clear the references on all referrer objects.
      */
@@ -2578,6 +2613,9 @@ abstract class BaseDocument extends BaseObject implements Persistent
             if ($this->aDocumentCategory instanceof Persistent) {
               $this->aDocumentCategory->clearAllReferences($deep);
             }
+            if ($this->aDocumentData instanceof Persistent) {
+              $this->aDocumentData->clearAllReferences($deep);
+            }
             if ($this->aUserRelatedByCreatedBy instanceof Persistent) {
               $this->aUserRelatedByCreatedBy->clearAllReferences($deep);
             }
@@ -2592,6 +2630,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
         $this->aUserRelatedByOwnerId = null;
         $this->aDocumentType = null;
         $this->aDocumentCategory = null;
+        $this->aDocumentData = null;
         $this->aUserRelatedByCreatedBy = null;
         $this->aUserRelatedByUpdatedBy = null;
     }

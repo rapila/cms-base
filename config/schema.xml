@@ -146,7 +146,7 @@
 	<column name="digest_ha1" type="varchar" size="32" phpName="DigestHA1" />
 	<column name="first_name" type="varchar" size="40" />
 	<column name="last_name" type="varchar" size="60" />
-	<column name="email" type="varchar" size="80" />		
+	<column name="email" type="varchar" size="80" />
 	<column name="language_id" type="varchar" size="3" />
 	<foreign-key foreignTable="languages">
 		<reference local="language_id" foreign="id" />
@@ -251,7 +251,7 @@
 	<behavior name="denyable">
 		<parameter name="role_key" value="users" />
 	</behavior>
-</table>	
+</table>
 
 <table name="documents" phpName="Document">
 	<column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
@@ -265,7 +265,7 @@
 	<foreign-key foreignTable="languages">
 		<reference local="language_id" foreign="id" />
 	</foreign-key>
-	<column name="owner_id" type="integer" required="true" />
+	<column name="owner_id" type="integer" required="false" default="null"/>
 	<foreign-key foreignTable="users">
 		<reference local="owner_id" foreign="id" />
 	</foreign-key>
@@ -281,12 +281,24 @@
 	<column name="is_inactive" type="boolean" size="1" default="0" />
 	<column name="is_protected" type="boolean" size="1" default="0" />
 	<column name="sort" type="integer" />
-	<column name="data" type="blob" lazyLoad="true" />
 	<behavior name="referenceable" />
 	<behavior name="taggable" />
 	<behavior name="denyable">
 		<parameter name="mode" value="by_role" />
 		<parameter name="owner_allowed" value="true" />
+	</behavior>
+	<column name="hash" type="varchar" required="true" size="40" />
+	<foreign-key foreignTable="document_data" onDelete="restrict">
+		<reference local="hash" foreign="hash" />
+	</foreign-key>
+</table>
+
+<table name="document_data" phpName="DocumentData">
+	<column name="hash" type="varchar" size="40" required="true" primaryKey="true" />
+	<column name="data" type="blob" lazyLoad="true" />
+	<!-- There should never be any code that directly handles DocumentData objects so we don’t have to be cautious here. -->
+	<behavior name="denyable">
+		<parameter name="mode" value="allow" />
 	</behavior>
 </table>
 

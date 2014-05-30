@@ -32,9 +32,6 @@ class LinkCategoryDetailWidgetModule extends PersistentWidgetModule {
 			$oCategory = LinkCategoryQuery::create()->findPk($this->iCategoryId);
 		}
 		$oCategory->fromArray($aLinkCategoryData, BasePeer::TYPE_FIELDNAME);
-		if($aLinkCategoryData['max_width'] == null) {
-			$oCategory->setMaxWidth(null);
-		}
 		$this->validate($aLinkCategoryData);
 		if(!Flash::noErrors()) {
 			throw new ValidationException();

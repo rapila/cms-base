@@ -17,6 +17,7 @@ class LinksAdminModule extends AdminModule {
 		$this->oSidebarWidget = new ListWidgetModule();
 		$this->oSidebarWidget->setListTag(new TagWriter('ul'));
 		$this->oSidebarWidget->setDelegate(new CriteriaListWidgetDelegate($this, 'LinkCategory', 'name'));
+    $this->oSidebarWidget->setSetting('initial_selection', array('link_category_id' => $this->oListWidget->getLinkCategoryId()));
 		
 		$this->oInputWidget = new SidebarInputWidgetModule();
 	}
@@ -52,7 +53,7 @@ class LinksAdminModule extends AdminModule {
 	}
 	
 	public function getCustomListElements() {
-		if(LinkCategoryPeer::doCount(new Criteria()) > 0) {
+		if($this->getCriteria()->count() > 0) {
 			return array(
 				array('link_category_id' => CriteriaListWidgetDelegate::SELECT_ALL,
 							'name' => StringPeer::getString('wns.sidebar.select_all'),
@@ -64,12 +65,19 @@ class LinksAdminModule extends AdminModule {
 		return array();
 	}
 
-	public function getCriteria() {
-		$oCriteria = new Criteria();
-		if(!Session::getSession()->getUser()->getIsAdmin() || Settings::getSetting('admin', 'hide_externally_managed_link_categories', true)) {
-			return $oCriteria->add(LinkCategoryPeer::IS_EXTERNALLY_MANAGED, false);
+	public function getDatabaseColumnForColumn($sColumnIdentifier) {
+		if($sColumnIdentifier === 'link_category_id') {
+			return LinkCategoryPeer::ID;
 		}
-		return $oCriteria;
+		return null;
+	}
+
+	public function getCriteria() {
+		$oQuery = LinkCategoryQuery::create();
+		if(!Session::getSession()->getUser()->getIsAdmin() || Settings::getSetting('admin', 'hide_externally_managed_link_categories', true)) {
+			return $oQuery->filterByIsExternallyManaged(false);
+		}
+		return $oQuery;
 	}
 
 	public function usedWidgets() {

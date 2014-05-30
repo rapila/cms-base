@@ -44,7 +44,7 @@
  * @version   0.8
  * 20120908.1121
  */
-class SimplePager {
+class SimplePager implements Iterator {
 
 	// Query without count and limit
 	private $oQuery;
@@ -80,9 +80,13 @@ class SimplePager {
 	 * @param  int $iMaxRowsPerPage The number of rows that should be displayed per iPage.
 	 */
 	public function __construct($oQuery, $iPage = 1, $iMaxRowsPerPage = 25) {
-		$this->oQuery = $oQuery;
+		$this->oQuery = clone $oQuery;
 		$this->iTotalRecordCount = $oQuery->count();
-		$this->iTotalPageCount = (int) ceil($this->iTotalRecordCount / $iMaxRowsPerPage);
+		if($iMaxRowsPerPage) {
+			$this->iTotalPageCount = (int) ceil($this->iTotalRecordCount / $iMaxRowsPerPage);
+		} else {
+			$this->iTotalPageCount = 1;
+		}
 		$this->setPage($iPage);
 		$this->setRowsPerPage($iMaxRowsPerPage);
 	}
@@ -128,7 +132,8 @@ class SimplePager {
 	 */	
 	public function getQuery() {
 		$this->oQuery->setOffset($this->iStart);
-		return $this->oQuery->setLimit($this->iMaxRowsPerPage);
+		$this->oQuery->setLimit($this->iMaxRowsPerPage);
+		return $this->oQuery;
 	}
 
 	/**
@@ -138,9 +143,8 @@ class SimplePager {
 	 *
 	 */
 	private function find() {
-		$this->oQuery->setOffset($this->iStart);
-		$this->oQuery->setLimit($this->iMaxRowsPerPage);
 		$this->aResult = $this->getQuery()->find();
+		return $this->aResult;
 	}
 
 	/**
@@ -392,6 +396,19 @@ class SimplePager {
 	public function setMaxRowPerPage($iValue) {
 		$this->iMaxRowsPerPage = $iValue;
 	}
+	
+	public function getRowsOnPage($iPage) {
+		if($this->iMaxRowsPerPage === 0) {
+			return $iPage === 1 ? $this->getTotalRecordCount() : 0;
+		}
+		if($iPage > $this->getTotalPageCount()) {
+			return 0;
+		}
+		if($iPage < $this->getTotalPageCount() || $this->isLastPageComplete()) {
+			return $this->iMaxRowsPerPage;
+		}
+		return $this->getTotalRecordCount() % $this->iMaxRowsPerPage;
+	}
 
 	/**
 	 * Returns the count of the current page's records
@@ -399,5 +416,26 @@ class SimplePager {
 	 */
 	public function count() {
 		return count($this->getResult());
+	}
+	
+	// Iterator methods
+	public function current() {
+		$oResult = new stdClass();
+		$oResult->page = $this->iCurrentKey+1;
+		$oResult->numberOfResults = $this->getRowsOnPage();
+		$oResult->link = $this->getPageLink($oResult->iPage);
+		return $oResult;
+	}
+	public function key() {
+		return $this->iCurrentKey;
+	}
+	public function next() {
+		$this->iCurrentKey++;
+	}
+	public function rewind() {
+		$this->iCurrentKey = 0;
+	}
+	public function valid() {
+		$this->iCurrentKey === 0 || $this->iCurrentKey < $this->getTotalPageCount();
 	}
 }

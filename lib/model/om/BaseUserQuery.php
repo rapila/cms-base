@@ -188,6 +188,14 @@
  * @method UserQuery rightJoinDocumentRelatedByUpdatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the DocumentRelatedByUpdatedBy relation
  * @method UserQuery innerJoinDocumentRelatedByUpdatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the DocumentRelatedByUpdatedBy relation
  *
+ * @method UserQuery leftJoinDocumentDataRelatedByCreatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the DocumentDataRelatedByCreatedBy relation
+ * @method UserQuery rightJoinDocumentDataRelatedByCreatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the DocumentDataRelatedByCreatedBy relation
+ * @method UserQuery innerJoinDocumentDataRelatedByCreatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the DocumentDataRelatedByCreatedBy relation
+ *
+ * @method UserQuery leftJoinDocumentDataRelatedByUpdatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the DocumentDataRelatedByUpdatedBy relation
+ * @method UserQuery rightJoinDocumentDataRelatedByUpdatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the DocumentDataRelatedByUpdatedBy relation
+ * @method UserQuery innerJoinDocumentDataRelatedByUpdatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the DocumentDataRelatedByUpdatedBy relation
+ *
  * @method UserQuery leftJoinDocumentTypeRelatedByCreatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the DocumentTypeRelatedByCreatedBy relation
  * @method UserQuery rightJoinDocumentTypeRelatedByCreatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the DocumentTypeRelatedByCreatedBy relation
  * @method UserQuery innerJoinDocumentTypeRelatedByCreatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the DocumentTypeRelatedByCreatedBy relation
@@ -295,8 +303,14 @@ abstract class BaseUserQuery extends ModelCriteria
      * @param     string $modelName The phpName of a model, e.g. 'Book'
      * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
      */
-    public function __construct($dbName = 'rapila', $modelName = 'User', $modelAlias = null)
+    public function __construct($dbName = null, $modelName = null, $modelAlias = null)
     {
+        if (null === $dbName) {
+            $dbName = 'rapila';
+        }
+        if (null === $modelName) {
+            $modelName = 'User';
+        }
         parent::__construct($dbName, $modelName, $modelAlias);
     }
 
@@ -313,10 +327,8 @@ abstract class BaseUserQuery extends ModelCriteria
         if ($criteria instanceof UserQuery) {
             return $criteria;
         }
-        $query = new UserQuery();
-        if (null !== $modelAlias) {
-            $query->setModelAlias($modelAlias);
-        }
+        $query = new UserQuery(null, null, $modelAlias);
+
         if ($criteria instanceof Criteria) {
             $query->mergeWith($criteria);
         }
@@ -344,7 +356,7 @@ abstract class BaseUserQuery extends ModelCriteria
             return null;
         }
         if ((null !== ($obj = UserPeer::getInstanceFromPool((string) $key))) && !$this->formatter) {
-            // the object is alredy in the instance pool
+            // the object is already in the instance pool
             return $obj;
         }
         if ($con === null) {
@@ -878,7 +890,7 @@ abstract class BaseUserQuery extends ModelCriteria
      * <code>
      * $query->filterByCreatedAt('2011-03-14'); // WHERE created_at = '2011-03-14'
      * $query->filterByCreatedAt('now'); // WHERE created_at = '2011-03-14'
-     * $query->filterByCreatedAt(array('max' => 'yesterday')); // WHERE created_at > '2011-03-13'
+     * $query->filterByCreatedAt(array('max' => 'yesterday')); // WHERE created_at < '2011-03-13'
      * </code>
      *
      * @param     mixed $createdAt The value to use as filter.
@@ -921,7 +933,7 @@ abstract class BaseUserQuery extends ModelCriteria
      * <code>
      * $query->filterByUpdatedAt('2011-03-14'); // WHERE updated_at = '2011-03-14'
      * $query->filterByUpdatedAt('now'); // WHERE updated_at = '2011-03-14'
-     * $query->filterByUpdatedAt(array('max' => 'yesterday')); // WHERE updated_at > '2011-03-13'
+     * $query->filterByUpdatedAt(array('max' => 'yesterday')); // WHERE updated_at < '2011-03-13'
      * </code>
      *
      * @param     mixed $updatedAt The value to use as filter.
@@ -1297,7 +1309,7 @@ abstract class BaseUserQuery extends ModelCriteria
      *
      * @return UserQuery The current query, for fluid interface
      */
-    public function joinDocumentRelatedByOwnerId($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinDocumentRelatedByOwnerId($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         $tableMap = $this->getTableMap();
         $relationMap = $tableMap->getRelation('DocumentRelatedByOwnerId');
@@ -1332,7 +1344,7 @@ abstract class BaseUserQuery extends ModelCriteria
      *
      * @return   DocumentQuery A secondary query class using the current class as primary query
      */
-    public function useDocumentRelatedByOwnerIdQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useDocumentRelatedByOwnerIdQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         return $this
             ->joinDocumentRelatedByOwnerId($relationAlias, $joinType)
@@ -3631,6 +3643,154 @@ abstract class BaseUserQuery extends ModelCriteria
         return $this
             ->joinDocumentRelatedByUpdatedBy($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'DocumentRelatedByUpdatedBy', 'DocumentQuery');
+    }
+
+    /**
+     * Filter the query by a related DocumentData object
+     *
+     * @param   DocumentData|PropelObjectCollection $documentData  the related object to use as filter
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return                 UserQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
+     */
+    public function filterByDocumentDataRelatedByCreatedBy($documentData, $comparison = null)
+    {
+        if ($documentData instanceof DocumentData) {
+            return $this
+                ->addUsingAlias(UserPeer::ID, $documentData->getCreatedBy(), $comparison);
+        } elseif ($documentData instanceof PropelObjectCollection) {
+            return $this
+                ->useDocumentDataRelatedByCreatedByQuery()
+                ->filterByPrimaryKeys($documentData->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByDocumentDataRelatedByCreatedBy() only accepts arguments of type DocumentData or PropelCollection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the DocumentDataRelatedByCreatedBy relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return UserQuery The current query, for fluid interface
+     */
+    public function joinDocumentDataRelatedByCreatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('DocumentDataRelatedByCreatedBy');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'DocumentDataRelatedByCreatedBy');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the DocumentDataRelatedByCreatedBy relation DocumentData object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   DocumentDataQuery A secondary query class using the current class as primary query
+     */
+    public function useDocumentDataRelatedByCreatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinDocumentDataRelatedByCreatedBy($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'DocumentDataRelatedByCreatedBy', 'DocumentDataQuery');
+    }
+
+    /**
+     * Filter the query by a related DocumentData object
+     *
+     * @param   DocumentData|PropelObjectCollection $documentData  the related object to use as filter
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return                 UserQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
+     */
+    public function filterByDocumentDataRelatedByUpdatedBy($documentData, $comparison = null)
+    {
+        if ($documentData instanceof DocumentData) {
+            return $this
+                ->addUsingAlias(UserPeer::ID, $documentData->getUpdatedBy(), $comparison);
+        } elseif ($documentData instanceof PropelObjectCollection) {
+            return $this
+                ->useDocumentDataRelatedByUpdatedByQuery()
+                ->filterByPrimaryKeys($documentData->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByDocumentDataRelatedByUpdatedBy() only accepts arguments of type DocumentData or PropelCollection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the DocumentDataRelatedByUpdatedBy relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return UserQuery The current query, for fluid interface
+     */
+    public function joinDocumentDataRelatedByUpdatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('DocumentDataRelatedByUpdatedBy');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'DocumentDataRelatedByUpdatedBy');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the DocumentDataRelatedByUpdatedBy relation DocumentData object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   DocumentDataQuery A secondary query class using the current class as primary query
+     */
+    public function useDocumentDataRelatedByUpdatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinDocumentDataRelatedByUpdatedBy($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'DocumentDataRelatedByUpdatedBy', 'DocumentDataQuery');
     }
 
     /**

@@ -78,32 +78,32 @@ EOT;
 	
 	public function testWriteResourceIncludes() {
 		$sTemplateText = <<<EOT
-{{writeResourceIncludes}}
+{{writeResourceIncludes;consolidate=false}}
 EOT;
 		$oTemplate = new Template($sTemplateText, null, true);
 		$oIncluder = ResourceIncluder::defaultIncluder();
 		$oIncluder->clearIncludedResources();
 		$oIncluder->addResource('admin/accept.png', null, null, array('template' => 'icons'));
-		$oIncluder->addResource(array('web', 'js', 'widget', 'ckeditor', 'skins', 'kama', 'templates.css'));
+		$oIncluder->addResource(array('web', 'js', 'widget', 'ckeditor', 'skins', 'kama', 'editor.css'));
 		$oIncluder->addJavaScriptLibrary('jqueryui', 1);
 		$oIncluder->addResource('admin/admin-ui.css');
 		$oIncluder->addResource('widget/ckeditor/ckeditor.js');
-		$this->assertSame('<link rel="icon" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/images/admin/accept.png" />'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/widget/ckeditor/skins/kama/templates.css" />'."\n".'<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>'."\n".'<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/css/admin/admin-ui.css" />'."\n".'<script type="text/javascript" src="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/widget/ckeditor/ckeditor.js"></script>'."\n", $oTemplate->render());
+		$this->assertSame('<link rel="icon" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/images/admin/accept.png" />'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/widget/ckeditor/skins/kama/editor.css" />'."\n".'<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>'."\n".'<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/css/admin/admin-ui.css" />'."\n".'<script type="text/javascript" src="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/widget/ckeditor/ckeditor.js"></script>'."\n", $oTemplate->render());
 	}
 	
 	public function testWriteNamedResourceIncludes() {
 		$sTemplateText = <<<EOT
-{{writeResourceIncludes;name=myIncluder}}
+{{writeResourceIncludes;consolidate=false;name=myIncluder}}
 EOT;
 		$oTemplate = new Template($sTemplateText, null, true);
 		$oIncluder = ResourceIncluder::namedIncluder('myIncluder');
 		$oIncluder->clearIncludedResources();
 		$oIncluder->addResource('admin/accept.png', null, null, array('template' => 'icons'));
-		$oIncluder->addResource(array('web', 'js', 'widget', 'ckeditor', 'skins', 'kama', 'templates.css'));
+		$oIncluder->addResource(array('web', 'js', 'widget', 'ckeditor', 'skins', 'kama', 'editor.css'));
 		$oIncluder->addJavaScriptLibrary('jqueryui', 1);
 		$oIncluder->addResource('admin/admin-ui.css');
 		$oIncluder->addResource('widget/ckeditor/ckeditor.js');
-		$this->assertSame('<link rel="icon" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/images/admin/accept.png" />'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/widget/ckeditor/skins/kama/templates.css" />'."\n".'<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>'."\n".'<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/css/admin/admin-ui.css" />'."\n".'<script type="text/javascript" src="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/widget/ckeditor/ckeditor.js"></script>'."\n", $oTemplate->render());
+		$this->assertSame('<link rel="icon" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/images/admin/accept.png" />'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/widget/ckeditor/skins/kama/editor.css" />'."\n".'<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>'."\n".'<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/css/admin/admin-ui.css" />'."\n".'<script type="text/javascript" src="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/widget/ckeditor/ckeditor.js"></script>'."\n", $oTemplate->render());
 	}
 
 	public function testStringReplace() {
@@ -128,5 +128,16 @@ EOT;
 EOT;
 		$oTemplate = new Template($sTemplateText, null, true);
 		$this->assertSame('1ful World', $oTemplate->render());
+	}
+	
+	public function testInlineResourceOrdering() {
+		$sTemplateText = <<<EOT
+{{writeResourceIncludes=GAGA}}{{addResourceInclude=jquery;library=1.7.0}}{{writeResourceIncludes}}{{addResourceInclude=mootools;library=1.4.5}}{{addResourceInclude=admin/accept.png;name=GAGA}}{{addResourceInclude=admin/accept.png;name=GAGA2}}
+EOT;
+		$oTemplate = new Template($sTemplateText, null, true);
+		$this->assertSame('<img src="/base/web/images/admin/accept.png" />
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script>
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/mootools/1.4.5/mootools-yui-compressed.js"></script>
+', $oTemplate->render());
 	}
 }

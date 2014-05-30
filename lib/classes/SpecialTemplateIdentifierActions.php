@@ -40,10 +40,13 @@ class SpecialTemplateIdentifierActions {
 		return '<br />';
 	}
 	
+	/**
+	* @deprecated
+	*/
 	public function doCalculation($oTemplateIdentifier, &$iFlags) {
 		//FIXME: We’re allowing this because templates are controlled by privileged users… But we should find a better solution to do calculations without eval.
-    $cFunc = create_function("", "return ({$oTemplateIdentifier->getValue()});" );
-    return $cFunc();
+		$cFunc = create_function("", "return ({$oTemplateIdentifier->getValue()});" );
+		return $cFunc();
 	}
 	
 	public function truncate($oTemplateIdentifier, &$iFlags) {
@@ -120,16 +123,18 @@ class SpecialTemplateIdentifierActions {
 	public function writeLink($oTemplateIdentifier) {
 		$sDestination = $oTemplateIdentifier->getValue();
 		$aParameters = $oTemplateIdentifier->getParameters();
-		$bIsAbsolute = $oTemplateIdentifier->hasParameter('is_absolute') && $oTemplateIdentifier->getParameter('is_absolute') !== 'false';
+		$bIsAbsolute = false;
 		$bAbsoluteType = $oTemplateIdentifier->getParameter('is_absolute');
-		if($bAbsoluteType === 'http') {
+		if($bAbsoluteType === 'http' || $bAbsoluteType === 'false') {
 			$bAbsoluteType = false;
-		} else if($bAbsoluteType === 'https') {
+		} else if($bAbsoluteType === 'https' || $bAbsoluteType === 'true') {
 			$bAbsoluteType = true;
 		} else if($bAbsoluteType === 'auto') {
 			$bAbsoluteType = LinkUtil::isSSL();
-		} else {
+		} else if($oTemplateIdentifier->hasParameter('is_absolute')) {
 			$bAbsoluteType = null;
+		} else {
+			$bAbsoluteType = 'default';
 		}
 		unset($aParameters['is_absolute']);
 		if($sDestination === "to_self") {
@@ -139,7 +144,7 @@ class SpecialTemplateIdentifierActions {
 		} else if($sDestination === "host_only") {
 			return LinkUtil::absoluteLink('');
 		} else if($sDestination === "base_href") {
-			$sDestination = MAIN_DIR_FE;
+			$sDestination = MAIN_DIR_FE_PHP;
 			$bIsAbsolute = true;
 			if(!$oTemplateIdentifier->hasParameter('is_absolute')) {
 				$bAbsoluteType = LinkUtil::isSSL();
@@ -164,11 +169,7 @@ class SpecialTemplateIdentifierActions {
 			}
 			$sDestination = LinkUtil::link($sDestination, $sManager, $aParameters);
 		}
-		if($bIsAbsolute) {
-			return LinkUtil::absoluteLink($sDestination, null, $bAbsoluteType);
-		} else {
-			return $sDestination;
-		}
+		return LinkUtil::absoluteLink($sDestination, null, $bAbsoluteType, !$bIsAbsolute);
 	}
 	
 	public function includeTemplate($oTemplateIdentifier, &$iFlags) {
@@ -246,7 +247,7 @@ class SpecialTemplateIdentifierActions {
 		$oResourceIncluder->addResourceFromTemplateIdentifier($oIdentifier);
 		return null;
 	}
-		
+
 	public function writeDirectInclude($oIdentifier) {
 		$oResourceIncluder = new ResourceIncluder();
 		$oResourceIncluder->addResourceFromTemplateIdentifier($oIdentifier);

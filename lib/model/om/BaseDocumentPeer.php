@@ -27,10 +27,10 @@ abstract class BaseDocumentPeer
     const NUM_COLUMNS = 20;
 
     /** The number of lazy-loaded columns. */
-    const NUM_LAZY_LOAD_COLUMNS = 1;
+    const NUM_LAZY_LOAD_COLUMNS = 0;
 
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
-    const NUM_HYDRATE_COLUMNS = 19;
+    const NUM_HYDRATE_COLUMNS = 20;
 
     /** the column name for the id field */
     const ID = 'documents.id';
@@ -77,8 +77,8 @@ abstract class BaseDocumentPeer
     /** the column name for the sort field */
     const SORT = 'documents.sort';
 
-    /** the column name for the data field */
-    const DATA = 'documents.data';
+    /** the column name for the hash field */
+    const HASH = 'documents.hash';
 
     /** the column name for the created_at field */
     const CREATED_AT = 'documents.created_at';
@@ -96,7 +96,7 @@ abstract class BaseDocumentPeer
     const DEFAULT_STRING_FORMAT = 'YAML';
 
     /**
-     * An identiy map to hold any loaded instances of Document objects.
+     * An identity map to hold any loaded instances of Document objects.
      * This must be public so that other peer classes can access this when hydrating from JOIN
      * queries.
      * @var        array Document[]
@@ -113,11 +113,11 @@ abstract class BaseDocumentPeer
      * e.g. DocumentPeer::$fieldNames[DocumentPeer::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        BasePeer::TYPE_PHPNAME => array ('Id', 'Name', 'OriginalName', 'Description', 'ContentCreatedAt', 'License', 'Author', 'LanguageId', 'OwnerId', 'DocumentTypeId', 'DocumentCategoryId', 'IsPrivate', 'IsInactive', 'IsProtected', 'Sort', 'Data', 'CreatedAt', 'UpdatedAt', 'CreatedBy', 'UpdatedBy', ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'name', 'originalName', 'description', 'contentCreatedAt', 'license', 'author', 'languageId', 'ownerId', 'documentTypeId', 'documentCategoryId', 'isPrivate', 'isInactive', 'isProtected', 'sort', 'data', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy', ),
-        BasePeer::TYPE_COLNAME => array (DocumentPeer::ID, DocumentPeer::NAME, DocumentPeer::ORIGINAL_NAME, DocumentPeer::DESCRIPTION, DocumentPeer::CONTENT_CREATED_AT, DocumentPeer::LICENSE, DocumentPeer::AUTHOR, DocumentPeer::LANGUAGE_ID, DocumentPeer::OWNER_ID, DocumentPeer::DOCUMENT_TYPE_ID, DocumentPeer::DOCUMENT_CATEGORY_ID, DocumentPeer::IS_PRIVATE, DocumentPeer::IS_INACTIVE, DocumentPeer::IS_PROTECTED, DocumentPeer::SORT, DocumentPeer::DATA, DocumentPeer::CREATED_AT, DocumentPeer::UPDATED_AT, DocumentPeer::CREATED_BY, DocumentPeer::UPDATED_BY, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('ID', 'NAME', 'ORIGINAL_NAME', 'DESCRIPTION', 'CONTENT_CREATED_AT', 'LICENSE', 'AUTHOR', 'LANGUAGE_ID', 'OWNER_ID', 'DOCUMENT_TYPE_ID', 'DOCUMENT_CATEGORY_ID', 'IS_PRIVATE', 'IS_INACTIVE', 'IS_PROTECTED', 'SORT', 'DATA', 'CREATED_AT', 'UPDATED_AT', 'CREATED_BY', 'UPDATED_BY', ),
-        BasePeer::TYPE_FIELDNAME => array ('id', 'name', 'original_name', 'description', 'content_created_at', 'license', 'author', 'language_id', 'owner_id', 'document_type_id', 'document_category_id', 'is_private', 'is_inactive', 'is_protected', 'sort', 'data', 'created_at', 'updated_at', 'created_by', 'updated_by', ),
+        BasePeer::TYPE_PHPNAME => array ('Id', 'Name', 'OriginalName', 'Description', 'ContentCreatedAt', 'License', 'Author', 'LanguageId', 'OwnerId', 'DocumentTypeId', 'DocumentCategoryId', 'IsPrivate', 'IsInactive', 'IsProtected', 'Sort', 'Hash', 'CreatedAt', 'UpdatedAt', 'CreatedBy', 'UpdatedBy', ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'name', 'originalName', 'description', 'contentCreatedAt', 'license', 'author', 'languageId', 'ownerId', 'documentTypeId', 'documentCategoryId', 'isPrivate', 'isInactive', 'isProtected', 'sort', 'hash', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy', ),
+        BasePeer::TYPE_COLNAME => array (DocumentPeer::ID, DocumentPeer::NAME, DocumentPeer::ORIGINAL_NAME, DocumentPeer::DESCRIPTION, DocumentPeer::CONTENT_CREATED_AT, DocumentPeer::LICENSE, DocumentPeer::AUTHOR, DocumentPeer::LANGUAGE_ID, DocumentPeer::OWNER_ID, DocumentPeer::DOCUMENT_TYPE_ID, DocumentPeer::DOCUMENT_CATEGORY_ID, DocumentPeer::IS_PRIVATE, DocumentPeer::IS_INACTIVE, DocumentPeer::IS_PROTECTED, DocumentPeer::SORT, DocumentPeer::HASH, DocumentPeer::CREATED_AT, DocumentPeer::UPDATED_AT, DocumentPeer::CREATED_BY, DocumentPeer::UPDATED_BY, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('ID', 'NAME', 'ORIGINAL_NAME', 'DESCRIPTION', 'CONTENT_CREATED_AT', 'LICENSE', 'AUTHOR', 'LANGUAGE_ID', 'OWNER_ID', 'DOCUMENT_TYPE_ID', 'DOCUMENT_CATEGORY_ID', 'IS_PRIVATE', 'IS_INACTIVE', 'IS_PROTECTED', 'SORT', 'HASH', 'CREATED_AT', 'UPDATED_AT', 'CREATED_BY', 'UPDATED_BY', ),
+        BasePeer::TYPE_FIELDNAME => array ('id', 'name', 'original_name', 'description', 'content_created_at', 'license', 'author', 'language_id', 'owner_id', 'document_type_id', 'document_category_id', 'is_private', 'is_inactive', 'is_protected', 'sort', 'hash', 'created_at', 'updated_at', 'created_by', 'updated_by', ),
         BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, )
     );
 
@@ -128,11 +128,11 @@ abstract class BaseDocumentPeer
      * e.g. DocumentPeer::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Name' => 1, 'OriginalName' => 2, 'Description' => 3, 'ContentCreatedAt' => 4, 'License' => 5, 'Author' => 6, 'LanguageId' => 7, 'OwnerId' => 8, 'DocumentTypeId' => 9, 'DocumentCategoryId' => 10, 'IsPrivate' => 11, 'IsInactive' => 12, 'IsProtected' => 13, 'Sort' => 14, 'Data' => 15, 'CreatedAt' => 16, 'UpdatedAt' => 17, 'CreatedBy' => 18, 'UpdatedBy' => 19, ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'name' => 1, 'originalName' => 2, 'description' => 3, 'contentCreatedAt' => 4, 'license' => 5, 'author' => 6, 'languageId' => 7, 'ownerId' => 8, 'documentTypeId' => 9, 'documentCategoryId' => 10, 'isPrivate' => 11, 'isInactive' => 12, 'isProtected' => 13, 'sort' => 14, 'data' => 15, 'createdAt' => 16, 'updatedAt' => 17, 'createdBy' => 18, 'updatedBy' => 19, ),
-        BasePeer::TYPE_COLNAME => array (DocumentPeer::ID => 0, DocumentPeer::NAME => 1, DocumentPeer::ORIGINAL_NAME => 2, DocumentPeer::DESCRIPTION => 3, DocumentPeer::CONTENT_CREATED_AT => 4, DocumentPeer::LICENSE => 5, DocumentPeer::AUTHOR => 6, DocumentPeer::LANGUAGE_ID => 7, DocumentPeer::OWNER_ID => 8, DocumentPeer::DOCUMENT_TYPE_ID => 9, DocumentPeer::DOCUMENT_CATEGORY_ID => 10, DocumentPeer::IS_PRIVATE => 11, DocumentPeer::IS_INACTIVE => 12, DocumentPeer::IS_PROTECTED => 13, DocumentPeer::SORT => 14, DocumentPeer::DATA => 15, DocumentPeer::CREATED_AT => 16, DocumentPeer::UPDATED_AT => 17, DocumentPeer::CREATED_BY => 18, DocumentPeer::UPDATED_BY => 19, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'NAME' => 1, 'ORIGINAL_NAME' => 2, 'DESCRIPTION' => 3, 'CONTENT_CREATED_AT' => 4, 'LICENSE' => 5, 'AUTHOR' => 6, 'LANGUAGE_ID' => 7, 'OWNER_ID' => 8, 'DOCUMENT_TYPE_ID' => 9, 'DOCUMENT_CATEGORY_ID' => 10, 'IS_PRIVATE' => 11, 'IS_INACTIVE' => 12, 'IS_PROTECTED' => 13, 'SORT' => 14, 'DATA' => 15, 'CREATED_AT' => 16, 'UPDATED_AT' => 17, 'CREATED_BY' => 18, 'UPDATED_BY' => 19, ),
-        BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'name' => 1, 'original_name' => 2, 'description' => 3, 'content_created_at' => 4, 'license' => 5, 'author' => 6, 'language_id' => 7, 'owner_id' => 8, 'document_type_id' => 9, 'document_category_id' => 10, 'is_private' => 11, 'is_inactive' => 12, 'is_protected' => 13, 'sort' => 14, 'data' => 15, 'created_at' => 16, 'updated_at' => 17, 'created_by' => 18, 'updated_by' => 19, ),
+        BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Name' => 1, 'OriginalName' => 2, 'Description' => 3, 'ContentCreatedAt' => 4, 'License' => 5, 'Author' => 6, 'LanguageId' => 7, 'OwnerId' => 8, 'DocumentTypeId' => 9, 'DocumentCategoryId' => 10, 'IsPrivate' => 11, 'IsInactive' => 12, 'IsProtected' => 13, 'Sort' => 14, 'Hash' => 15, 'CreatedAt' => 16, 'UpdatedAt' => 17, 'CreatedBy' => 18, 'UpdatedBy' => 19, ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'name' => 1, 'originalName' => 2, 'description' => 3, 'contentCreatedAt' => 4, 'license' => 5, 'author' => 6, 'languageId' => 7, 'ownerId' => 8, 'documentTypeId' => 9, 'documentCategoryId' => 10, 'isPrivate' => 11, 'isInactive' => 12, 'isProtected' => 13, 'sort' => 14, 'hash' => 15, 'createdAt' => 16, 'updatedAt' => 17, 'createdBy' => 18, 'updatedBy' => 19, ),
+        BasePeer::TYPE_COLNAME => array (DocumentPeer::ID => 0, DocumentPeer::NAME => 1, DocumentPeer::ORIGINAL_NAME => 2, DocumentPeer::DESCRIPTION => 3, DocumentPeer::CONTENT_CREATED_AT => 4, DocumentPeer::LICENSE => 5, DocumentPeer::AUTHOR => 6, DocumentPeer::LANGUAGE_ID => 7, DocumentPeer::OWNER_ID => 8, DocumentPeer::DOCUMENT_TYPE_ID => 9, DocumentPeer::DOCUMENT_CATEGORY_ID => 10, DocumentPeer::IS_PRIVATE => 11, DocumentPeer::IS_INACTIVE => 12, DocumentPeer::IS_PROTECTED => 13, DocumentPeer::SORT => 14, DocumentPeer::HASH => 15, DocumentPeer::CREATED_AT => 16, DocumentPeer::UPDATED_AT => 17, DocumentPeer::CREATED_BY => 18, DocumentPeer::UPDATED_BY => 19, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'NAME' => 1, 'ORIGINAL_NAME' => 2, 'DESCRIPTION' => 3, 'CONTENT_CREATED_AT' => 4, 'LICENSE' => 5, 'AUTHOR' => 6, 'LANGUAGE_ID' => 7, 'OWNER_ID' => 8, 'DOCUMENT_TYPE_ID' => 9, 'DOCUMENT_CATEGORY_ID' => 10, 'IS_PRIVATE' => 11, 'IS_INACTIVE' => 12, 'IS_PROTECTED' => 13, 'SORT' => 14, 'HASH' => 15, 'CREATED_AT' => 16, 'UPDATED_AT' => 17, 'CREATED_BY' => 18, 'UPDATED_BY' => 19, ),
+        BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'name' => 1, 'original_name' => 2, 'description' => 3, 'content_created_at' => 4, 'license' => 5, 'author' => 6, 'language_id' => 7, 'owner_id' => 8, 'document_type_id' => 9, 'document_category_id' => 10, 'is_private' => 11, 'is_inactive' => 12, 'is_protected' => 13, 'sort' => 14, 'hash' => 15, 'created_at' => 16, 'updated_at' => 17, 'created_by' => 18, 'updated_by' => 19, ),
         BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, )
     );
 
@@ -222,6 +222,7 @@ abstract class BaseDocumentPeer
             $criteria->addSelectColumn(DocumentPeer::IS_INACTIVE);
             $criteria->addSelectColumn(DocumentPeer::IS_PROTECTED);
             $criteria->addSelectColumn(DocumentPeer::SORT);
+            $criteria->addSelectColumn(DocumentPeer::HASH);
             $criteria->addSelectColumn(DocumentPeer::CREATED_AT);
             $criteria->addSelectColumn(DocumentPeer::UPDATED_AT);
             $criteria->addSelectColumn(DocumentPeer::CREATED_BY);
@@ -242,6 +243,7 @@ abstract class BaseDocumentPeer
             $criteria->addSelectColumn($alias . '.is_inactive');
             $criteria->addSelectColumn($alias . '.is_protected');
             $criteria->addSelectColumn($alias . '.sort');
+            $criteria->addSelectColumn($alias . '.hash');
             $criteria->addSelectColumn($alias . '.created_at');
             $criteria->addSelectColumn($alias . '.updated_at');
             $criteria->addSelectColumn($alias . '.created_by');
@@ -298,7 +300,7 @@ abstract class BaseDocumentPeer
      *
      * @param      Criteria $criteria object used to create the SELECT statement.
      * @param      PropelPDO $con
-     * @return                 Document
+     * @return Document
      * @throws PropelException Any exceptions caught during processing will be
      *		 rethrown wrapped into a PropelException.
      */
@@ -365,7 +367,7 @@ abstract class BaseDocumentPeer
      * to the cache in order to ensure that the same objects are always returned by doSelect*()
      * and retrieveByPK*() calls.
      *
-     * @param      Document $obj A Document object.
+     * @param Document $obj A Document object.
      * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
      */
     public static function addInstanceToPool($obj, $key = null)
@@ -415,7 +417,7 @@ abstract class BaseDocumentPeer
      * a multi-column primary key, a serialize()d version of the primary key will be returned.
      *
      * @param      string $key The key (@see getPrimaryKeyHash()) for this instance.
-     * @return   Document Found object or null if 1) no instance exists for specified key or 2) instance pooling has been disabled.
+     * @return Document Found object or null if 1) no instance exists for specified key or 2) instance pooling has been disabled.
      * @see        getPrimaryKeyHash()
      */
     public static function getInstanceFromPool($key)
@@ -436,10 +438,8 @@ abstract class BaseDocumentPeer
      */
     public static function clearInstancePool($and_clear_all_references = false)
     {
-      if ($and_clear_all_references)
-      {
-        foreach (DocumentPeer::$instances as $instance)
-        {
+      if ($and_clear_all_references) {
+        foreach (DocumentPeer::$instances as $instance) {
           $instance->clearAllReferences(true);
         }
       }
@@ -739,6 +739,57 @@ abstract class BaseDocumentPeer
         }
 
         $criteria->addJoin(DocumentPeer::DOCUMENT_CATEGORY_ID, DocumentCategoryPeer::ID, $join_behavior);
+
+        $stmt = BasePeer::doCount($criteria, $con);
+
+        if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+            $count = (int) $row[0];
+        } else {
+            $count = 0; // no rows returned; we infer that means 0 matches.
+        }
+        $stmt->closeCursor();
+
+        return $count;
+    }
+
+
+    /**
+     * Returns the number of rows matching criteria, joining the related DocumentData table
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+     * @param      PropelPDO $con
+     * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+     * @return int Number of matching rows.
+     */
+    public static function doCountJoinDocumentData(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        // we're going to modify criteria, so copy it first
+        $criteria = clone $criteria;
+
+        // We need to set the primary table name, since in the case that there are no WHERE columns
+        // it will be impossible for the BasePeer::createSelectSql() method to determine which
+        // tables go into the FROM clause.
+        $criteria->setPrimaryTableName(DocumentPeer::TABLE_NAME);
+
+        if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+            $criteria->setDistinct();
+        }
+
+        if (!$criteria->hasSelectClause()) {
+            DocumentPeer::addSelectColumns($criteria);
+        }
+
+        $criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
+
+        // Set the correct dbName
+        $criteria->setDbName(DocumentPeer::DATABASE_NAME);
+
+        if ($con === null) {
+            $con = Propel::getConnection(DocumentPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+        }
+
+        $criteria->addJoin(DocumentPeer::HASH, DocumentDataPeer::HASH, $join_behavior);
 
         $stmt = BasePeer::doCount($criteria, $con);
 
@@ -1124,6 +1175,73 @@ abstract class BaseDocumentPeer
 
 
     /**
+     * Selects a collection of Document objects pre-filled with their DocumentData objects.
+     * @param      Criteria  $criteria
+     * @param      PropelPDO $con
+     * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+     * @return array           Array of Document objects.
+     * @throws PropelException Any exceptions caught during processing will be
+     *		 rethrown wrapped into a PropelException.
+     */
+    public static function doSelectJoinDocumentData(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $criteria = clone $criteria;
+
+        // Set the correct dbName if it has not been overridden
+        if ($criteria->getDbName() == Propel::getDefaultDB()) {
+            $criteria->setDbName(DocumentPeer::DATABASE_NAME);
+        }
+
+        DocumentPeer::addSelectColumns($criteria);
+        $startcol = DocumentPeer::NUM_HYDRATE_COLUMNS;
+        DocumentDataPeer::addSelectColumns($criteria);
+
+        $criteria->addJoin(DocumentPeer::HASH, DocumentDataPeer::HASH, $join_behavior);
+
+        $stmt = BasePeer::doSelect($criteria, $con);
+        $results = array();
+
+        while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+            $key1 = DocumentPeer::getPrimaryKeyHashFromRow($row, 0);
+            if (null !== ($obj1 = DocumentPeer::getInstanceFromPool($key1))) {
+                // We no longer rehydrate the object, since this can cause data loss.
+                // See http://www.propelorm.org/ticket/509
+                // $obj1->hydrate($row, 0, true); // rehydrate
+            } else {
+
+                $cls = DocumentPeer::getOMClass();
+
+                $obj1 = new $cls();
+                $obj1->hydrate($row);
+                DocumentPeer::addInstanceToPool($obj1, $key1);
+            } // if $obj1 already loaded
+
+            $key2 = DocumentDataPeer::getPrimaryKeyHashFromRow($row, $startcol);
+            if ($key2 !== null) {
+                $obj2 = DocumentDataPeer::getInstanceFromPool($key2);
+                if (!$obj2) {
+
+                    $cls = DocumentDataPeer::getOMClass();
+
+                    $obj2 = new $cls();
+                    $obj2->hydrate($row, $startcol);
+                    DocumentDataPeer::addInstanceToPool($obj2, $key2);
+                } // if obj2 already loaded
+
+                // Add the $obj1 (Document) to $obj2 (DocumentData)
+                $obj2->addDocument($obj1);
+
+            } // if joined row was not null
+
+            $results[] = $obj1;
+        }
+        $stmt->closeCursor();
+
+        return $results;
+    }
+
+
+    /**
      * Selects a collection of Document objects pre-filled with their User objects.
      * @param      Criteria  $criteria
      * @param      PropelPDO $con
@@ -1301,6 +1419,8 @@ abstract class BaseDocumentPeer
 
         $criteria->addJoin(DocumentPeer::DOCUMENT_CATEGORY_ID, DocumentCategoryPeer::ID, $join_behavior);
 
+        $criteria->addJoin(DocumentPeer::HASH, DocumentDataPeer::HASH, $join_behavior);
+
         $criteria->addJoin(DocumentPeer::CREATED_BY, UserPeer::ID, $join_behavior);
 
         $criteria->addJoin(DocumentPeer::UPDATED_BY, UserPeer::ID, $join_behavior);
@@ -1351,11 +1471,14 @@ abstract class BaseDocumentPeer
         DocumentCategoryPeer::addSelectColumns($criteria);
         $startcol6 = $startcol5 + DocumentCategoryPeer::NUM_HYDRATE_COLUMNS;
 
-        UserPeer::addSelectColumns($criteria);
-        $startcol7 = $startcol6 + UserPeer::NUM_HYDRATE_COLUMNS;
+        DocumentDataPeer::addSelectColumns($criteria);
+        $startcol7 = $startcol6 + DocumentDataPeer::NUM_HYDRATE_COLUMNS;
 
         UserPeer::addSelectColumns($criteria);
         $startcol8 = $startcol7 + UserPeer::NUM_HYDRATE_COLUMNS;
+
+        UserPeer::addSelectColumns($criteria);
+        $startcol9 = $startcol8 + UserPeer::NUM_HYDRATE_COLUMNS;
 
         $criteria->addJoin(DocumentPeer::LANGUAGE_ID, LanguagePeer::ID, $join_behavior);
 
@@ -1364,6 +1487,8 @@ abstract class BaseDocumentPeer
         $criteria->addJoin(DocumentPeer::DOCUMENT_TYPE_ID, DocumentTypePeer::ID, $join_behavior);
 
         $criteria->addJoin(DocumentPeer::DOCUMENT_CATEGORY_ID, DocumentCategoryPeer::ID, $join_behavior);
+
+        $criteria->addJoin(DocumentPeer::HASH, DocumentDataPeer::HASH, $join_behavior);
 
         $criteria->addJoin(DocumentPeer::CREATED_BY, UserPeer::ID, $join_behavior);
 
@@ -1458,22 +1583,22 @@ abstract class BaseDocumentPeer
                 $obj5->addDocument($obj1);
             } // if joined row not null
 
-            // Add objects for joined User rows
+            // Add objects for joined DocumentData rows
 
-            $key6 = UserPeer::getPrimaryKeyHashFromRow($row, $startcol6);
+            $key6 = DocumentDataPeer::getPrimaryKeyHashFromRow($row, $startcol6);
             if ($key6 !== null) {
-                $obj6 = UserPeer::getInstanceFromPool($key6);
+                $obj6 = DocumentDataPeer::getInstanceFromPool($key6);
                 if (!$obj6) {
 
-                    $cls = UserPeer::getOMClass();
+                    $cls = DocumentDataPeer::getOMClass();
 
                     $obj6 = new $cls();
                     $obj6->hydrate($row, $startcol6);
-                    UserPeer::addInstanceToPool($obj6, $key6);
+                    DocumentDataPeer::addInstanceToPool($obj6, $key6);
                 } // if obj6 loaded
 
-                // Add the $obj1 (Document) to the collection in $obj6 (User)
-                $obj6->addDocumentRelatedByCreatedBy($obj1);
+                // Add the $obj1 (Document) to the collection in $obj6 (DocumentData)
+                $obj6->addDocument($obj1);
             } // if joined row not null
 
             // Add objects for joined User rows
@@ -1491,7 +1616,25 @@ abstract class BaseDocumentPeer
                 } // if obj7 loaded
 
                 // Add the $obj1 (Document) to the collection in $obj7 (User)
-                $obj7->addDocumentRelatedByUpdatedBy($obj1);
+                $obj7->addDocumentRelatedByCreatedBy($obj1);
+            } // if joined row not null
+
+            // Add objects for joined User rows
+
+            $key8 = UserPeer::getPrimaryKeyHashFromRow($row, $startcol8);
+            if ($key8 !== null) {
+                $obj8 = UserPeer::getInstanceFromPool($key8);
+                if (!$obj8) {
+
+                    $cls = UserPeer::getOMClass();
+
+                    $obj8 = new $cls();
+                    $obj8->hydrate($row, $startcol8);
+                    UserPeer::addInstanceToPool($obj8, $key8);
+                } // if obj8 loaded
+
+                // Add the $obj1 (Document) to the collection in $obj8 (User)
+                $obj8->addDocumentRelatedByUpdatedBy($obj1);
             } // if joined row not null
 
             $results[] = $obj1;
@@ -1543,6 +1686,8 @@ abstract class BaseDocumentPeer
         $criteria->addJoin(DocumentPeer::DOCUMENT_TYPE_ID, DocumentTypePeer::ID, $join_behavior);
 
         $criteria->addJoin(DocumentPeer::DOCUMENT_CATEGORY_ID, DocumentCategoryPeer::ID, $join_behavior);
+
+        $criteria->addJoin(DocumentPeer::HASH, DocumentDataPeer::HASH, $join_behavior);
 
         $criteria->addJoin(DocumentPeer::CREATED_BY, UserPeer::ID, $join_behavior);
 
@@ -1603,6 +1748,8 @@ abstract class BaseDocumentPeer
 
         $criteria->addJoin(DocumentPeer::DOCUMENT_CATEGORY_ID, DocumentCategoryPeer::ID, $join_behavior);
 
+        $criteria->addJoin(DocumentPeer::HASH, DocumentDataPeer::HASH, $join_behavior);
+
         $stmt = BasePeer::doCount($criteria, $con);
 
         if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -1657,6 +1804,8 @@ abstract class BaseDocumentPeer
         $criteria->addJoin(DocumentPeer::OWNER_ID, UserPeer::ID, $join_behavior);
 
         $criteria->addJoin(DocumentPeer::DOCUMENT_CATEGORY_ID, DocumentCategoryPeer::ID, $join_behavior);
+
+        $criteria->addJoin(DocumentPeer::HASH, DocumentDataPeer::HASH, $join_behavior);
 
         $criteria->addJoin(DocumentPeer::CREATED_BY, UserPeer::ID, $join_behavior);
 
@@ -1717,6 +1866,69 @@ abstract class BaseDocumentPeer
 
         $criteria->addJoin(DocumentPeer::DOCUMENT_TYPE_ID, DocumentTypePeer::ID, $join_behavior);
 
+        $criteria->addJoin(DocumentPeer::HASH, DocumentDataPeer::HASH, $join_behavior);
+
+        $criteria->addJoin(DocumentPeer::CREATED_BY, UserPeer::ID, $join_behavior);
+
+        $criteria->addJoin(DocumentPeer::UPDATED_BY, UserPeer::ID, $join_behavior);
+
+        $stmt = BasePeer::doCount($criteria, $con);
+
+        if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+            $count = (int) $row[0];
+        } else {
+            $count = 0; // no rows returned; we infer that means 0 matches.
+        }
+        $stmt->closeCursor();
+
+        return $count;
+    }
+
+
+    /**
+     * Returns the number of rows matching criteria, joining the related DocumentData table
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+     * @param      PropelPDO $con
+     * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+     * @return int Number of matching rows.
+     */
+    public static function doCountJoinAllExceptDocumentData(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        // we're going to modify criteria, so copy it first
+        $criteria = clone $criteria;
+
+        // We need to set the primary table name, since in the case that there are no WHERE columns
+        // it will be impossible for the BasePeer::createSelectSql() method to determine which
+        // tables go into the FROM clause.
+        $criteria->setPrimaryTableName(DocumentPeer::TABLE_NAME);
+
+        if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+            $criteria->setDistinct();
+        }
+
+        if (!$criteria->hasSelectClause()) {
+            DocumentPeer::addSelectColumns($criteria);
+        }
+
+        $criteria->clearOrderByColumns(); // ORDER BY should not affect count
+
+        // Set the correct dbName
+        $criteria->setDbName(DocumentPeer::DATABASE_NAME);
+
+        if ($con === null) {
+            $con = Propel::getConnection(DocumentPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+        }
+
+        $criteria->addJoin(DocumentPeer::LANGUAGE_ID, LanguagePeer::ID, $join_behavior);
+
+        $criteria->addJoin(DocumentPeer::OWNER_ID, UserPeer::ID, $join_behavior);
+
+        $criteria->addJoin(DocumentPeer::DOCUMENT_TYPE_ID, DocumentTypePeer::ID, $join_behavior);
+
+        $criteria->addJoin(DocumentPeer::DOCUMENT_CATEGORY_ID, DocumentCategoryPeer::ID, $join_behavior);
+
         $criteria->addJoin(DocumentPeer::CREATED_BY, UserPeer::ID, $join_behavior);
 
         $criteria->addJoin(DocumentPeer::UPDATED_BY, UserPeer::ID, $join_behavior);
@@ -1776,6 +1988,8 @@ abstract class BaseDocumentPeer
 
         $criteria->addJoin(DocumentPeer::DOCUMENT_CATEGORY_ID, DocumentCategoryPeer::ID, $join_behavior);
 
+        $criteria->addJoin(DocumentPeer::HASH, DocumentDataPeer::HASH, $join_behavior);
+
         $stmt = BasePeer::doCount($criteria, $con);
 
         if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -1831,6 +2045,8 @@ abstract class BaseDocumentPeer
 
         $criteria->addJoin(DocumentPeer::DOCUMENT_CATEGORY_ID, DocumentCategoryPeer::ID, $join_behavior);
 
+        $criteria->addJoin(DocumentPeer::HASH, DocumentDataPeer::HASH, $join_behavior);
+
         $stmt = BasePeer::doCount($criteria, $con);
 
         if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -1877,17 +2093,22 @@ abstract class BaseDocumentPeer
         DocumentCategoryPeer::addSelectColumns($criteria);
         $startcol5 = $startcol4 + DocumentCategoryPeer::NUM_HYDRATE_COLUMNS;
 
-        UserPeer::addSelectColumns($criteria);
-        $startcol6 = $startcol5 + UserPeer::NUM_HYDRATE_COLUMNS;
+        DocumentDataPeer::addSelectColumns($criteria);
+        $startcol6 = $startcol5 + DocumentDataPeer::NUM_HYDRATE_COLUMNS;
 
         UserPeer::addSelectColumns($criteria);
         $startcol7 = $startcol6 + UserPeer::NUM_HYDRATE_COLUMNS;
+
+        UserPeer::addSelectColumns($criteria);
+        $startcol8 = $startcol7 + UserPeer::NUM_HYDRATE_COLUMNS;
 
         $criteria->addJoin(DocumentPeer::OWNER_ID, UserPeer::ID, $join_behavior);
 
         $criteria->addJoin(DocumentPeer::DOCUMENT_TYPE_ID, DocumentTypePeer::ID, $join_behavior);
 
         $criteria->addJoin(DocumentPeer::DOCUMENT_CATEGORY_ID, DocumentCategoryPeer::ID, $join_behavior);
+
+        $criteria->addJoin(DocumentPeer::HASH, DocumentDataPeer::HASH, $join_behavior);
 
         $criteria->addJoin(DocumentPeer::CREATED_BY, UserPeer::ID, $join_behavior);
 
@@ -1968,22 +2189,22 @@ abstract class BaseDocumentPeer
 
             } // if joined row is not null
 
-                // Add objects for joined User rows
+                // Add objects for joined DocumentData rows
 
-                $key5 = UserPeer::getPrimaryKeyHashFromRow($row, $startcol5);
+                $key5 = DocumentDataPeer::getPrimaryKeyHashFromRow($row, $startcol5);
                 if ($key5 !== null) {
-                    $obj5 = UserPeer::getInstanceFromPool($key5);
+                    $obj5 = DocumentDataPeer::getInstanceFromPool($key5);
                     if (!$obj5) {
 
-                        $cls = UserPeer::getOMClass();
+                        $cls = DocumentDataPeer::getOMClass();
 
                     $obj5 = new $cls();
                     $obj5->hydrate($row, $startcol5);
-                    UserPeer::addInstanceToPool($obj5, $key5);
+                    DocumentDataPeer::addInstanceToPool($obj5, $key5);
                 } // if $obj5 already loaded
 
-                // Add the $obj1 (Document) to the collection in $obj5 (User)
-                $obj5->addDocumentRelatedByCreatedBy($obj1);
+                // Add the $obj1 (Document) to the collection in $obj5 (DocumentData)
+                $obj5->addDocument($obj1);
 
             } // if joined row is not null
 
@@ -2002,7 +2223,26 @@ abstract class BaseDocumentPeer
                 } // if $obj6 already loaded
 
                 // Add the $obj1 (Document) to the collection in $obj6 (User)
-                $obj6->addDocumentRelatedByUpdatedBy($obj1);
+                $obj6->addDocumentRelatedByCreatedBy($obj1);
+
+            } // if joined row is not null
+
+                // Add objects for joined User rows
+
+                $key7 = UserPeer::getPrimaryKeyHashFromRow($row, $startcol7);
+                if ($key7 !== null) {
+                    $obj7 = UserPeer::getInstanceFromPool($key7);
+                    if (!$obj7) {
+
+                        $cls = UserPeer::getOMClass();
+
+                    $obj7 = new $cls();
+                    $obj7->hydrate($row, $startcol7);
+                    UserPeer::addInstanceToPool($obj7, $key7);
+                } // if $obj7 already loaded
+
+                // Add the $obj1 (Document) to the collection in $obj7 (User)
+                $obj7->addDocumentRelatedByUpdatedBy($obj1);
 
             } // if joined row is not null
 
@@ -2047,11 +2287,16 @@ abstract class BaseDocumentPeer
         DocumentCategoryPeer::addSelectColumns($criteria);
         $startcol5 = $startcol4 + DocumentCategoryPeer::NUM_HYDRATE_COLUMNS;
 
+        DocumentDataPeer::addSelectColumns($criteria);
+        $startcol6 = $startcol5 + DocumentDataPeer::NUM_HYDRATE_COLUMNS;
+
         $criteria->addJoin(DocumentPeer::LANGUAGE_ID, LanguagePeer::ID, $join_behavior);
 
         $criteria->addJoin(DocumentPeer::DOCUMENT_TYPE_ID, DocumentTypePeer::ID, $join_behavior);
 
         $criteria->addJoin(DocumentPeer::DOCUMENT_CATEGORY_ID, DocumentCategoryPeer::ID, $join_behavior);
+
+        $criteria->addJoin(DocumentPeer::HASH, DocumentDataPeer::HASH, $join_behavior);
 
 
         $stmt = BasePeer::doSelect($criteria, $con);
@@ -2128,6 +2373,25 @@ abstract class BaseDocumentPeer
 
             } // if joined row is not null
 
+                // Add objects for joined DocumentData rows
+
+                $key5 = DocumentDataPeer::getPrimaryKeyHashFromRow($row, $startcol5);
+                if ($key5 !== null) {
+                    $obj5 = DocumentDataPeer::getInstanceFromPool($key5);
+                    if (!$obj5) {
+
+                        $cls = DocumentDataPeer::getOMClass();
+
+                    $obj5 = new $cls();
+                    $obj5->hydrate($row, $startcol5);
+                    DocumentDataPeer::addInstanceToPool($obj5, $key5);
+                } // if $obj5 already loaded
+
+                // Add the $obj1 (Document) to the collection in $obj5 (DocumentData)
+                $obj5->addDocument($obj1);
+
+            } // if joined row is not null
+
             $results[] = $obj1;
         }
         $stmt->closeCursor();
@@ -2169,17 +2433,22 @@ abstract class BaseDocumentPeer
         DocumentCategoryPeer::addSelectColumns($criteria);
         $startcol5 = $startcol4 + DocumentCategoryPeer::NUM_HYDRATE_COLUMNS;
 
-        UserPeer::addSelectColumns($criteria);
-        $startcol6 = $startcol5 + UserPeer::NUM_HYDRATE_COLUMNS;
+        DocumentDataPeer::addSelectColumns($criteria);
+        $startcol6 = $startcol5 + DocumentDataPeer::NUM_HYDRATE_COLUMNS;
 
         UserPeer::addSelectColumns($criteria);
         $startcol7 = $startcol6 + UserPeer::NUM_HYDRATE_COLUMNS;
+
+        UserPeer::addSelectColumns($criteria);
+        $startcol8 = $startcol7 + UserPeer::NUM_HYDRATE_COLUMNS;
 
         $criteria->addJoin(DocumentPeer::LANGUAGE_ID, LanguagePeer::ID, $join_behavior);
 
         $criteria->addJoin(DocumentPeer::OWNER_ID, UserPeer::ID, $join_behavior);
 
         $criteria->addJoin(DocumentPeer::DOCUMENT_CATEGORY_ID, DocumentCategoryPeer::ID, $join_behavior);
+
+        $criteria->addJoin(DocumentPeer::HASH, DocumentDataPeer::HASH, $join_behavior);
 
         $criteria->addJoin(DocumentPeer::CREATED_BY, UserPeer::ID, $join_behavior);
 
@@ -2260,22 +2529,22 @@ abstract class BaseDocumentPeer
 
             } // if joined row is not null
 
-                // Add objects for joined User rows
+                // Add objects for joined DocumentData rows
 
-                $key5 = UserPeer::getPrimaryKeyHashFromRow($row, $startcol5);
+                $key5 = DocumentDataPeer::getPrimaryKeyHashFromRow($row, $startcol5);
                 if ($key5 !== null) {
-                    $obj5 = UserPeer::getInstanceFromPool($key5);
+                    $obj5 = DocumentDataPeer::getInstanceFromPool($key5);
                     if (!$obj5) {
 
-                        $cls = UserPeer::getOMClass();
+                        $cls = DocumentDataPeer::getOMClass();
 
                     $obj5 = new $cls();
                     $obj5->hydrate($row, $startcol5);
-                    UserPeer::addInstanceToPool($obj5, $key5);
+                    DocumentDataPeer::addInstanceToPool($obj5, $key5);
                 } // if $obj5 already loaded
 
-                // Add the $obj1 (Document) to the collection in $obj5 (User)
-                $obj5->addDocumentRelatedByCreatedBy($obj1);
+                // Add the $obj1 (Document) to the collection in $obj5 (DocumentData)
+                $obj5->addDocument($obj1);
 
             } // if joined row is not null
 
@@ -2294,7 +2563,26 @@ abstract class BaseDocumentPeer
                 } // if $obj6 already loaded
 
                 // Add the $obj1 (Document) to the collection in $obj6 (User)
-                $obj6->addDocumentRelatedByUpdatedBy($obj1);
+                $obj6->addDocumentRelatedByCreatedBy($obj1);
+
+            } // if joined row is not null
+
+                // Add objects for joined User rows
+
+                $key7 = UserPeer::getPrimaryKeyHashFromRow($row, $startcol7);
+                if ($key7 !== null) {
+                    $obj7 = UserPeer::getInstanceFromPool($key7);
+                    if (!$obj7) {
+
+                        $cls = UserPeer::getOMClass();
+
+                    $obj7 = new $cls();
+                    $obj7->hydrate($row, $startcol7);
+                    UserPeer::addInstanceToPool($obj7, $key7);
+                } // if $obj7 already loaded
+
+                // Add the $obj1 (Document) to the collection in $obj7 (User)
+                $obj7->addDocumentRelatedByUpdatedBy($obj1);
 
             } // if joined row is not null
 
@@ -2339,17 +2627,22 @@ abstract class BaseDocumentPeer
         DocumentTypePeer::addSelectColumns($criteria);
         $startcol5 = $startcol4 + DocumentTypePeer::NUM_HYDRATE_COLUMNS;
 
-        UserPeer::addSelectColumns($criteria);
-        $startcol6 = $startcol5 + UserPeer::NUM_HYDRATE_COLUMNS;
+        DocumentDataPeer::addSelectColumns($criteria);
+        $startcol6 = $startcol5 + DocumentDataPeer::NUM_HYDRATE_COLUMNS;
 
         UserPeer::addSelectColumns($criteria);
         $startcol7 = $startcol6 + UserPeer::NUM_HYDRATE_COLUMNS;
+
+        UserPeer::addSelectColumns($criteria);
+        $startcol8 = $startcol7 + UserPeer::NUM_HYDRATE_COLUMNS;
 
         $criteria->addJoin(DocumentPeer::LANGUAGE_ID, LanguagePeer::ID, $join_behavior);
 
         $criteria->addJoin(DocumentPeer::OWNER_ID, UserPeer::ID, $join_behavior);
 
         $criteria->addJoin(DocumentPeer::DOCUMENT_TYPE_ID, DocumentTypePeer::ID, $join_behavior);
+
+        $criteria->addJoin(DocumentPeer::HASH, DocumentDataPeer::HASH, $join_behavior);
 
         $criteria->addJoin(DocumentPeer::CREATED_BY, UserPeer::ID, $join_behavior);
 
@@ -2430,22 +2723,22 @@ abstract class BaseDocumentPeer
 
             } // if joined row is not null
 
-                // Add objects for joined User rows
+                // Add objects for joined DocumentData rows
 
-                $key5 = UserPeer::getPrimaryKeyHashFromRow($row, $startcol5);
+                $key5 = DocumentDataPeer::getPrimaryKeyHashFromRow($row, $startcol5);
                 if ($key5 !== null) {
-                    $obj5 = UserPeer::getInstanceFromPool($key5);
+                    $obj5 = DocumentDataPeer::getInstanceFromPool($key5);
                     if (!$obj5) {
 
-                        $cls = UserPeer::getOMClass();
+                        $cls = DocumentDataPeer::getOMClass();
 
                     $obj5 = new $cls();
                     $obj5->hydrate($row, $startcol5);
-                    UserPeer::addInstanceToPool($obj5, $key5);
+                    DocumentDataPeer::addInstanceToPool($obj5, $key5);
                 } // if $obj5 already loaded
 
-                // Add the $obj1 (Document) to the collection in $obj5 (User)
-                $obj5->addDocumentRelatedByCreatedBy($obj1);
+                // Add the $obj1 (Document) to the collection in $obj5 (DocumentData)
+                $obj5->addDocument($obj1);
 
             } // if joined row is not null
 
@@ -2464,7 +2757,220 @@ abstract class BaseDocumentPeer
                 } // if $obj6 already loaded
 
                 // Add the $obj1 (Document) to the collection in $obj6 (User)
-                $obj6->addDocumentRelatedByUpdatedBy($obj1);
+                $obj6->addDocumentRelatedByCreatedBy($obj1);
+
+            } // if joined row is not null
+
+                // Add objects for joined User rows
+
+                $key7 = UserPeer::getPrimaryKeyHashFromRow($row, $startcol7);
+                if ($key7 !== null) {
+                    $obj7 = UserPeer::getInstanceFromPool($key7);
+                    if (!$obj7) {
+
+                        $cls = UserPeer::getOMClass();
+
+                    $obj7 = new $cls();
+                    $obj7->hydrate($row, $startcol7);
+                    UserPeer::addInstanceToPool($obj7, $key7);
+                } // if $obj7 already loaded
+
+                // Add the $obj1 (Document) to the collection in $obj7 (User)
+                $obj7->addDocumentRelatedByUpdatedBy($obj1);
+
+            } // if joined row is not null
+
+            $results[] = $obj1;
+        }
+        $stmt->closeCursor();
+
+        return $results;
+    }
+
+
+    /**
+     * Selects a collection of Document objects pre-filled with all related objects except DocumentData.
+     *
+     * @param      Criteria  $criteria
+     * @param      PropelPDO $con
+     * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+     * @return array           Array of Document objects.
+     * @throws PropelException Any exceptions caught during processing will be
+     *		 rethrown wrapped into a PropelException.
+     */
+    public static function doSelectJoinAllExceptDocumentData(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $criteria = clone $criteria;
+
+        // Set the correct dbName if it has not been overridden
+        // $criteria->getDbName() will return the same object if not set to another value
+        // so == check is okay and faster
+        if ($criteria->getDbName() == Propel::getDefaultDB()) {
+            $criteria->setDbName(DocumentPeer::DATABASE_NAME);
+        }
+
+        DocumentPeer::addSelectColumns($criteria);
+        $startcol2 = DocumentPeer::NUM_HYDRATE_COLUMNS;
+
+        LanguagePeer::addSelectColumns($criteria);
+        $startcol3 = $startcol2 + LanguagePeer::NUM_HYDRATE_COLUMNS;
+
+        UserPeer::addSelectColumns($criteria);
+        $startcol4 = $startcol3 + UserPeer::NUM_HYDRATE_COLUMNS;
+
+        DocumentTypePeer::addSelectColumns($criteria);
+        $startcol5 = $startcol4 + DocumentTypePeer::NUM_HYDRATE_COLUMNS;
+
+        DocumentCategoryPeer::addSelectColumns($criteria);
+        $startcol6 = $startcol5 + DocumentCategoryPeer::NUM_HYDRATE_COLUMNS;
+
+        UserPeer::addSelectColumns($criteria);
+        $startcol7 = $startcol6 + UserPeer::NUM_HYDRATE_COLUMNS;
+
+        UserPeer::addSelectColumns($criteria);
+        $startcol8 = $startcol7 + UserPeer::NUM_HYDRATE_COLUMNS;
+
+        $criteria->addJoin(DocumentPeer::LANGUAGE_ID, LanguagePeer::ID, $join_behavior);
+
+        $criteria->addJoin(DocumentPeer::OWNER_ID, UserPeer::ID, $join_behavior);
+
+        $criteria->addJoin(DocumentPeer::DOCUMENT_TYPE_ID, DocumentTypePeer::ID, $join_behavior);
+
+        $criteria->addJoin(DocumentPeer::DOCUMENT_CATEGORY_ID, DocumentCategoryPeer::ID, $join_behavior);
+
+        $criteria->addJoin(DocumentPeer::CREATED_BY, UserPeer::ID, $join_behavior);
+
+        $criteria->addJoin(DocumentPeer::UPDATED_BY, UserPeer::ID, $join_behavior);
+
+
+        $stmt = BasePeer::doSelect($criteria, $con);
+        $results = array();
+
+        while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+            $key1 = DocumentPeer::getPrimaryKeyHashFromRow($row, 0);
+            if (null !== ($obj1 = DocumentPeer::getInstanceFromPool($key1))) {
+                // We no longer rehydrate the object, since this can cause data loss.
+                // See http://www.propelorm.org/ticket/509
+                // $obj1->hydrate($row, 0, true); // rehydrate
+            } else {
+                $cls = DocumentPeer::getOMClass();
+
+                $obj1 = new $cls();
+                $obj1->hydrate($row);
+                DocumentPeer::addInstanceToPool($obj1, $key1);
+            } // if obj1 already loaded
+
+                // Add objects for joined Language rows
+
+                $key2 = LanguagePeer::getPrimaryKeyHashFromRow($row, $startcol2);
+                if ($key2 !== null) {
+                    $obj2 = LanguagePeer::getInstanceFromPool($key2);
+                    if (!$obj2) {
+
+                        $cls = LanguagePeer::getOMClass();
+
+                    $obj2 = new $cls();
+                    $obj2->hydrate($row, $startcol2);
+                    LanguagePeer::addInstanceToPool($obj2, $key2);
+                } // if $obj2 already loaded
+
+                // Add the $obj1 (Document) to the collection in $obj2 (Language)
+                $obj2->addDocument($obj1);
+
+            } // if joined row is not null
+
+                // Add objects for joined User rows
+
+                $key3 = UserPeer::getPrimaryKeyHashFromRow($row, $startcol3);
+                if ($key3 !== null) {
+                    $obj3 = UserPeer::getInstanceFromPool($key3);
+                    if (!$obj3) {
+
+                        $cls = UserPeer::getOMClass();
+
+                    $obj3 = new $cls();
+                    $obj3->hydrate($row, $startcol3);
+                    UserPeer::addInstanceToPool($obj3, $key3);
+                } // if $obj3 already loaded
+
+                // Add the $obj1 (Document) to the collection in $obj3 (User)
+                $obj3->addDocumentRelatedByOwnerId($obj1);
+
+            } // if joined row is not null
+
+                // Add objects for joined DocumentType rows
+
+                $key4 = DocumentTypePeer::getPrimaryKeyHashFromRow($row, $startcol4);
+                if ($key4 !== null) {
+                    $obj4 = DocumentTypePeer::getInstanceFromPool($key4);
+                    if (!$obj4) {
+
+                        $cls = DocumentTypePeer::getOMClass();
+
+                    $obj4 = new $cls();
+                    $obj4->hydrate($row, $startcol4);
+                    DocumentTypePeer::addInstanceToPool($obj4, $key4);
+                } // if $obj4 already loaded
+
+                // Add the $obj1 (Document) to the collection in $obj4 (DocumentType)
+                $obj4->addDocument($obj1);
+
+            } // if joined row is not null
+
+                // Add objects for joined DocumentCategory rows
+
+                $key5 = DocumentCategoryPeer::getPrimaryKeyHashFromRow($row, $startcol5);
+                if ($key5 !== null) {
+                    $obj5 = DocumentCategoryPeer::getInstanceFromPool($key5);
+                    if (!$obj5) {
+
+                        $cls = DocumentCategoryPeer::getOMClass();
+
+                    $obj5 = new $cls();
+                    $obj5->hydrate($row, $startcol5);
+                    DocumentCategoryPeer::addInstanceToPool($obj5, $key5);
+                } // if $obj5 already loaded
+
+                // Add the $obj1 (Document) to the collection in $obj5 (DocumentCategory)
+                $obj5->addDocument($obj1);
+
+            } // if joined row is not null
+
+                // Add objects for joined User rows
+
+                $key6 = UserPeer::getPrimaryKeyHashFromRow($row, $startcol6);
+                if ($key6 !== null) {
+                    $obj6 = UserPeer::getInstanceFromPool($key6);
+                    if (!$obj6) {
+
+                        $cls = UserPeer::getOMClass();
+
+                    $obj6 = new $cls();
+                    $obj6->hydrate($row, $startcol6);
+                    UserPeer::addInstanceToPool($obj6, $key6);
+                } // if $obj6 already loaded
+
+                // Add the $obj1 (Document) to the collection in $obj6 (User)
+                $obj6->addDocumentRelatedByCreatedBy($obj1);
+
+            } // if joined row is not null
+
+                // Add objects for joined User rows
+
+                $key7 = UserPeer::getPrimaryKeyHashFromRow($row, $startcol7);
+                if ($key7 !== null) {
+                    $obj7 = UserPeer::getInstanceFromPool($key7);
+                    if (!$obj7) {
+
+                        $cls = UserPeer::getOMClass();
+
+                    $obj7 = new $cls();
+                    $obj7->hydrate($row, $startcol7);
+                    UserPeer::addInstanceToPool($obj7, $key7);
+                } // if $obj7 already loaded
+
+                // Add the $obj1 (Document) to the collection in $obj7 (User)
+                $obj7->addDocumentRelatedByUpdatedBy($obj1);
 
             } // if joined row is not null
 
@@ -2509,11 +3015,16 @@ abstract class BaseDocumentPeer
         DocumentCategoryPeer::addSelectColumns($criteria);
         $startcol5 = $startcol4 + DocumentCategoryPeer::NUM_HYDRATE_COLUMNS;
 
+        DocumentDataPeer::addSelectColumns($criteria);
+        $startcol6 = $startcol5 + DocumentDataPeer::NUM_HYDRATE_COLUMNS;
+
         $criteria->addJoin(DocumentPeer::LANGUAGE_ID, LanguagePeer::ID, $join_behavior);
 
         $criteria->addJoin(DocumentPeer::DOCUMENT_TYPE_ID, DocumentTypePeer::ID, $join_behavior);
 
         $criteria->addJoin(DocumentPeer::DOCUMENT_CATEGORY_ID, DocumentCategoryPeer::ID, $join_behavior);
+
+        $criteria->addJoin(DocumentPeer::HASH, DocumentDataPeer::HASH, $join_behavior);
 
 
         $stmt = BasePeer::doSelect($criteria, $con);
@@ -2587,6 +3098,25 @@ abstract class BaseDocumentPeer
 
                 // Add the $obj1 (Document) to the collection in $obj4 (DocumentCategory)
                 $obj4->addDocument($obj1);
+
+            } // if joined row is not null
+
+                // Add objects for joined DocumentData rows
+
+                $key5 = DocumentDataPeer::getPrimaryKeyHashFromRow($row, $startcol5);
+                if ($key5 !== null) {
+                    $obj5 = DocumentDataPeer::getInstanceFromPool($key5);
+                    if (!$obj5) {
+
+                        $cls = DocumentDataPeer::getOMClass();
+
+                    $obj5 = new $cls();
+                    $obj5->hydrate($row, $startcol5);
+                    DocumentDataPeer::addInstanceToPool($obj5, $key5);
+                } // if $obj5 already loaded
+
+                // Add the $obj1 (Document) to the collection in $obj5 (DocumentData)
+                $obj5->addDocument($obj1);
 
             } // if joined row is not null
 
@@ -2631,11 +3161,16 @@ abstract class BaseDocumentPeer
         DocumentCategoryPeer::addSelectColumns($criteria);
         $startcol5 = $startcol4 + DocumentCategoryPeer::NUM_HYDRATE_COLUMNS;
 
+        DocumentDataPeer::addSelectColumns($criteria);
+        $startcol6 = $startcol5 + DocumentDataPeer::NUM_HYDRATE_COLUMNS;
+
         $criteria->addJoin(DocumentPeer::LANGUAGE_ID, LanguagePeer::ID, $join_behavior);
 
         $criteria->addJoin(DocumentPeer::DOCUMENT_TYPE_ID, DocumentTypePeer::ID, $join_behavior);
 
         $criteria->addJoin(DocumentPeer::DOCUMENT_CATEGORY_ID, DocumentCategoryPeer::ID, $join_behavior);
+
+        $criteria->addJoin(DocumentPeer::HASH, DocumentDataPeer::HASH, $join_behavior);
 
 
         $stmt = BasePeer::doSelect($criteria, $con);
@@ -2712,6 +3247,25 @@ abstract class BaseDocumentPeer
 
             } // if joined row is not null
 
+                // Add objects for joined DocumentData rows
+
+                $key5 = DocumentDataPeer::getPrimaryKeyHashFromRow($row, $startcol5);
+                if ($key5 !== null) {
+                    $obj5 = DocumentDataPeer::getInstanceFromPool($key5);
+                    if (!$obj5) {
+
+                        $cls = DocumentDataPeer::getOMClass();
+
+                    $obj5 = new $cls();
+                    $obj5->hydrate($row, $startcol5);
+                    DocumentDataPeer::addInstanceToPool($obj5, $key5);
+                } // if $obj5 already loaded
+
+                // Add the $obj1 (Document) to the collection in $obj5 (DocumentData)
+                $obj5->addDocument($obj1);
+
+            } // if joined row is not null
+
             $results[] = $obj1;
         }
         $stmt->closeCursor();
@@ -2738,7 +3292,7 @@ abstract class BaseDocumentPeer
     {
       $dbMap = Propel::getDatabaseMap(BaseDocumentPeer::DATABASE_NAME);
       if (!$dbMap->hasTable(BaseDocumentPeer::TABLE_NAME)) {
-        $dbMap->addTableObject(new DocumentTableMap());
+        $dbMap->addTableObject(new \DocumentTableMap());
       }
     }
 
@@ -2788,7 +3342,7 @@ abstract class BaseDocumentPeer
             $con->beginTransaction();
             $pk = BasePeer::doInsert($criteria, $con);
             $con->commit();
-        } catch (PropelException $e) {
+        } catch (Exception $e) {
             $con->rollBack();
             throw $e;
         }
@@ -2861,7 +3415,7 @@ abstract class BaseDocumentPeer
             $con->commit();
 
             return $affectedRows;
-        } catch (PropelException $e) {
+        } catch (Exception $e) {
             $con->rollBack();
             throw $e;
         }
@@ -2920,7 +3474,7 @@ abstract class BaseDocumentPeer
             $con->commit();
 
             return $affectedRows;
-        } catch (PropelException $e) {
+        } catch (Exception $e) {
             $con->rollBack();
             throw $e;
         }
@@ -2933,7 +3487,7 @@ abstract class BaseDocumentPeer
      *
      * NOTICE: This does not apply to primary or foreign keys for now.
      *
-     * @param      Document $obj The object to validate.
+     * @param Document $obj The object to validate.
      * @param      mixed $cols Column name or array of column names.
      *
      * @return mixed TRUE if all columns are valid or the error message of the first invalid column.
@@ -2966,7 +3520,7 @@ abstract class BaseDocumentPeer
     /**
      * Retrieve a single object by pkey.
      *
-     * @param      int $pk the primary key.
+     * @param int $pk the primary key.
      * @param      PropelPDO $con the connection to use
      * @return Document
      */

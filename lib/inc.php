@@ -22,6 +22,9 @@ define('DIRNAME_BASE',          'base');
 define('DIRNAME_PLUGINS',       'plugins');
 define('DIRNAME_GENERATED',     'generated');
 
+// file names
+define('FILENAME_INFO',         'info.yml');
+
 // main dir constants
 define('MAIN_DIR' ,             dirname(dirname(dirname(__FILE__))));
 define('SITE_DIR',              MAIN_DIR.'/'.DIRNAME_SITE);
@@ -38,24 +41,27 @@ $aLibDirs = ResourceFinder::create()->addPath(DIRNAME_LIB)->addOptionalPath(DIRN
 
 set_include_path(MAIN_DIR.'/'.DIRNAME_GENERATED.PATH_SEPARATOR.implode(PATH_SEPARATOR, $aLibDirs).PATH_SEPARATOR.get_include_path());
 
-// frontend dir constants
-define('MAIN_DIR_FE',        PHP_SAPI === 'cli' ? Settings::getSetting('domain_holder', 'root_url', '/') : preg_replace("/^(.*)index\.php$/", '$1', $_SERVER['PHP_SELF']));
+$sPathInfo = isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '';
 
-define('BASE_DIR_FE',        MAIN_DIR_FE.DIRNAME_BASE);
-define('SITE_DIR_FE',        MAIN_DIR_FE.DIRNAME_SITE);
-define('INT_WEB_DIR_FE',     BASE_DIR_FE."/".DIRNAME_WEB);
-define('EXT_WEB_DIR_FE',     SITE_DIR_FE."/".DIRNAME_WEB);
-define('INT_CSS_DIR_FE',     INT_WEB_DIR_FE.'/css');
-define('EXT_CSS_DIR_FE',     EXT_WEB_DIR_FE.'/css');
-define('INT_JS_DIR_FE',      INT_WEB_DIR_FE.'/js');
-define('EXT_JS_DIR_FE',      EXT_WEB_DIR_FE.'/js');
-define('INT_MEDIA_DIR_FE',   INT_WEB_DIR_FE.'/media');
-define('EXT_MEDIA_DIR_FE',   EXT_WEB_DIR_FE.'/media');
-define('INT_IMAGES_DIR_FE',  INT_WEB_DIR_FE.'/images');
-define('EXT_IMAGES_DIR_FE',  EXT_WEB_DIR_FE.'/images');
+// frontend dir constants
+define('MAIN_DIR_FE',        PHP_SAPI === 'cli' ? Settings::getSetting('domain_holder', 'root_url', '/') : preg_replace("/^(.*)index\.php(\/.*)?$/", '$1', $_SERVER['PHP_SELF']));
+define('MAIN_DIR_FE_PHP',    $sPathInfo ? MAIN_DIR_FE.'index.php/' : MAIN_DIR_FE);
+
+define('BASE_DIR_FE',        MAIN_DIR_FE.DIRNAME_BASE);       /**< @deprecated */
+define('SITE_DIR_FE',        MAIN_DIR_FE.DIRNAME_SITE);       /**< @deprecated */
+define('INT_WEB_DIR_FE',     BASE_DIR_FE."/".DIRNAME_WEB);    /**< @deprecated */
+define('EXT_WEB_DIR_FE',     SITE_DIR_FE."/".DIRNAME_WEB);    /**< @deprecated */
+define('INT_CSS_DIR_FE',     INT_WEB_DIR_FE.'/css');          /**< @deprecated */
+define('EXT_CSS_DIR_FE',     EXT_WEB_DIR_FE.'/css');          /**< @deprecated */
+define('INT_JS_DIR_FE',      INT_WEB_DIR_FE.'/js');           /**< @deprecated */
+define('EXT_JS_DIR_FE',      EXT_WEB_DIR_FE.'/js');           /**< @deprecated */
+define('INT_MEDIA_DIR_FE',   INT_WEB_DIR_FE.'/media');        /**< @deprecated */
+define('EXT_MEDIA_DIR_FE',   EXT_WEB_DIR_FE.'/media');        /**< @deprecated */
+define('INT_IMAGES_DIR_FE',  INT_WEB_DIR_FE.'/images');       /**< @deprecated */
+define('EXT_IMAGES_DIR_FE',  EXT_WEB_DIR_FE.'/images');       /**< @deprecated */
 
 if(!isset($_REQUEST['path'])) {
-	$_REQUEST['path'] = '';
+	$_REQUEST['path'] = $sPathInfo;
 }
 if(StringUtil::startsWith($_REQUEST['path'], '/')) {
 	$_REQUEST['path'] = substr($_REQUEST['path'], 1);

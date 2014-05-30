@@ -24,7 +24,7 @@ abstract class BasePageProperty extends BaseObject implements Persistent
     protected static $peer;
 
     /**
-     * The flag var to prevent infinit loop in deep copy
+     * The flag var to prevent infinite loop in deep copy
      * @var       boolean
      */
     protected $startCopy = false;
@@ -119,6 +119,7 @@ abstract class BasePageProperty extends BaseObject implements Persistent
      */
     public function getId()
     {
+
         return $this->id;
     }
 
@@ -129,6 +130,7 @@ abstract class BasePageProperty extends BaseObject implements Persistent
      */
     public function getPageId()
     {
+
         return $this->page_id;
     }
 
@@ -139,6 +141,7 @@ abstract class BasePageProperty extends BaseObject implements Persistent
      */
     public function getName()
     {
+
         return $this->name;
     }
 
@@ -149,6 +152,7 @@ abstract class BasePageProperty extends BaseObject implements Persistent
      */
     public function getValue()
     {
+
         return $this->value;
     }
 
@@ -239,6 +243,7 @@ abstract class BasePageProperty extends BaseObject implements Persistent
      */
     public function getCreatedBy()
     {
+
         return $this->created_by;
     }
 
@@ -249,13 +254,14 @@ abstract class BasePageProperty extends BaseObject implements Persistent
      */
     public function getUpdatedBy()
     {
+
         return $this->updated_by;
     }
 
     /**
      * Set the value of [id] column.
      *
-     * @param int $v new value
+     * @param  int $v new value
      * @return PageProperty The current object (for fluent API support)
      */
     public function setId($v)
@@ -276,7 +282,7 @@ abstract class BasePageProperty extends BaseObject implements Persistent
     /**
      * Set the value of [page_id] column.
      *
-     * @param int $v new value
+     * @param  int $v new value
      * @return PageProperty The current object (for fluent API support)
      */
     public function setPageId($v)
@@ -301,12 +307,12 @@ abstract class BasePageProperty extends BaseObject implements Persistent
     /**
      * Set the value of [name] column.
      *
-     * @param string $v new value
+     * @param  string $v new value
      * @return PageProperty The current object (for fluent API support)
      */
     public function setName($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (string) $v;
         }
 
@@ -322,12 +328,12 @@ abstract class BasePageProperty extends BaseObject implements Persistent
     /**
      * Set the value of [value] column.
      *
-     * @param string $v new value
+     * @param  string $v new value
      * @return PageProperty The current object (for fluent API support)
      */
     public function setValue($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (string) $v;
         }
 
@@ -389,7 +395,7 @@ abstract class BasePageProperty extends BaseObject implements Persistent
     /**
      * Set the value of [created_by] column.
      *
-     * @param int $v new value
+     * @param  int $v new value
      * @return PageProperty The current object (for fluent API support)
      */
     public function setCreatedBy($v)
@@ -414,7 +420,7 @@ abstract class BasePageProperty extends BaseObject implements Persistent
     /**
      * Set the value of [updated_by] column.
      *
-     * @param int $v new value
+     * @param  int $v new value
      * @return PageProperty The current object (for fluent API support)
      */
     public function setUpdatedBy($v)
@@ -459,7 +465,7 @@ abstract class BasePageProperty extends BaseObject implements Persistent
      * more tables.
      *
      * @param array $row The row returned by PDOStatement->fetch(PDO::FETCH_NUM)
-     * @param int $startcol 0-based offset column which indicates which restultset column to start with.
+     * @param int $startcol 0-based offset column which indicates which resultset column to start with.
      * @param boolean $rehydrate Whether this object is being re-hydrated from the database.
      * @return int             next starting column
      * @throws PropelException - Any caught Exception will be rewrapped as a PropelException.
@@ -484,6 +490,7 @@ abstract class BasePageProperty extends BaseObject implements Persistent
                 $this->ensureConsistency();
             }
             $this->postHydrate($row, $startcol, $rehydrate);
+
             return $startcol + 8; // 8 = PagePropertyPeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
@@ -716,7 +723,7 @@ abstract class BasePageProperty extends BaseObject implements Persistent
             $this->alreadyInSave = true;
 
             // We call the save method on the following object(s) if they
-            // were passed to this object by their coresponding set
+            // were passed to this object by their corresponding set
             // method.  This object relates to these object(s) by a
             // foreign key reference.
 
@@ -917,10 +924,10 @@ abstract class BasePageProperty extends BaseObject implements Persistent
      *
      * In addition to checking the current object, all related objects will
      * also be validated.  If all pass then <code>true</code> is returned; otherwise
-     * an aggreagated array of ValidationFailed objects will be returned.
+     * an aggregated array of ValidationFailed objects will be returned.
      *
      * @param array $columns Array of column names to validate.
-     * @return mixed <code>true</code> if all validations pass; array of <code>ValidationFailed</code> objets otherwise.
+     * @return mixed <code>true</code> if all validations pass; array of <code>ValidationFailed</code> objects otherwise.
      */
     protected function doValidate($columns = null)
     {
@@ -932,7 +939,7 @@ abstract class BasePageProperty extends BaseObject implements Persistent
 
 
             // We call the validate method on the following object(s) if they
-            // were passed to this object by their coresponding set
+            // were passed to this object by their corresponding set
             // method.  This object relates to these object(s) by a
             // foreign key reference.
 
@@ -1057,6 +1064,11 @@ abstract class BasePageProperty extends BaseObject implements Persistent
             $keys[6] => $this->getCreatedBy(),
             $keys[7] => $this->getUpdatedBy(),
         );
+        $virtualColumns = $this->virtualColumns;
+        foreach ($virtualColumns as $key => $virtualColumn) {
+            $result[$key] = $virtualColumn;
+        }
+
         if ($includeForeignObjects) {
             if (null !== $this->aPage) {
                 $result['Page'] = $this->aPage->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
@@ -1307,7 +1319,7 @@ abstract class BasePageProperty extends BaseObject implements Persistent
     /**
      * Declares an association between this object and a Page object.
      *
-     * @param             Page $v
+     * @param                  Page $v
      * @return PageProperty The current object (for fluent API support)
      * @throws PropelException
      */
@@ -1359,7 +1371,7 @@ abstract class BasePageProperty extends BaseObject implements Persistent
     /**
      * Declares an association between this object and a User object.
      *
-     * @param             User $v
+     * @param                  User $v
      * @return PageProperty The current object (for fluent API support)
      * @throws PropelException
      */
@@ -1411,7 +1423,7 @@ abstract class BasePageProperty extends BaseObject implements Persistent
     /**
      * Declares an association between this object and a User object.
      *
-     * @param             User $v
+     * @param                  User $v
      * @return PageProperty The current object (for fluent API support)
      * @throws PropelException
      */
@@ -1487,7 +1499,7 @@ abstract class BasePageProperty extends BaseObject implements Persistent
      *
      * This method is a user-space workaround for PHP's inability to garbage collect
      * objects with circular references (even in PHP 5.3). This is currently necessary
-     * when using Propel in certain daemon or large-volumne/high-memory operations.
+     * when using Propel in certain daemon or large-volume/high-memory operations.
      *
      * @param boolean $deep Whether to also clear the references on all referrer objects.
      */

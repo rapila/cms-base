@@ -21,7 +21,7 @@
  * @method DocumentQuery orderByIsInactive($order = Criteria::ASC) Order by the is_inactive column
  * @method DocumentQuery orderByIsProtected($order = Criteria::ASC) Order by the is_protected column
  * @method DocumentQuery orderBySort($order = Criteria::ASC) Order by the sort column
- * @method DocumentQuery orderByData($order = Criteria::ASC) Order by the data column
+ * @method DocumentQuery orderByHash($order = Criteria::ASC) Order by the hash column
  * @method DocumentQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method DocumentQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  * @method DocumentQuery orderByCreatedBy($order = Criteria::ASC) Order by the created_by column
@@ -42,7 +42,7 @@
  * @method DocumentQuery groupByIsInactive() Group by the is_inactive column
  * @method DocumentQuery groupByIsProtected() Group by the is_protected column
  * @method DocumentQuery groupBySort() Group by the sort column
- * @method DocumentQuery groupByData() Group by the data column
+ * @method DocumentQuery groupByHash() Group by the hash column
  * @method DocumentQuery groupByCreatedAt() Group by the created_at column
  * @method DocumentQuery groupByUpdatedAt() Group by the updated_at column
  * @method DocumentQuery groupByCreatedBy() Group by the created_by column
@@ -67,6 +67,10 @@
  * @method DocumentQuery leftJoinDocumentCategory($relationAlias = null) Adds a LEFT JOIN clause to the query using the DocumentCategory relation
  * @method DocumentQuery rightJoinDocumentCategory($relationAlias = null) Adds a RIGHT JOIN clause to the query using the DocumentCategory relation
  * @method DocumentQuery innerJoinDocumentCategory($relationAlias = null) Adds a INNER JOIN clause to the query using the DocumentCategory relation
+ *
+ * @method DocumentQuery leftJoinDocumentData($relationAlias = null) Adds a LEFT JOIN clause to the query using the DocumentData relation
+ * @method DocumentQuery rightJoinDocumentData($relationAlias = null) Adds a RIGHT JOIN clause to the query using the DocumentData relation
+ * @method DocumentQuery innerJoinDocumentData($relationAlias = null) Adds a INNER JOIN clause to the query using the DocumentData relation
  *
  * @method DocumentQuery leftJoinUserRelatedByCreatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the UserRelatedByCreatedBy relation
  * @method DocumentQuery rightJoinUserRelatedByCreatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UserRelatedByCreatedBy relation
@@ -93,7 +97,7 @@
  * @method Document findOneByIsInactive(boolean $is_inactive) Return the first Document filtered by the is_inactive column
  * @method Document findOneByIsProtected(boolean $is_protected) Return the first Document filtered by the is_protected column
  * @method Document findOneBySort(int $sort) Return the first Document filtered by the sort column
- * @method Document findOneByData(resource $data) Return the first Document filtered by the data column
+ * @method Document findOneByHash(string $hash) Return the first Document filtered by the hash column
  * @method Document findOneByCreatedAt(string $created_at) Return the first Document filtered by the created_at column
  * @method Document findOneByUpdatedAt(string $updated_at) Return the first Document filtered by the updated_at column
  * @method Document findOneByCreatedBy(int $created_by) Return the first Document filtered by the created_by column
@@ -114,7 +118,7 @@
  * @method array findByIsInactive(boolean $is_inactive) Return Document objects filtered by the is_inactive column
  * @method array findByIsProtected(boolean $is_protected) Return Document objects filtered by the is_protected column
  * @method array findBySort(int $sort) Return Document objects filtered by the sort column
- * @method array findByData(resource $data) Return Document objects filtered by the data column
+ * @method array findByHash(string $hash) Return Document objects filtered by the hash column
  * @method array findByCreatedAt(string $created_at) Return Document objects filtered by the created_at column
  * @method array findByUpdatedAt(string $updated_at) Return Document objects filtered by the updated_at column
  * @method array findByCreatedBy(int $created_by) Return Document objects filtered by the created_by column
@@ -131,8 +135,14 @@ abstract class BaseDocumentQuery extends ModelCriteria
      * @param     string $modelName The phpName of a model, e.g. 'Book'
      * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
      */
-    public function __construct($dbName = 'rapila', $modelName = 'Document', $modelAlias = null)
+    public function __construct($dbName = null, $modelName = null, $modelAlias = null)
     {
+        if (null === $dbName) {
+            $dbName = 'rapila';
+        }
+        if (null === $modelName) {
+            $modelName = 'Document';
+        }
         parent::__construct($dbName, $modelName, $modelAlias);
     }
 
@@ -149,10 +159,8 @@ abstract class BaseDocumentQuery extends ModelCriteria
         if ($criteria instanceof DocumentQuery) {
             return $criteria;
         }
-        $query = new DocumentQuery();
-        if (null !== $modelAlias) {
-            $query->setModelAlias($modelAlias);
-        }
+        $query = new DocumentQuery(null, null, $modelAlias);
+
         if ($criteria instanceof Criteria) {
             $query->mergeWith($criteria);
         }
@@ -180,7 +188,7 @@ abstract class BaseDocumentQuery extends ModelCriteria
             return null;
         }
         if ((null !== ($obj = DocumentPeer::getInstanceFromPool((string) $key))) && !$this->formatter) {
-            // the object is alredy in the instance pool
+            // the object is already in the instance pool
             return $obj;
         }
         if ($con === null) {
@@ -222,7 +230,7 @@ abstract class BaseDocumentQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `id`, `name`, `original_name`, `description`, `content_created_at`, `license`, `author`, `language_id`, `owner_id`, `document_type_id`, `document_category_id`, `is_private`, `is_inactive`, `is_protected`, `sort`, `created_at`, `updated_at`, `created_by`, `updated_by` FROM `documents` WHERE `id` = :p0';
+        $sql = 'SELECT `id`, `name`, `original_name`, `description`, `content_created_at`, `license`, `author`, `language_id`, `owner_id`, `document_type_id`, `document_category_id`, `is_private`, `is_inactive`, `is_protected`, `sort`, `hash`, `created_at`, `updated_at`, `created_by`, `updated_by` FROM `documents` WHERE `id` = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -447,7 +455,7 @@ abstract class BaseDocumentQuery extends ModelCriteria
      * <code>
      * $query->filterByContentCreatedAt('2011-03-14'); // WHERE content_created_at = '2011-03-14'
      * $query->filterByContentCreatedAt('now'); // WHERE content_created_at = '2011-03-14'
-     * $query->filterByContentCreatedAt(array('max' => 'yesterday')); // WHERE content_created_at > '2011-03-13'
+     * $query->filterByContentCreatedAt(array('max' => 'yesterday')); // WHERE content_created_at < '2011-03-13'
      * </code>
      *
      * @param     mixed $contentCreatedAt The value to use as filter.
@@ -826,17 +834,32 @@ abstract class BaseDocumentQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the data column
+     * Filter the query on the hash column
      *
-     * @param     mixed $data The value to use as filter
+     * Example usage:
+     * <code>
+     * $query->filterByHash('fooValue');   // WHERE hash = 'fooValue'
+     * $query->filterByHash('%fooValue%'); // WHERE hash LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $hash The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return DocumentQuery The current query, for fluid interface
      */
-    public function filterByData($data = null, $comparison = null)
+    public function filterByHash($hash = null, $comparison = null)
     {
+        if (null === $comparison) {
+            if (is_array($hash)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $hash)) {
+                $hash = str_replace('*', '%', $hash);
+                $comparison = Criteria::LIKE;
+            }
+        }
 
-        return $this->addUsingAlias(DocumentPeer::DATA, $data, $comparison);
+        return $this->addUsingAlias(DocumentPeer::HASH, $hash, $comparison);
     }
 
     /**
@@ -846,7 +869,7 @@ abstract class BaseDocumentQuery extends ModelCriteria
      * <code>
      * $query->filterByCreatedAt('2011-03-14'); // WHERE created_at = '2011-03-14'
      * $query->filterByCreatedAt('now'); // WHERE created_at = '2011-03-14'
-     * $query->filterByCreatedAt(array('max' => 'yesterday')); // WHERE created_at > '2011-03-13'
+     * $query->filterByCreatedAt(array('max' => 'yesterday')); // WHERE created_at < '2011-03-13'
      * </code>
      *
      * @param     mixed $createdAt The value to use as filter.
@@ -889,7 +912,7 @@ abstract class BaseDocumentQuery extends ModelCriteria
      * <code>
      * $query->filterByUpdatedAt('2011-03-14'); // WHERE updated_at = '2011-03-14'
      * $query->filterByUpdatedAt('now'); // WHERE updated_at = '2011-03-14'
-     * $query->filterByUpdatedAt(array('max' => 'yesterday')); // WHERE updated_at > '2011-03-13'
+     * $query->filterByUpdatedAt(array('max' => 'yesterday')); // WHERE updated_at < '2011-03-13'
      * </code>
      *
      * @param     mixed $updatedAt The value to use as filter.
@@ -1123,7 +1146,7 @@ abstract class BaseDocumentQuery extends ModelCriteria
      *
      * @return DocumentQuery The current query, for fluid interface
      */
-    public function joinUserRelatedByOwnerId($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinUserRelatedByOwnerId($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         $tableMap = $this->getTableMap();
         $relationMap = $tableMap->getRelation('UserRelatedByOwnerId');
@@ -1158,7 +1181,7 @@ abstract class BaseDocumentQuery extends ModelCriteria
      *
      * @return   UserQuery A secondary query class using the current class as primary query
      */
-    public function useUserRelatedByOwnerIdQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useUserRelatedByOwnerIdQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         return $this
             ->joinUserRelatedByOwnerId($relationAlias, $joinType)
@@ -1315,6 +1338,82 @@ abstract class BaseDocumentQuery extends ModelCriteria
         return $this
             ->joinDocumentCategory($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'DocumentCategory', 'DocumentCategoryQuery');
+    }
+
+    /**
+     * Filter the query by a related DocumentData object
+     *
+     * @param   DocumentData|PropelObjectCollection $documentData The related object(s) to use as filter
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return                 DocumentQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
+     */
+    public function filterByDocumentData($documentData, $comparison = null)
+    {
+        if ($documentData instanceof DocumentData) {
+            return $this
+                ->addUsingAlias(DocumentPeer::HASH, $documentData->getHash(), $comparison);
+        } elseif ($documentData instanceof PropelObjectCollection) {
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+
+            return $this
+                ->addUsingAlias(DocumentPeer::HASH, $documentData->toKeyValue('PrimaryKey', 'Hash'), $comparison);
+        } else {
+            throw new PropelException('filterByDocumentData() only accepts arguments of type DocumentData or PropelCollection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the DocumentData relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return DocumentQuery The current query, for fluid interface
+     */
+    public function joinDocumentData($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('DocumentData');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'DocumentData');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the DocumentData relation DocumentData object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   DocumentDataQuery A secondary query class using the current class as primary query
+     */
+    public function useDocumentDataQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinDocumentData($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'DocumentData', 'DocumentDataQuery');
     }
 
     /**

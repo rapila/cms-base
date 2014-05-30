@@ -6,6 +6,8 @@
 
 class TagAreaWidgetModule extends PersistentWidgetModule {
 	
+	const USE_NAMESPACED_CSS = false;
+	
 	private $sModelName;
 	private $mTaggedItemId;
 	

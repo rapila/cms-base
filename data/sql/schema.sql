@@ -367,14 +367,14 @@ CREATE TABLE `documents`
     `license` VARCHAR(30),
     `author` VARCHAR(150),
     `language_id` VARCHAR(3),
-    `owner_id` INTEGER NOT NULL,
+    `owner_id` INTEGER,
     `document_type_id` INTEGER NOT NULL,
     `document_category_id` INTEGER,
     `is_private` TINYINT(1) DEFAULT 0,
     `is_inactive` TINYINT(1) DEFAULT 0,
     `is_protected` TINYINT(1) DEFAULT 0,
     `sort` INTEGER,
-    `data` LONGBLOB,
+    `hash` VARCHAR(40) NOT NULL,
     `created_at` DATETIME,
     `updated_at` DATETIME,
     `created_by` INTEGER,
@@ -384,8 +384,28 @@ CREATE TABLE `documents`
     INDEX `documents_FI_2` (`owner_id`),
     INDEX `documents_FI_3` (`document_type_id`),
     INDEX `documents_FI_4` (`document_category_id`),
-    INDEX `documents_FI_5` (`created_by`),
-    INDEX `documents_FI_6` (`updated_by`)
+    INDEX `documents_FI_5` (`hash`),
+    INDEX `documents_FI_6` (`created_by`),
+    INDEX `documents_FI_7` (`updated_by`)
+) ENGINE=MyISAM;
+
+-- ---------------------------------------------------------------------
+-- document_data
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `document_data`;
+
+CREATE TABLE `document_data`
+(
+    `hash` VARCHAR(40) NOT NULL,
+    `data` LONGBLOB,
+    `created_at` DATETIME,
+    `updated_at` DATETIME,
+    `created_by` INTEGER,
+    `updated_by` INTEGER,
+    PRIMARY KEY (`hash`),
+    INDEX `document_data_FI_1` (`created_by`),
+    INDEX `document_data_FI_2` (`updated_by`)
 ) ENGINE=MyISAM;
 
 -- ---------------------------------------------------------------------

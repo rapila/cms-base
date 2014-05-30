@@ -24,7 +24,7 @@ abstract class BaseDocumentType extends BaseObject implements Persistent
     protected static $peer;
 
     /**
-     * The flag var to prevent infinit loop in deep copy
+     * The flag var to prevent infinite loop in deep copy
      * @var       boolean
      */
     protected $startCopy = false;
@@ -148,6 +148,7 @@ abstract class BaseDocumentType extends BaseObject implements Persistent
      */
     public function getId()
     {
+
         return $this->id;
     }
 
@@ -158,6 +159,7 @@ abstract class BaseDocumentType extends BaseObject implements Persistent
      */
     public function getExtension()
     {
+
         return $this->extension;
     }
 
@@ -168,6 +170,7 @@ abstract class BaseDocumentType extends BaseObject implements Persistent
      */
     public function getMimetype()
     {
+
         return $this->mimetype;
     }
 
@@ -178,6 +181,7 @@ abstract class BaseDocumentType extends BaseObject implements Persistent
      */
     public function getIsOfficeDoc()
     {
+
         return $this->is_office_doc;
     }
 
@@ -268,6 +272,7 @@ abstract class BaseDocumentType extends BaseObject implements Persistent
      */
     public function getCreatedBy()
     {
+
         return $this->created_by;
     }
 
@@ -278,13 +283,14 @@ abstract class BaseDocumentType extends BaseObject implements Persistent
      */
     public function getUpdatedBy()
     {
+
         return $this->updated_by;
     }
 
     /**
      * Set the value of [id] column.
      *
-     * @param int $v new value
+     * @param  int $v new value
      * @return DocumentType The current object (for fluent API support)
      */
     public function setId($v)
@@ -305,12 +311,12 @@ abstract class BaseDocumentType extends BaseObject implements Persistent
     /**
      * Set the value of [extension] column.
      *
-     * @param string $v new value
+     * @param  string $v new value
      * @return DocumentType The current object (for fluent API support)
      */
     public function setExtension($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (string) $v;
         }
 
@@ -326,12 +332,12 @@ abstract class BaseDocumentType extends BaseObject implements Persistent
     /**
      * Set the value of [mimetype] column.
      *
-     * @param string $v new value
+     * @param  string $v new value
      * @return DocumentType The current object (for fluent API support)
      */
     public function setMimetype($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (string) $v;
         }
 
@@ -422,7 +428,7 @@ abstract class BaseDocumentType extends BaseObject implements Persistent
     /**
      * Set the value of [created_by] column.
      *
-     * @param int $v new value
+     * @param  int $v new value
      * @return DocumentType The current object (for fluent API support)
      */
     public function setCreatedBy($v)
@@ -447,7 +453,7 @@ abstract class BaseDocumentType extends BaseObject implements Persistent
     /**
      * Set the value of [updated_by] column.
      *
-     * @param int $v new value
+     * @param  int $v new value
      * @return DocumentType The current object (for fluent API support)
      */
     public function setUpdatedBy($v)
@@ -496,7 +502,7 @@ abstract class BaseDocumentType extends BaseObject implements Persistent
      * more tables.
      *
      * @param array $row The row returned by PDOStatement->fetch(PDO::FETCH_NUM)
-     * @param int $startcol 0-based offset column which indicates which restultset column to start with.
+     * @param int $startcol 0-based offset column which indicates which resultset column to start with.
      * @param boolean $rehydrate Whether this object is being re-hydrated from the database.
      * @return int             next starting column
      * @throws PropelException - Any caught Exception will be rewrapped as a PropelException.
@@ -521,6 +527,7 @@ abstract class BaseDocumentType extends BaseObject implements Persistent
                 $this->ensureConsistency();
             }
             $this->postHydrate($row, $startcol, $rehydrate);
+
             return $startcol + 8; // 8 = DocumentTypePeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
@@ -751,7 +758,7 @@ abstract class BaseDocumentType extends BaseObject implements Persistent
             $this->alreadyInSave = true;
 
             // We call the save method on the following object(s) if they
-            // were passed to this object by their coresponding set
+            // were passed to this object by their corresponding set
             // method.  This object relates to these object(s) by a
             // foreign key reference.
 
@@ -962,10 +969,10 @@ abstract class BaseDocumentType extends BaseObject implements Persistent
      *
      * In addition to checking the current object, all related objects will
      * also be validated.  If all pass then <code>true</code> is returned; otherwise
-     * an aggreagated array of ValidationFailed objects will be returned.
+     * an aggregated array of ValidationFailed objects will be returned.
      *
      * @param array $columns Array of column names to validate.
-     * @return mixed <code>true</code> if all validations pass; array of <code>ValidationFailed</code> objets otherwise.
+     * @return mixed <code>true</code> if all validations pass; array of <code>ValidationFailed</code> objects otherwise.
      */
     protected function doValidate($columns = null)
     {
@@ -977,7 +984,7 @@ abstract class BaseDocumentType extends BaseObject implements Persistent
 
 
             // We call the validate method on the following object(s) if they
-            // were passed to this object by their coresponding set
+            // were passed to this object by their corresponding set
             // method.  This object relates to these object(s) by a
             // foreign key reference.
 
@@ -1104,6 +1111,11 @@ abstract class BaseDocumentType extends BaseObject implements Persistent
             $keys[6] => $this->getCreatedBy(),
             $keys[7] => $this->getUpdatedBy(),
         );
+        $virtualColumns = $this->virtualColumns;
+        foreach ($virtualColumns as $key => $virtualColumn) {
+            $result[$key] = $virtualColumn;
+        }
+
         if ($includeForeignObjects) {
             if (null !== $this->aUserRelatedByCreatedBy) {
                 $result['UserRelatedByCreatedBy'] = $this->aUserRelatedByCreatedBy->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
@@ -1360,7 +1372,7 @@ abstract class BaseDocumentType extends BaseObject implements Persistent
     /**
      * Declares an association between this object and a User object.
      *
-     * @param             User $v
+     * @param                  User $v
      * @return DocumentType The current object (for fluent API support)
      * @throws PropelException
      */
@@ -1412,7 +1424,7 @@ abstract class BaseDocumentType extends BaseObject implements Persistent
     /**
      * Declares an association between this object and a User object.
      *
-     * @param             User $v
+     * @param                  User $v
      * @return DocumentType The current object (for fluent API support)
      * @throws PropelException
      */
@@ -1554,7 +1566,7 @@ abstract class BaseDocumentType extends BaseObject implements Persistent
                     if (false !== $this->collDocumentsPartial && count($collDocuments)) {
                       $this->initDocuments(false);
 
-                      foreach($collDocuments as $obj) {
+                      foreach ($collDocuments as $obj) {
                         if (false == $this->collDocuments->contains($obj)) {
                           $this->collDocuments->append($obj);
                         }
@@ -1564,12 +1576,13 @@ abstract class BaseDocumentType extends BaseObject implements Persistent
                     }
 
                     $collDocuments->getInternalIterator()->rewind();
+
                     return $collDocuments;
                 }
 
-                if($partial && $this->collDocuments) {
-                    foreach($this->collDocuments as $obj) {
-                        if($obj->isNew()) {
+                if ($partial && $this->collDocuments) {
+                    foreach ($this->collDocuments as $obj) {
+                        if ($obj->isNew()) {
                             $collDocuments[] = $obj;
                         }
                     }
@@ -1597,7 +1610,8 @@ abstract class BaseDocumentType extends BaseObject implements Persistent
     {
         $documentsToDelete = $this->getDocuments(new Criteria(), $con)->diff($documents);
 
-        $this->documentsScheduledForDeletion = unserialize(serialize($documentsToDelete));
+
+        $this->documentsScheduledForDeletion = $documentsToDelete;
 
         foreach ($documentsToDelete as $documentRemoved) {
             $documentRemoved->setDocumentType(null);
@@ -1631,7 +1645,7 @@ abstract class BaseDocumentType extends BaseObject implements Persistent
                 return 0;
             }
 
-            if($partial && !$criteria) {
+            if ($partial && !$criteria) {
                 return count($this->getDocuments());
             }
             $query = DocumentQuery::create(null, $criteria);
@@ -1660,8 +1674,13 @@ abstract class BaseDocumentType extends BaseObject implements Persistent
             $this->initDocuments();
             $this->collDocumentsPartial = true;
         }
+
         if (!in_array($l, $this->collDocuments->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
             $this->doAddDocument($l);
+
+            if ($this->documentsScheduledForDeletion and $this->documentsScheduledForDeletion->contains($l)) {
+                $this->documentsScheduledForDeletion->remove($this->documentsScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -1787,6 +1806,31 @@ abstract class BaseDocumentType extends BaseObject implements Persistent
      * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return PropelObjectCollection|Document[] List of Document objects
      */
+    public function getDocumentsJoinDocumentData($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = DocumentQuery::create(null, $criteria);
+        $query->joinWith('DocumentData', $join_behavior);
+
+        return $this->getDocuments($query, $con);
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this DocumentType is new, it will return
+     * an empty collection; or if this DocumentType has previously
+     * been saved, it will retrieve related Documents from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in DocumentType.
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Document[] List of Document objects
+     */
     public function getDocumentsJoinUserRelatedByCreatedBy($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
     {
         $query = DocumentQuery::create(null, $criteria);
@@ -1848,7 +1892,7 @@ abstract class BaseDocumentType extends BaseObject implements Persistent
      *
      * This method is a user-space workaround for PHP's inability to garbage collect
      * objects with circular references (even in PHP 5.3). This is currently necessary
-     * when using Propel in certain daemon or large-volumne/high-memory operations.
+     * when using Propel in certain daemon or large-volume/high-memory operations.
      *
      * @param boolean $deep Whether to also clear the references on all referrer objects.
      */

@@ -5,7 +5,7 @@ Widget.types.document_type_detail = {
 	},
 	
 	fill_data: function() {
-		this.detail_widget.disable();		
+		this.detail_widget.disable();
 		this.typeData(function(type_data) {
 			this._element.find("input[name='extension']").val(type_data.Extension);
 			this._element.find("input[name='mimetype']").val(type_data.Mimetype);

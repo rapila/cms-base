@@ -34,10 +34,7 @@ class TextFrontendModule extends FrontendModule {
 	
 	public function getJsForFrontend() {
 		if(Settings::getSetting("frontend", "protect_email_addresses", false)) {
-			$oResourceIncluder = ResourceIncluder::defaultIncluder();
-			$oResourceIncluder->startDependencies();
-			$oResourceIncluder->addJavaScriptLibrary('jquery', 1);
-			$oResourceIncluder->addResourceEndingDependency('e-mail-defuscate.js');
+			ResourceIncluder::defaultIncluder()->addResource('e-mail-defuscate.js');
 		}
 		return null;
 	}

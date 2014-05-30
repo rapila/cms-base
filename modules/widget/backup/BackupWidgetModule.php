@@ -4,12 +4,12 @@
  */
 class BackupWidgetModule extends PersistentWidgetModule {
 	private $iFileSizeOfSiteDir;
-	
+
 	public function __construct($sWidgetId) {
 		parent::__construct($sWidgetId);
 		$this->setSetting('backup_storage_limit_warning', Settings::getSetting('admin', 'backup_storage_limit_warning', 1000000000));
 	}
-	
+
 	public function possibleRestoreFiles() {
 		$aAllSqlFiles = ResourceFinder::create(array(DIRNAME_DATA, "sql", "/.*\.sql$/"))->byExpressions()->noCache()->returnObjects()->find();
 		$aResult = array();
@@ -23,14 +23,14 @@ class BackupWidgetModule extends PersistentWidgetModule {
 		arsort($aResult);
 		return $aResult;
 	}
-	
+
 	public function getBackupDirSize() {
 		$aResult = array();
 		$aResult['integer'] = $this->iFileSizeOfSiteDir;
 		$aResult['formatted']= DocumentPeer::getDocumentSize($this->iFileSizeOfSiteDir);
 		return $aResult;
 	}
-	
+
 	public function loadFromBackup($sFileName = null) {
 		$sFilePath = ResourceFinder::findResource(array(DIRNAME_DATA, 'sql', $sFileName));
 		$oConnection = Propel::getConnection();
@@ -53,7 +53,7 @@ class BackupWidgetModule extends PersistentWidgetModule {
 		if($bFileError) {
 			throw new LocalizedException('wns.backup.loader.load_error', array('filename' => $sFilePath));
 		}
-		
+
 		// continue importing from local file
 		$sStatement = "";
 		$sReadLine = "";
@@ -73,11 +73,11 @@ class BackupWidgetModule extends PersistentWidgetModule {
 		if(trim($sStatement) !== "") {
 			$oConnection->exec($sStatement);
 		}
-		
+
 		Cache::clearAllCaches();
 		return $iQueryCount;
 	}
-	
+
 	public function backupToFile($sFileName, $sMysqlDumpUtil) {
 		$aDbConfig = $this->getDbConfig();
 		$sFilePath = ResourceFinder::findResource(array(DIRNAME_DATA, 'sql'))."/$sFileName";
@@ -87,14 +87,14 @@ class BackupWidgetModule extends PersistentWidgetModule {
 		$sCommand = '"'.escapeshellcmd($sMysqlDumpUtil).'" -h '.escapeshellarg($aDbConfig['host']).' -u '.escapeshellarg($aDbConfig['user']).' '.escapeshellarg('--password='.$aDbConfig['password']).' --skip-add-locks --opt --lock-tables=FALSE -r '.escapeshellarg($sFilePath).' '.escapeshellarg($aDbConfig['database']).' 2>&1';
 		exec($sCommand, $aOutput, $iCode);
 		$sOutput = str_replace("\x7", '', implode("\n", $aOutput));
-		
+
 		if($iCode === 0) {
 			return $sOutput;
 		}
-		
+
 		throw new LocalizedException('wns.backup.exporter.export_error', array('util' => $sMysqlDumpUtil, 'iam' => exec('whoami'), 'message' => $sOutput), null, $iCode);
 	}
-	
+
 	public function backupInfo() {
 		$sOutput = null;
 		$iCode = null;
@@ -102,18 +102,48 @@ class BackupWidgetModule extends PersistentWidgetModule {
 		$aInfo['backup_dir'] = ResourceFinder::findResource(array(DIRNAME_DATA, 'sql'))."/";
 		$aDbConfig = $this->getDbConfig();
 		$aInfo['suggested_backup_name'] = "{$aDbConfig['database']}@{$aDbConfig['host']}-".date('Ymd-Hi').".sql";
-		exec('which mysqldump', $sOutput, $iCode);
-		if($iCode === 0) {
-		  $aInfo['mysql_dump_tool'] = $sOutput;
-		} else {
-			$sMySqlDumpTool = Settings::getSetting('admin', 'mysql_dump_tool', null);
-			if($sMySqlDumpTool !== null) {
-				$aInfo['mysql_dump_tool'] = $sMySqlDumpTool;
-			}
-		}
+		$aInfo['mysql_dump_tool'] = static::detectMysqldumpLocation();
 		return $aInfo;
 	}
-	
+
+	private static function detectMysqldumpLocation() {
+		// 1st: try config
+		$sMySqlDumpTool = Settings::getSetting('admin', 'mysql_dump_tool', null);
+		//if($sMySqlDumpTool && is_executable($sMySqlDumpTool)) {
+		if($sMySqlDumpTool) {
+			return $sMySqlDumpTool;
+		}
+
+		// 2nd: use mysqldump location from `which` command.
+		$sMySqlDumpTool = `which mysqldump`;
+		if (is_executable($sMySqlDumpTool)) {
+			return $sMySqlDumpTool;
+		}
+
+		// 3rd: try to detect the path using `which` for `mysql` command.
+		$sMySqlDumpTool = dirname(`which mysql`) . "/mysqldump";
+		if (is_executable($sMySqlDumpTool)) {
+			return $sMySqlDumpTool;
+		}
+
+		// 4th: detect the path from the available paths.
+		// you can add additional paths you come across, in future, here.
+		$aMySqyDumpToolPath = array(
+			'/usr/bin/mysqldump', // Linux
+			'/usr/local/mysql/bin/mysqldump', //Mac OS X
+			'/usr/local/bin/mysqldump', //Linux
+			'/usr/mysql/bin/mysqldump' //Linux
+		 );
+		foreach($aMySqyDumpToolPath as $sMySqlDumpTool) {
+			if (is_executable($sMySqlDumpTool)) {
+				return $sMySqlDumpTool;
+			}
+		}
+		
+		// 5th: detection has failed
+		return null;
+	}
+
 	public function deleteBackupFile($sBackupFile) {
 		$sFilePath = ResourceFinder::findResource(array(DIRNAME_DATA, 'sql', $sBackupFile));
 		if($sFilePath) {
@@ -121,7 +151,7 @@ class BackupWidgetModule extends PersistentWidgetModule {
 		}
 		return true;
 	}
-	
+
 	private function getDbConfig() {
 		$aResult = array();
 		$aDbConfig = Propel::getConfiguration();

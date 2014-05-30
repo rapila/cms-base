@@ -80,7 +80,7 @@
 			filled_modules.delegate('li .edit_condition_button', 'click', bind(this.edit_condition));
 			filled_modules.delegate('li .edit_button', 'click', bind(this.edit_object));
 			filled_modules.delegate('li .draft_status', 'click', bind(this.drop_draft));
-			
+
 			var available_modules = container.find('.available_modules');
 			var delete_drop_zone = container.find('.delete_drop_zone').droppable({
 				accept: 'li[data-container]',
@@ -91,7 +91,7 @@
 					_this.remove_object(event, ui.draggable, true);
 				}
 			});
-			
+
 			var container_html = this.containers.html;
 			if(container_html) {
 				Widget.parseHTML(container_html).appendTo(filled_modules);
@@ -101,7 +101,7 @@
 			} else {
 				filled_modules.removeClass('css_parsed');
 			}
-			
+
 			var filled_modules_containers = filled_modules.find('ol[data-container-name]');
 			jQuery.each(this.filled_frontend_modules, function(container_name, container_params) {
 				var target = filled_modules_containers.filter('[data-container-name='+container_name+']');
@@ -113,7 +113,7 @@
 				});
 				_this.update_additional_container_info(target);
 			});
-			
+
 			filled_modules_containers.sortable({
 				connectWith: filled_modules_containers,
 				helper: 'clone',
@@ -374,20 +374,27 @@
 							var protector = new UnsavedChanges(element);
 							var buttons = [{
 								text: '{{writeString=wns.save}}',
-								'class': 'primary ui-state-highlight',
+								'class': 'primary ui-state-highlight save standard',
 								click: save.bind(this, false),
 								accesskey: 's'
 							},
 							{
 								text: '{{writeString=wns.save_as_draft}}',
-								click: save.bind(this, true)
+								click: save.bind(this, true),
+								'class': 'save-as-draft standard'
 							}];
 							if(widget.additional_buttons) {
 								jQuery.each(widget.additional_buttons, function(i, button) {
-									buttons.push({text: button.text, click: button.action.bind(widget), 'class': 'ui-additional-button', icons: {primary: 'ui-icon-'+button.icon}});
+									buttons.unshift({
+										text: button.text,
+										click: button.action.bind(widget),
+										'class': 'ui-additional-button special',
+										icons: {primary: 'ui-icon-'+button.icon}
+									});
 								});
 							}
 							element.dialog({
+								dialogClass: 'default-page-type-editor',
 								close: function() {
 									protector.unprotect(element).release();
 									if(widget.destroy) {
@@ -440,18 +447,19 @@
 				md = this.find_structure(element);
 			}
 			var language_id = element.attr('data-language-id');
-			
+
 			var props = md.content;
+
 			var lang_props = props.language_objects[language_id];
-			
+
 			element[lang_props.exists_in_language ? 'removeClass' : 'addClass']('language_object_empty');
 			element[lang_props.is_draft ? 'addClass' : 'removeClass']('is_draft');
 			element[props.has_condition ? 'addClass' : 'removeClass']('has_condition');
-			
+
 			element.find('.module_name').text(props.object_type_display_name);
 			element.attr('title', lang_props.content_info);
 		},
-		
+
 		update_additional_container_info: function(container) {
 			var info = container.prev('.template-container-info');
 			var inherit_info = container.data('inheritedFrom');

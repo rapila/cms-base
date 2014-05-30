@@ -143,21 +143,27 @@ class ResourceIncluder {
 		if(!is_array($mFileResource)) {
 			$mFileResource = array($mFileResource);
 		}
-				
+
 		foreach($mFileResource as $oFileResource) {
 			if($sFinalLocation === null) {
 				$sFinalLocation = $oFileResource->getFrontendPath();
 				$sResourcePrefix = self::RESOURCE_PREFIX_INTERNAL;
 			}
-		
+
 			if($sTemplateName === null) {
 				$sTemplateName = $this->findTemplateNameForLocation($sFinalLocation);
 			}
-			
+
 			if($sIdentifier === null) {
 				$sIdentifier = $sResourcePrefix.$sFinalLocation;
 			}
-			
+
+			if(StringUtil::startsWith($sFinalLocation, '/') && !StringUtil::startsWith($sFinalLocation, '//')) {
+				// This will actually only convert to an absolute URL if linking/always_link_absolutely is true
+				// or linking/ssl_in_absolute_links requests a different protocol than currently employed
+				$sFinalLocation = LinkUtil::absoluteLink($sFinalLocation, null, 'default', true);
+			}
+
 			$aExtraInfo['location'] = $sFinalLocation;
 			if(!isset($aExtraInfo['resource_type'])) {
 				$aExtraInfo['resource_type'] = $sTemplateName;
@@ -224,7 +230,7 @@ class ResourceIncluder {
 	* @param boolean|null $bUseLocalProxy Whether we should proxy the included library through our own server. If set to null, the default will be used (as configured in the “use_local_library_cache” setting of the “general” section of the resource_includer.yml config file, which is off by default for production environments). This is useful for environments that need to be testable without an active internet connection or for production environments where libraries should not be loaded from external sources due to privacy concerns.
 	* @param string $sIeCondition An IE conditional-comment condition to put around the include. Will only print conditional comments when not null. Example: “lt IE 9”.
 	*/
-	public function addJavaScriptLibrary($sLibraryName, $sLibraryVersion, $bUseCompression = null, $bInlcudeDependencies = true, $bUseSsl = null, $iPriority = self::PRIORITY_NORMAL, $bUseLocalProxy = null, $sIeCondition = null) {
+	public function addJavaScriptLibrary($sLibraryName, $sLibraryVersion, $bUseCompression = null, $bInlcudeDependencies = true, $bUseSsl = 'default', $iPriority = self::PRIORITY_NORMAL, $bUseLocalProxy = null, $sIeCondition = null) {
 		if($bUseLocalProxy === null) {
 			$bUseLocalProxy = Settings::getSetting('general', 'use_local_library_cache', false, 'resource_includer');
 		}
@@ -278,15 +284,20 @@ class ResourceIncluder {
 
 		if($bUseLocalProxy) {
 			$sLink = LinkUtil::link(array('local_js_library', $sLibraryName), 'FileManager', array('version' => $sLibraryVersion, 'use_compression' => BooleanParser::stringForBoolean($bUseCompression)));
-			if($bUseSsl !== null) {
-				$sLink = LinkUtil::absoluteLink($sLink, null, $bUseSsl ? 'https://' : 'http://');
-			}
+			$sLink = LinkUtil::absoluteLink($sLink, null, $bUseSsl, true);
 			$this->addResource($sLink, self::RESOURCE_TYPE_JS, $sResourceIdentifier, array('version' => $sLibraryVersion, 'use_compression' => $bUseCompression), $iPriority, $sIeCondition, false, is_array($aLibraryDependencies));
 			return;
 		}
 
 		//Add resource
 		$sLibraryUrl = str_replace('${version}', $sLibraryVersion, $sLibraryUrl);
+		// Normalize $bUseSsl from 'default', 'auto' to null, true, false
+		if($bUseSsl === 'default') {
+			$bUseSsl = Settings::getSetting('linking', 'ssl_in_absolute_links', null);
+		}
+		if($bUseSsl === 'auto') {
+			$bUseSsl = LinkUtil::isSSL();
+		}
 		if($bUseSsl !== null) {
 			if(StringUtil::startsWith($sLibraryUrl, '//')) {
 				$sLibraryUrl = ($bUseSsl ? 'https://' : 'http://').substr($sLibraryUrl, 2);
@@ -384,8 +395,12 @@ class ResourceIncluder {
 	* Also note that a value of "internal" for $bConsolidate will only have an effect on js libraries if they’re not being locally cached (use_local_library_cache is false)
 	*/
 	public function getIncludes($bPrintNewlines = true, $bConsolidate = null) {
+		$bConsolidateSetting = Settings::getSetting('general', 'consolidate_resources', false, 'resource_includer');
 		if($bConsolidate === null) {
-			$bConsolidate = Settings::getSetting('general', 'consolidate_resources', false, 'resource_includer');
+			$bConsolidate = $bConsolidateSetting;
+		}
+		if($bConsolidate === 'never' || $bConsolidateSetting === 'never') { //In the “never” case, $bConsolidateSetting overrides a local $bConsolidate
+			$bConsolidate = false;
 		}
 		if($bConsolidate && !ini_get('allow_url_fopen')) {
 			// Never consolidate external files if fopen_wrappers are disabled
@@ -442,11 +457,13 @@ class ResourceIncluder {
 	}
 	
 	private function consolidationStepForResourceType($sType, $bExcludeExternal, $iPriority, $sKey, &$aConsolidatorInfo, &$resource_type, &$file_resource, &$location, &$content, &$template, &$media = null) {
+		$sSSLMode = Settings::getSetting('linking', 'ssl_in_absolute_links', null) === null ? LinkUtil::isSSL() : 'default';
 		if($resource_type !== $sType && $resource_type !== "inline_$sType") {
 			return;
 		}
 		//External location (no file_resource given) or location not determinable
-		if($file_resource === null && ($bExcludeExternal || ($location === null && $content === null))) {
+		$bIsExternal = $file_resource === null && $content === null;
+		if($bIsExternal && ($bExcludeExternal || $location === null)) {
 			$this->cleanupConsolidator($aConsolidatorInfo);
 		} else {
 			$this->initConsolidator($sType, $iPriority, $sKey, $aConsolidatorInfo);
@@ -456,12 +473,12 @@ class ResourceIncluder {
 				$sContents = '';
 				if($file_resource !== null) {
 					$sContents = file_get_contents($file_resource->getFullPath());
-					$sRelativeLocationRoot = LinkUtil::absoluteLink($file_resource->getFrontendPath(), null, LinkUtil::isSSL());
+					$sRelativeLocationRoot = LinkUtil::absoluteLink($file_resource->getFrontendPath(), null, $sSSLMode);
 				} else if($location !== null) {
 					if(StringUtil::startsWith($location, '//')) {
 						$location = (LinkUtil::isSSL() ? 'https:' : 'http:').$location;
 					} else if(StringUtil::startsWith($location, '/')) {
-						$location = LinkUtil::absoluteLink($location, null, LinkUtil::isSSL());
+						$location = LinkUtil::absoluteLink($location, null, $sSSLMode);
 					}
 					$sRelativeLocationRoot = $location;
 					$sContents = file_get_contents($location);
@@ -471,10 +488,12 @@ class ResourceIncluder {
 					}
 					$sContents = $content;
 				}
+
 				if($sType === self::RESOURCE_TYPE_CSS && $media) {
 					$sContents = "@media $media { $sContents }";
 				}
-				// Fix relative locations
+
+				// Fix relative locations in CSS
 				if($sType === self::RESOURCE_TYPE_CSS && $sRelativeLocationRoot !== null) {
 					$iSlashPosition = strrpos($sRelativeLocationRoot, '/');
 					if($iSlashPosition !== false) {
@@ -541,7 +560,7 @@ class ResourceIncluder {
 		foreach($aConsolidatorInfo['contents'] as $oCache) {
 			$aLocation[] = $oCache->getFileName();
 		}
-		$sLink = LinkUtil::absoluteLink(LinkUtil::link($aLocation, 'FileManager'));
+		$sLink = LinkUtil::absoluteLink(LinkUtil::link($aLocation, 'FileManager'), null, 'default', true);
 		$aConsolidatorLink = array('location' => $sLink, 'template' => $aConsolidatorInfo['type']);
 		$this->aIncludedResources[$aConsolidatorInfo['priority']][$aConsolidatorInfo['key']] = $aConsolidatorLink;
 		$aConsolidatorInfo = null;
@@ -552,7 +571,15 @@ class ResourceIncluder {
 		$iPriority = $oIdentifier->hasParameter('priority') ? constant("ResourceIncluder::PRIORITY_".strtoupper($oIdentifier->getParameter('priority'))) : ResourceIncluder::PRIORITY_NORMAL;
 		$sIeCondition = $oIdentifier->hasParameter('ie_condition') ? $oIdentifier->getParameter('ie_condition') : null;
 		if($oIdentifier->hasParameter('library')) {
-			$this->addJavaScriptLibrary($mLocation, $oIdentifier->getParameter('library'), $oIdentifier->hasParameter('uncompressed') ? false : null, !$oIdentifier->hasParameter('nodeps'), $oIdentifier->hasParameter('use_ssl'), $iPriority, null, $sIeCondition);
+			$bUseSsl = $oIdentifier->hasParameter('use_ssl') ? null : 'default';
+
+			if($oIdentifier->getParameter('use_ssl')) {
+				$bUseSsl = $oIdentifier->getParameter('use_ssl');
+				if($bUseSsl !== 'auto' && $bUseSsl !== 'default') {
+					$bUseSsl = BooleanParser::booleanForString($bUseSsl);
+				}
+			}
+			$this->addJavaScriptLibrary($mLocation, $oIdentifier->getParameter('library'), $oIdentifier->hasParameter('uncompressed') ? false : null, !$oIdentifier->hasParameter('nodeps'), $bUseSsl, $iPriority, null, $sIeCondition);
 			return null;
 		}
 		if($oIdentifier->hasParameter('inline')) {

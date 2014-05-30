@@ -12,12 +12,12 @@
 	vertical-align: top;
 	width: 21px;
 	margin: 0 5px;
-	background: url("{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/suggest_password.png") no-repeat;
+	background: url("{{writeDirectInclude=admin/suggest_password.png;template=location_only}}") no-repeat;
 	cursor: pointer;
 }
 
 .ui-widget-content .ui-icon.suggest_password:hover {
-	background: url("{{writeConstantValue=INT_IMAGES_DIR_FE}}/admin/suggest_password_hover.png") no-repeat;
+	background: url("{{writeDirectInclude=admin/suggest_password_hover.png;template=location_only}}") no-repeat;
 }
 
 input[name="password_suggest"].ui-widget-content.select {

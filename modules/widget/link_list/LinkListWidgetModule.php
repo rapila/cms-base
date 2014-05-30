@@ -79,6 +79,7 @@ class LinkListWidgetModule extends WidgetModule {
 				$aResult['heading'] = '';
 				$aResult['heading_filter'] = array('language_input', $this->oLanguageFilter->getSessionKey());
 				$aResult['is_sortable'] = false;
+				$aResult['field_name'] = 'language_name';
 				break;
 			case 'updated_at_formatted':
 				$aResult['heading'] = StringPeer::getString('wns.updated_at');
@@ -120,6 +121,14 @@ class LinkListWidgetModule extends WidgetModule {
 			return LinkPeer::NAME;
 		}
 		return null;
+	}
+
+	public function getLinkCategoryId() {
+		return $this->oDelegateProxy->getLinkCategoryId();
+	}
+	
+	public function getLanguageName() {
+		return StringPeer::getString('language.'.$this->oDelegateProxy->getLanguageId(), null, $this->oDelegateProxy->getLanguageId());
 	}
 	
 	public function getLinkCategoryName() {

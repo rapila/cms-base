@@ -24,7 +24,7 @@
 	ul
 		margin 0
 		padding 0
-		
+
 	.ui-state-error ul
 		margin-left 0.5em
 		list-style none
@@ -116,7 +116,7 @@ form.page_detail .ui-state-active,
 form.page_detail .ui-widget-content .ui-state-active
 	background-image none
 
-form.page_detail 
+form.page_detail
 	.status_section
 		border-top none
 		border-bottom #C1C2C4 1px solid
@@ -214,7 +214,7 @@ h3.status
 	.filled_modules
 		min-width 350px
 		max-width 500px
-		min-height 300px
+		min-height 150px
 		float:left
 		background-color transparent
 		font-size 4px
@@ -228,18 +228,6 @@ h3.status
 			border 1px solid #eeeeee !important
 			background-color #FFF
 			border-color #DFDFDF
-
-			.ui-icon
-				height 20px
-				margin -2px 2px 0 0
-				width 26px
-				&.ui-icon-trash
-					background transparent url("../../images/admin/icon_trash.png") no-repeat center bottom
-				&.ui-icon-wrench
-					background transparent url("../../images/admin/icon_edit_condition.png") no-repeat center bottom
-				&.ui-icon-pencil
-					background transparent url("../../images/admin/icon_edit.png") no-repeat center bottom
-
 			li
 				margin 3px
 				padding 5px 6px
@@ -248,13 +236,13 @@ h3.status
 					background #e3ef99 url("../../images/admin/filled_object_bg_gradient_empty.png") repeat-x right bottom
 					.remove_button
 						display none
-			
+
 				.edit_condition_button
 					opacity 0.5
 				&.has_condition
 					.edit_condition_button
 						opacity 1
-				
+
 				.draft_status
 					display none
 				&.is_draft .draft_status
@@ -313,9 +301,6 @@ h3.status
 		background-color #f2f2f2
 		z-index 2
 
-	div.ui-widget-content
-		border 0
-
 .ui-image-picker-image
 	.ui-icon.ui-icon-trash
 		position absolute
@@ -366,7 +351,7 @@ div.ui-state-droppable
 	padding 0 0 0.6em 0
 
 .ui-accordion .ui-accordion-content.contents_container	div.ui-widget-content,
-.ui-accordion .ui-accordion-content.configuration_container	 div.ui-widget-content
+.ui-accordion .ui-accordion-content.configuration_container div.ui-widget-content
 	padding 0
 	border-color #CCCDCF
 

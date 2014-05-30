@@ -41,7 +41,7 @@ class LinkUtil {
 	* Discards all buffered output and exits
 	* Pass $sHost = false to mark $sLocation as absolute URL
 	*/
-	public static function redirect($sLocation, $sHost = null, $sProtocol = null, $bPermanent = true) {
+	public static function redirect($sLocation, $sHost = null, $sProtocol = 'default', $bPermanent = true) {
 		while(ob_get_level() > 0) {
 			ob_end_clean();
 		}
@@ -65,7 +65,25 @@ class LinkUtil {
 		header("$sProtocol $iCode $sName", true, $iCode);
 	}
 	
-	public static function absoluteLink($sLocation, $sHost = null, $sProtocol = null) {
+	/**
+	* Constructs an absolute link given a host-absolute location (starts with a slash)
+	* @param string $sLocation the host-absolute location
+	* @param string $sHost the host name to link to. will be inferred from the HTTP Host or the host name configured in domain_holder/domain. Precedence is given to the former unless the linking/prefer_configured_domain setting is true
+	* @param string $sProtocol whether or not to link to the HTTPS version. 'default' reads the linking/ssl_in_absolute_links setting. 'auto' will use whatever is currently being used to access the site. 
+	*/
+	public static function absoluteLink($sLocation, $sHost = null, $sProtocol = 'default', $bAbsoluteLinkMayBeOmitted = false) {
+		if($sProtocol === 'default') {
+			$sProtocol = Settings::getSetting('linking', 'ssl_in_absolute_links', null);
+		}
+		if($bAbsoluteLinkMayBeOmitted && Settings::getSetting('linking', 'always_link_absolutely', false) === false) {
+			// If the current protocol differs from a clear preference given (explicit true or false), we still need to use an absolute link
+			if(($sProtocol !== true && $sProtocol !== false) || $sProtocol === self::isSSL()) {
+				return $sLocation;
+			}
+		}
+		if($sProtocol === 'auto') {
+			$sProtocol = self::isSSL();
+		}
 		if($sProtocol === null) {
 			$sProtocol = '//';
 		} else if($sProtocol === true) {
@@ -73,11 +91,8 @@ class LinkUtil {
 		} else if($sProtocol === false) {
 			$sProtocol = 'http://';
 		}
-		if($sHost === null && isset($_SERVER['HTTP_HOST'])) {
-			$sHost = $_SERVER['HTTP_HOST'];
-		}
 		if($sHost === null) {
-			$sHost = Settings::getSetting('domain_holder', 'domain', null);
+			$sHost = self::getHostName();
 		}
 		return "$sProtocol$sHost$sLocation";
 	}
@@ -169,7 +184,7 @@ class LinkUtil {
 			$sPrefix = '';
 		}
 		
-		return MAIN_DIR_FE.$sPrefix.implode('/', $mPath).self::prepareLinkParameters($aParameters);
+		return MAIN_DIR_FE_PHP.$sPrefix.implode('/', $mPath).self::prepareLinkParameters($aParameters);
 	}
 	
 	/**
@@ -193,12 +208,19 @@ class LinkUtil {
 		return $sParameters;
 	}
 
-	public static function getHostName() {
-		return Settings::getSetting('domain_holder', 'name', $_SERVER['HTTP_HOST']);
+	public static function getHostName($sDefaultHost = null) {
+		$sHost = null;
+		if(isset($_SERVER['HTTP_HOST']) && !Settings::getSetting('linking', 'prefer_configured_domain', false)) {
+			$sHost = $_SERVER['HTTP_HOST'];
+		}
+		if(!$sHost) {
+			$sHost = Settings::getSetting('domain_holder', 'domain', $sDefaultHost);
+		}
+		return $sHost;
 	}
 
 	public static function getDomainHolderEmail($sDefaultSender = 'info') {
-		return Settings::getSetting('domain_holder', 'email', $sDefaultSender.'@'.$_SERVER['HTTP_HOST']);
+		return Settings::getSetting('domain_holder', 'email', $sDefaultSender.'@'.self::getHostName());
 	}
 	
 	public static function getUrlWithProtocolIfNotSet($sUrl) {

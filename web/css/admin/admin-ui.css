@@ -45,13 +45,9 @@ h3.status{padding-left:.3em}
 #admin_sidebar .ui-list li.ui-list-headrow span{padding-left:5px}
 #admin_sidebar .ui-list th{line-height:14px}
 .page_detail .available_modules li,.page_detail .filled_modules ol.template-container li{list-style:none inside;-webkit-border-radius:3px;border-radius:3px;padding:2px 6px;border:1px solid #ccc;margin:2px;text-align:left;background:#e3ef99 url("../../images/admin/filled_object_bg_gradient.png") repeat-x right bottom}
-.page_detail .filled_modules{min-width:350px;max-width:500px;min-height:300px;float:left;background-color:transparent;font-size:4px;position:relative;}
+.page_detail .filled_modules{min-width:350px;max-width:500px;min-height:150px;float:left;background-color:transparent;font-size:4px;position:relative;}
 .page_detail .filled_modules.css_parsed{width:500px}
 .page_detail .filled_modules ol.template-container{display:block;min-height:70px !important;min-width:150px !important;border:1px solid #eee !important;background-color:#fff;border-color:#dfdfdf;}
-.page_detail .filled_modules ol.template-container .ui-icon{height:20px;margin:-2px 2px 0 0;width:26px;}
-.page_detail .filled_modules ol.template-container .ui-icon.ui-icon-trash{background:transparent url("../../images/admin/icon_trash.png") no-repeat center bottom}
-.page_detail .filled_modules ol.template-container .ui-icon.ui-icon-wrench{background:transparent url("../../images/admin/icon_edit_condition.png") no-repeat center bottom}
-.page_detail .filled_modules ol.template-container .ui-icon.ui-icon-pencil{background:transparent url("../../images/admin/icon_edit.png") no-repeat center bottom}
 .page_detail .filled_modules ol.template-container li{margin:3px;padding:5px 6px;min-height:15.6px;}
 .page_detail .filled_modules ol.template-container li.language_object_empty{background:#e3ef99 url("../../images/admin/filled_object_bg_gradient_empty.png") repeat-x right bottom;}
 .page_detail .filled_modules ol.template-container li.language_object_empty .remove_button{display:none}
@@ -68,7 +64,6 @@ h3.status{padding-left:.3em}
 .page_detail .available_modules li > *{display:none}
 .page_detail .available_modules li > .module_name{display:inline}
 .page_detail .available_modules li{padding:1px 5px 0;margin:0 0 -1px 0;background-color:#f2f2f2;z-index:2}
-.page_detail div.ui-widget-content{border:0}
 .ui-image-picker-image .ui-icon.ui-icon-trash{position:absolute;bottom:2px;right:2px}
 .ui-icon-trash.delete_inactive{background-image:none}
 #admin_sidebar .ui-state-droppable,.image_browse_area.ui-state-droppable{color:#5b595b;cursor:pointer}
@@ -80,7 +75,7 @@ h3.status{padding-left:.3em}
 *[data-widget-type=tree].ui-widget-content .jstree-closed > .ui-icon{background-image:url("../../images/admin/icon_triangle_closed.png");background-position:6px 5px}
 *[data-widget-type=tree].ui-widget-content .jstree-closed > .ui-icon:hover{background-image:url("../../images/admin/icon_triangle_closed_active.png");background-position:6px 5px}
 .users fieldset.option_groups{padding:0 0 .6em 0}
-.ui-accordion .ui-accordion-content.contents_container	div.ui-widget-content,.ui-accordion .ui-accordion-content.configuration_container	 div.ui-widget-content{padding:0;border-color:#cccdcf}
+.ui-accordion .ui-accordion-content.contents_container div.ui-widget-content,.ui-accordion .ui-accordion-content.configuration_container div.ui-widget-content{padding:0;border-color:#cccdcf}
 label span.error_display:before,legend span.error_display:before{content:' '}
 label span.error_display,legend span.error_display,.error_display{color:#f00}
 .delete_drop_zone{float:left;height:100px;margin:23px 2px 2px 2px;padding:2px;width:100px}

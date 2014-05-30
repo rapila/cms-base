@@ -9,6 +9,17 @@ general:
   timezone: "Europe/Zurich"
   # those don’t work well in some environments
   send_not_modified_headers: true
+  # whether to trust proxy headers for the following: Forwarded-For, SSL, Host, and Port
+  # TODO: Implement
+  trust_http_proxy_headers: false
+
+linking:
+  # Set true to prefer sending the configured host name (domain_holder/domain) instead of the inferred (coming from the HTTP Host: header)
+  prefer_configured_domain: false
+  # Whether to print SSL links by default when linking absolutely. True means absolute links start with https://, false means they start with http://, null means they are protocol-relative (start with //), 'auto' means they look at the server’s SSL info variables.
+  ssl_in_absolute_links: null
+  # Whether to always print absolute links (true) or only when really necessary (false)
+  always_link_absolutely: false
 
 routing:
   routes:
@@ -37,10 +48,10 @@ developer:
 
 admin:
   title: 'CMS Admin — {{module_name}}'
-  
+
   # set this to false if your containers overlap
   use_parsed_css_in_config: true
-  
+
   # document edit and delete can be restricted to owner only (if is not admin), defaults to false
   document_delete_allow_from_creator_only: false
   list_allows_multiple_categories: false
@@ -48,7 +59,7 @@ admin:
   # hide externally managed categories
   hide_externally_managed_link_categories: true
   hide_externally_managed_document_categories: true
-  
+
   registered_user_languages: ['de', 'en']
 
 error_handling:
@@ -56,7 +67,7 @@ error_handling:
   print_errors: false
   log_errors: true
   mail_errors: false
-  
+
 login:
   password_min_length: 4
 
@@ -64,9 +75,9 @@ login:
 # important note: toolbar config always requires space after comma ", " in order to function properly
 # skins available: moono, kama
 text_module:
-  skin: moono 
-  toolbar: 
-    - 
+  skin: moono
+  toolbar:
+    -
       - ["Bold", "Italic"]
       - ["Link", "Unlink", "Anchor", "-", "Image"]
       - ["NumberedList", "BulletedList", "Blockquote"]
@@ -77,10 +88,10 @@ text_module:
       - ["HorizontalRule", "Smiley", "SpecialChar", "-", "RemoveFormat", "PasteText", "Scayt", "ShowBlocks"]
       - ["Source"]
   richtext_width: 700
- 
+
 security:
   generate_digest_secrets: false
-  
+
 frontend:
   title: 'Site Title'
   main_template: general
@@ -102,7 +113,7 @@ encoding:
 session_default:
   language: en &fe_language
   content_language: *fe_language
-  
+
 #language_chooser default
 language_chooser:
   link_separator: ""

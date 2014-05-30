@@ -212,6 +212,10 @@ class DocumentsViewWidgetDelegate {
 	public function getDocumentCategoryId() {
 		return $this->oDelegateProxy->getDocumentCategoryId();
 	}
+
+	public function getLanguageName() {
+		return StringPeer::getString('language.'.$this->oDelegateProxy->getLanguageId(), null, $this->oDelegateProxy->getLanguageId());
+	}
 	
 	public function getDocumentCategoryName() {
 		$oDocumentCategory = DocumentCategoryQuery::create()->findPk($this->getDocumentCategoryId());

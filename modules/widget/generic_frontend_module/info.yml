@@ -1,0 +1,4 @@
+---
+aspects:
+  - persistent
+enabled: true

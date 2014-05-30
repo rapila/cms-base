@@ -34,7 +34,7 @@ jQuery(document).ready(function() {
 		// Add info_bar elements
 		info_bar.add_button('add-new-item', function() {
 			Widget.create('document_detail', function(widget) {
-				widget.settings.initial_category_id = sidebar.active_row().data('document_category_id');
+				widget.settings.initial = {document_category_id: sidebar.active_row().data('document_category_id')};
 				widget.open();
 				widget.handle('saved', function() {
 					content_list.reload();
@@ -49,7 +49,7 @@ jQuery(document).ready(function() {
 			if(content_list.changed) {
 				content_list.reload();
 			}
-		}).add_row_count_info_for_list(content_list).add_tag_panel();
+		}).add_row_count_info_for_list(content_list);
 		
 		// tag remove and drop handlers
 		Widget.handle('rapila-tag-removed-from-Document', function(event, result) {
@@ -79,6 +79,8 @@ jQuery(document).ready(function() {
 						Widget.confirm("{{writeString=wns.rapila_alert.information}}", "{{writeString=wns.document_category.delete_information}}", function(confirmed) {
 							if(confirmed) {
 								remove_active_category();
+								content_list.setDocumentCategoryId(null);
+								content_list.reload();
 							}
 						});
 					} else {

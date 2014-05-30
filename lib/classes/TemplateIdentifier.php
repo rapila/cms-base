@@ -1,15 +1,15 @@
 <?php
 require_once('Template.php');
-class TemplateIdentifier {
+class TemplateIdentifier extends TemplatePart {
 	private $sName;
 	private $sValue;
 	private $aParameters;
 	
 	public $iFlags = 0;
 
-	private $oTemplate;
-
 	public static $PARAMETER_EMPTY_VALUE = null;
+
+	const PARAMETER_EMPTY_VALUE = null;
 
 	function __construct($sName, $sValue, $sParameters = null, $oTemplate = null) {
 		$this->aParameters = array();
@@ -37,7 +37,7 @@ class TemplateIdentifier {
 		}
 		foreach($aParameters as $sParameter) {
 			$aKeyValuePair = preg_split("/(?<!\\\\)".preg_quote(TEMPLATE_KEY_VALUE_SEPARATOR, "/")."/", $sParameter);
-			$sParameterValue = self::$PARAMETER_EMPTY_VALUE;
+			$sParameterValue = self::PARAMETER_EMPTY_VALUE;
 			if(isset($aKeyValuePair[1])) {
 				$sParameterValue = implode(TEMPLATE_KEY_VALUE_SEPARATOR, array_slice($aKeyValuePair, 1));
 				$sParameterValue = self::unescapeIdentifier($sParameterValue);
@@ -115,18 +115,14 @@ class TemplateIdentifier {
 		return $this->aParameters[$sName];
 	}
 
+	public function __toString() {
+		return self::constructIdentifier($this->getName(), $this->getValue(), $this->aParameters);
+	}
+
 	public function __sleep() {
 		$aVars = get_object_vars($this);
 		unset($aVars['oTemplate']);
 		return array_keys($aVars);
-	}
-
-	public function setTemplate(Template $oTemplate) {
-		$this->oTemplate = $oTemplate;
-	}
-	
-	public function __toString() {
-		return self::constructIdentifier($this->getName(), $this->getValue(), $this->aParameters);
 	}
 
 	public static function unescapeIdentifier($sText) {
@@ -153,9 +149,9 @@ class TemplateIdentifier {
 	public static function constructIdentifier($sName, $sValue = null, $aParameters=array()) {
 		$aParametersCombined = array();
 		foreach($aParameters as $sParameterName => $sParameterValue) {
-			$aParametersCombined[] = $sParameterName.($sParameterValue!==self::$PARAMETER_EMPTY_VALUE ? TEMPLATE_KEY_VALUE_SEPARATOR.self::escapeIdentifier($sParameterValue) : '');
+			$aParametersCombined[] = $sParameterName.($sParameterValue!==self::PARAMETER_EMPTY_VALUE ? TEMPLATE_KEY_VALUE_SEPARATOR.self::escapeIdentifier($sParameterValue) : '');
 		}
-		return TEMPLATE_IDENTIFIER_START.$sName.($sValue!==self::$PARAMETER_EMPTY_VALUE ? TEMPLATE_KEY_VALUE_SEPARATOR.self::escapeIdentifier($sValue) : '').(count($aParametersCombined)!==0 ? TEMPLATE_PARAMETER_SEPARATOR.implode(TEMPLATE_PARAMETER_SEPARATOR, $aParametersCombined) : '').TEMPLATE_IDENTIFIER_END;
+		return TEMPLATE_IDENTIFIER_START.$sName.($sValue!==self::PARAMETER_EMPTY_VALUE ? TEMPLATE_KEY_VALUE_SEPARATOR.self::escapeIdentifier($sValue) : '').(count($aParametersCombined)!==0 ? TEMPLATE_PARAMETER_SEPARATOR.implode(TEMPLATE_PARAMETER_SEPARATOR, $aParametersCombined) : '').TEMPLATE_IDENTIFIER_END;
 	}
 
 }
