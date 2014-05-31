@@ -9,8 +9,6 @@ class AdminMenuWidgetModule extends PersistentWidgetModule {
 		parent::__construct(null);
 		$this->bPreview = $bPreview;
 		$this->setSetting('current_manager', Manager::getManagerClassNormalized());
-		$oResourceIncluder = ResourceIncluder::defaultIncluder();
-		$oResourceIncluder->addResource('admin/admin_menu.js');
 	}
 	
 	public static function isSingleton() {

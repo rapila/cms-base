@@ -31,6 +31,11 @@ class PreviewManager extends FrontendManager {
 		//Add the css that handles styles for all widgets but namespace it so it applies only to specific areas of the page (editable areas, dialogs, the admin menu, etc.)
 		$this->addNamespacedCss(array('widget', 'widget.css'));
 
+		$oResourceIncluder->addResource('backend/additions.js', null, null, null, ResourceIncluder::PRIORITY_NORMAL, null, true);
+		$oResourceIncluder->addResource('preview/additions.js', null, null, null, ResourceIncluder::PRIORITY_NORMAL, null, true);
+		$oResourceIncluder->addResource('backend/additions.css', null, null, null, ResourceIncluder::PRIORITY_NORMAL, null, true);
+		$oResourceIncluder->addResource('preview/additions.css', null, null, null, ResourceIncluder::PRIORITY_NORMAL, null, true);
+
 		//preview-interface.css contains things like the edit buttons
 		ResourceIncluder::defaultIncluder()->addResource('preview-interface.css', null, null, null, ResourceIncluder::PRIORITY_NORMAL, null, true);
 
