@@ -9,9 +9,9 @@
 .ui-state-droppable td,.ui-state-droppable-hover td{background-color:#e3ef99}
 .ui-state-hover{border-width:0}
 label{color:#666;float:none;font-family:Arial;font-size:.95em;display:block;padding-bottom:.1em;margin-top:.8em;text-align:left;width:auto}
-.status_section label{display:inline-block;padding-right:.5em}
-.status_section .hide_if_not_saved label:first-child{margin-top:.9em;}
-.status_section .hide_if_not_saved label:first-child label{width:5em;margin-top:.2em}
+.status_section label{display:inline-block;padding-right:.5em;}
+.status_section .hide_if_not_saved label{width:6em;margin-top:.4em}
+.hide_if_not_saved {margin-top: 0.8em;}
 .hide_if_not_saved label{display:inline-block}
 .hide_if_not_saved.bottom label{margin-left:1em;}
 .hide_if_not_saved.bottom label:first-child{margin-left:0}
