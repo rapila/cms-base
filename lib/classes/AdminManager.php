@@ -160,8 +160,12 @@ class AdminManager extends Manager {
 		$this->oResourceIncluder->addResource('widget/widget_skeleton.js'); //Provides some basic overrides for tooltip, notifyuser and stuff
 		$this->oResourceIncluder->addResource('admin/admin.js');
 		$this->oResourceIncluder->addResource('admin/skeleton.js');
-		// WidgetModule::removeStoredWidgets();
-		
+
+		$this->oResourceIncluder->addResource('backend/additions.js', null, null, null, ResourceIncluder::PRIORITY_NORMAL, null, true);
+		$this->oResourceIncluder->addResource('admin/additions.js', null, null, null, ResourceIncluder::PRIORITY_NORMAL, null, true);
+		$this->oResourceIncluder->addResource('backend/additions.css', null, null, null, ResourceIncluder::PRIORITY_NORMAL, null, true);
+		$this->oResourceIncluder->addResource('admin/additions.css', null, null, null, ResourceIncluder::PRIORITY_NORMAL, null, true);
+
 		$oOutput = new XHTMLOutput('html5');
 		$oOutput->render();
 	}
