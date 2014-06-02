@@ -83,10 +83,11 @@ div.inner-tab-panel-content{margin-left:-26px;margin-top:15px;}
 div.inner-tab-panel-content > div{margin-left:26px}
 div.inner-tab-panel-content .ui-tabs-nav.ui-widget-header{border-bottom:1px solid #cccdcf}
 .ui-state-default li.tab_content_active{color:#000}
-.add-new-item,.remove-item,.edit-item,.item-action,.print_area{background-image:url("../../images/admin/add_new_item.png");background-repeat:no-repeat;display:inline-block;height:16px;width:16px}
+.add-new-item,.remove-item,.edit-item,.item-action,.print_area,.go-to-documentation {background-image:url("../../images/admin/add_new_item.png");background-repeat:no-repeat;display:inline-block;height:16px;width:16px}
 .remove-item{background-image:url("../../images/admin/remove_item.png")}
 .edit-item{background-image:url("../../images/admin/edit_item.png")}
 .item-action{background-image:url("../../images/admin/action.png")}
+.go-to-documentation{background-image:url("../../images/admin/documentation.png")}
 .print_area{background-image:url("../../images/admin/print.gif");width:24px}
 .preview_edit{cursor:pointer}
 .rapila-icon{font-family:'Rapila-Icons';cursor: pointer;}
