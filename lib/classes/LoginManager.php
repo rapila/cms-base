@@ -84,6 +84,7 @@ class LoginManager extends PreviewManager {
 			return;
 		}
 		$iAdminTest = Session::getSession()->login($sUserName, $sPassword);
+		
 		//User is valid
 		if(($iAdminTest & Session::USER_IS_VALID) === Session::USER_IS_VALID) {
 			if(isset($_REQUEST['origin'])) {
