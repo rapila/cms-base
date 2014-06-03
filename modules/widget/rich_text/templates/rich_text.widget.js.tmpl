@@ -1,6 +1,7 @@
 Widget.types.rich_text = {
 	settings: {
 		customConfig: '',
+		extraAllowedContent: 'iframe[src,frameborder,height,width,allowfullscreen]',
 		entities: false,
 		bodyClass: 'editing',
 		baseFloatZIndex: 10000, //jQuery UI dialog’s z-indices start at 1000 or so and get incremented so we need to be an order of magnitude higher here…
@@ -11,6 +12,12 @@ Widget.types.rich_text = {
 	
 	initialize: function() {
 		var _this = this;
+		if(this.settings.additional_plugin_paths) {
+			for(var plugin_name in this.settings.additional_plugin_paths) {
+				var plugin_path = this.settings.additional_plugin_paths[plugin_name];
+				CKEDITOR.plugins.addExternal(plugin_name, plugin_path);
+			}
+		}
 		CKEDITOR.on('dialogDefinition', function(ev) {
 			var dialogName = ev.data.name;
 			var dialogDefinition = ev.data.definition;

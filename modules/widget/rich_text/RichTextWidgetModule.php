@@ -26,6 +26,18 @@ class RichTextWidgetModule extends PersistentWidgetModule {
 		foreach($this->aModuleSettings as $sKey => $mSetting) {
 			$this->setSetting($sKey, $mSetting);
 		}
+
+		// let CKEDITOR find plugins
+		$aPlugins = array();
+		foreach(ResourceFinder::create()->addPath(DIRNAME_WEB, ResourceIncluder::RESOURCE_TYPE_JS, 'widget', 'ckeditor-plugins')->addDirPath()->addRecursion()->addPath('plugin.js')->returnObjects()->find() as $oPluginPath) {
+			$oPluginPath = $oPluginPath->parent();
+			$aPlugins[$oPluginPath->getFileName()] = $oPluginPath->getFrontendPath().'/';
+		}
+		if(count($aPlugins) === 0) {
+			$aPlugins = null;
+		}
+		$this->setSetting('additional_plugin_paths', $aPlugins);
+
 		$this->setSetting('language', Session::language());
 	}
 	
