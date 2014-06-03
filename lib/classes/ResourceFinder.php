@@ -207,6 +207,14 @@ class ResourceFinder {
 	public function addFilePath($bOptional = false) {
 		return $bOptional ? $this->addOptionalPath(true) : $this->addExpression(true);
 	}
+	
+	/**
+	 * Adds a resource that needs to have the same name as the parent folder.
+	 * @param $bCamelized will camelize the parent name before matching.
+	 */
+	public function addSame($bCamelized = false) {
+		return $this->addExpression($bCamelized ? '${parent_name_camelized}' : '${parent_name}');
+	}
 
 	/**
 	 * @return bool|string|FileResource|array the matched path(s)
