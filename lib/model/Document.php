@@ -188,7 +188,7 @@ class Document extends BaseDocument {
 	* @todo remove
 	*/
 	public function getLink() {
-		return $this->getDisplayUrl(array(), 'display_document').'.'.$this->getDocumentType()->getExtension();
+		return $this->getDisplayUrl(array(), 'display_document');
 	}
 
 	public function getLicenseInfo() {

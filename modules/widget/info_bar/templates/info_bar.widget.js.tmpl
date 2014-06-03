@@ -54,22 +54,23 @@ Widget.types.info_bar = {
 		};
 
 		jQuery.extend(methods, {
-			add_element: function(element, is_right_container, is_before, accesskey) {
-				return add_item({
+			add_element: function(element, is_right_container, is_before, accesskey, options) {
+				options = jQuery.extend(options || {}, {
 					element: element,
 					parent: is_right_container,
 					is_before: is_before,
 					accesskey: accesskey
 				});
+				return add_item(options);
 			},
 	
-			add_button: function(class_name, action, accesskey, is_right_container, is_before, title_text) {
+			add_button: function(class_name, action, accesskey, is_right_container, is_before, title_text, options) {
 				if(title_text === undefined && class_name === 'add-new-item') {
 					title_text = "{{writeString=wns.create_new_entry}}";
 				}
 				var element = _this.button_prototype.clone();
 				element.attr('title', title_text);
-				return add_item({
+				options = jQuery.extend(options || {}, {
 					element: element,
 					class_name: class_name,
 					accesskey: accesskey,
@@ -77,6 +78,7 @@ Widget.types.info_bar = {
 					parent: is_right_container,
 					is_before: is_before
 				});
+				return add_item(options);
 			},
 
 			add_tag_panel: function(is_before) {
@@ -99,20 +101,20 @@ Widget.types.info_bar = {
 				return this;
 			},
 	
-			add_search_input: function(default_value, click_handler) {
+			add_search_input: function(default_value, click_handler, options) {
 				if(!default_value) {
 					default_value = "{{writeString=wns.search.enter_search}}";
 				}
-
 				var search_input = jQuery('<input/>', {name: 'search', value: default_value, type: 'text'}).prop({autocomplete: 'off'});
 
-				var result = add_item({
+				options = jQuery.extend(options || {}, {
 					element: search_input,
 					parent: 'right',
 					accesskey: 'f',
 					class_name: 'default_state search_field'
 				});
-				
+
+				var result = add_item(options);
 				var previous_search = null;
 
 				var clear_button = this.add_button('search_field_reset', null, null, true).element.hide();
@@ -163,12 +165,13 @@ Widget.types.info_bar = {
 				return result;
 			},
 
-			add_row_count_info_for_list: function(list) {
+			add_row_count_info_for_list: function(list, options) {
 				var row_count_info = jQuery('<span/>').addClass('row_count_info');
 				list.handle('reloaded', function() {
 					row_count_info.text("{{writeParameterizedString=wns.list_count;total=$\\{total\\};current=$\\{current\\}}}".replace(/\$\{total\}/, this.getNumberOfRows()).replace('${current}', this.current_row_count()));
 				}, false, true);
-				return add_item({element: row_count_info, parent: 'right'});
+				options = jQuery.extend(options || {}, {element: row_count_info, parent: 'right'});
+				return add_item(options);
 			}
 		});
 

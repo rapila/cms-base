@@ -37,7 +37,6 @@ jQuery(document).ready(function() {
 				widget.settings.initial = {document_category_id: sidebar.active_row().data('document_category_id')};
 				widget.open();
 				widget.handle('saved', function() {
-					console.log('document detail saved');
 					content_list.reload();
 				});
 			});

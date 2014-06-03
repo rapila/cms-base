@@ -49,10 +49,8 @@ Widget.types.link_detail = {
 			if(!this.settings.predefined_link_category_id) {
 				this.link_category_input.val(link_data.LinkCategoryId || '');
 			}
-			if(link_data.Id) {
-				this.tag_area.setTaggedItemId(link_data.Id);
-				this.tag_area.reload_tags();
-			}
+			this.tag_area.setTaggedItemId(link_data.Id);
+			this.tag_area.reload_tags();
 			this.detail_widget.set_title(this.detail_widget.settings.title = link_data.Name);
 			this.detail_widget.enable();
 		});

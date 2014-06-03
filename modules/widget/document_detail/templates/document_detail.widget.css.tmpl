@@ -7,6 +7,7 @@
 	background-image: url("{{writeDirectInclude=admin/drag_drop_white_hover.png;template=location_only}}");
 	background-repeat: no-repeat;
 	background-position: center center;
+	margin-top: 10px;
 }
 
 .ui-dialog.detail-widget-document_detail .preview.file_exists img {
@@ -18,6 +19,13 @@
 	width: 190px;
 	background-color: #fff;
 	margin-left: -1px
+}
+.ui-widget-content input[name='file_upload'] {
+	border: 1px solid #e9e9e9;
+	border-radius: 3px;
+	padding: 0.1em;
+	margin-right: 5px;
+	width: 22em;
 }
 
 .ui-dialog.detail-widget-document_detail .preview.ui-state-droppable {
@@ -40,9 +48,18 @@
 .ui-dialog.detail-widget-document_detail .status_section {
 	width: 21em;
 }
-	
+
+.ui-dialog.detail-widget-document_detail .status_section br {
+	font-size: 0;
+	line-height: 0.3em;
+}
+
+.ui-dialog.detail-widget-document_detail .hide_if_not_saved {
+	margin-top: 0.5em;
+}
+
 .ui-download-document {
-	padding: .3em 1.2em .2em 0;
+	padding: .3em 1.3em .2em 0;
 	display: inline-block;
 	color: #888888;
 	text-decoration: underline;

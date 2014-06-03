@@ -8,7 +8,6 @@ class StaticTextWidgetModule extends PersistentWidgetModule {
 			if($sModelName === false) {
 				continue;
 			}
-			ErrorHandler::log('listRecentlyChanged', $sModelName);
 			$sQueryClass = "{$sModelName}Query";
 			$oCriteria = $sQueryClass::create();
 			$oCriteria->filterByUpdatedAt(array('min' => time()-$iSeconds));

@@ -50,7 +50,7 @@ class LinkListWidgetModule extends WidgetModule {
 		} else {
 			$this->oDelegateProxy->getListSettings()->setFilterColumnValue('has_tags', CriteriaListWidgetDelegate::SELECT_ALL);
 		}
-		return array_merge($aResult, array('category_name', 'updated_at_formatted', 'delete'));
+		return array_merge($aResult, array('updated_at_formatted', 'delete'));
 	}
 	
 	public function getMetadataForColumn($sColumnIdentifier) {

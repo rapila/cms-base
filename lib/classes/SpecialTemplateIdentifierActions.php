@@ -264,7 +264,7 @@ class SpecialTemplateIdentifierActions {
 		} else {
 			$oResourceIncluder = ResourceIncluder::defaultIncluder();
 		}
-		return $oResourceIncluder->getIncludes();
+		return $oResourceIncluder->getIncludes(!$oTemplateIdentifier->hasParameter('noNewlines'));
 	}
 
 	public function replaceIn($oIdentifier) {

@@ -64,7 +64,7 @@ class FileUploadWidgetModule extends WidgetModule {
 		$oDocument->save();
 		return $oDocument->getId();
 	}
-
+	
 	public static function includeResources($oResourceIncluder = null) {
 		if($oResourceIncluder == null) {
 			$oResourceIncluder = ResourceIncluder::defaultIncluder();

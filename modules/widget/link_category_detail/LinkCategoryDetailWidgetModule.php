@@ -33,7 +33,6 @@ class LinkCategoryDetailWidgetModule extends PersistentWidgetModule {
 		}
 		$oCategory->fromArray($aLinkCategoryData, BasePeer::TYPE_FIELDNAME);
 		$this->validate($aLinkCategoryData);
-		$mReload = LinkCategoryQuery::create()->count() === 0 ? 'reload_list' : null;
 		if(!Flash::noErrors()) {
 			throw new ValidationException();
 		}
