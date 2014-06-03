@@ -4,7 +4,7 @@ declare(ticks = 1);
 
 require(dirname(__FILE__).'/../lib/inc.php');
 
-$aOptions = getopt('whsn::ud');
+$aOptions = getopt('whsnb::ud');
 
 if(!isset($aOptions['u'])) {
 	$aOptions['u'] = isset($aOptions['d']);
