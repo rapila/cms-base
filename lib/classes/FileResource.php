@@ -87,9 +87,17 @@ class FileResource {
 	public function getDirectoryPath() {
 		return dirname($this->sFullPath);
 	}
+	
+	public function parent() {
+		return new FileResource($this->getDirectoryPath());
+	}
 
 	public function isFile() {
 		return is_file($this->sFullPath);
+	}
+	
+	public function isDirectory() {
+		return is_dir($this->sFullPath);
 	}
 	
 	public function getFrontendDirectoryPath() {
