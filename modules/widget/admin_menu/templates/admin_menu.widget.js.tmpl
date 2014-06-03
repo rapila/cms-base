@@ -11,7 +11,12 @@ Widget.types.admin_menu = {
 			jQuery.each(module_config, function(i, config) {
 				var is_right = (i === 'right');
 				jQuery.each(config, function(i, config_item) {
-					var to_add = _this.predefined_elements[config_item.type].apply(_this, config_item.args);
+					var to_add = null;
+					if(_this.predefined_elements[config_item.type] === undefined) {
+						Widget.notifyUser(Widget.logSeverity.ALERT, "{{writeParameterizedString=wns.admin_menu.error_user_configuration;element_name=$\{element_name\}}}".replace('${element_name}', config_item.type));
+					} else {
+						to_add = _this.predefined_elements[config_item.type].apply(_this, config_item.args);
+					}
 					if(!to_add) {
 						return;
 					}
