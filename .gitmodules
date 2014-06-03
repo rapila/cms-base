@@ -16,3 +16,6 @@
 [submodule "lib/vendor/nib"]
 	path = lib/vendor/nib
 	url = git://github.com/visionmedia/nib.git
+[submodule "web/js/widget/ckeditor-plugins/youtube"]
+	path = web/js/widget/ckeditor-plugins/youtube
+	url = git://github.com/fonini/ckeditor-youtube-plugin.git
