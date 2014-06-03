@@ -94,17 +94,17 @@ class ResourceFinderTests extends PHPUnit_Framework_TestCase {
 	
 	public function testAnyOptionalPathItemsAtEnd() {
 		$aConfigPaths = ResourceFinder::findAllResourcesByExpressions(array(DIRNAME_CONFIG, array(null), array('config.yml')), ResourceFinder::SEARCH_BASE_ONLY);
-		$this->assertSame(array(MAIN_DIR.'/base/config', MAIN_DIR.'/base/config/config.yml', MAIN_DIR.'/base/config/backend-development', MAIN_DIR.'/base/config/db_config.yml', MAIN_DIR.'/base/config/development', MAIN_DIR.'/base/config/development/config.yml', MAIN_DIR.'/base/config/documentation.yml', MAIN_DIR.'/base/config/production', MAIN_DIR.'/base/config/production/config.yml', MAIN_DIR.'/base/config/resource_includer.yml', MAIN_DIR.'/base/config/schema.xml', MAIN_DIR.'/base/config/staging', MAIN_DIR.'/base/config/staging/config.yml', MAIN_DIR.'/base/config/synonyms.yml', MAIN_DIR.'/base/config/test', MAIN_DIR.'/base/config/test/config.yml', MAIN_DIR.'/base/config/user_defaults.yml'), $aConfigPaths);
+		$this->assertSame(array(MAIN_DIR.'/base/config', MAIN_DIR.'/base/config/config.yml', MAIN_DIR.'/base/config/db_config.yml', MAIN_DIR.'/base/config/development', MAIN_DIR.'/base/config/development/config.yml', MAIN_DIR.'/base/config/production', MAIN_DIR.'/base/config/production/config.yml', MAIN_DIR.'/base/config/resource_includer.yml', MAIN_DIR.'/base/config/schema.xml', MAIN_DIR.'/base/config/staging', MAIN_DIR.'/base/config/staging/config.yml', MAIN_DIR.'/base/config/synonyms.yml', MAIN_DIR.'/base/config/test', MAIN_DIR.'/base/config/test/config.yml', MAIN_DIR.'/base/config/user_defaults.yml'), $aConfigPaths);
 	}
 	
 	public function testDirOptionalPathItemsAtEnd() {
 		$aConfigPaths = ResourceFinder::findAllResourcesByExpressions(array(DIRNAME_CONFIG, array(false), array('config.yml')), ResourceFinder::SEARCH_BASE_ONLY);
-		$this->assertSame(array(MAIN_DIR.'/base/config', MAIN_DIR.'/base/config/config.yml', MAIN_DIR.'/base/config/backend-development', MAIN_DIR.'/base/config/development', MAIN_DIR.'/base/config/development/config.yml', MAIN_DIR.'/base/config/production', MAIN_DIR.'/base/config/production/config.yml', MAIN_DIR.'/base/config/staging', MAIN_DIR.'/base/config/staging/config.yml', MAIN_DIR.'/base/config/test', MAIN_DIR.'/base/config/test/config.yml'), $aConfigPaths);
+		$this->assertSame(array(MAIN_DIR.'/base/config', MAIN_DIR.'/base/config/config.yml', MAIN_DIR.'/base/config/development', MAIN_DIR.'/base/config/development/config.yml', MAIN_DIR.'/base/config/production', MAIN_DIR.'/base/config/production/config.yml', MAIN_DIR.'/base/config/staging', MAIN_DIR.'/base/config/staging/config.yml', MAIN_DIR.'/base/config/test', MAIN_DIR.'/base/config/test/config.yml'), $aConfigPaths);
 	}
 	
 	public function testFileOptionalPathItemsAtEnd() {
 		$aConfigPaths = ResourceFinder::findAllResourcesByExpressions(array(DIRNAME_CONFIG, array(true), array('development')), ResourceFinder::SEARCH_BASE_ONLY);
-		$this->assertSame(array(MAIN_DIR.'/base/config', MAIN_DIR.'/base/config/development', MAIN_DIR.'/base/config/config.yml', MAIN_DIR.'/base/config/db_config.yml', MAIN_DIR.'/base/config/documentation.yml', MAIN_DIR.'/base/config/resource_includer.yml', MAIN_DIR.'/base/config/schema.xml', MAIN_DIR.'/base/config/synonyms.yml', MAIN_DIR.'/base/config/user_defaults.yml'), $aConfigPaths);
+		$this->assertSame(array(MAIN_DIR.'/base/config', MAIN_DIR.'/base/config/development', MAIN_DIR.'/base/config/config.yml', MAIN_DIR.'/base/config/db_config.yml', MAIN_DIR.'/base/config/resource_includer.yml', MAIN_DIR.'/base/config/schema.xml', MAIN_DIR.'/base/config/synonyms.yml', MAIN_DIR.'/base/config/user_defaults.yml'), $aConfigPaths);
 	}
 	
 	public function testOptionalRecursivePathItemAtEnd() {

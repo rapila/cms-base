@@ -78,7 +78,7 @@ EOT;
 	
 	public function testWriteResourceIncludes() {
 		$sTemplateText = <<<EOT
-{{writeResourceIncludes;consolidate=false}}
+{{writeResourceIncludes}}
 EOT;
 		$oTemplate = new Template($sTemplateText, null, true);
 		$oIncluder = ResourceIncluder::defaultIncluder();
@@ -93,7 +93,7 @@ EOT;
 	
 	public function testWriteNamedResourceIncludes() {
 		$sTemplateText = <<<EOT
-{{writeResourceIncludes;consolidate=false;name=myIncluder}}
+{{writeResourceIncludes;name=myIncluder}}
 EOT;
 		$oTemplate = new Template($sTemplateText, null, true);
 		$oIncluder = ResourceIncluder::namedIncluder('myIncluder');
