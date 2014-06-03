@@ -402,7 +402,7 @@ class ResourceIncluder {
 		}
 		return $oTemplate;
 	}
-	
+
 	public function addResourceFromTemplateIdentifier($oIdentifier) {
 		$mLocation = $oIdentifier->getValue();
 		$iPriority = $oIdentifier->hasParameter('priority') ? constant("ResourceIncluder::PRIORITY_".strtoupper($oIdentifier->getParameter('priority'))) : ResourceIncluder::PRIORITY_NORMAL;
