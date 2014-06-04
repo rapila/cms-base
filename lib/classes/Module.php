@@ -292,8 +292,12 @@ abstract class Module {
 		return StringUtil::endsWith($sName, "Module");
 	}
 	
-	public function getModuleInfo() {
-		return self::getModuleInfoByTypeAndName($this->getType(), $this->getModuleName());
+	public function getModuleInfo($sSetting = null) {
+		$aModuleInfo = self::getModuleInfoByTypeAndName($this->getType(), $this->getModuleName());
+		if($sSetting && isset($aModuleInfo[$sSetting])) {
+			return $aModuleInfo[$sSetting];
+		}
+		return $aModuleInfo;
 	}
 	
 	public function getDisplayName($sLanguageId = null) {
