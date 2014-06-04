@@ -3,12 +3,10 @@
  * @package modules.admin
  */
 class DashboardAdminModule extends AdminModule {
-		
-	private $oModuleListWidget;
-	
+			
 	public function __construct() {
-		// $sUsePath = Manager::usePath();
-		// $this->addResourceParameter(ResourceIncluder::RESOURCE_TYPE_JS, 'context_module', $sUsePath);
+		$sDocumentationLink = $this->getModuleInfo('website');
+		$this->addResourceParameter(ResourceIncluder::RESOURCE_TYPE_JS, 'documentation_link', $sDocumentationLink);
 	}
 	
 	public function includeCustomResources($oResourceIncluder) {

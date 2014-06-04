@@ -197,9 +197,11 @@ jQuery(document).ready(function() {
 					dashboard_control.setLayoutName(template_chooser.val());
 					reload();
 				});
-				info_bar.add_element(template_chooser, true, false, 't', {documentation: 'dashboard.template-chooser'}).add_button('go-to-documentation', function() {
-					window.location.href = "http://www.rapi.la/documentation/use-dashboard"
-				}, '', 'commons', false, "{{writeString=wns.dashboard.go_to_documentation}}")
+				info_bar.add_element(template_chooser, true, false, 't', {documentation: 'dashboard.template-chooser'});
+				var documentation_link = "{{writeRequestValue=documentation_link}}";
+				if(documentation_link) {
+					info_bar.add_documentation_link(documentation_link, "{{writeString=wns.dashboard.go_to_documentation}}");
+				}
 			});
 		});
 	});
