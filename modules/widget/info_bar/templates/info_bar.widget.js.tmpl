@@ -95,6 +95,12 @@ Widget.types.info_bar = {
 				result.element.html('&#xf100;');
 				return result;
 			},
+			
+			add_documentation_link: function(link, link_title) {
+				this.add_button('go-to-documentation', function() {
+					window.location.href = link;
+				}, '', 'commons', false, link_title);
+			},
 
 			add_menu: function(class_name) {
 				return this;
