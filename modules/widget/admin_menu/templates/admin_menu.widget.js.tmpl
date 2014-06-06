@@ -195,7 +195,7 @@ Widget.types.admin_menu = {
 		},
 
 		tag: function() {
-			var element = jQuery('<span/>').addClass('open-tag-panel rapila-icon').html('&#xf100;');
+			var element = jQuery('<span/>').addClass('open-tag-panel rapila-icon').html('&#xe610;');
 			var title = "{{writeString=wns.tag_panel.button_title}}"
 			if(title) element.attr('title', title);
 			return {element: element, callback: function(event) {
@@ -216,7 +216,7 @@ Widget.types.admin_menu = {
 		},
 
 		logo: function() {
-			return {element: jQuery("<span/>").text('@ rapila').attr('class', "rapila_logo")};
+			return {element: jQuery("<span/>").text('rapila').attr('class', "rapila_logo")};
 		},
 
 		preview: function() {
