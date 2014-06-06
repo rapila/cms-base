@@ -10,7 +10,6 @@ class Navigation {
 	private $sLinkPrefix;
 	private $sNavigationName = null;
 	private static $BOOLEAN_PARSER_DEFAULT_VALUES = array(
-						"has_children" => false,
 						"is_current" => false,
 						"is_active" => false,
 						"is_hidden" => false,
@@ -91,15 +90,14 @@ class Navigation {
 		$bNoPagesDisplayed = true;
 		foreach($aNavigationItems as $oNavigationItem) {
 			$oBooleanParser = new BooleanParser(self::$BOOLEAN_PARSER_DEFAULT_VALUES);
-			$bHasChildren = $oNavigationItem->hasChildren($this->sLanguageId, !$this->bShowOnlyEnabledChildren, !$this->bShowOnlyVisibleChildren);
 			
 			if($this->bExcludeDuplicates && $oNavigationItem->getCanonical()) {
 				continue;
 			}
 
-			if($bHasChildren) {
-				$oBooleanParser->has_children = true;
-			}
+			$oBooleanParser->has_children = function() use ($oNavigationItem) {
+				return $oNavigationItem->hasChildren($this->sLanguageId, !$this->bShowOnlyEnabledChildren, !$this->bShowOnlyVisibleChildren);
+			};
 			if($oNavigationItem->isCurrent()) {
 				$oBooleanParser->is_current = true;
 			}
@@ -187,9 +185,13 @@ class Navigation {
 				$oTemplate->replaceIdentifier('status', "default");
 			}
 			
-			if($oTemplate->hasIdentifier('children') && $bHasChildren && !($this->iMaxLevel !== null && $iLevel+1 > $this->iMaxLevel)) {
-				$aChildren = $oNavigationItem->getChildren($this->sLanguageId, !$this->bShowOnlyEnabledChildren, !$this->bShowOnlyVisibleChildren);
-				$oTemplate->replaceIdentifier('children', $this->parseTree($aChildren, $iLevel+1));
+			if($oTemplate->hasIdentifier('children')) {
+				$bHasChildren = $oBooleanParser->has_children;
+				$bHasChildren = is_callable($bHasChildren) ? $bHasChildren() : $bHasChildren;
+				if($bHasChildren && !($this->iMaxLevel !== null && $iLevel+1 > $this->iMaxLevel)) {
+					$aChildren = $oNavigationItem->getChildren($this->sLanguageId, !$this->bShowOnlyEnabledChildren, !$this->bShowOnlyVisibleChildren);
+					$oTemplate->replaceIdentifier('children', $this->parseTree($aChildren, $iLevel+1));
+				}
 			}
 			
 			$sResult->replaceIdentifierMultiple("content", $oTemplate, null, ($this->bPrintNewline ? 0 : Template::NO_NEWLINE));
