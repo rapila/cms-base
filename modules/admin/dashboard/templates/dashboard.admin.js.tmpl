@@ -20,7 +20,7 @@ jQuery(document).ready(function() {
 	
 	Widget.create('dashboard_control', function(dashboard_control) {
 		
-		var create_module = function(settings) {
+		function create_module(settings) {
 			var module = jQuery.extend(true, {
 				config: {},
 				color: '#555',
@@ -32,9 +32,9 @@ jQuery(document).ready(function() {
 				module.uid = Widget.uuid();
 			}
 			return module;
-		};
+		}
 		
-		var create_skeleton = function(module) {
+		function create_skeleton(module) {
 			var uid = module.uid;
 			var container = Widget.parseHTML('{{includeTemplate=container}}').hide();
 			var heading = container.find('.dashboard-widget-head h3').text(module.title);
@@ -83,6 +83,7 @@ jQuery(document).ready(function() {
 						dashboard_control.remove(uid, function() {
 							container.unbind('.dashboard');
 							container.remove();
+							update_empty_message();
 						});
 					}
 				});
@@ -91,7 +92,7 @@ jQuery(document).ready(function() {
 			return skeleton;
 		};
 		
-		var init_widget = function(skeleton) {
+		function init_widget(skeleton) {
 			var module = skeleton.module;
 			if(module.collapsed) {
 				skeleton.collapse();
@@ -119,15 +120,13 @@ jQuery(document).ready(function() {
 			}, jQuery.noop);
 		};
 		
-		var reload;
-		reload = function() {
+		function reload() {
 			dashboard_control.template(function(template) {
 				//Clear elements and bound handlers
 				db.find('.dashboard-widget').unbind('.dashboard').empty();
 				
 				//Reload
 				db.html(template);
-			
 				dashboard_control.allDashboardModules(function(modules) {
 					var skeletons = [];
 					jQuery.each(modules, function(i, module) {
@@ -143,9 +142,15 @@ jQuery(document).ready(function() {
 					jQuery.each(skeletons, function(i, skeleton) {
 						init_widget(skeleton);
 					});
+					update_empty_message();
 				});
 			});
-		};
+		}
+		
+		function update_empty_message() {
+			var has_widgets = AdminInterface.content.find('.dashboard-widget').length !== 0;
+			AdminInterface.content[has_widgets ? 'removeClass' : 'addClass']('empty-dashboard');
+		}
 		
 
 		AdminInterface.info_bar.prepareWidget(function(info_bar) {
@@ -172,6 +177,7 @@ jQuery(document).ready(function() {
 								dashboard_control.saveSettings(module.uid, module);
 								var skeleton = create_skeleton(module);
 								add_to_column(module.container, skeleton);
+								update_empty_message();
 				
 								//Add the controls
 								Dashboard.addWidgetControls();
