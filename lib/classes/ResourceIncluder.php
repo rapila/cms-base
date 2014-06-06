@@ -291,6 +291,13 @@ class ResourceIncluder {
 
 		//Add resource
 		$sLibraryUrl = str_replace('${version}', $sLibraryVersion, $sLibraryUrl);
+		// Normalize $bUseSsl from 'default', 'auto' to null, true, false
+		if($bUseSsl === 'default') {
+			$bUseSsl = Settings::getSetting('linking', 'ssl_in_absolute_links', null);
+		}
+		if($bUseSsl === 'auto') {
+			$bUseSsl = LinkUtil::isSSL();
+		}
 		if($bUseSsl !== null) {
 			if(StringUtil::startsWith($sLibraryUrl, '//')) {
 				$sLibraryUrl = ($bUseSsl ? 'https://' : 'http://').substr($sLibraryUrl, 2);
