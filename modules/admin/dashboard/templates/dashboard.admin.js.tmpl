@@ -1,6 +1,14 @@
 jQuery(document).ready(function() {
 	var db = AdminInterface.content.find('#dashboard-columns');
 	
+	var dashboard_layout_icons = {
+		"2cols2thirds": '\ue624',
+		"2cols3cols": '\ue623',
+		"2columns": '\ue622',
+		"3columns": '\ue620',
+		"head3cols": '\ue621'
+	};
+	
 	var add_to_column = function(column_name, skeleton) {
 		var column = db.find('.dashboard-column#'+column_name);
 		if(column.length !== 1) {
@@ -139,8 +147,6 @@ jQuery(document).ready(function() {
 			});
 		};
 		
-		reload();
-		
 
 		AdminInterface.info_bar.prepareWidget(function(info_bar) {
 			dashboard_control.listDashboardModules(true, function(modules) {
@@ -192,11 +198,22 @@ jQuery(document).ready(function() {
 			dashboard_control.possibleTemplates(function(templates) {
 				var template_chooser = jQuery('<select/>');
 				template_chooser.populate(templates);
+				var options = template_chooser.find('option');
+				options.each(function() {
+					var option = jQuery(this);
+					if(option.val() in dashboard_layout_icons) {
+						option.text(dashboard_layout_icons[option.val()]);
+						option.addClass('rapila-icon');
+					}
+				});
 				template_chooser.val(dashboard_control.getLayoutName());
 				template_chooser.change(function() {
+					var is_icon = options.filter('[value='+template_chooser.val()+']').hasClass('rapila-icon');
+					template_chooser[is_icon ? 'addClass' : 'removeClass']('rapila-icon');
 					dashboard_control.setLayoutName(template_chooser.val());
 					reload();
 				});
+				template_chooser.change();
 				info_bar.add_element(template_chooser, true, false, 't', {documentation: 'dashboard.template-chooser'});
 				var documentation_link = "{{writeRequestValue=documentation_link}}";
 				if(documentation_link) {
