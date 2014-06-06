@@ -502,6 +502,16 @@ div.ui-dialog.file_upload_error
 // Documentation
 .highlight-documentation *[data-documentation-part]
 	cursor help !important
+	position relative
+	&::after
+		content " "
+		position absolute
+		background-color rgba(yellow, 0.3)
+		top 0
+		bottom 0
+		left 0
+		right 0
+		z-index 2000
 
 .ui-my-icon
 	height 20px
