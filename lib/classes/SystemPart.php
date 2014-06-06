@@ -58,7 +58,7 @@ abstract class SystemPart {
 	}
 	
 	public function __sleep() {
-		$this->aDependees = iterator_to_array($this->aDependees);
+		$this->aDependees = iterator_to_array($this->aDependees, false);
 		return array_keys(get_object_vars($this));
 	}
 	
