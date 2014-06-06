@@ -83,13 +83,13 @@ class BooleanParser
 			if($sItem === self::BP_TRUE || $sItem === self::BP_FALSE || $sItem === self::BP_AND || $sItem === self::BP_OR || $sItem === self::BP_NOT) {
 				continue;
 			}
-			if(!$this->__isset($sItem)) {
+			if(!isset($this->aItems[$sItem])) {
 				throw new Exception("Error in BooleanParser->replaceByValue: $sItem was never set");
 			}
-			if(is_callable($this->$sItem)) {
-				$this->$sItem = $this->$sItem();
+			if(is_callable($this->aItems[$sItem])) {
+				$this->aItems[$sItem] = $this->aItems[$sItem]();
 			}
-			$aExpression[$iKey] = self::stringForBoolean($this->$sItem);
+			$aExpression[$iKey] = self::stringForBoolean($this->aItems[$sItem]);
 		}
 		return $aExpression;
 	}
