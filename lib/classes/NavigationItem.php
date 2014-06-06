@@ -71,11 +71,11 @@ abstract class NavigationItem {
 	}
 	
 	public function hasChildren($sLanguageId = null, $bIncludeDisabled = false, $bIncludeInvisible = false) {
-		$this->prepareChildren();
-		if($this->hasCustomChildren($sLanguageId, $bIncludeDisabled, $bIncludeInvisible)) {
+		if($this->hasChildrenImpl($sLanguageId, $bIncludeDisabled, $bIncludeInvisible)) {
 			return true;
 		}
-		return $this->hasChildrenImpl($sLanguageId, $bIncludeDisabled, $bIncludeInvisible);
+		$this->prepareChildren();
+		return $this->hasCustomChildren($sLanguageId, $bIncludeDisabled, $bIncludeInvisible);
 	}
 	
 	public function isRoot() {
