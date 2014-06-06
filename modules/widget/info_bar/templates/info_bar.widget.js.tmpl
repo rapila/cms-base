@@ -200,6 +200,8 @@ Widget.types.info_bar = {
 			this.infobar_left.remove();
 			this.infobar_right.css('left', 0);
 			return;
+		} else {
+			this.resizer.show();
 		}
 		this.resizer.draggable({
 			axis: 'x',
