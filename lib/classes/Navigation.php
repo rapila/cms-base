@@ -94,9 +94,10 @@ class Navigation {
 			if($this->bExcludeDuplicates && $oNavigationItem->getCanonical()) {
 				continue;
 			}
-
-			$oBooleanParser->has_children = function() use ($oNavigationItem) {
-				return $oNavigationItem->hasChildren($this->sLanguageId, !$this->bShowOnlyEnabledChildren, !$this->bShowOnlyVisibleChildren);
+			//Patch for PHP <5.4 as it does not allow to pass $this into closures
+			list($sLanguageId, $bShowOnlyEnabledChildren, $bShowOnlyVisibleChildren) = array($this->sLanguageId, $this->bShowOnlyEnabledChildren, $this->bShowOnlyVisibleChildren);
+			$oBooleanParser->has_children = function() use ($oNavigationItem, $sLanguageId, $bShowOnlyEnabledChildren, $bShowOnlyVisibleChildren) {
+				return $oNavigationItem->hasChildren($sLanguageId, !$bShowOnlyEnabledChildren, !$bShowOnlyVisibleChildren);
 			};
 			if($oNavigationItem->isCurrent()) {
 				$oBooleanParser->is_current = true;
