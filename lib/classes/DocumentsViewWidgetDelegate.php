@@ -58,7 +58,7 @@ class DocumentsViewWidgetDelegate {
 		if(self::hasTags()) {
 			$aResult[] = 'has_tags';
 		}
-		return array_merge($aResult, array('is_protected', 'sort', 'updated_at_formatted', 'delete'));
+		return array_merge($aResult, array('is_protected', 'thumbnail', 'sort', 'updated_at_formatted', 'delete'));
 	}
 	
 	public function getMetadataForColumn($sColumnIdentifier) {
@@ -81,7 +81,7 @@ class DocumentsViewWidgetDelegate {
 				$aResult['heading'] = '';
 				$aResult['heading_filter'] = array('document_kind_input', $this->oDocumentKindFilter->getSessionKey());
 				$aResult['is_sortable'] = false;
-				break;			
+				break;
 			case 'category_name':
 				$aResult['heading'] = StringPeer::getString('wns.category');
 				break;
@@ -101,6 +101,12 @@ class DocumentsViewWidgetDelegate {
 				break;
 			case 'updated_at_formatted':
 				$aResult['heading'] = StringPeer::getString('wns.updated_at');
+				break;
+			case 'thumbnail':
+				$aResult['heading'] = StringPeer::getString('wns.thumbnail');
+				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_HTML;
+				$aResult['field_name'] = 'preview';
+				$aResult['is_sortable'] = false;
 				break;
 			case 'delete':
 				$aResult['heading'] = ' ';
