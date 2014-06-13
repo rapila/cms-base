@@ -464,7 +464,7 @@ Widget.types.list = {
 			this.update_reorderable();
 			if(active_rows) {
 				jQuery.each(active_rows, function(id, row) {
-					row = this.row_from_row_data(row);
+					var row = this.row_from_row_data(row);
 					row && row.addClass(this.settings.row_click_active_class);
 				}.bind(this));
 				this.fire_selection_changed(active_rows.sort());
@@ -475,7 +475,7 @@ Widget.types.list = {
 						this.settings.initial_selection = [this.settings.initial_selection];
 					}
 					jQuery.each(this.settings.initial_selection, function(i, obj) {
-						row = this.row_from_row_data(obj);
+						var row = this.row_from_row_data(obj);
 						row && row.addClass(this.settings.row_click_active_class);
 					}.bind(this));
 				}
@@ -623,7 +623,7 @@ Widget.types.list = {
 		text: function(column, data, metadata, isHeading) {
 			if(isHeading) {
 				column = jQuery('<span/>').appendTo(column);
-			} 
+			}
 			column.text(data === null ? '-' : data);
 		},
 		

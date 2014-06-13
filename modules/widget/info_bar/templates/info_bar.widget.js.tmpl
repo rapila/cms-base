@@ -26,6 +26,9 @@ Widget.types.info_bar = {
 					this.element.fadeTo('slow', 1);
 					this.disabled = false;
 					return this;
+				},
+				text: function() {
+					return this.element.text.apply(this.element, arguments);
 				}
 			}, opts);
 			if(opts.parent.constructor === String) {

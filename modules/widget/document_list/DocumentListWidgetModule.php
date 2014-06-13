@@ -20,16 +20,9 @@ class DocumentListWidgetModule extends PersistentWidgetModule {
 	}
 
 	public function doWidget() {
-		return parent::doWidget();
+		return $this->oListWidget->doWidget('document_list');
 	}
 	
-	public function getElementType() {
-		$aTagAttributes = array('class' => 'document_list');
-		$oListTag = new TagWriter('table', $aTagAttributes);
-		$this->oListWidget->setListTag($oListTag);
-		return new TagWriter('div', array(), $this->oListWidget->doWidget());
-	}
-
 	public function setDocumentKind($sDocumentKind) {
 		return $this->oDocumentsViewWidgetDelegate->setDocumentKind($sDocumentKind);
 	}
