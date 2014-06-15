@@ -45,18 +45,18 @@ Widget.types.list = {
 			return [rows.index(row), col_schema, row, cell];
 		};
 
-		this._element.delegate('.ui-list-row', 'dblclick', function(event) {
+		this._element.on('dblclick', '.ui-list-row', function(event) {
 			var row = jQuery(this);
 			return _this.fire.apply(_this, ['list-row_dblclick', event].concat(row_metadata(row)));
 		});
 
-		this._element.delegate('.ui-list-row', 'click', function(event) {
+		this._element.on('click', '.ui-list-row', function(event) {
 			var row = jQuery(this);
 			_this.activate_row(row, event);
 			return _this.fire.apply(_this, ['list-row_click', event].concat(row_metadata(row)));
 		});
 
-		this._element.delegate('.ui-list-row', 'mouseenter mouseleave', function(event) {
+		this._element.on('mouseenter mouseleave', '.ui-list-row', function(event) {
 			var isOver = event.type === 'mouseenter' || event.type === 'mousein' || event.type === 'mouseover';
 			var row = jQuery(this);
 			if(_this.settings.row_hover) {
@@ -66,10 +66,10 @@ Widget.types.list = {
 		});
 
 		if(_this._element.is('table')) {
-			this._element.delegate('.ui-list-cell', 'click', function(event) {
+			this._element.on('click', '.ui-list-cell', function(event) {
 				return _this.fire.apply(_this, ['list-cell_click', event].concat(cell_metadata(jQuery(this))));
 			});
-			this._element.delegate('.ui-list-cell', 'mouseenter mouseleave', function(event) {
+			this._element.on('mouseenter mouseleave', '.ui-list-cell', function(event) {
 				return _this.fire.apply(_this, ['list-cell_hover', event].concat(cell_metadata(jQuery(this))));
 			});
 		}
