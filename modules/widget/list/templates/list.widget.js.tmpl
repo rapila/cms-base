@@ -274,7 +274,6 @@ Widget.types.list = {
 			reorderable.sortable({
 				items: '.ui-list-row',
 				handle: '.ui-sortable-handle',
-				containment: this._element,
 				start: function(event, ui) {
 					var item = event.originalEvent.target;
 					currentSchema = _this.schema_for_col(item);
@@ -284,12 +283,12 @@ Widget.types.list = {
 				},
 				update: function(event, ui) {
 					_this.update_reorderable_order(ui.item, currentSchema);
-				},
-				axis: 'y'
+				}
 			});
 		} else if(reorderable.is(':ui-sortable')) {
 			reorderable.sortable('destroy');
 		}
+		this.update_reorderable_axis();
 	},
 	
 	update_reorderable_order: function(row, schema) {
@@ -304,6 +303,14 @@ Widget.types.list = {
 			}
 		}
 		this.doSort(schema.identifier, this.collect_row_data(row), this.collect_row_data(related), relation);
+	},
+	
+	update_reorderable_axis: function() {
+		var reorderable = this._element.find('tbody');
+		if(reorderable.is(':ui-sortable')) {
+			var axis = this.thumbnail_view() ? false : 'y';
+			reorderable.sortable('option', 'axis', axis);
+		}
 	},
 	
 	delete_row: function(row) {
@@ -584,6 +591,7 @@ Widget.types.list = {
 				this._element(!this.thumbnail_view());
 			} else {
 				this._element[value ? 'addClass' : 'removeClass']('ui-thumbnail-list');
+				this.update_reorderable_axis();
 			}
 		} else {
 			return this._element.hasClass('ui-thumbnail-list');

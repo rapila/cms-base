@@ -142,7 +142,12 @@ th.ui-list-heading.sortable {
 /* Thumbnail lists */
 
 .ui-list.ui-thumbnail-list {
-	
+	display: block;
+}
+
+.ui-list.ui-thumbnail-list thead {
+	display: table;
+	width: 100%;
 }
 
 .ui-list.ui-thumbnail-list tbody {
@@ -156,10 +161,14 @@ th.ui-list-heading.sortable {
 	display: flex;
 	flex-direction: column;
 	width: 300px;
-	height: 450px;
 	flex-grow: 1;
 }
 
 .ui-list.ui-thumbnail-list tbody tr td {
 	display: block;
+	max-width: 400px;
+}
+
+.ui-list.ui-thumbnail-list tbody tr td:first-child {
+	font-weight: bold;
 }
