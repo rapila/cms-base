@@ -88,7 +88,7 @@ jQuery(document).ready(function() {
 						Widget.confirm("{{writeString=wns.rapila_alert.information}}", "{{writeString=wns.document_category.delete_information}}", function(confirmed) {
 							if(confirmed) {
 								remove_active_category();
-								content_list.setDocumentCategoryId(null);
+								content_list.setOption('document_category_id', null);
 								content_list.reload();
 							}
 						});
@@ -127,7 +127,7 @@ jQuery(document).ready(function() {
 			var has_detail = selection.length === 1 && document_category_id.constructor === Number;
 			remove_item[has_detail ? 'enable' : 'disable']();
 			edit_item[has_detail ? 'enable' : 'disable']();
-			content_list.set_document_category_id(document_category_id);
+			content_list.setOption('document_category_id', document_category_id);
 			content_list.reload();
 			jQuery('#new_sidebar_input').remove();
 		});

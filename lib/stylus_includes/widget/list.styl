@@ -104,6 +104,10 @@ th.ui-list-heading
 /* Thumbnail lists */
 
 .ui-list.ui-thumbnail-list
+	display block
+	thead
+		display table
+		width 100%
 	tbody
 		display flex
 		flex-wrap wrap
@@ -113,10 +117,12 @@ th.ui-list-heading
 			display flex
 			flex-direction column
 			width 300px
-			height 450px
 			flex-grow 1
 			td
 				display block
+				max-width 400px
+			&:first-child
+				font-weight bold
 
 // Editable-items lists
 ol.ui-editable-items-list
