@@ -4,7 +4,7 @@ declare(ticks = 1);
 
 require(dirname(__FILE__).'/../lib/inc.php');
 
-$aOptions = getopt('whbn::ud');
+$aOptions = getopt('whbpn::ud');
 
 if(!isset($aOptions['u'])) {
 	$aOptions['u'] = isset($aOptions['d']);
@@ -12,7 +12,7 @@ if(!isset($aOptions['u'])) {
 	$aOptions['u'] = true;
 }
 
-foreach(explode('/', 'w/h/b/d') as $sOpt) {
+foreach(explode('/', 'w/h/b/d/p') as $sOpt) {
 	$aOptions[$sOpt] = isset($aOptions[$sOpt]);
 }
 
@@ -23,6 +23,8 @@ if($aOptions['h']) {
 $iResourceFinderFlags = ResourceFinder::SEARCH_SITE_ONLY;
 if($aOptions['b']) {
 	$iResourceFinderFlags = ResourceFinder::SEARCH_BASE_FIRST;
+} else if($aOptions['p']) {
+	$iResourceFinderFlags = ResourceFinder::SEARCH_PLUGINS_ONLY;
 }
 
 function trap($iSignal) {
