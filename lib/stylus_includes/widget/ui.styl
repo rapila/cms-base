@@ -1,0 +1,89 @@
+.ui-sortable-handle, .ui-sortable-handle_inactive
+	background-image url('../../images/admin/sortable_handler_inactive.png')
+	background-repeat no-repeat
+	background-position center center
+	min-width 16px
+	height 12px
+
+.ui-sortable .ui-sortable-handle
+	background-image url('../../images/admin/sortable_handler.png')
+	cursor pointer
+
+.ui-placeholder
+	background-color #d3d3d3
+
+button.ui-button.ui-state-default
+	background url("../../images/admin/button_gradient_dark.png") repeat scroll 0 0 transparent
+	line-height 14px
+	border-color #000000 #555555 #666666 #555555
+	border-width 1px 1px 1px 1px
+	border-radius 3px
+
+.ui-widget-content
+	background-image none
+	input,
+	select,
+	textarea
+		background-color #ffffff
+
+.ui-state-active,
+.ui-widget-content .ui-state-active
+	color inherit
+
+.ui-image-picker-image
+	float left
+	line-height 160px
+	margin 0 5px 5px 0
+	padding 5px
+	vertical-align middle
+	text-align center
+	object
+		vertical-align middle
+	&.ui-widget-content
+		position relative
+		border none
+		background-color white
+		margin 0 1px 2px
+		text-align center
+		vertical-align middle
+
+*[data-widget-type=image_picker] select
+	background-color #ffffff
+	border 1px solid #dbdbdb
+	min-width 15em
+	margin-bottom 0.5em
+
+*[data-widget-type=document_thumbnail_view] .ui-state-hover
+	background #e3ef99
+	background-image none
+
+div.ui-dialog.file_upload_error
+	z-index 20000 !important
+
+// Widget-Notifications
+#widget-notifications
+	position fixed
+	left 278px
+	top 58px
+	z-index 2005
+
+	.ui-notify
+		margin-bottom 5px
+		.ui-badge,
+		.close-handle.ui-icon
+			float right
+			display block
+			margin-top -8px
+			margin-right -8px
+		.ui-badge
+			background-color red
+			border-radius 12px
+			border-radius 12px
+			font-weight bold
+			color white
+			padding 1px 5px
+		.close-handle.ui-icon
+			margin-right 0
+			margin-top -12px
+			cursor pointer
+

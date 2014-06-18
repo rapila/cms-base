@@ -1,0 +1,49 @@
+.ui-accordion 
+	.ui-accordion-content
+		background-color #ffffff
+		border none
+		padding-top 0
+		&.contents_container
+			padding 0
+		&.configuration_container
+			padding 0
+	.ui-accordion-header 
+		background none repeat scroll 0 0 #ebedef
+		border-width 0 0 1px 0
+		border-color #c1c2c4
+		border-style solid
+		border-radius 0px
+		font-weight 1.5em
+		margin 1px 0 0 0
+		a
+			border-bottom none
+			font-size 1.2em
+			font-weight 700
+			color #666666
+			padding 0.3em 0.3em 0.3em 1.6em
+	.ui-state-active
+		.ui-icon-triangle-1-s
+			background-image url("../../images/admin/icon_triangle_open_active.png")
+			background-position 3px 3px
+		.ui-icon-triangle-1-e
+			background-image url("../../images/admin/icon_triangle_closed_active.png")
+			background-position 3px 3px
+	.ui-state-hover
+		.ui-icon-triangle-1-s
+			background-image url("../../images/admin/icon_triangle_open_active.png")
+			background-position 3px 3px
+		.ui-icon-triangle-1-e
+			background-image url("../../images/admin/icon_triangle_closed_active.png")
+			background-position 3px 3px
+	.ui-accordion-icons
+		padding-left 0
+
+.ui-icon.toggle_show_all,
+.ui-accordion .ui-state-default .ui-icon-triangle-1-s
+	background-image url("../../images/admin/icon_triangle_open.png")
+	background-position 3px 3px
+
+.ui-icon.toggle_show_all.closed,
+.ui-accordion .ui-state-default .ui-icon-triangle-1-e
+	background-image url("../../images/admin/icon_triangle_closed.png")
+	background-position 3px 3px

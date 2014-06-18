@@ -1,0 +1,142 @@
+label
+	color #666666
+	float none
+	font-family Arial
+	font-size 0.95em
+	display block
+	padding-bottom 0.1em
+	margin-top 0.8em
+	text-align left
+	width auto
+
+.status_section 
+	label
+		display inline-block
+		padding-right 0.5em
+	.hide_if_not_saved 
+		label
+			width 6em
+			margin-top 0.4em
+
+.hide_if_not_saved
+	margin-top 0.8em
+	label
+		display inline-block
+	&.bottom 
+		label
+			margin-left 1em
+			&:first-child
+				margin-left 0em
+
+select,
+input,
+textarea
+	&.ui-widget-content
+		border-color #dfdfdf
+		width 21.5em
+		padding 0.2em
+input[type=checkbox],
+input[type=checkbox].ui-widget-content
+	width auto
+
+select
+	&.display_mode
+		min-width 21.5em
+		margin-bottom 1em
+	&.ui-widget-content
+		padding 0.1em
+	&[data-widget-type=page_input]
+		background-color #ffffff
+		border 1px solid #dbdbdb
+		min-width 15em
+		margin-bottom 0.5em
+	option.default
+		font-style oblique
+		
+select,
+input,
+textarea
+	&.ui-widget-content
+		&:hover,
+		&:focus
+			border-color #b5b5b5
+
+input.ui-widget-content
+	&.input_long
+		width 35em
+	&.input_short
+		width 6em
+	&.input_medium
+		width 15em
+
+.cke_dialog_ui_hbox_first label
+	margin-right 0.5em
+
+fieldset
+	&.option_groups
+		border 1px #dfdfdf solid
+		margin-top -1px
+		margin-left 0
+		padding 0.75em
+		&:first-child
+			margin-left 0
+			margin-top 0.1em
+		> label
+			display inline-block
+
+
+.group_fields
+	display inline-block
+	vertical-align top
+
+
+.autowidth,
+input.ui-widget-content.autowidth,
+select.ui-widget-content.autowidth
+	width auto
+
+// Buttons
+button.rapila-button
+	height 22px
+	margin-right 0.2em
+	cursor pointer
+	&.dashboard
+		background transparent url("../../images/admin/dashboard_icon.gif") no-repeat center
+	&.logout_link
+		border-radius 12px
+		background transparent url("../../images/admin/logout_icon.gif") no-repeat center
+	&.ui-button-text-only
+		.ui-button-text
+			padding 0
+
+button.primary, button.ui-state-active, button.ui-state-hover
+	color #e3ef99
+
+.add-new-item, .remove-item, .edit-item, .item-action, .print_area, .go-to-documentation
+	background-image url('../../images/admin/add_new_item.png')
+	background-repeat no-repeat
+	display inline-block
+	height 16px
+	width 16px
+
+.remove-item
+	background-image url('../../images/admin/remove_item.png')
+
+.edit-item
+	background-image url('../../images/admin/edit_item.png')
+
+.item-action
+	background-image url('../../images/admin/action.png')
+
+.print_area
+	background-image url('../../images/admin/print.gif')
+	width 24px
+
+.go-to-documentation
+	background-image url('../../images/admin/documentation.png')
+
+.preview_edit
+	cursor pointer
+
+.help
+	cursor help

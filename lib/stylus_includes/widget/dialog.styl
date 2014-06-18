@@ -1,0 +1,71 @@
+.ui-widget-header
+	color #efefef
+	font-weight bold
+	border 0
+
+.ui-dialog
+	.ui-dialog-buttonpane
+		padding-left 1em
+		.ui-dialog-buttonset
+			width 100%
+			float none
+			.ui-button:not(.special)
+				float right
+	.ui-dialog-titlebar
+		&.ui-widget-header
+			border-radius 3px 3px 0 0
+			padding 0.6em 0.8em 2em
+			background #2d3238
+		.ui-dialog-titlebar-close
+			background none
+			border none
+			margin-top -20px
+	.ui-dialog-title
+		float left
+		margin 0.1em 1em 0.2em 0
+
+.ui-dialog-buttonpane.ui-widget-content
+	margin-top 0
+	background #2d3238
+	border-top 0
+
+// Parts of the UI on a black background need to have green highlights
+.ui-dialog-buttonpane,
+#rapila_admin_menu,
+.ui-dialog-titlebar
+	.ui-state-focus,
+	.ui-state-highlight,
+	.ui-state-hover
+		color #e3ef99
+		.ui-icon
+			background-image url("../admin/theme/images/ui-icons_b8d600_256x240.png")
+
+.ui-dialog-content 
+	table
+		.ui-state-focus,
+		.ui-state-highlight,
+		.ui-state-hover
+			color #000
+
+.ui-dialog-content
+	cursor auto
+	overflow-y auto
+	&.ui-accordion
+		padding 0
+		> .ui-accordion-content
+			padding 1em 2.2em
+
+.ui-widget-content
+	.status_section
+		font-family Arial
+		padding-right 2em
+		width 16.2em
+		float right
+		border-left 1px solid #f2f2f2
+		padding 0 1em
+		fieldset
+			border 1px dotted #c0c0c0
+			padding 0
+		select
+			width 15em
+

@@ -1,0 +1,48 @@
+.ui-tabs
+	border none
+	.ui-tabs-nav
+		border-radius 0
+		li
+			position relative
+			top 1px
+			margin 2px 2px 0 2px
+			background-color #ebedef
+			a
+				padding 0.5em 1.5em 0.2em
+			&.ui-state-default
+				background transparent
+				border 1px solid #cccdcf
+			&.ui-state-active
+				background-color #ffffff
+				position relative
+				border-bottom none
+				// top 1px
+				a
+					// margin-top -1px
+					color black
+		&.ui-widget-header
+			background transparent url('')
+	.ui-tabs-panel
+		border-top 1px solid #cccdcf
+		padding 0
+		margin-top -1px
+		clear both
+	#list.ui-tabs-panel,
+	#thumbnail.ui-tabs-panel
+		border-top 0
+
+.ui-accordion-content > .ui-tabs > .ui-tabs-nav.ui-widget-header,
+.ui-accordion-content > form > .ui-tabs > .ui-tabs-nav.ui-widget-header
+	background-color #ebedef
+
+div.inner-tab-panel-content
+	margin-left:-26px
+	margin-top:15px
+	> div
+		margin-left 26px
+	.ui-tabs-nav.ui-widget-header
+		border-bottom 1px solid #CCCDCF
+
+.ui-state-default li.tab_content_active
+	color black
+
