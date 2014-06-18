@@ -17,6 +17,7 @@ jQuery(document).ready(function() {
 	}.deferred(handlers));
 	
 	jQuery.when.apply(jQuery, handlers).then(function() {
+		AdminInterface.strings.handle_strings_for_list_result('wns.links.no_result', ['link_category_name', 'language_name'], content_list);
 		
 		// add buttons and search_input
 		info_bar.add_button('add-new-item', function() {

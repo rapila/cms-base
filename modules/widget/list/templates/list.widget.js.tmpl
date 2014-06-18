@@ -61,6 +61,21 @@ Widget.types.list = {
 		}
 
 		this.reload(true);
+		if(this._element.data('listWidgetType')) {
+			var type = this._element.data('listWidgetType');
+			var info = Widget.loadInfo(type);
+			if(info) {
+				var list_widget = new Widget.types[type]({session_id: this.widgetId});
+				if(list_widget.initialize) {
+					list_widget.initialize();
+				}
+				list_widget._element = this._element;
+				list_widget._list = this;
+				if(list_widget.prepare) {
+					list_widget.prepare();
+				}
+			}
+		}
 	},
 	
 	activate_row: function(row, event, previous_selection) {

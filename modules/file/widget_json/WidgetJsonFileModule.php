@@ -72,7 +72,7 @@ class WidgetJsonFileModule extends FileModule {
 			$aInformation = array();
 			$sWidgetClass::includeResources();
 			$aInformation['resources'] = ResourceIncluder::defaultIncluder()->getIncludes()->render();
-			$aInformation['methods'] = WidgetModule::getCustomMethods($sWidgetClass);
+			$aInformation['methods'] = $sWidgetClass::getCustomMethods();
 			$aInformation['is_singleton'] = $sWidgetClass::isSingleton();
 			$aInformation['is_persistent'] = $sWidgetClass::isPersistent();
 			return $aInformation;

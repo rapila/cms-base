@@ -76,11 +76,11 @@ abstract class WidgetModule extends Module {
 		return $this->aInitialSettings;
 	}
 
-	public static function getCustomMethods($sClassName) {
+	public static function getCustomMethods() {
 		$aMethods = array();
 		$aStaticMethods = array();
-		$oSuperClass = new ReflectionClass(get_class());
-		$oClass = new ReflectionClass($sClassName);
+		$oSuperClass = new ReflectionClass('WidgetModule');
+		$oClass = new ReflectionClass(get_called_class());
 		foreach($oClass->getMethods(ReflectionMethod::IS_PUBLIC) as $oMethod) {
 			if(StringUtil::startsWith($oMethod->getName(), '__')) {
 				continue;

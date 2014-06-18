@@ -23,12 +23,18 @@ class ListWidgetModule extends PersistentWidgetModule {
 	private $oDelegate;
 	private $oListTag;
 	private $aSchema = null;
+	
+	private $oSpecializedListWidgetModule;
 
 	public $sStringPrefix = 'column';
 
 	public function __construct($sSessionKey = null, $oDelegate = null) {
 		parent::__construct($sSessionKey);
 		$this->oDelegate = $oDelegate;
+	}
+	
+	public function specialize($oSpecializedListWidgetModule) {
+		$this->oSpecializedListWidgetModule = $oSpecializedListWidgetModule;
 	}
 	
 	public function setDelegate($oDelegate) {
@@ -65,6 +71,12 @@ class ListWidgetModule extends PersistentWidgetModule {
 			}
 			$this->oListTag = new TagWriter($iVisibleColumnCount > 1 ? 'table' : 'ul');
 		}
+
+		if($this->oSpecializedListWidgetModule) {
+			$this->oListTag->addToParameter('class', $this->oSpecializedListWidgetModule->getModuleName());
+			$this->oListTag->setParameter('data-list-widget-type', $this->oSpecializedListWidgetModule->getModuleName());
+		}
+
 		$this->oListTag->addToParameter('class', "ui-list $sClassName");
 		$this->oListTag->setParameter('data-widget-session', $this->sPersistentSessionKey);
 		$this->oListTag->setParameter('data-widget-type', $this->getModuleName());

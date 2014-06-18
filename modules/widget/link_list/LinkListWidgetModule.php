@@ -2,31 +2,27 @@
 /**
  * @package modules.widget
  */
-class LinkListWidgetModule extends WidgetModule {
+class LinkListWidgetModule extends SpecializedListWidgetModule {
 
-	private $oListWidget;
 	private $oLanguageFilter;
 	private $oTagFilter;
 	public $oDelegateProxy;
 	
-	public function __construct() {
-		$this->oListWidget = new ListWidgetModule();
+	protected function createListWidget() {
+		$oListWidget = new ListWidgetModule();
 		$this->oDelegateProxy = new CriteriaListWidgetDelegate($this, "Link", "name", "asc");
-		$this->oListWidget->setDelegate($this->oDelegateProxy);
-		$this->oListWidget->setSetting('row_model_drag_and_drop_identifier', 'id');
+		$oListWidget->setDelegate($this->oDelegateProxy);
+		$oListWidget->setSetting('row_model_drag_and_drop_identifier', 'id');
 		if(!LanguageInputWidgetModule::isMonolingual()) {
 			$this->oLanguageFilter = WidgetModule::getWidget('language_input', null, true);
 		}
 		$this->oTagFilter = WidgetModule::getWidget('tag_input', null, true);
 		$this->oTagFilter->setSetting('model_name', 'Link');
+		return $oListWidget;
 	}
 	
 	private static function hasTags() {
 		return TagInstanceQuery::create()->filterByModelName('Link')->count() > 0;
-	}
-	
-	public function doWidget() {
-		return $this->oListWidget->doWidget('link_list');
 	}
 	
 	public function toggleIsInactive($aRowData) {
