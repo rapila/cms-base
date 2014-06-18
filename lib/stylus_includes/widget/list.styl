@@ -1,0 +1,156 @@
+// List-widget-type lists
+*[data-widget-type=list]
+	border none
+
+*[data-widget-type=list] .ui-state-active
+	background none
+	border 0
+
+*[data-widget-type=list] .ui-state-hover
+	cursor default
+
+.ui-list
+	list-style none
+	padding 0
+	margin 0
+
+tr.ui-list-headrow th.file_info, 
+table.ui-list td.file_info
+	text-align right
+	padding-right 2em
+
+.ui-list .ui-list-headrow span
+	padding-top 3px
+	padding-bottom 1px
+	display inline-block
+
+tr.ui-list-headrow th.sort, 
+table.ui-list td.sort
+	text-align right
+	padding-right 1em
+	color #999
+
+tr.ui-list-headrow th.sort
+	padding-right 0em
+
+tr.ui-list-headrow th.file_info
+	padding-right 1.0em
+
+table.ui-list
+	width 100%
+	margin 0
+	padding 0
+
+table.ui-list
+	border-collapse collapse
+	border-spacing 0
+
+.ui-list td, .ui-list li
+	padding 4px 5px 3px 2px
+	vertical-align middle
+	line-height 15px
+
+table.ui-list td:first-child,
+.ui-list li
+	padding-left 5px
+
+table.ui-list .ui-list-cell a
+	color #333 !important
+	text-decoration underline
+
+ul.ui-list li.ui-list-headrow,
+table.ui-list tr.ui-list-headrow th
+	color #000
+	text-align left
+	vertical-align bottom
+	font-size 1em
+	padding 11px 2px 1px 1px
+	background-color:#F6F6F6
+	border-top 0
+	border-bottom solid 1px #E9E9E9
+
+#admin_main table.ui-list tr.ui-list-headrow th
+	padding-top 12px
+
+.page_detail table.ui-list tr.ui-list-headrow th
+	background-color #FFFFFF
+
+*[data-widget-type=list] .ui-list-row
+	background-color #F6F6F6
+
+*[data-widget-type=list] .ui-list-row:nth-child(2n+2)
+	background-color #E9E9E9
+
+.ui-list-row.magic_column-all,
+.ui-list-row.magic_column-without
+	font-style oblique
+	color #777
+
+th.ui-list-heading select
+	border solid 1px #CDCDCD
+	border-radius 3px
+	background-color transparent
+	margin 0
+th.ui-list-heading.sortable:hover span,
+th.ui-list-heading.sortable.asc span,
+th.ui-list-heading.sortable.desc span
+	background-image url("../../images/admin/sort_asc.png")
+	background-position right
+	background-repeat no-repeat
+
+th.ui-list-heading.sortable.asc:hover span
+	background-image url("../../images/admin/sort_asc_hover.png")
+
+th.ui-list-heading.sortable.desc span
+	background-image url("../../images/admin/sort_desc.png")
+
+th.ui-list-heading.sortable:hover span,
+th.ui-list-heading.sortable.desc:hover span
+	background-image url("../../images/admin/sort_desc_hover.png")
+
+div[data-widget-type='documents_list']
+	margin 0
+	padding-top 0 !important
+
+th.ui-list-heading.sortable span
+	color #444
+	padding-right 1.0em
+
+th.ui-list-heading.sortable
+	cursor pointer
+
+// Editable-items lists
+ol.ui-editable-items-list
+	list-style-type none
+	margin 3em 0 .5em 0
+	padding 0
+	select
+		margin-bottom 0.3em
+	li
+		list-style none
+		padding 0.2em 0
+		cursor pointer
+		&::before
+			content " "
+			background-image url(../admin/theme/images/ui-icons_727272_256x240.png)
+			display inline-block
+			text-indent -99999px
+			overflow hidden
+			background-repeat no-repeat
+			background-position -64px -112px
+			padding-right 0.3em
+			height 16px
+			width 16px
+		&.display_info::before
+			content ''
+			content none
+			width 0
+			background-image none
+
+ol.ui-editable-items-list li:nth-child(2n+1),
+ul.ui-editable-items-list li:nth-child(2n+1),
+table.ui-editable-items-list,
+tbody.ui-editable-items-list
+	background-color #fbfbfb
+	tr:nth-child(2n+1) td
+		background-color #fbfbfb

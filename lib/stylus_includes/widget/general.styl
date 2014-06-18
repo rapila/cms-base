@@ -1,0 +1,78 @@
+@font-face
+	font-family 'Rapila-Icons'
+	src url('../../fonts/Rapila-UI-Icons.woff') format('woff')
+	font-weight normal
+	font-style normal
+
+// overwrite jquery-ui styles
+.ui-widget
+	font-family Arial,Helvetica,sans-serif
+	font-size 1.0em
+	input,select,textarea,button
+		font-family Arial,Helvetica,sans-serif
+
+.ui-state-droppable,
+.ui-widget-content.ui-state-droppable
+	background-image url('../../images/admin/drag_and_drop.png')
+	background-repeat no-repeat
+	background-position center center
+	color #666
+	cursor pointer
+
+.ui-state-droppable-hover,
+#admin_sidebar .ui-list .ui-list-row.ui-state-droppable-hover,
+.ui-dialog.document_detail .ui-state-droppable-hover .preview.ui-state-droppable
+	background-color #e3ef99 !important
+	background-image url('../../images/admin/drag_and_drop_hover.png')
+	background-repeat no-repeat
+	background-position center center
+	
+.ui-dialog.document_detail .ui-state-droppable-hover
+	background-color #FFFFFF !important
+
+.ui-state-droppable td,
+.ui-state-droppable-hover td
+	background-color #e3ef99
+
+.ui-state-hover
+	border-width 0
+
+.ui-state-active .ui-icon
+	background-image url("../admin/theme/images/ui-icons_000000_256x240.png")
+
+.ui-state-hover .ui-icon
+	background-image url("../admin/theme/images/ui-icons_000000_256x240.png")
+
+.rapila-icon
+	font-family 'Rapila-Icons', Arial
+	cursor pointer
+
+option.rapila-icon
+	font-size 3em
+	line-height 1.2
+	padding 0.3em 0 0.3em 0.3em
+
+// Documentation
+.highlight-documentation *[data-documentation-part]
+	cursor help !important
+	position relative
+	&::after
+		content " "
+		position absolute
+		background-color rgba(yellow, 0.3)
+		top 0
+		bottom 0
+		left 0
+		right 0
+		z-index 2000
+
+.ui-my-icon
+	height 20px
+	margin -2px 2px 0 0
+	width 26px
+	&.ui-icon-trash
+		background transparent url("../../images/admin/icon_trash.png") no-repeat center bottom
+	&.ui-icon-wrench
+		background transparent url("../../images/admin/icon_edit_condition.png") no-repeat center bottom
+	&.ui-icon-pencil
+		background transparent url("../../images/admin/icon_edit.png") no-repeat center bottom

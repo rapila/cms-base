@@ -81,6 +81,14 @@ body
 		padding 0
 		margin 0
 
+	.ui-list .ui-list-row.ui-state-droppable-hover,
+	.ui-list .ui-list-row.ui-state-active.ui-state-droppable-hover
+		background-image url('../../images/admin/drag_and_drop_sidebar_hover.png')
+		background-position right center
+	.ui-list .ui-list-row.ui-state-active.ui-state-droppable-hover
+		background-image url('../../images/admin/drag_and_drop_sidebar_active_hover.png')
+		background-color #9FA665 !important
+
 #admin_info_bar
 	left 0
 	right 0
@@ -121,11 +129,23 @@ body
 		height info_bar_height
 		border none
 		border-right border
+		line-height info_bar_height
+		vertical-align middle
+		&.row_count_info
+			padding-left 1em
+			color #888
+			border-right 0
 		&.rapila-icon
 			font-size 1.2em
 		&.rapila-icon,
 		.rapila-icon
 			color #666666
+		&.ui-button.ui-state-default
+			background url("../../images/admin/button_gradient_dark.png") repeat scroll 0 0 transparent
+			line-height 14px
+			border-color #000000 #555555 #666666 #555555
+			border-width 1px 1px 1px 1px
+			border-radius 3px
 	select.info-bar-element
 		vertical-align middle
 		padding 4px 0 2px
@@ -136,13 +156,6 @@ body
 		background-position center center
 		padding-right 1px
 		cursor pointer
-	.info-bar-element
-		line-height info_bar_height
-		vertical-align middle
-		&.row_count_info
-			padding-left 1em
-			color #888
-			border-right 0
 	input.info-bar-element
 		border-color #E4E4E4
 		border-right-style dotted
