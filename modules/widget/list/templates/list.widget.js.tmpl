@@ -1,4 +1,7 @@
 Widget.types.list = {
+	/**
+	 * Sets up the element: adds heading and content wrappers and adds event listeners.
+	 */
 	prepare: function() {
 		this.row_prototype = jQuery(this._element.is('table') ? '<tr/>' : '<li/>').addClass('ui-list-row');
 
@@ -92,6 +95,9 @@ Widget.types.list = {
 		}
 	},
 	
+	/**
+	 * Activate a row (changing the selection). This is being triggered when a row has been clicked. What exactly is done varies depending on the row_click_active_mode and row_click_active_exclusive settings as well as the modifier keys that came with the event.
+	 */
 	activate_row: function(row, event, previous_selection) {
 		if(row && row.constructor === Number) {
 			row = this.row_from_number(row);
@@ -131,6 +137,9 @@ Widget.types.list = {
 		this.fire_selection_changed(previous_selection, event);
 	},
 
+	/**
+	 * Internal. Fires atomic selection mutation events.
+	 */
 	fire_selection_changed: function(previous_selection, event) {
 		var new_selection = this.active_row_datas().sort();
 		if(JSON.stringify(previous_selection) !== JSON.stringify(new_selection)) {
@@ -142,10 +151,16 @@ Widget.types.list = {
 		}
 	},
 	
+	/**
+	 * Returns all rows currently selected.
+	 */
 	active_row: function() {
 		return this.all_rows().filter('.'+this.settings.row_click_active_class);
 	},
 
+/**
+ * Returns the values of all data columns for rows currently selected.
+ */
 	active_row_datas: function() {
 		var _this = this;
 		return this.active_row().map(function() {
@@ -153,6 +168,9 @@ Widget.types.list = {
 		}).get();
 	},
 	
+	/**
+	 * Internal. Adds a new row into the list.
+	 */
 	insert_row: function(rowData, isHeading, previousRow) {
 		var _this = this;
 		isHeading = !!isHeading;
@@ -186,6 +204,9 @@ Widget.types.list = {
 		return row;
 	},
 	
+	/**
+	 * Internal. Adds a cell at the end of a row.
+	 */
 	insert_cell: function(row, into, index, rowData, isHeading) {
 		var metadata = this.schema[index];
 		var data = rowData[metadata.identifier];
@@ -227,6 +248,9 @@ Widget.types.list = {
 		return row === into ? null : into;
 	},
 	
+	/**
+	 * Creates a widget in the heading row for a given heading cell.
+	 */
 	prepare_filter: function(cell, metadata) {
 		var is_widget = !jQuery.isPlainObject(metadata.heading_filter);
 		var value_changed = function(event, value) {
@@ -252,6 +276,9 @@ Widget.types.list = {
 		}
 	},
 	
+	/**
+	 * Internal. Updates a heading cell for handling sort state and receiving sort clicks.
+	 */
 	prepare_sort: function(row, into, metadata) {
 		var _this = this;
 		into.addClass('sortable');
@@ -265,6 +292,9 @@ Widget.types.list = {
 		});
 	},
 	
+	/**
+	 * Internal. Updates heading cells to represente the current sort column.
+	 */
 	update_sort: function() {
 		var all_headings = this._element.find('.ui-list-heading');
 		var sort = this.sort;
@@ -278,6 +308,9 @@ Widget.types.list = {
 		});
 	},
 	
+	/**
+	 * Internal. Adds or removes reorderable states of reorder cells.
+	 */
 	update_reorderable: function() {
 		var reorderable = this._element.find('tbody');
 		var currentSortSchema = null;
@@ -314,6 +347,9 @@ Widget.types.list = {
 		this.update_reorderable_axis();
 	},
 	
+	/**
+	 * Internal. Called when a row has been dragged to a new position. Updates position in the DOM and on the server.
+	 */
 	update_reorderable_order: function(row, schema) {
 		var relation = 'before';
 		var related = row.next('.ui-list-row');
@@ -328,6 +364,9 @@ Widget.types.list = {
 		this.doSort(schema.identifier, this.collect_row_data(row), this.collect_row_data(related), relation);
 	},
 	
+	/**
+	 * Internal. Thumbnail view supports reordering by dragging in both axes, list mode only allows dragging vertically.
+	 */
 	update_reorderable_axis: function() {
 		var reorderable = this._element.find('tbody');
 		if(reorderable.is(':ui-sortable')) {
@@ -336,6 +375,9 @@ Widget.types.list = {
 		}
 	},
 	
+	/**
+	 * Removes a row from the list and on the server.
+	 */
 	delete_row: function(row) {
 		if(row.constructor === Number) {
 			row = this.row_from_number(row);
@@ -355,6 +397,9 @@ Widget.types.list = {
 		});
 	},
 	
+	/**
+	 * Returns an object of all data fields and their values from a row.
+	 */
 	collect_row_data: function(row) {
 		var rowData = {};
 		var has_data = false;
@@ -370,10 +415,16 @@ Widget.types.list = {
 		return rowData;
 	},
 
+	/**
+	 * Returns the 0-indexed number for a row element.
+	 */
 	row_number: function(row) {
 		return this.all_rows().index(row);
 	},
 
+	/**
+	 * Changes the state of a boolean cell in the list and on the server.
+	 */
 	toggle_boolean: function(row, boolean_name, reload_all) {
 		if(row.constructor === Number) {
 			row = this.row_from_number(row);
@@ -388,6 +439,9 @@ Widget.types.list = {
 		});
 	},
 	
+	/**
+	 * Reloads a specific row from the server and updates the DOM.
+	 */
 	update_row: function(row, additonalData) {
 		if(!row) {
 			return;
@@ -408,6 +462,9 @@ Widget.types.list = {
 		});
 	},
 	
+	/**
+	 * Loads a row from the server by qerying for the given data fields.
+	 */
 	append_row_with_data: function(rowData) {
 		this.rowFromData(rowData, function(row_contents) {
 			if(row_contents !== null) {
@@ -416,6 +473,9 @@ Widget.types.list = {
 		});
 	},
 	
+	/**
+	 * Returns all heading texts.
+	 */
 	headings: function() {
 		var result = {};
 		jQuery.each(this.schema, function(i, column) {
@@ -426,10 +486,16 @@ Widget.types.list = {
 		return result;
 	},
 	
+	/**
+	 * Counts how many rows are currently loaded.
+	 */
 	current_row_count: function() {
 		return this.all_rows().length;
 	},
 	
+	/**
+	 * Reloads the list. Must be called with true for load_heading on the first load.
+	 */
 	reload: function(load_heading) {
 		this.fire('reloading', load_heading);
 		this.toggle_loader(true);
@@ -492,11 +558,17 @@ Widget.types.list = {
 		});
 	},
 	
+	/**
+	 * Internal. Whether or not a schema column is yields a dom element or not.
+	 */
 	col_is_invisible: function(col) {
 		display_type = col.display_type ? col.display_type : col;
 		return display_type === 'data' || display_type === 'classname';
 	},
 	
+	/**
+	 * Looks inside the schema to see what number the cell of the given type is placed and returns that cell’s jQuery-wrapped DOM element
+	 */
 	cell_for_identifier: function(identifier, row) {
 		var _this = this;
 		var counter = 0;
@@ -513,7 +585,10 @@ Widget.types.list = {
 		});
 		return cell;
 	},
-	
+
+	/**
+	 * Can be passed either a (living) cell or a column number and returns the complete schema information for said cell.
+	 */
 	schema_for_col: function(col) {
 		var _this = this;
 		var counter = 0;
@@ -534,14 +609,23 @@ Widget.types.list = {
 		return col_schema;
 	},
 	
+	/**
+	 * Returns a jQuery object of all list rows (tr or li elements)
+	 */
 	all_rows: function() {
 		return this._element.find('.ui-list-row');
 	},
 	
+	/**
+	 * Returns a jQuery-wrapped DOM element of the rows matching a given row number or an empty jQuery object if none match.
+	 */
 	row_from_number: function(rowNumber) {
 		return this._element.find('.ui-list-row:eq('+rowNumber+')');
 	},
 	
+	/**
+	 * Searches a row whose data fields matches those present in the rowData argument.
+	 */
 	row_from_row_data: function(rowData) {
 		if(rowData.constructor === Number) {
 			return this.row_from_number(rowData);
@@ -567,6 +651,9 @@ Widget.types.list = {
 		return result;
 	},
 	
+	/**
+	 * Searches multple rows whose data fields match those present in the rowData argument.
+	 */
 	rows_matching_row_data: function(rowData) {
 		var result = [];
 		var _this = this;
@@ -593,6 +680,9 @@ Widget.types.list = {
 		return result;
 	},
 	
+	/**
+	 * Internal. Returns the (cached) model name of this list.
+	 */
 	model_name: function() {
 		if(this.settings.row_model_name === undefined) {
 			this.settings.row_model_name = this.getModelName();
@@ -600,6 +690,9 @@ Widget.types.list = {
 		return this.settings.row_model_name;
 	},
 	
+	/**
+	 * Internal. Shows or hides the loader for this list.
+	 */
 	toggle_loader: function(toggle_active) {
 		if(toggle_active) {
 			Widget.load();
@@ -608,10 +701,16 @@ Widget.types.list = {
 		}
 	},
 	
+	/**
+	 * Generates the URL to the list exporter.
+	 */
 	get_print_link: function() {
 		return '{{writeLink=list_export;manager=FileManager}}/'+this._instanceInformation.session_id;
 	},
 	
+	/**
+	 * Switches this list into thumbnail view mode. If the value equals 'toggle', the mode is switched. If no `value` is given, the current mode is returned.
+	 */
 	thumbnail_view: function(value) {
 		if(arguments.length) {
 			if(value === 'toggle') {
@@ -625,41 +724,65 @@ Widget.types.list = {
 		}
 	},
 	
+	/**
+	 * Internal. Stores the list schema. Loaded when reload is called with load_heading set to true.
+	 */
 	schema: null,
 	
+	/**
+	 * Handler methdo for specific column types. Each of these takes the cell element as well as data and metadata and updates the cell to match the data given.
+	 */
 	types: {
+		/**
+		 * Outputs data as text.
+		 */
 		text: function(column, data, metadata, isHeading) {
 			if(isHeading) {
 				column = jQuery('<span/>').appendTo(column);
 			}
 			column.text(data === null ? '-' : data);
 		},
-		
+
+		/**
+		 * Outputs data as text, intended for numeric contents (because CSS can optimize output).
+		 */
 		numeric: function(column, data, metadata, isHeading) {
 			return this.text(column, data, metadata, isHeading);
 		},
-		
+
+		/**
+		 * Outputs data from the schema.
+		 */
 		'static': function(column, data, metadata) {
 			data = metadata.heading;
-			Widget.types.list.types.text(column, data);
+			this.text(column, data);
 		},
 		
+		/**
+		 * Outputs icons for true or false.
+		 */
 		'boolean': function(column, data, metadata) {
 			if(metadata.icon_true || metadata.icon_false) {
 				var icon = data ? metadata.icon_true : metadata.icon_false;
 				if(!icon) {
 					return;
 				}
-				return Widget.types.list.types.icon(column, icon);
+				return this.icon(column, icon);
 			}
 			var element = jQuery('<span/>').css('color', data ? 'green' : 'grey').text(data ? '✔' : '-');
-			Widget.types.list.types.html(column, element);
+			this.html(column, element);
 		},
-		
+
+		/**
+		 * Outputs a reorder icon
+		 */
 		reorderable: function(column, data, metadata) {
 			column.addClass('ui-sortable-handle').data('sort', data);
 		},
-		
+
+		/**
+		 * Outputs a link
+		 */
 		url: function(column, data) {
 			if(data === null) {
 				return;
@@ -671,7 +794,31 @@ Widget.types.list = {
 				event.stopPropagation();
 			});
 		},
-		
+
+		/**
+		 * Outputs an icon.
+		 */
+		icon: function(column, data, metadata) {
+			if(data === undefined) {
+				data = metadata.field_name;
+			}
+			data = jQuery('<div/>').addClass('ui-icon ui-icon-'+data);
+			this.html(column, data);
+		},
+
+		/**
+		 * Insers raw HTML into the cell.
+		 */
+		html: function(column, data) {
+			if(data.constructor === String) {
+				data = jQuery(data);
+			}
+			column.append(data);
+		},
+
+		/**
+		 * Internal. Truncates text.
+		 */
 		truncate: function(string, len, pfix) {
 			var length = len || 50;
 			var postfix = pfix || '…';
@@ -680,21 +827,6 @@ Widget.types.list = {
 				return string.substr(0,length)+postfix;
 			}
 			return string;
-		},
-		
-		icon: function(column, data, metadata) {
-			if(data === undefined) {
-				data = metadata.field_name;
-			}
-			data = jQuery('<div/>').addClass('ui-icon ui-icon-'+data);
-			Widget.types.list.types.html(column, data);
-		},
-		
-		html: function(column, data) {
-			if(data.constructor === String) {
-				data = jQuery(data);
-			}
-			column.append(data);
 		}
 	},
 
