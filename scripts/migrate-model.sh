@@ -35,6 +35,10 @@ elif [ "$1" = "-s" ]; then
 	shift
 elif [ "$1" = "-p" ]; then
 	shift
+	if [ "$1s" = "s" ]; then
+		echo "No plugin name given."
+		exit 0
+	fi
 	context="plugins/$1"
 	shift
 fi

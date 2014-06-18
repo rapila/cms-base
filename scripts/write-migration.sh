@@ -1,5 +1,11 @@
 #! /bin/bash
 
+# Remark: always remove drop statements for _migration_[name] tables in PropelMigration_ file, so these tables will not be deleted.
+# 1. before a schema update write and migrate the model without the new changes so all old schema inconsistencies are fixed.
+#    and throw away that PropelMigration_ file
+# 2. update to new schema
+# 3. write_migration.sh, remove code @see Remark and run migration_model.sh and add/commit this file
+
 path_to_this="$(dirname "$0")";base_path="$(dirname "$path_to_this")";. "$base_path/lib/sh/script_common.sh"
 
 owner=`whoami`
@@ -19,6 +25,10 @@ elif [ "$1" = "-s" ]; then
 	shift
 elif [ "$1" = "-p" ]; then
 	shift
+	if [ "$1s" = "s" ]; then
+		echo "No plugin name given."
+		exit 0
+	fi
 	context="plugins/$1"
 	shift
 fi
