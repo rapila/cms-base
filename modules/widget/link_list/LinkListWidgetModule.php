@@ -168,7 +168,7 @@ class LinkListWidgetModule extends SpecializedListWidgetModule {
 	}
 	
 	public function getCriteria() {
-		if($this->sCriteria !== null) {
+		if($this->sCriteria instanceof LinkQuery) {
 			$oQuery = $this->sCriteria;
 		} else {
 			$oQuery = LinkQuery::create();
