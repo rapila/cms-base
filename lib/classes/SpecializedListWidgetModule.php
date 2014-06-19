@@ -2,6 +2,7 @@
 
 abstract class SpecializedListWidgetModule extends WidgetModule {
 	protected $oListWidget = null;
+	protected $sCriteria = null;
 	
 	public function __construct() {
 		$this->oListWidget = $this->createListWidget();
