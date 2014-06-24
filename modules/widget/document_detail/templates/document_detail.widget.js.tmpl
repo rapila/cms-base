@@ -161,7 +161,7 @@ Widget.types.document_detail = {
 	
 	do_delete: function(callback) {
 		var _this = this;
-		Widget.confirm('{{writeString=wns.document.delete}}', '{{writeString==wns.document.delete_unsaved}}', function(may_delete) {
+		Widget.confirm('{{writeString=wns.delete_warning_title}}', '{{writeString=wns.document.delete_unsaved}}', function(may_delete) {
 			if(may_delete) {
 				_this.deleteDocument(function(success) {
 					if(success) {
