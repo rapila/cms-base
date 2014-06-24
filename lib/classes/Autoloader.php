@@ -81,7 +81,7 @@ class Autoloader {
 				}
 			
 				if($sModuleBaseClass::isValidModuleClassName($sClassName)) {
-					$sPath = ResourceFinder::create(array(DIRNAME_MODULES, $sModuleType, call_user_func(array($sModuleBaseClass, 'getNameByClassName'), $sClassName), $sFileName))->find();
+					$sPath = ResourceFinder::create(array(DIRNAME_MODULES, $sModuleType, $sModuleBaseClass::getNameByClassName($sClassName), $sFileName))->find();
 					if($sPath) {
 						return $sPath;
 					}

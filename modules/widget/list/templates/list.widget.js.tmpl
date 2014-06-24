@@ -45,18 +45,18 @@ Widget.types.list = {
 			return [rows.index(row), col_schema, row, cell];
 		};
 
-		this._element.delegate('.ui-list-row', 'dblclick', function(event) {
+		this._element.on('dblclick', '.ui-list-row', function(event) {
 			var row = jQuery(this);
 			return _this.fire.apply(_this, ['list-row_dblclick', event].concat(row_metadata(row)));
 		});
 
-		this._element.delegate('.ui-list-row', 'click', function(event) {
+		this._element.on('click', '.ui-list-row', function(event) {
 			var row = jQuery(this);
 			_this.activate_row(row, event);
 			return _this.fire.apply(_this, ['list-row_click', event].concat(row_metadata(row)));
 		});
 
-		this._element.delegate('.ui-list-row', 'mouseenter mouseleave', function(event) {
+		this._element.on('mouseenter mouseleave', '.ui-list-row', function(event) {
 			var isOver = event.type === 'mouseenter' || event.type === 'mousein' || event.type === 'mouseover';
 			var row = jQuery(this);
 			if(_this.settings.row_hover) {
@@ -66,10 +66,10 @@ Widget.types.list = {
 		});
 
 		if(_this._element.is('table')) {
-			this._element.delegate('.ui-list-cell', 'click', function(event) {
+			this._element.on('click', '.ui-list-cell', function(event) {
 				return _this.fire.apply(_this, ['list-cell_click', event].concat(cell_metadata(jQuery(this))));
 			});
-			this._element.delegate('.ui-list-cell', 'mouseenter mouseleave', function(event) {
+			this._element.on('mouseenter mouseleave', '.ui-list-cell', function(event) {
 				return _this.fire.apply(_this, ['list-cell_hover', event].concat(cell_metadata(jQuery(this))));
 			});
 		}
@@ -274,7 +274,6 @@ Widget.types.list = {
 			reorderable.sortable({
 				items: '.ui-list-row',
 				handle: '.ui-sortable-handle',
-				containment: this._element,
 				start: function(event, ui) {
 					var item = event.originalEvent.target;
 					currentSchema = _this.schema_for_col(item);
@@ -284,12 +283,12 @@ Widget.types.list = {
 				},
 				update: function(event, ui) {
 					_this.update_reorderable_order(ui.item, currentSchema);
-				},
-				axis: 'y'
+				}
 			});
 		} else if(reorderable.is(':ui-sortable')) {
 			reorderable.sortable('destroy');
 		}
+		this.update_reorderable_axis();
 	},
 	
 	update_reorderable_order: function(row, schema) {
@@ -304,6 +303,14 @@ Widget.types.list = {
 			}
 		}
 		this.doSort(schema.identifier, this.collect_row_data(row), this.collect_row_data(related), relation);
+	},
+	
+	update_reorderable_axis: function() {
+		var reorderable = this._element.find('tbody');
+		if(reorderable.is(':ui-sortable')) {
+			var axis = this.thumbnail_view() ? false : 'y';
+			reorderable.sortable('option', 'axis', axis);
+		}
 	},
 	
 	delete_row: function(row) {
@@ -437,7 +444,7 @@ Widget.types.list = {
 			this.update_reorderable();
 			if(active_rows) {
 				jQuery.each(active_rows, function(id, row) {
-					row = this.row_from_row_data(row);
+					var row = this.row_from_row_data(row);
 					row && row.addClass(this.settings.row_click_active_class);
 				}.bind(this));
 				this.fire_selection_changed(active_rows.sort());
@@ -448,7 +455,7 @@ Widget.types.list = {
 						this.settings.initial_selection = [this.settings.initial_selection];
 					}
 					jQuery.each(this.settings.initial_selection, function(i, obj) {
-						row = this.row_from_row_data(obj);
+						var row = this.row_from_row_data(obj);
 						row && row.addClass(this.settings.row_click_active_class);
 					}.bind(this));
 				}
@@ -584,6 +591,7 @@ Widget.types.list = {
 				this._element(!this.thumbnail_view());
 			} else {
 				this._element[value ? 'addClass' : 'removeClass']('ui-thumbnail-list');
+				this.update_reorderable_axis();
 			}
 		} else {
 			return this._element.hasClass('ui-thumbnail-list');
@@ -596,7 +604,7 @@ Widget.types.list = {
 		text: function(column, data, metadata, isHeading) {
 			if(isHeading) {
 				column = jQuery('<span/>').appendTo(column);
-			} 
+			}
 			column.text(data === null ? '-' : data);
 		},
 		

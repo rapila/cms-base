@@ -1,4 +1,4 @@
-f<?php
+<?php
 /**
 * @package test
 */
@@ -286,9 +286,8 @@ EOT;
 </style>
 
 EOT;
-
 		$oTemplate = new Template('settings.admin.css', array(DIRNAME_MODULES, 'admin', 'settings', 'templates'));
 		$oIncluder->addCustomCss($oTemplate);
-		$this->assertSame(str_replace('{{content}}', $oTemplate->render(), $sOuterTemplate), $oIncluder->getIncludes()->render());
+		$this->assertSame(str_replace('{{content}}', $oTemplate->render(), $sOuterTemplate), $oIncluder->getIncludes(true, false)->render());
 	}
 }

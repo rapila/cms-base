@@ -1,6 +1,14 @@
 jQuery(document).ready(function() {
 	var db = AdminInterface.content.find('#dashboard-columns');
 	
+	var dashboard_layout_icons = {
+		"2cols2thirds": '\ue624',
+		"2cols3cols": '\ue623',
+		"2columns": '\ue622',
+		"3columns": '\ue620',
+		"head3cols": '\ue621'
+	};
+	
 	var add_to_column = function(column_name, skeleton) {
 		var column = db.find('.dashboard-column#'+column_name);
 		if(column.length !== 1) {
@@ -12,7 +20,7 @@ jQuery(document).ready(function() {
 	
 	Widget.create('dashboard_control', function(dashboard_control) {
 		
-		var create_module = function(settings) {
+		function create_module(settings) {
 			var module = jQuery.extend(true, {
 				config: {},
 				color: '#555',
@@ -24,9 +32,9 @@ jQuery(document).ready(function() {
 				module.uid = Widget.uuid();
 			}
 			return module;
-		};
+		}
 		
-		var create_skeleton = function(module) {
+		function create_skeleton(module) {
 			var uid = module.uid;
 			var container = Widget.parseHTML('{{includeTemplate=container}}').hide();
 			var heading = container.find('.dashboard-widget-head h3').text(module.title);
@@ -75,6 +83,7 @@ jQuery(document).ready(function() {
 						dashboard_control.remove(uid, function() {
 							container.unbind('.dashboard');
 							container.remove();
+							update_empty_message();
 						});
 					}
 				});
@@ -83,7 +92,7 @@ jQuery(document).ready(function() {
 			return skeleton;
 		};
 		
-		var init_widget = function(skeleton) {
+		function init_widget(skeleton) {
 			var module = skeleton.module;
 			if(module.collapsed) {
 				skeleton.collapse();
@@ -111,15 +120,13 @@ jQuery(document).ready(function() {
 			}, jQuery.noop);
 		};
 		
-		var reload;
-		reload = function() {
+		function reload() {
 			dashboard_control.template(function(template) {
 				//Clear elements and bound handlers
 				db.find('.dashboard-widget').unbind('.dashboard').empty();
 				
 				//Reload
 				db.html(template);
-			
 				dashboard_control.allDashboardModules(function(modules) {
 					var skeletons = [];
 					jQuery.each(modules, function(i, module) {
@@ -135,11 +142,15 @@ jQuery(document).ready(function() {
 					jQuery.each(skeletons, function(i, skeleton) {
 						init_widget(skeleton);
 					});
+					update_empty_message();
 				});
 			});
-		};
+		}
 		
-		reload();
+		function update_empty_message() {
+			var has_widgets = AdminInterface.content.find('.dashboard-widget').length !== 0;
+			AdminInterface.content[has_widgets ? 'removeClass' : 'addClass']('empty-dashboard');
+		}
 		
 
 		AdminInterface.info_bar.prepareWidget(function(info_bar) {
@@ -166,6 +177,7 @@ jQuery(document).ready(function() {
 								dashboard_control.saveSettings(module.uid, module);
 								var skeleton = create_skeleton(module);
 								add_to_column(module.container, skeleton);
+								update_empty_message();
 				
 								//Add the controls
 								Dashboard.addWidgetControls();
@@ -192,12 +204,27 @@ jQuery(document).ready(function() {
 			dashboard_control.possibleTemplates(function(templates) {
 				var template_chooser = jQuery('<select/>');
 				template_chooser.populate(templates);
+				var options = template_chooser.find('option');
+				options.each(function() {
+					var option = jQuery(this);
+					if(option.val() in dashboard_layout_icons) {
+						option.text(dashboard_layout_icons[option.val()]);
+						option.addClass('rapila-icon');
+					}
+				});
 				template_chooser.val(dashboard_control.getLayoutName());
 				template_chooser.change(function() {
+					var is_icon = options.filter('[value='+template_chooser.val()+']').hasClass('rapila-icon');
+					template_chooser[is_icon ? 'addClass' : 'removeClass']('rapila-icon');
 					dashboard_control.setLayoutName(template_chooser.val());
 					reload();
 				});
+				template_chooser.change();
 				info_bar.add_element(template_chooser, true, false, 't', {documentation: 'dashboard.template-chooser'});
+				var documentation_link = "{{writeRequestValue=documentation_link}}";
+				if(documentation_link) {
+					info_bar.add_documentation_link(documentation_link, "{{writeString=wns.dashboard.go_to_documentation}}");
+				}
 			});
 		});
 	});

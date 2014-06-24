@@ -107,21 +107,22 @@ class BackupWidgetModule extends PersistentWidgetModule {
 	}
 
 	private static function detectMysqldumpLocation() {
+		ini_set('open_basedir', '.');
 		// 1st: try config
 		$sMySqlDumpTool = Settings::getSetting('admin', 'mysql_dump_tool', null);
-		if($sMySqlDumpTool && is_executable($sMySqlDumpTool)) {
+		if($sMySqlDumpTool && self::is_executable($sMySqlDumpTool)) {
 			return $sMySqlDumpTool;
 		}
 
-		// 2nd: use mysqldump location from `which` command.
-		$sMySqlDumpTool = `which mysqldump`;
-		if (is_executable($sMySqlDumpTool)) {
+		// 2nd: use mysqldump location from “which” command.
+		$sMySqlDumpTool = exec("which mysqldump");
+		if (self::is_executable($sMySqlDumpTool)) {
 			return $sMySqlDumpTool;
 		}
 
-		// 3rd: try to detect the path using `which` for `mysql` command.
-		$sMySqlDumpTool = dirname(`which mysql`) . "/mysqldump";
-		if (is_executable($sMySqlDumpTool)) {
+		// 3rd: try to detect the path using “which” for “mysql” command.
+		$sMySqlDumpTool = dirname(exec("which mysql")) . "/mysqldump";
+		if (self::is_executable($sMySqlDumpTool)) {
 			return $sMySqlDumpTool;
 		}
 
@@ -134,13 +135,32 @@ class BackupWidgetModule extends PersistentWidgetModule {
 			'/usr/mysql/bin/mysqldump' //Linux
 		 );
 		foreach($aMySqyDumpToolPath as $sMySqlDumpTool) {
-			if (is_executable($sMySqlDumpTool)) {
+			if (self::is_executable($sMySqlDumpTool)) {
 				return $sMySqlDumpTool;
 			}
 		}
 		
 		// 5th: detection has failed
 		return null;
+	}
+	
+	/**
+	* Work around PHP bug, where is_executable() can not be used outside open_basedir even if exec() works.
+	*/
+	private static function is_executable($sPath) {
+		$bUseAlternative = false;
+		set_error_handler(function($iCode, $sMessage) use (&$bUseAlternative) {
+			// If path is outside open_basedir then this warning is given
+			if(strpos($sMessage, 'open_basedir restriction in effect')) {
+				$bUseAlternative = true;
+			}
+		}, E_ALL);
+		$bResult = @is_executable($sPath);
+		restore_error_handler();
+		if($bUseAlternative) {
+			return exec($sPath) !== '';
+		}
+		return $bResult;
 	}
 
 	public function deleteBackupFile($sBackupFile) {

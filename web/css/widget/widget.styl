@@ -2,7 +2,7 @@
 
 @font-face
 	font-family 'Rapila-Icons'
-	src url('../../fonts/Rapila-UI-Icons.woff') format('woff'), url('../../fonts/Rapila-UI-Icons.otf') format('truetype'), url('../../fonts/Rapila-UI-Icons.svg#Rapila-UI-Icons') format('svg')
+	src url('../../fonts/Rapila-UI-Icons.woff') format('woff')
 	font-weight normal
 	font-style normal
 
@@ -63,13 +63,13 @@ label
 	label
 		display inline-block
 		padding-right 0.5em
-	.hide_if_not_saved label:first-child
-		margin-top 0.9em
+	.hide_if_not_saved 
 		label
-			width 5em
-			margin-top 0.2em
+			width 6em
+			margin-top 0.4em
 
-.hide_if_not_saved 
+.hide_if_not_saved
+	margin-top 0.8em
 	label
 		display inline-block
 	&.bottom 
@@ -351,7 +351,7 @@ div.inner-tab-panel-content
 .ui-state-default li.tab_content_active
 	color black
 
-.add-new-item, .remove-item, .edit-item, .item-action, .print_area
+.add-new-item, .remove-item, .edit-item, .item-action, .print_area, .go-to-documentation
 	background-image url('../../images/admin/add_new_item.png')
 	background-repeat no-repeat
 	display inline-block
@@ -371,12 +371,20 @@ div.inner-tab-panel-content
 	background-image url('../../images/admin/print.gif')
 	width 24px
 
+.go-to-documentation
+	background-image url('../../images/admin/documentation.png')
+	
 .preview_edit
 	cursor pointer
 
 .rapila-icon
-	font-family 'Rapila-Icons'
+	font-family 'Rapila-Icons', Arial
 	cursor pointer
+
+option.rapila-icon
+	font-size 3em
+	line-height 1.2
+	padding 0.3em 0 0.3em 0.3em
 
 .help
 	cursor help
@@ -499,6 +507,16 @@ div.ui-dialog.file_upload_error
 // Documentation
 .highlight-documentation *[data-documentation-part]
 	cursor help !important
+	position relative
+	&::after
+		content " "
+		position absolute
+		background-color rgba(yellow, 0.3)
+		top 0
+		bottom 0
+		left 0
+		right 0
+		z-index 2000
 
 .ui-my-icon
 	height 20px

@@ -26,6 +26,9 @@ Widget.types.info_bar = {
 					this.element.fadeTo('slow', 1);
 					this.disabled = false;
 					return this;
+				},
+				text: function() {
+					return this.element.text.apply(this.element, arguments);
 				}
 			}, opts);
 			if(opts.parent.constructor === String) {
@@ -94,6 +97,12 @@ Widget.types.info_bar = {
 				}, 't', 'commons', is_before, "{{writeString=wns.tags.panel}}");
 				result.element.html('&#xf100;');
 				return result;
+			},
+			
+			add_documentation_link: function(link, link_title) {
+				this.add_button('go-to-documentation', function() {
+					window.location.href = link;
+				}, '', 'commons', false, link_title);
 			},
 
 			add_menu: function(class_name) {
@@ -194,6 +203,8 @@ Widget.types.info_bar = {
 			this.infobar_left.remove();
 			this.infobar_right.css('left', 0);
 			return;
+		} else {
+			this.resizer.show();
 		}
 		this.resizer.draggable({
 			axis: 'x',

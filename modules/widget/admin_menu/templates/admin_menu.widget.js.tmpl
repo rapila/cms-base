@@ -11,7 +11,12 @@ Widget.types.admin_menu = {
 			jQuery.each(module_config, function(i, config) {
 				var is_right = (i === 'right');
 				jQuery.each(config, function(i, config_item) {
-					var to_add = _this.predefined_elements[config_item.type].apply(_this, config_item.args);
+					var to_add = null;
+					if(_this.predefined_elements[config_item.type] === undefined) {
+						Widget.notifyUser(Widget.logSeverity.ALERT, "{{writeParameterizedString=wns.admin_menu.error_user_configuration;element_name=$\{element_name\}}}".replace('${element_name}', config_item.type));
+					} else {
+						to_add = _this.predefined_elements[config_item.type].apply(_this, config_item.args);
+					}
 					if(!to_add) {
 						return;
 					}
@@ -190,7 +195,7 @@ Widget.types.admin_menu = {
 		},
 
 		tag: function() {
-			var element = jQuery('<span/>').addClass('open-tag-panel rapila-icon').html('&#xf100;');
+			var element = jQuery('<span/>').addClass('open-tag-panel rapila-icon').html('&#xe610;');
 			var title = "{{writeString=wns.tag_panel.button_title}}"
 			if(title) element.attr('title', title);
 			return {element: element, callback: function(event) {
@@ -202,8 +207,16 @@ Widget.types.admin_menu = {
 			}};
 		},
 
+		action: function() {
+			var element = jQuery('<button/>').addClass('open-action').text('Action');
+			element.button();
+			return {element: element, callback: function(event) {
+				// do what
+			}};
+		},
+
 		logo: function() {
-			return {element: jQuery("<span/>").text('@ rapila').attr('class', "rapila_logo")};
+			return {element: jQuery("<span/>").text('rapila').attr('class', "rapila_logo")};
 		},
 
 		preview: function() {

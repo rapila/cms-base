@@ -27,7 +27,7 @@ class BooleanParser
 		if($sName === self::BP_TRUE || $sName === self::BP_FALSE) {
 			throw new Exception("Error in BooleanParser->__set: invalid key");
 		}
-		if(!is_bool($sValue)) {
+		if(!is_bool($sValue) && !is_callable($sValue)) {
 			$sValue = $sValue == true;
 		}
 		$this->aItems[$sName] = $sValue;
@@ -83,10 +83,13 @@ class BooleanParser
 			if($sItem === self::BP_TRUE || $sItem === self::BP_FALSE || $sItem === self::BP_AND || $sItem === self::BP_OR || $sItem === self::BP_NOT) {
 				continue;
 			}
-			if(!$this->__isset($sItem)) {
+			if(!isset($this->aItems[$sItem])) {
 				throw new Exception("Error in BooleanParser->replaceByValue: $sItem was never set");
 			}
-			$aExpression[$iKey] = self::stringForBoolean($this->$sItem);
+			if(is_callable($this->aItems[$sItem])) {
+				$this->aItems[$sItem] = $this->aItems[$sItem]();
+			}
+			$aExpression[$iKey] = self::stringForBoolean($this->aItems[$sItem]);
 		}
 		return $aExpression;
 	}

@@ -1,7 +1,7 @@
 <form enctype="multipart/form-data">
 	<div class="tags_in_detail"></div>
 	<label for="file_upload" class="validate-upload validate-document.requires_file validate-upload_error_php_max_size validate-upload_error">{{writeString=wns.document.file_upload}}</label>
-	<input type="file" name="file_upload" class="ui-widget-classontent" /><button class="upload_file" disabled="disabled">{{writeString=wns.document.upload}}</button><br />
+	<input type="file" name="file_upload" class="ui-widget-content" /><button class="upload_file" disabled="disabled">{{writeString=wns.document.upload}}</button><br />
 	<div class="status_section">
 		<div class="preview droppable_info ui-state-droppable">
 		  <div>{{writeString=wns.draganddrop.hint}}
@@ -9,12 +9,22 @@
 		</div>
 		<div class="hide_if_not_saved">
 			<br />
-			<a href="#" class="ui-download-document" title="{{writeString=wns.document.download}}">{{writeString=wns.document.download}}</a><br />
-				<label>{{writeString=wns.document.info}}:</label><span class="file_size status"></span><br />
-				<label>{{writeString=wns.created_info}}:</label><span class="created_info status"></span><br />
-				<label>{{writeString=wns.updated.info}}:</label><span class="updated_info status"></span><br />
-				<label>{{writeString=wns.document.original_name}}</label><span class="original_name"></span><br />
-				<label>{{writeString=wns.id}}</label><span class="detail_id"></span><br />
+			<a href="#" class="ui-download-document" title="{{writeString=wns.document.download}}">{{writeString=wns.document.download}}</a>
+			<div>
+				<label>{{writeString=wns.document.info}}:</label><span class="file_size status"></span>
+			</div>
+			<div>
+				<label>{{writeString=wns.created_info}}:</label><span class="created_info status"></span>
+			</div>
+			<div>
+				<label>{{writeString=wns.updated.info}}:</label><span class="updated_info status"></span>
+			</div>
+			<div>
+				<label>{{writeString=wns.document.original_name}}</label><span class="original_name"></span>
+			</div>
+			<div>
+				<label>{{writeString=wns.id}}</label><span class="detail_id"></span>
+			</div>
 		</div>
 	</div>
 	<div>
