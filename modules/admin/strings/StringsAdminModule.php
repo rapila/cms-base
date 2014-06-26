@@ -46,11 +46,20 @@ class StringsAdminModule extends AdminModule {
 	
 	public static function getCustomListElements() {
 		if(count(StringPeer::getNamespaces()) > 0) {
-		 	return array(
+		 	$aElements = array(
 				array('name_space' => CriteriaListWidgetDelegate::SELECT_ALL,
 							'title' => StringPeer::getString('wns.strings.select_all_title'),
 							'magic_column' => 'all')
 			);
+			if(StringQuery::create()->filterByKeysWithoutNamespace()->count() > 0) {
+			 	$aElementsWithout = array(
+					array('name_space' => CriteriaListWidgetDelegate::SELECT_WITHOUT,
+								'title' => StringPeer::getString('wns.strings.select_without_title'),
+								'magic_column' => 'without')
+				);
+				$aElements = array_merge($aElements, $aElementsWithout);
+			}
+			return $aElements;
 		}
 		return array();
 	}
@@ -58,7 +67,7 @@ class StringsAdminModule extends AdminModule {
 	public static function getListContents($iRowStart = 0, $iRowCount = null) {
 		$aResult = array();
 		foreach(StringPeer::getNamespaces() as $sNameSpace) {
-			$aResult[] = array('title' => $sNameSpace, 'name_space' => $sNameSpace);
+			$aResult[] = array('title' => $sNameSpace, 'name_space' => "$sNameSpace.");
 		}
 		if($iRowCount === null) {
 			$iRowCount = count($aResult);

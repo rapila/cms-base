@@ -73,12 +73,18 @@ class StringListWidgetModule extends WidgetModule {
 	
 	public function getFilterTypeForColumn($sColumnIdentifier) {
 		if($sColumnIdentifier === 'name_space') {
-			return CriteriaListWidgetDelegate::FILTER_TYPE_BEGINS;
+			return CriteriaListWidgetDelegate::FILTER_TYPE_MANUAL;
 		}
 		return null;
 	}
 
 	public function getCriteria() {
-		return StringQuery::create()->groupByStringKey();
+		$oQuery = StringQuery::create();
+		if($this->oDelegateProxy->getNameSpace() === CriteriaListWidgetDelegate::SELECT_WITHOUT) {
+			return $oQuery->filterByKeysWithoutNamespace();
+		} elseif($this->oDelegateProxy->getNameSpace() !== CriteriaListWidgetDelegate::SELECT_ALL) {
+			$oQuery->filterByNamespace($this->oDelegateProxy->getNameSpace());
+		}
+		return $oQuery->groupByStringKey();
 	}
 }
