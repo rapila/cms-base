@@ -48,7 +48,7 @@ class StringsAdminModule extends AdminModule {
 		if(count(StringPeer::getNamespaces()) > 0) {
 		 	$aElements = array(
 				array('name_space' => CriteriaListWidgetDelegate::SELECT_ALL,
-							'title' => StringPeer::getString('wns.documents.select_all_title'),
+							'title' => StringPeer::getString('wns.strings.select_all_title'),
 							'magic_column' => 'all')
 			);
 			if(StringQuery::create()->filterByKeysWithoutNamespace()->count() > 0) {
