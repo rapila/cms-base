@@ -168,13 +168,9 @@ class LinkListWidgetModule extends SpecializedListWidgetModule {
 	}
 	
 	public function getCriteria() {
-		if($this->sCriteria instanceof LinkQuery) {
-			$oQuery = $this->sCriteria;
-		} else {
-			$oQuery = LinkQuery::create();
-			if(!Session::getSession()->getUser()->getIsAdmin() || Settings::getSetting('admin', 'hide_externally_managed_link_categories', true)) {
-				$oQuery->excludeExternallyManaged();
-			}
+		$oQuery = LinkQuery::create();
+		if(!Session::getSession()->getUser()->getIsAdmin() || Settings::getSetting('admin', 'hide_externally_managed_link_categories', true)) {
+			$oQuery->excludeExternallyManaged();
 		}
 		if($this->oTagFilter && $this->oDelegateProxy->getListSettings()->getFilterColumnValue('has_tags') !== CriteriaListWidgetDelegate::SELECT_ALL) {
 			$oQuery->filterByTagId($this->oDelegateProxy->getListSettings()->getFilterColumnValue('has_tags'));
