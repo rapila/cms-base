@@ -18,5 +18,9 @@ class StringQuery extends BaseStringQuery {
 	public function filterByKeysWithoutNamespace() {
 		return $this->filterByStringKey('%.%', Criteria::NOT_LIKE);
 	}
+
+	public function filterByNamespace($sNameSpace) {
+		return $this->filterByStringKey("$sNameSpace%", Criteria::LIKE);
+	}
 }
 
