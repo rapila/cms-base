@@ -73,6 +73,7 @@ class DocumentsViewWidgetDelegate {
 				break;
 			case 'file_info':
 				$aResult['heading'] = StringPeer::getString('wns.document.file.info');
+				$aResult['classname'] = 'align-right';
 				break;
 			case 'document_kind':
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_ICON;

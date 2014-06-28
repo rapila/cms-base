@@ -195,7 +195,8 @@ Widget.types.list = {
 				display_type = 'boolean';
 			}
 		}
-		into.addClass(metadata.identifier);
+		// add class identifier with optional classname (align_right/align_center/default:text-align:left;)
+		into.addClass(metadata.identifier + (metadata.classname ? ' ' + metadata.classname : ''));
 		
 		// add isHeading for adding span for sortable
 		Widget.types.list.types[display_type](into, data, metadata, isHeading);
@@ -418,7 +419,7 @@ Widget.types.list = {
 				var col = jQuery('<col/>');
 				jQuery.each(this.schema, function(i, column) {
 					if(column.display_heading) {
-						col.clone().addClass(column.identifier).appendTo(this._element);
+						col.clone().addClass(column.identifier + (column.classname ? ' ' + column.classname : '')).appendTo(this._element);
 					}
 				}.bind(this));
 			}
