@@ -97,8 +97,6 @@ class DocumentsViewWidgetDelegate {
 				break;
 			case 'is_protected':
 				$aResult['heading'] = StringPeer::getString('wns.document.is_protected');
-				$aResult['icon_false'] = 'radio-on';
-				$aResult['icon_true'] = 'key';
 				$aResult['has_function'] = true;
 				break;
 			case 'updated_at_formatted':
