@@ -9,20 +9,34 @@ label
 	text-align left
 	width auto
 
-.status_section 
+.status_section
 	label
 		display inline-block
 		padding-right 0.5em
-	.hide_if_not_saved 
+	.hide_if_not_saved
 		label
 			width 6em
 			margin-top 0.4em
+
+.ui-widget-content
+	.status_section
+		font-family Arial
+		padding-right 2em
+		width 16.2em
+		float right
+		border-left 1px solid #f2f2f2
+		padding 0 1em
+		fieldset
+			border 1px dotted #c0c0c0
+			padding 0
+		select
+			width 15em
 
 .hide_if_not_saved
 	margin-top 0.8em
 	label
 		display inline-block
-	&.bottom 
+	&.bottom
 		label
 			margin-left 1em
 			&:first-child
@@ -35,6 +49,9 @@ textarea
 		border-color #dfdfdf
 		width 21.5em
 		padding 0.2em
+		&:hover,
+		&:focus
+			border-color #b5b5b5
 input[type=checkbox],
 input[type=checkbox].ui-widget-content
 	width auto
@@ -52,14 +69,6 @@ select
 		margin-bottom 0.5em
 	option.default
 		font-style oblique
-		
-select,
-input,
-textarea
-	&.ui-widget-content
-		&:hover,
-		&:focus
-			border-color #b5b5b5
 
 input.ui-widget-content
 	&.input_long
@@ -138,5 +147,4 @@ button.primary, button.ui-state-active, button.ui-state-hover
 .preview_edit
 	cursor pointer
 
-.help
-	cursor help
+
