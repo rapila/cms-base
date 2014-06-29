@@ -47,3 +47,12 @@
 .ui-accordion .ui-state-default .ui-icon-triangle-1-e
 	background-image url("../../images/admin/icon_triangle_closed.png")
 	background-position 3px 3px
+
+// style for count elements in accordion title
+h3 span
+	.number
+		padding-left 0.3em 
+	&::before
+		content ' ('
+	&::after
+		content ')'
