@@ -7,6 +7,7 @@ class ListWidgetModule extends PersistentWidgetModule {
 	const DISPLAY_TYPE_DEFAULT = null;
 	
 	const DISPLAY_TYPE_TEXT = 'text';
+	const DISPLAY_TYPE_NUMERIC = 'numeric';
 	const DISPLAY_TYPE_HTML = 'html';
 	
 	// url can process string or array of params [href, linktext]

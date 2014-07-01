@@ -178,7 +178,20 @@ Widget.types.list = {
 		if(isHeading && metadata.is_sortable) {
 			this.prepare_sort(row, into, metadata);
 		}
-		var display_type = isHeading ? 'text' : metadata.display_type;
+		var display_type = metadata.display_type;
+		if(display_type === null) {
+			display_type = 'text';
+			if(data === true || data === false) {
+				display_type = 'boolean';
+			} else if(typeof(data) === 'number' || (typeof(data) === 'string' && data !== '' && !isNaN(data))) {
+				display_type = 'numeric';
+			}
+		}
+		// Add class with display type
+		into.addClass('display-type-'+display_type);
+		if(isHeading) {
+			display_type = 'text';
+		}
 		if(metadata.display_type === 'data') {
 			row.data(metadata.identifier, data);
 			return null;
@@ -188,12 +201,6 @@ Widget.types.list = {
 				row.addClass(metadata.identifier+'-'+data);
 			}
 			return null;
-		}
-		if(display_type === null) {
-			display_type = 'text';
-			if(data === true || data === false) {
-				display_type = 'boolean';
-			}
 		}
 		// add class identifier with optional classname (align_right/align_center/default:text-align:left;)
 		into.addClass(metadata.identifier + (metadata.classname ? ' ' + metadata.classname : ''));
@@ -419,7 +426,11 @@ Widget.types.list = {
 				var col = jQuery('<col/>');
 				jQuery.each(this.schema, function(i, column) {
 					if(column.display_heading) {
-						col.clone().addClass(column.identifier + (column.classname ? ' ' + column.classname : '')).appendTo(this._element);
+						var classes = [column.identifier, 'display-type-'+column.display_type];
+						if(column.classname) {
+							classes.push(column.classname);
+						}
+						col.clone().addClass(classes.join(' ')).appendTo(this._element);
 					}
 				}.bind(this));
 			}
@@ -589,6 +600,10 @@ Widget.types.list = {
 				column = jQuery('<span/>').appendTo(column);
 			} 
 			column.text(data === null ? '-' : data);
+		},
+		
+		numeric: function(column, data, metadata, isHeading) {
+			return this.text(column, data, metadata, isHeading);
 		},
 		
 		'static': function(column, data, metadata) {

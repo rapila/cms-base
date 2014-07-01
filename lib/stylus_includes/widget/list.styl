@@ -28,6 +28,17 @@
 	.ui-list-row.magic_column-without
 		font-style oblique
 		color #777
+	.ui-list-cell,
+	.ui-list-heading
+		&.display-type-numeric,
+		&.align-right
+			text-align right
+			padding-right 2em	
+		&.align-center, 
+		&.display-type-reorderable
+			text-align center
+		&.align-right.sortable
+			padding-right 1em
 
 table.ui-list
 	width 100%
@@ -35,19 +46,6 @@ table.ui-list
 	padding 0
 	border-collapse collapse
 	border-spacing 0
-	.ui-list-headrow th.align-right, 
-	.ui-list-row td.align-right
-		text-align right
-		padding-right 2em	
-	.ui-list-headrow th.align-center, 
-	.ui-list-row td.align-center
-		text-align center
-	.ui-list-headrow th.sort, 
-	.ui-list-row td.sort
-		text-align center
-		color #999
-	.ui-list-headrow th.align-right.sortable
-		padding-right 1em
 	.ui-list-cell a
 		color #333 !important
 		text-decoration underline
