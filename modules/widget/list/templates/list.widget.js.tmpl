@@ -62,7 +62,7 @@ Widget.types.list = {
 
 		this.reload(true);
 	},
-	
+
 	activate_row: function(row, event, previous_selection) {
 		if(row && row.constructor === Number) {
 			row = this.row_from_number(row);
@@ -112,7 +112,7 @@ Widget.types.list = {
 			}
 		}
 	},
-	
+
 	active_row: function() {
 		return this.all_rows().filter('.'+this.settings.row_click_active_class);
 	},
@@ -123,7 +123,7 @@ Widget.types.list = {
 			return _this.collect_row_data(jQuery(this));
 		}).get();
 	},
-	
+
 	insert_row: function(rowData, isHeading, previousRow) {
 		var _this = this;
 		isHeading = !!isHeading;
@@ -156,14 +156,27 @@ Widget.types.list = {
 
 		return row;
 	},
-	
+
 	insert_cell: function(row, into, index, rowData, isHeading) {
 		var metadata = this.schema[index];
 		var data = rowData[metadata.identifier];
 		if(isHeading && metadata.is_sortable) {
 			this.prepare_sort(row, into, metadata);
 		}
-		var display_type = isHeading ? 'text' : metadata.display_type;
+		var display_type = metadata.display_type;
+		if(display_type === null) {
+			display_type = 'text';
+			if(data === true || data === false) {
+				display_type = 'boolean';
+			} else if(typeof(data) === 'number' || (typeof(data) === 'string' && data !== '' && !isNaN(data))) {
+				display_type = 'numeric';
+			}
+		}
+		// Add class with display type
+		into.addClass('display-type-'+display_type);
+		if(isHeading) {
+			display_type = 'text';
+		}
 		if(metadata.display_type === 'data') {
 			row.data(metadata.identifier, data);
 			return null;
@@ -174,14 +187,10 @@ Widget.types.list = {
 			}
 			return null;
 		}
-		if(display_type === null) {
-			display_type = 'text';
-			if(data === true || data === false) {
-				display_type = 'boolean';
-			}
-		}
-		into.addClass(metadata.identifier);
-		
+
+		// add class identifier with optional classname (align_right/align_center/default:text-align:left;)
+		into.addClass(metadata.identifier + (metadata.classname ? ' ' + metadata.classname : ''));
+
 		// add isHeading for adding span for sortable
 		Widget.types.list.types[display_type](into, data, metadata, isHeading);
 		if(isHeading && metadata.heading_filter) {
@@ -189,7 +198,7 @@ Widget.types.list = {
 		}
 		return row === into ? null : into;
 	},
-	
+
 	prepare_filter: function(cell, metadata) {
 		var is_widget = !jQuery.isPlainObject(metadata.heading_filter);
 		var value_changed = function(event, value) {
@@ -214,7 +223,7 @@ Widget.types.list = {
 			filter.bind('change', value_changed).appendTo(cell);
 		}
 	},
-	
+
 	prepare_sort: function(row, into, metadata) {
 		var _this = this;
 		into.addClass('sortable');
@@ -227,7 +236,7 @@ Widget.types.list = {
 			_this.reload();
 		});
 	},
-	
+
 	update_sort: function() {
 		var all_headings = this._element.find('.ui-list-heading');
 		var sort = this.sort;
@@ -240,7 +249,7 @@ Widget.types.list = {
 			}
 		});
 	},
-	
+
 	update_reorderable: function() {
 		var reorderable = this._element.find('tbody');
 		var currentSortSchema = null;
@@ -277,7 +286,7 @@ Widget.types.list = {
 			reorderable.sortable('destroy');
 		}
 	},
-	
+
 	update_reorderable_order: function(row, schema) {
 		var relation = 'before';
 		var related = row.next('.ui-list-row');
@@ -291,7 +300,7 @@ Widget.types.list = {
 		}
 		this.doSort(schema.identifier, this.collect_row_data(row), this.collect_row_data(related), relation);
 	},
-	
+
 	delete_row: function(row) {
 		if(row.constructor === Number) {
 			row = this.row_from_number(row);
@@ -310,7 +319,7 @@ Widget.types.list = {
 			this.fire('row-deleted', result);
 		});
 	},
-	
+
 	collect_row_data: function(row) {
 		var rowData = {};
 		var has_data = false;
@@ -343,7 +352,7 @@ Widget.types.list = {
 			}
 		});
 	},
-	
+
 	update_row: function(row, additonalData) {
 		if(!row) {
 			return;
@@ -363,7 +372,7 @@ Widget.types.list = {
 			this.fire('row-updated', additonalData, row, rowData);
 		});
 	},
-	
+
 	append_row_with_data: function(rowData) {
 		this.rowFromData(rowData, function(row_contents) {
 			if(row_contents !== null) {
@@ -371,7 +380,7 @@ Widget.types.list = {
 			}
 		});
 	},
-	
+
 	headings: function() {
 		var result = {};
 		jQuery.each(this.schema, function(i, column) {
@@ -381,11 +390,11 @@ Widget.types.list = {
 		});
 		return result;
 	},
-	
+
 	current_row_count: function() {
 		return this.all_rows().length;
 	},
-	
+
 	reload: function(load_heading) {
 		this.fire('reloading', load_heading);
 		this.toggle_loader(true);
@@ -403,7 +412,11 @@ Widget.types.list = {
 				var col = jQuery('<col/>');
 				jQuery.each(this.schema, function(i, column) {
 					if(column.display_heading) {
-						col.clone().addClass(column.identifier).appendTo(this._element);
+						var classes = [column.identifier, 'display-type-'+column.display_type];
+						if(column.classname) {
+							classes.push(column.classname);
+						}
+						col.clone().addClass(classes.join(' ')).appendTo(this._element);
 					}
 				}.bind(this));
 			}
@@ -444,12 +457,12 @@ Widget.types.list = {
 			this.fire('reloaded', list.length);
 		});
 	},
-	
+
 	col_is_invisible: function(col) {
 		display_type = col.display_type ? col.display_type : col;
 		return display_type === 'data' || display_type === 'classname';
 	},
-	
+
 	cell_for_identifier: function(identifier, row) {
 		var _this = this;
 		var counter = 0;
@@ -466,7 +479,7 @@ Widget.types.list = {
 		});
 		return cell;
 	},
-	
+
 	schema_for_col: function(col) {
 		var _this = this;
 		var counter = 0;
@@ -486,15 +499,15 @@ Widget.types.list = {
 		});
 		return col_schema;
 	},
-	
+
 	all_rows: function() {
 		return this._element.find('.ui-list-row');
 	},
-	
+
 	row_from_number: function(rowNumber) {
 		return this._element.find('.ui-list-row:eq('+rowNumber+')');
 	},
-	
+
 	row_from_row_data: function(rowData) {
 		if(rowData.constructor === Number) {
 			return this.row_from_number(rowData);
@@ -519,7 +532,7 @@ Widget.types.list = {
 		});
 		return result;
 	},
-	
+
 	rows_matching_row_data: function(rowData) {
 		var result = [];
 		var _this = this;
@@ -545,14 +558,14 @@ Widget.types.list = {
 		});
 		return result;
 	},
-	
+
 	model_name: function() {
 		if(this.settings.row_model_name === undefined) {
 			this.settings.row_model_name = this.getModelName();
 		}
 		return this.settings.row_model_name;
 	},
-	
+
 	toggle_loader: function(toggle_active) {
 		if(toggle_active) {
 			Widget.load();
@@ -560,26 +573,30 @@ Widget.types.list = {
 			Widget.end_load();
 		}
 	},
-	
+
 	get_print_link: function() {
 		return '{{writeLink=list_export;manager=FileManager}}/'+this._instanceInformation.session_id;
 	},
-	
+
 	schema: null,
-	
+
 	types: {
 		text: function(column, data, metadata, isHeading) {
 			if(isHeading) {
 				column = jQuery('<span/>').appendTo(column);
-			} 
+			}
 			column.text(data === null ? '-' : data);
 		},
-		
+
+		numeric: function(column, data, metadata, isHeading) {
+			return this.text(column, data, metadata, isHeading);
+		},
+
 		'static': function(column, data, metadata) {
 			data = metadata.heading;
 			Widget.types.list.types.text(column, data);
 		},
-		
+
 		'boolean': function(column, data, metadata) {
 			if(metadata.icon_true || metadata.icon_false) {
 				var icon = data ? metadata.icon_true : metadata.icon_false;
@@ -591,11 +608,11 @@ Widget.types.list = {
 			var element = jQuery('<span/>').css('color', data ? 'green' : 'grey').text(data ? '✔' : '-');
 			Widget.types.list.types.html(column, element);
 		},
-		
+
 		reorderable: function(column, data, metadata) {
 			column.addClass('ui-sortable-handle').data('sort', data);
 		},
-		
+
 		url: function(column, data) {
 			if(data === null) {
 				return;
@@ -607,7 +624,7 @@ Widget.types.list = {
 				event.stopPropagation();
 			});
 		},
-		
+
 		truncate: function(string, len, pfix) {
 			var length = len || 50;
 			var postfix = pfix || '…';
@@ -617,7 +634,7 @@ Widget.types.list = {
 			}
 			return string;
 		},
-		
+
 		icon: function(column, data, metadata) {
 			if(data === undefined) {
 				data = metadata.field_name;
@@ -625,7 +642,7 @@ Widget.types.list = {
 			data = jQuery('<div/>').addClass('ui-icon ui-icon-'+data);
 			Widget.types.list.types.html(column, data);
 		},
-		
+
 		html: function(column, data) {
 			if(data.constructor === String) {
 				data = jQuery(data);
