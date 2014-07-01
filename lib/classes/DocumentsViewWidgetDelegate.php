@@ -51,14 +51,14 @@ class DocumentsViewWidgetDelegate {
 	}
 	
 	public function getColumnIdentifiers() {
-		$aResult = array('id', 'name_truncated', 'file_info', 'document_kind', 'category_name');
+		$aResult = array('document_kind', 'id', 'name_truncated', 'file_size', 'extension', 'thumbnail', 'category_name');
 		if($this->oLanguageFilter !== null) {
 			$aResult[] = 'language_id';
 		}
 		if(self::hasTags()) {
 			$aResult[] = 'has_tags';
 		}
-		return array_merge($aResult, array('is_protected', 'thumbnail', 'sort', 'updated_at_formatted', 'delete'));
+		return array_merge($aResult, array('is_protected', 'sort', 'updated_at_formatted', 'delete'));
 	}
 	
 	public function getMetadataForColumn($sColumnIdentifier) {
@@ -71,15 +71,24 @@ class DocumentsViewWidgetDelegate {
 				$aResult['heading'] = StringPeer::getString('wns.sort');
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_REORDERABLE;
 				break;
-			case 'file_info':
+			case 'file_size':
+				$aResult['heading'] = StringPeer::getString('wns.document.file.size');
+				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_NUMERIC;
+				break;
+			case 'extension':
 				$aResult['heading'] = StringPeer::getString('wns.document.file.info');
-				$aResult['classname'] = 'align-right';
 				break;
 			case 'document_kind':
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_ICON;
 				$aResult['has_data'] = true;
 				$aResult['heading'] = '';
 				$aResult['heading_filter'] = array('document_kind_input', $this->oDocumentKindFilter->getSessionKey());
+				$aResult['is_sortable'] = false;
+				break;
+			case 'thumbnail':
+				$aResult['heading'] = StringPeer::getString('wns.thumbnail');
+				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_HTML;
+				$aResult['field_name'] = 'preview';
 				$aResult['is_sortable'] = false;
 				break;
 			case 'category_name':
@@ -102,12 +111,6 @@ class DocumentsViewWidgetDelegate {
 			case 'updated_at_formatted':
 				$aResult['heading'] = StringPeer::getString('wns.updated_at');
 				break;
-			case 'thumbnail':
-				$aResult['heading'] = StringPeer::getString('wns.thumbnail');
-				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_HTML;
-				$aResult['field_name'] = 'preview';
-				$aResult['is_sortable'] = false;
-				break;
 			case 'delete':
 				$aResult['heading'] = ' ';
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_ICON;
@@ -121,16 +124,19 @@ class DocumentsViewWidgetDelegate {
 	public function getDatabaseColumnForColumn($sColumnIdentifier) {
 		if($sColumnIdentifier === 'category_name') {
 			return DocumentPeer::DOCUMENT_CATEGORY_ID;
-		}		
+		}
 		if($sColumnIdentifier === 'name_truncated') {
 			return DocumentPeer::NAME;
 		}
-		if($sColumnIdentifier === 'file_info') {
-			return "OCTET_LENGTH(DATA)";
+		if($sColumnIdentifier === 'file_size') {
+			return "OCTET_LENGTH(document_data.DATA)";
+		}
+		if($sColumnIdentifier === 'extension') {
+			return DocumentTypePeer::EXTENSION;
 		}
 		if($sColumnIdentifier === 'updated_at_formatted') {
 			return DocumentPeer::UPDATED_AT;
-		}		
+		}
 		if($sColumnIdentifier === 'document_kind') {
 			return DocumentTypePeer::MIMETYPE;
 		}
@@ -192,7 +198,7 @@ class DocumentsViewWidgetDelegate {
 	}
 	
 	public function getCriteria() {
-		$oQuery = DocumentQuery::create()->joinDocumentType(null, Criteria::LEFT_JOIN);
+		$oQuery = DocumentQuery::create()->joinDocumentType(null, Criteria::LEFT_JOIN)->joinDocumentData();
 		if(!Session::getSession()->getUser()->getIsAdmin() || Settings::getSetting('admin', 'hide_externally_managed_document_categories', true)) {
 			$oQuery->excludeExternallyManaged();
 		}

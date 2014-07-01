@@ -177,9 +177,13 @@ class Document extends BaseDocument {
 	public function getDataSize(PropelPDO $oConnection = null) {
 		return $this->getDocumentData()->getDataSize($oConnection);
 	}
+	
+	public function getFileSize($sFilesizeFormat = 'auto_iso') {
+		return DocumentPeer::getDocumentSize($this->getDataSize(), $sFilesizeFormat);
+	}
 
 	public function getFileInfo($sFilesizeFormat = 'auto_iso') {
-		return DocumentPeer::getDocumentSize($this->getDataSize(), $sFilesizeFormat).' | '.$this->getExtension();
+		$this->getFileSize($sFilesizeFormat).' | '.$this->getExtension();
 	}
 	
 	/**

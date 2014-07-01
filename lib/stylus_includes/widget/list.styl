@@ -33,8 +33,8 @@
 		&.display-type-numeric,
 		&.align-right
 			text-align right
-			padding-right 2em	
-		&.align-center, 
+			padding-right 2em
+		&.align-center,
 		&.display-type-reorderable
 			text-align center
 		&.align-right.sortable
@@ -77,28 +77,27 @@ th.ui-list-heading
 		border-radius 3px
 		background-color transparent
 		margin 0
+	span
+		color #444
 	&.sortable:hover,
 	&.sortable.asc,
-	&.sortable.desc 
+	&.sortable.desc
 		span
 			background-image url("../../images/admin/sort_asc.png")
 			background-position right
 			background-repeat no-repeat
-	&.sortable.asc:hover 
+	&.sortable.asc:hover
 		span
 			background-image url("../../images/admin/sort_asc_hover.png")
-	&.sortable.desc 
+	&.sortable.desc
 		span
 			background-image url("../../images/admin/sort_desc.png")
 	&.sortable:hover,
-	&.sortable.desc:hover 
+	&.sortable.desc:hover
 		span
 			background-image url("../../images/admin/sort_desc_hover.png")
-	&.sortable 
-		span
-			color #444
-			padding-right 1.0em
 	&.sortable
+		padding-right 1.0em
 		cursor pointer
 
 /* Thumbnail lists */
@@ -113,16 +112,14 @@ th.ui-list-heading
 		flex-wrap wrap
 		justify-content space-between
 		min-width 100%
-		tr
+		.ui-list-row
 			display flex
 			flex-direction column
 			width 195px
 			flex-grow 1
-			td
+			.ui-list-cell
 				display block
 				max-width 400px
-			&:first-child
-				font-weight bold
 
 // Editable-items lists
 ol.ui-editable-items-list
