@@ -1,3 +1,5 @@
+<behavior name="extended_timestampable"></behavior>
+<behavior name="attributable"></behavior>
 <behavior name="denyable">
 	<parameter name="mode" value="by_role" />
 </behavior>
