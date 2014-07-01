@@ -13,10 +13,16 @@
 	max-height: none;
 }
 
+.ui-list.document_list.ui-thumbnail-list tbody {
+	justify-content: flex-start;
+}
+
 .ui-list.document_list.ui-thumbnail-list tbody .ui-list-row {
 	display: block; /* Override flexbox */
 	position: relative;
 	padding-bottom: 17px;
+	max-width: 190px;
+	flex-grow: 0;
 }
 
 .ui-list.document_list.ui-thumbnail-list tbody .ui-list-row .ui-list-cell {
