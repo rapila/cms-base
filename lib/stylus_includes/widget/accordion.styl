@@ -1,4 +1,4 @@
-.ui-accordion 
+.ui-accordion
 	.ui-accordion-content
 		background-color #ffffff
 		border none
@@ -7,7 +7,7 @@
 			padding 0
 		&.configuration_container
 			padding 0
-	.ui-accordion-header 
+	.ui-accordion-header
 		background none repeat scroll 0 0 #ebedef
 		border-width 0 0 1px 0
 		border-color #c1c2c4
@@ -47,3 +47,15 @@
 .ui-accordion .ui-state-default .ui-icon-triangle-1-e
 	background-image url("../../images/admin/icon_triangle_closed.png")
 	background-position 3px 3px
+
+// style for count elements in accordion title
+h3
+	a
+		background-image none
+	span
+		.number
+			padding-left 0.3em
+		&::before
+			content ' ('
+		&::after
+			content ')'
