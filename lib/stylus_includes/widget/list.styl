@@ -1,0 +1,153 @@
+// List-widget-type lists
+*[data-widget-type=list]
+	border none
+	.ui-state-active
+		background none
+		border 0
+	.ui-state-hover
+		cursor default
+
+.ui-list
+	list-style none
+	padding 0
+	margin 0
+	.ui-list-headrow
+		span
+			padding-top 3px
+			padding-bottom 1px
+			display inline-block
+	td,	li
+		padding 4px 5px 3px 2px
+		vertical-align middle
+		line-height 15px
+	.ui-list-row
+		background-color #F6F6F6
+	.ui-list-row:nth-child(2n+2)
+		background-color #E9E9E9
+	.ui-list-row.magic_column-all,
+	.ui-list-row.magic_column-without
+		font-style oblique
+		color #777
+	.ui-list-cell,
+	.ui-list-heading
+		&.display-type-numeric,
+		&.align-right
+			text-align right
+			padding-right 2em
+		&.align-center,
+		&.display-type-reorderable
+			text-align center
+		&.align-right.sortable
+			padding-right 1em
+
+table.ui-list
+	width 100%
+	margin 0
+	padding 0
+	border-collapse collapse
+	border-spacing 0
+	.ui-list-cell a
+		color #333 !important
+		text-decoration underline
+
+table.ui-list td:first-child,
+.ui-list li
+	padding-left 5px
+
+table.ui-list tr.ui-list-headrow th,
+ul.ui-list li.ui-list-headrow
+	color #000
+	text-align left
+	vertical-align bottom
+	font-size 1em
+	padding 11px 2px 1px 1px
+	background-color:#F6F6F6
+	border-top 0
+	border-bottom solid 1px #E9E9E9
+
+#admin_main table.ui-list tr.ui-list-headrow th
+	padding-top 12px
+
+.page_detail table.ui-list tr.ui-list-headrow th
+	background-color #FFFFFF
+
+th.ui-list-heading
+	select
+		border solid 1px #CDCDCD
+		border-radius 3px
+		background-color transparent
+		margin 0
+	span
+		display inline-block
+		width 10px
+		color #444
+	&.sortable:hover,
+	&.sortable.asc,
+	&.sortable.desc
+		span
+			background-image url("../../images/admin/sort_asc.png")
+			background-position right
+			background-repeat no-repeat
+	&.sortable.asc:hover
+		span
+			background-image url("../../images/admin/sort_asc_hover.png")
+	&.sortable.desc
+		span
+			background-image url("../../images/admin/sort_desc.png")
+	&.sortable:hover,
+	&.sortable.desc:hover
+		span
+			background-image url("../../images/admin/sort_desc_hover.png")
+	&.sortable
+		padding-right 1.0em
+		cursor pointer
+
+/* Thumbnail lists */
+
+.ui-list.ui-thumbnail-list
+	display block
+	thead
+		display table
+		width 100%
+	tbody
+		display flex
+		flex-wrap wrap
+		justify-content space-between
+		min-width 100%
+		.ui-list-row
+			display flex
+			flex-direction column
+			width 195px
+			flex-grow 1
+			.ui-list-cell
+				display block
+				max-width 400px
+
+// Editable-items lists
+ol.ui-editable-items-list
+	list-style-type none
+	margin 3em 0 .5em 0
+	padding 0
+	select
+		margin-bottom 0.3em
+	li
+		list-style none
+		padding 0.2em 0
+		cursor pointer
+		&::before
+			content " "
+			background-image url(../admin/theme/images/ui-icons_727272_256x240.png)
+			display inline-block
+			text-indent -99999px
+			overflow hidden
+			background-repeat no-repeat
+			background-position -64px -112px
+			padding-right 0.3em
+			height 16px
+			width 16px
+		&.display_info::before
+			content ''
+			content none
+			width 0
+			background-image none
+
