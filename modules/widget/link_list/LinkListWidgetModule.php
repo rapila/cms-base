@@ -10,7 +10,7 @@ class LinkListWidgetModule extends SpecializedListWidgetModule {
 	
 	protected function createListWidget() {
 		$oListWidget = new ListWidgetModule();
-		$this->oDelegateProxy = new CriteriaListWidgetDelegate($this, "Link", "name", "asc");
+		$this->oDelegateProxy = new CriteriaListWidgetDelegate($this, "Link", "name_truncated", "asc");
 		$oListWidget->setDelegate($this->oDelegateProxy);
 		$oListWidget->setSetting('row_model_drag_and_drop_identifier', 'id');
 		if(!LanguageInputWidgetModule::isMonolingual()) {
