@@ -51,7 +51,7 @@ class DocumentsViewWidgetDelegate {
 	}
 	
 	public function getColumnIdentifiers() {
-		$aResult = array('document_kind', 'id', 'name_truncated', 'file_size', 'extension', 'thumbnail', 'category_name');
+		$aResult = array('document_kind', 'id', 'name_truncated', 'file_size', 'extension', 'thumbnail');
 		if($this->oLanguageFilter !== null) {
 			$aResult[] = 'language_id';
 		}
