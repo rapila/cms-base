@@ -67,6 +67,24 @@ class FileResource {
 		return $this->sInstancePrefix;
 	}
 	
+	public function isBase() {
+		$aPrefix = explode('/', $this->sInstancePrefix);
+		return $aPrefix[0] === DIRNAME_BASE;
+	}
+	
+	public function isSite() {
+		$aPrefix = explode('/', $this->sInstancePrefix);
+		return $aPrefix[0] === DIRNAME_SITE;
+	}
+	
+	public function isPlugin() {
+		$aPrefix = explode('/', $this->sInstancePrefix);
+		if($aPrefix[0] !== DIRNAME_PLUGINS) {
+			return false;
+		}
+		return $aPrefix[1];
+	}
+	
 	public function baseVersion() {
 		return $this->version(DIRNAME_BASE);
 	}
