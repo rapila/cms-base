@@ -18,7 +18,7 @@ div.ui-widget-content
 	border-radius 0 0 0 5px
 	min-height 3em
 	zoom 1
-	margin-bottom 6px
+	margin-bottom 2px
 	&.editing
 		margin-bottom 20px
 		position relative
@@ -39,7 +39,8 @@ div.ui-widget-content
 		background #F9F9F9
 	&:hover
 		background-color rgba(167, 167, 167, 0.1)
-		outline 1px solid #cccccc
+		border 1px solid #eee
+		border-radius 0 0 0 5px
 
 .preview_bar
 	display block
@@ -47,6 +48,7 @@ div.ui-widget-content
 	z-index 1001
 	.ui-icon
 		margin-right 1px
+		margin-top 1px
 		cursor not-allowed
 		background-color #C1C1C1
 	> div
@@ -62,7 +64,7 @@ div.ui-widget-content
 		display none
 	&.may_edit
 		.ui-icon
-			width 24px
+			width 25px
 			height 19px
 			cursor pointer
 			&.ui-icon-pencil
