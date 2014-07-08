@@ -66,6 +66,23 @@ class FileResource {
 	public function getInstancePrefix() {
 		return $this->sInstancePrefix;
 	}
+	
+	public function baseVersion() {
+		return $this->version(DIRNAME_BASE);
+	}
+	
+	public function siteVersion() {
+		return $this->version(DIRNAME_SITE);
+	}
+	
+	public function pluginVersion($sPluginName) {
+		return $this->version(DIRNAME_PLUGINS.'/'.$sPluginName);
+	}
+	
+	private function version($sInstancePrefix) {
+		$sFullPath = self::mainDirCanonical().'/'.$sInstancePrefix.'/'.$this->sRelativePath;
+		return new FileResource($sFullPath, $sInstancePrefix, $this->sRelativePath);
+	}
 
 	public function getRelativePath() {
 		return $this->sRelativePath;
