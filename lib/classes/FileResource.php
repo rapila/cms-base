@@ -25,17 +25,14 @@ class FileResource {
 		if($sInstancePrefix !== null && !StringUtil::endsWith($sInstancePrefix, '/')) {
 			$sInstancePrefix .= '/';
 		}
-		
+
 		if($sRelativePath === null) {
-			if(self::$MAIN_DIR_CANONICAL === null) {
-				self::$MAIN_DIR_CANONICAL = realpath(MAIN_DIR);
-			}
-			if(strpos($sFullPath, self::$MAIN_DIR_CANONICAL) !== 0) {
-				throw new Exception("Tried to instanciate file resource $sFullPath, which is not inside main dir (".self::$MAIN_DIR_CANONICAL.")");
+			if(strpos($sFullPath, self::mainDirCanonical()) !== 0) {
+				throw new Exception("Tried to instanciate file resource $sFullPath, which is not inside main dir (".self::mainDirCanonical().")");
 			}
 			//Also remove leading slash
-			$sRelativePath = substr($sFullPath, strlen(self::$MAIN_DIR_CANONICAL)+1);
-			
+			$sRelativePath = substr($sFullPath, strlen(self::mainDirCanonical())+1);
+
 			$sPreviousRelativePath = $sRelativePath;
 			$sTempInstancePrefix = '';
 			do {
@@ -103,10 +100,7 @@ class FileResource {
 	}
 	
 	public function getFrontendDirectoryPath() {
-		if(self::$MAIN_DIR_CANONICAL === null) {
-			self::$MAIN_DIR_CANONICAL = realpath(MAIN_DIR);
-		}
-		return MAIN_DIR_FE.substr($this->getDirectoryPath(), strlen(self::$MAIN_DIR_CANONICAL)+1);
+		return MAIN_DIR_FE.substr($this->getDirectoryPath(), strlen(self::mainDirCanonical())+1);
 	}
 	
 	public function addToPath($sPathItem) {
@@ -116,5 +110,12 @@ class FileResource {
 	
 	public function unlink() {
 		unlink($this->sFullPath);
+	}
+	
+	public static function mainDirCanonical() {
+		if(self::$MAIN_DIR_CANONICAL === null) {
+			self::$MAIN_DIR_CANONICAL = realpath(MAIN_DIR);
+		}
+		return self::$MAIN_DIR_CANONICAL;
 	}
 }
