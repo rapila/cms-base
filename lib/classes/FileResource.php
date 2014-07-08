@@ -16,10 +16,12 @@ class FileResource {
 	* @param string $sRelativePath The file path following the instance prefix. There can be multiple files in the installation with the same relative paths if the instance prefix differs.
 	*/
 	public function __construct($sFullPath, $sInstancePrefix = null, $sRelativePath = null) {
-		if(($sRealPath = realpath($sFullPath)) === false) {
-				throw new Exception("File resource does not have the permissions for realpath($sFullPath)");
+		if(file_exists($sFullPath)) {
+			if(($sRealPath = realpath($sFullPath)) === false) {
+					throw new Exception("File resource does not have the permissions for realpath($sFullPath)");
+			}
+			$sFullPath = $sRealPath;
 		}
-		$sFullPath = $sRealPath;
 		if($sInstancePrefix !== null && !StringUtil::endsWith($sInstancePrefix, '/')) {
 			$sInstancePrefix .= '/';
 		}
