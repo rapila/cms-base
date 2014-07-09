@@ -28,6 +28,10 @@ class AdminModule extends Module {
 		TemplateResourceFileModule::includeAvailableResources($this, false, $oResourceIncluder, $this->aResourceParameters);
 	}
 	
+	public static function getDocumentationIdentifier() {
+		return self::getType().'.'.$this->getModuleName();
+	}
+	
 	public static function getReferences($aReferences) {
 		if(count($aReferences) === null) {
 			return null;
