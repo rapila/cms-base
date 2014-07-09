@@ -903,6 +903,8 @@ String.prototype.escapeSelector = function() {
 					val = null;
 				}
 
+				var is_multiselect = this.nodeName.toLowerCase() === 'select' && this.multiple;
+
 				if(this.name.match(/\[\]$/)) {
 					var name = this.name.substring(0, this.name.length-2);
 					if(!jQuery.isArray(result[name])) {
@@ -911,7 +913,7 @@ String.prototype.escapeSelector = function() {
 					if(jQuery.isArray(val)) {
 						result[name] = result[name].concat(val);
 					} else {
-						if(val !== null) {
+						if(!(is_multiselect && val === null)) {
 							result[name].push(val);
 						}
 					}
