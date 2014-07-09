@@ -14,14 +14,14 @@ sleep 1
 
 url="http://$(hostname):$port"
 
-if which xdg-open > /dev/null; then
-	xdg-open $url
+if which python > /dev/null; then
+	python -mwebbrowser "$url"
 elif which gnome-open > /dev/null; then
-	gnome-open $url
+	gnome-open "$url"
+elif which xdg-open > /dev/null; then
+	xdg-open "$url"
 elif which open > /dev/null; then
-	open $url
-elif which python > /dev/null; then
-	python -mwebbrowser $url
+	open "$url"
 fi
 
 trap "exit" INT TERM
