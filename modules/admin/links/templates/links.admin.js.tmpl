@@ -30,7 +30,7 @@ jQuery(document).ready(function() {
 			});
 		}, 'n', true).add_button('add-new-item', function() {
 			Widget.create('sidebar_input', function(widget) {
-				widget.add_new_sidebar_input("{{writeString=wns.link_category.default_name}}", 'LinkCategory', null, 'rapila-link_category_changed');
+				widget.add_new_sidebar_input("{{writeString=wns.link_category.default_name}}", 'LinkCategory', sidebar, 'rapila-link_category_changed');
 			});
 		}).add_search_input("{{writeString=wns.search.enter_search}}", function(search) {
 			if(content_list.setSearch(search)) {
@@ -89,10 +89,8 @@ jQuery(document).ready(function() {
 		Widget.handle('rapila-link_category_changed', function(event, info) {
 			if(info.updated) {
 				sidebar.update_row(sidebar.row_from_row_data({link_category_id: info.id}));
-			} else if (info.inserted) {
-				sidebar.reload();
 			} else if (info.removed) {
-				var row = sidebar.row_from_row_data({link_category_id: info.id})
+				var row = sidebar.row_from_row_data({link_category_id: info.id});
 				if(row) {
 					row.remove();
 				}
