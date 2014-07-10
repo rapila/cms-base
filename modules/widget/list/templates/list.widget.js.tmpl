@@ -179,7 +179,7 @@ Widget.types.list = {
 			row.addClass('ui-list-headrow').removeClass('ui-list-row');
 		}
 		var className = isHeading ? 'ui-list-heading' : 'ui-list-cell';
-		var column_prototype = jQuery(isHeading ? "<th>" : "<td>").addClass(className);
+		var column_prototype = jQuery(isHeading ? "<th>" : "<td>").addClass(className).prop('tabindex', -1);
 		jQuery.each(this.schema, function(i) {
 			var cell = _this._element.is('table') ? column_prototype.clone() : row;
 			row.append(_this.insert_cell(row, cell, i, rowData, isHeading));

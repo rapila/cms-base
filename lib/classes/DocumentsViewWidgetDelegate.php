@@ -51,7 +51,11 @@ class DocumentsViewWidgetDelegate {
 	}
 	
 	public function getColumnIdentifiers() {
+<<<<<<< Updated upstream
 		$aResult = array('document_kind', 'id', 'name_truncated', 'file_size', 'extension', 'thumbnail');
+=======
+		$aResult = array('id', 'name_truncated', 'thumbnail', 'extension', 'file_size');
+>>>>>>> Stashed changes
 		if($this->oLanguageFilter !== null) {
 			$aResult[] = 'language_id';
 		}
@@ -78,15 +82,9 @@ class DocumentsViewWidgetDelegate {
 			case 'extension':
 				$aResult['heading'] = StringPeer::getString('wns.document.file.info');
 				break;
-			case 'document_kind':
-				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_ICON;
-				$aResult['has_data'] = true;
+			case 'thumbnail':
 				$aResult['heading'] = '';
 				$aResult['heading_filter'] = array('document_kind_input', $this->oDocumentKindFilter->getSessionKey());
-				$aResult['is_sortable'] = false;
-				break;
-			case 'thumbnail':
-				$aResult['heading'] = StringPeer::getString('wns.thumbnail');
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_HTML;
 				$aResult['field_name'] = 'preview';
 				$aResult['is_sortable'] = false;

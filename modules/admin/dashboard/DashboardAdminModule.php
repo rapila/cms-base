@@ -6,7 +6,6 @@ class DashboardAdminModule extends AdminModule {
 			
 	public function __construct() {
 		$sDocumentationLink = $this->getModuleInfo('website');
-		$this->addResourceParameter(ResourceIncluder::RESOURCE_TYPE_JS, 'documentation_link', $sDocumentationLink);
 	}
 	
 	public function includeCustomResources($oResourceIncluder) {

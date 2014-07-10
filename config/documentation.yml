@@ -1,7 +1,7 @@
 default:
   priority: -1
   docs:
-    dashboard.template-chooser:
+    dashboard/template-chooser:
       de:
         title: 'Dashboard Template-Wähler'
         html: 'Der <em>Template-Wähler</em> wird benutzt…'
