@@ -1,0 +1,108 @@
+.ui-dialog
+	background-color #000
+	padding 0 !important
+
+.ui-widget-content
+	background none
+
+div.ui-widget-content
+	border 1px solid #999
+
+#rapila_admin_menu,
+.ui-dialog,
+.filled-container.editing
+	font-size 12px
+
+.filled-container
+	padding-bottom 19px
+	border-radius 0 0 0 5px
+	min-height 3em
+	zoom 1
+	margin-bottom 2px
+	&.editing
+		margin-bottom 20px
+		position relative
+		z-index 1000
+		form
+			padding 0.5em 1em
+	/* clearfix */
+	&:before,
+	&:after
+		content "\0020"
+		display block
+		height 0
+		visibility hidden
+	&:after
+		clear both
+	&.editing,
+	&.editing:hover
+		background #F9F9F9
+	&:hover
+		background-color rgba(167, 167, 167, 0.1)
+		outline 1px solid #eee
+		outline-radius 0 0 0 5px
+
+.preview_bar
+	display block
+	position absolute
+	z-index 1001
+	.ui-icon
+		margin-right 1px
+		margin-top 1px
+		cursor not-allowed
+		background-color #C1C1C1
+	> div
+		float left
+		display none
+	.ui-icon.edit,
+	&.editing .ui-icon,
+	&.editing .additional-buttons,
+	&.loading .ui-loading
+		display block
+	&.editing .ui-icon.edit,
+	&.loading .ui-icon.edit
+		display none
+	&.may_edit
+		.ui-icon
+			width 25px
+			height 19px
+			cursor pointer
+			&.ui-icon-pencil
+				background transparent url("../../images/admin/icon_edit.png") no-repeat center center
+			&.ui-icon-trash
+				background transparent url("../../images/admin/icon_trash.png") no-repeat center center
+			&.ui-icon-wrench
+				background transparent url("../../images/admin/icon_edit_condition.png") no-repeat center center
+			&.ui-icon-preview-cancel
+				background transparent url("../../images/admin/icon_preview_edit_cancel.png") no-repeat center center
+			&.ui-icon-save
+				background transparent url("../../images/admin/icon_save.png") no-repeat center center
+// add style for add_entry button, used in journal plugin, but could be used anywhere
+	.add_entry_wrapper
+		outline 1px solid #f2f2f2
+		outline-radius 3px
+		margin-bottom 1em
+		button.add-entry.ui-widget
+			font-size 11px
+			margin 0
+
+#widget-notifications
+	left 20px !important
+	min-width 400px
+
+#activity-indicator
+	position fixed
+	bottom 10px
+	right 10px
+	z-index 1002
+
+.ui-loading
+	background transparent url('../../images/preview/loader.gif') no-repeat scroll top left
+	min-width 17px
+	min-height 17px
+button.ui-state-hover
+	background url("../../images/admin/button_gradient_dark.png") repeat scroll 0 0 transparent
+	color #e3ef99 !important
+
+
+
