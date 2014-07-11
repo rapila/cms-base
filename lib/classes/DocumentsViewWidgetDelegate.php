@@ -51,11 +51,7 @@ class DocumentsViewWidgetDelegate {
 	}
 	
 	public function getColumnIdentifiers() {
-<<<<<<< Updated upstream
-		$aResult = array('document_kind', 'id', 'name_truncated', 'file_size', 'extension', 'thumbnail');
-=======
 		$aResult = array('id', 'name_truncated', 'thumbnail', 'extension', 'file_size');
->>>>>>> Stashed changes
 		if($this->oLanguageFilter !== null) {
 			$aResult[] = 'language_id';
 		}
