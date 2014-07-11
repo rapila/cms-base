@@ -215,6 +215,16 @@ Widget.types.admin_menu = {
 			}};
 		},
 
+		documentation: function() {
+			var _this = this;
+			var element = jQuery('<button/>').addClass('open-documentation').text('Documentation');
+			element.button();
+			return {element: element, callback: function(event) {
+				// get url for documentation, or get menu with optional urls for documentations
+				// AdminInterface.current_admin_module;
+			}};
+		},
+
 		logo: function() {
 			return {element: jQuery("<span/>").text('rapila').attr('class', "rapila_logo")};
 		},
