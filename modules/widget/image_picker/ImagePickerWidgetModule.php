@@ -3,9 +3,9 @@
  * @package modules.widget
  */
 class ImagePickerWidgetModule extends PersistentWidgetModule {
-	
+
 	private $aDisplayedCategories = null;
-	
+
 	public function listImages() {
 		$oCriteria = DocumentQuery::create();
 		if($this->aDisplayedCategories !== null) {
@@ -18,7 +18,7 @@ class ImagePickerWidgetModule extends PersistentWidgetModule {
 				} else {
 					$oCategoriesCriterion->addOr($oCriteria->getNewCriterion(DocumentPeer::DOCUMENT_CATEGORY_ID, $sValue, $mComparison));
 				}
-			}			
+			}
 			$oCriteria->add($oCategoriesCriterion);
 		}
 		$oCriteria->filterByDocumentKind('image');
@@ -26,15 +26,15 @@ class ImagePickerWidgetModule extends PersistentWidgetModule {
 		$oCriteria->excludeExternallyManaged();
 		return WidgetJsonFileModule::jsonBaseObjects($oCriteria->find(), array('name', 'description', 'id', 'language_id'));
 	}
-		
+
 	public function setAllowsMultiselect($bAllowsMultiselect) {
 		$this->setSetting('allows_multiselect', $bAllowsMultiselect);
 	}
-	
+
 	public function setDisplayedCategories($aDisplayedCategories) {
 		$this->aDisplayedCategories = $aDisplayedCategories;
 	}
-	
+
 	public function getElementType() {
 		return 'div';
 	}

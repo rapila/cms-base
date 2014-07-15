@@ -64,7 +64,7 @@ class FileUploadWidgetModule extends WidgetModule {
 		$oDocument->save();
 		return $oDocument->getId();
 	}
-	
+
 	public static function includeResources($oResourceIncluder = null) {
 		if($oResourceIncluder == null) {
 			$oResourceIncluder = ResourceIncluder::defaultIncluder();
@@ -162,7 +162,7 @@ class FileUploadWidgetModule extends WidgetModule {
 		if($oDocument->isNew()) {
 			$oDocument->setLanguageId($aOptions['language_id']);
 			$oDocument->setIsProtected($aOptions['is_protected']);
-			if($aOptions['document_category_id']) {
+			if($aOptions['document_category_id'] && $aOptions['document_category_id'] != 0) {
 				$oDocument->setDocumentCategoryId($aOptions['document_category_id']);
 				$oDocument->setSort(DocumentQuery::create()->filterByDocumentCategoryId($oDocument->getDocumentCategoryId())->count() + 1);
 			}
