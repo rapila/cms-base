@@ -18,7 +18,7 @@ div.ui-widget-content
 	border-radius 0 0 0 5px
 	min-height 3em
 	zoom 1
-	margin-bottom 6px
+	margin-bottom 2px
 	&.editing
 		margin-bottom 20px
 		position relative
@@ -39,16 +39,18 @@ div.ui-widget-content
 		background #F9F9F9
 	&:hover
 		background-color rgba(167, 167, 167, 0.1)
+		outline 1px solid #eee
+		outline-radius 0 0 0 5px
 
 .preview_bar
 	display block
 	position absolute
 	z-index 1001
 	.ui-icon
-		padding 1px
+		margin-right 1px
+		margin-top 1px
 		cursor not-allowed
 		background-color #C1C1C1
-		margin-right 3px
 	> div
 		float left
 		display none
@@ -77,8 +79,8 @@ div.ui-widget-content
 				background transparent url("../../images/admin/icon_save.png") no-repeat center center
 // add style for add_entry button, used in journal plugin, but could be used anywhere
 	.add_entry_wrapper
-		border 1px solid #f2f2f2
-		border-radius 3px
+		outline 1px solid #f2f2f2
+		outline-radius 3px
 		margin-bottom 1em
 		button.add-entry.ui-widget
 			font-size 11px
