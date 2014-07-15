@@ -170,7 +170,7 @@ class FileUploadWidgetModule extends WidgetModule {
 
 		// Resize image if necessary
 		if($oDocument->isImage() && $oDocument->getDocumentCategoryId() != null
-			&& $oDocument->getDocumentCategory()->getMaxWidth() != null) {
+			&& ($oDocument->getDocumentCategory() && $oDocument->getDocumentCategory()->getMaxWidth() != null)) {
 			$iMaxWidth = $oDocument->getDocumentCategory()->getMaxWidth();
 			$oImage = Image::imageFromData(stream_get_contents($oDocument->getData()));
 			if($oImage->getOriginalWidth() > $oDocument->getDocumentCategory()->getMaxWidth()) {
