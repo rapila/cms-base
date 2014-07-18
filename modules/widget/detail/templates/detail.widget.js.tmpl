@@ -66,7 +66,7 @@ Widget.types.detail = {
 			}
 		});
 	},
-	
+
 	set_instance: function(instance) {
 		if(this === Widget.types.detail.prototype) {
 			//Static call means do the whole initialisation
@@ -76,7 +76,7 @@ Widget.types.detail = {
 		this.instance = instance;
 		this.content = instance.content || instance._element;
 		this.clickable_labels_for(this.content);
-		
+
 		var _this = this;
 		var protector = new UnsavedChanges(this.content);
 
@@ -122,17 +122,17 @@ Widget.types.detail = {
 			});
 			return false;
 		};
-		
+
 		var old_fill_data = instance.fill_data;
 		instance.fill_data = function() {
 			protector.release();
 			_this.clear_validation();
 			old_fill_data.apply(instance, jQuery.makeArray(arguments));
 		};
-		
+
 		return this;
 	},
-	
+
 	save: function() {
 		if(this.content.is('form')) {
 			this.content.submit();
@@ -140,7 +140,7 @@ Widget.types.detail = {
 			this.settings.save_callback();
 		}
 	},
-	
+
 	open: function() {
 		this.fire('opening');
 		if(this.instance) {
@@ -214,29 +214,29 @@ Widget.types.detail = {
 			this.instance.fire('opened');
 		}
 	},
-	
+
 	close: function() {
 		this.content.dialog('close');
 	},
-	
+
 	destroy: function() {
 		this.content.dialog('destroy');
 		this.content.remove();
 	},
-	
+
 	delete: function() {
 		// this.content.dialog('close');
 	},
-	
+
 	has_dialog: false,
 	content: null,
-	
+
 	select: function() {
 		if(this.settings.select) {
 			this.content.find(this.settings.select).select();
 		}
 	},
-	
+
 	set_title: function(title) {
 		if(!title) {
 			return;
@@ -245,8 +245,8 @@ Widget.types.detail = {
 		if(this.has_dialog) {
 			this.content.dialog('option', 'title', title);
 		}
-	}, 
-	
+	},
+
 	set_is_loading: function(is_loading) {
 		if(is_loading) {
 			this.loader.show();
@@ -256,7 +256,7 @@ Widget.types.detail = {
 			this.content.children().css("visibility", "visible");
 		}
 	},
-	
+
 	//Static methods
 	tabs_for: function(element) {
 		//Static call means this points to the prototype
@@ -266,7 +266,7 @@ Widget.types.detail = {
 		while(current_element.length && current_element[0] !== parent[0]) {
 			if(current_element.is('.ui-accordion-content')) {
 				result.push.apply(result, current_element.prev().get());
-			} 
+			}
 			if(current_element.is('.ui-tabs-panel')) {
 				result.push.apply(result, current_element.parent().find('a[href="'+'#'+current_element.attr('id')+'"]').parent().get());
 			}
@@ -274,14 +274,14 @@ Widget.types.detail = {
 		}
 		return jQuery(result);
 	},
-	
+
 	clear_validation: function() {
 		//Static call means this points to the prototype
 		var element = this !== Widget.types.detail.prototype ? this.content : arguments[0];
 		element.find('.error_display').remove();
 		element.find('.error_display_indicator').removeClass("error_display_indicator");
 	},
-	
+
 	validate_with: function(errors) {
 		//Static call means this points to the prototype
 		var element = this !== Widget.types.detail.prototype ? this.content : arguments[1];
@@ -303,7 +303,7 @@ Widget.types.detail = {
 			});
 		});
 	},
-	
+
 	clickable_labels_for: function(element) {
 		element.delegate('label[for]', 'click', function() {
 			var label = jQuery(this);
@@ -336,7 +336,7 @@ Widget.types.detail = {
 			}
 		});
 	},
-	
+
 	connect_detail_with_list: function(detail_name, list, idMethod, idData, options) {
 		if(!idMethod) idMethod = 'setId';
 		if(!idData) idData = 'id';
@@ -356,7 +356,7 @@ Widget.types.detail = {
 				detail.fill_data();
 				detail.open();
 			};
-			
+
 			list.handle(options.eventName, function(event, rowIndex, col, row, cell) {
 				if(options.colName && col.identifier !== options.colName) {
 					return;
@@ -369,7 +369,7 @@ Widget.types.detail = {
 				if(col_schema.has_function) {
 					return;
 				}
-				
+
 				open_with_id(list.collect_row_data(row));
 				event.preventDefault();
 				event.stopPropagation();
@@ -396,7 +396,7 @@ Widget.types.detail = {
 			Widget.create(detail_name+"_detail", init);
 		}
 	},
-	
+
 	enable: function() {
 		if(this.has_dialog) {
 			this.content.closest('.ui-dialog').removeClass('ui-state-disabled');
@@ -412,7 +412,7 @@ Widget.types.detail = {
 			this.settings.disabled = true;
 		}
 	},
-	
+
 	settings: {
 		title: ' ',
 		disabled: false,
