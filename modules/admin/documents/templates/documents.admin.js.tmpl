@@ -25,7 +25,7 @@ jQuery(document).ready(function() {
 				return {document_category_id: dropped_on_document_category_id, callback: function(document_id) {
 					var selected_document_category_id = content_list.getOption('document_category_id');
 					if(selected_document_category_id == '__all' || selected_document_category_id == dropped_on_document_category_id) {
-						content_list.append_document(document_id);
+						content_list.append_row_with_data({id: document_id});
 					}
 				}};
 			});
