@@ -22,7 +22,7 @@ Widget.types.document_detail = {
 		_this.upload_file_button.click(function() {
 			var file = _this.file_upload[0].files[0];
 			_this.file_upload.prop('disabled', true);
-			_this.uploader.upload_file(file, {document_id: _this.current_detail_id, callback: _this.upload_success.bind(_this), error: _this.upload_error.bind(_this), deny_name_override: !!_this._element.find(":input[name='name']").val()});
+			_this.uploader.upload_file(file, _this.upload_settings());
 			return false;
 		});
 		this.current_detail_id = null;
@@ -61,9 +61,7 @@ Widget.types.document_detail = {
 		// Upload stuff
 		this.uploader = Widget.create('file_upload', function(uploader) {
 			_this.uploader = uploader;
-			_this.uploader.allow_drag_to(_this._element, null, function(target) {
-				return {document_id: _this.current_detail_id, callback: _this.upload_success.bind(_this), error: _this.upload_error.bind(_this), deny_name_override: !!_this._element.find(":input[name='name']").val()};
-			}, true);
+			_this.uploader.allow_drag_to(_this._element, null, _this.upload_settings.bind(_this), true);
 		});
 
 		this.file_upload.change(function(event) {
@@ -85,6 +83,23 @@ Widget.types.document_detail = {
 		Widget.callStatic('detail', 'create_for_instance', this);
 	},
 
+	upload_settings: function() {
+		var _this = this;
+		var settings = {
+			document_category_id: _this.settings.initial.document_category_id || null,
+			document_id: _this.current_detail_id,
+			callback: _this.upload_success.bind(_this),
+			error: _this.upload_error.bind(_this),
+			deny_name_override: !!_this._element.find(":input[name='name']").val()
+		};
+
+		this._element.find(":input[name='document_category_id']").ensureWidget(function(document_category_id_input) {
+			settings.document_category_id = document_category_id_input.val();
+		});
+
+		return settings;
+	},
+
 	fill_data: function(for_update) {
 		if(!for_update) {
 			this.has_been_saved = true;
@@ -92,7 +107,7 @@ Widget.types.document_detail = {
 		this.detail_widget.disable();
 		this.documentData(function(document_data) {
 			this.current_detail_id = document_data.Id;
-			
+
 			this._element.find(".preview").text('').addClass('file_exists');
 			this.preview(function(result) {
 				this._element.find(".preview").html(result);
@@ -134,7 +149,7 @@ Widget.types.document_detail = {
 			this.detail_widget.enable();
 		});
 	},
-	
+
 	set_widget_val: function(name, value) {
 		this._element.find(":input[name='"+name+"']").ensureWidget(function(input_widget) {
 			input_widget.val(value);
@@ -147,7 +162,7 @@ Widget.types.document_detail = {
 			this.detail_widget.validate_with({upload: {string: Widget.parseHTML('<span class="error_display"/>').text(error.message)}});
 		}
 	},
-	
+
 	upload_success: function(result) {
 		this.upload_error();
 		this.file_upload.val('').change();
@@ -159,7 +174,7 @@ Widget.types.document_detail = {
 		}
 		this.fill_data(true);
 	},
-	
+
 	do_delete: function(callback) {
 		var _this = this;
 		Widget.confirm('{{writeString=wns.delete_warning_title}}', '{{writeString=wns.document.delete_unsaved}}', function(may_delete) {
@@ -174,7 +189,7 @@ Widget.types.document_detail = {
 			}
 		});
 	},
-	
+
 	current_detail_id: null,
 	has_been_saved: null,
 

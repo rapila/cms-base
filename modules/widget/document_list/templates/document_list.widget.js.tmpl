@@ -9,7 +9,7 @@ jQuery(document).ready(function() {
 					Widget.confirm("{{writeString=wns.delete_warning_title}}", delete_message, function(confirmed) {
 						if(confirmed) {
 							this.delete_row(row);
-							document_list.fire('document-removed', row);
+							widget.fire('document-removed', row);
 						}
 					}.bind(this));
 					event.stopPropagation();
