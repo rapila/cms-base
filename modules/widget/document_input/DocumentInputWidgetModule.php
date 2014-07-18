@@ -1,11 +1,11 @@
 <?php
 class DocumentInputWidgetModule extends PersistentWidgetModule {
-	
+
 	public function allDocumentsByCategories() {
 		$aResult = array();
 		// find files in media dirs - large files that cannot be uploaded with http
 		$aCustomFiles = array();
-		$aMediaDirs = ResourceFinder::findResourceObjectsByExpressions(array('web', '/^(media|flash)$/', array()));
+		$aMediaDirs = ResourceFinder::create()->addExpression('web', '/^(media|flash)$/')->addRecursion()->noCache()->returnObjects()->find();
 		foreach($aMediaDirs as $oFileResource) {
 			if($oFileResource->isFile()) {
 				$aCustomFiles[$oFileResource->getRelativePath()] = $oFileResource->getInstancePrefix().$oFileResource->getRelativePath();
@@ -32,7 +32,7 @@ class DocumentInputWidgetModule extends PersistentWidgetModule {
 	private static function getDocumentsWithoutCategoryId() {
 		return DocumentQuery::create()->filterByDocumentCategoryId(null, Criteria::ISNULL)->orderByName()->find()->toKeyValue('Id', 'Name');
 	}
-	
+
 	public function getElementType() {
 		return 'select';
 	}
