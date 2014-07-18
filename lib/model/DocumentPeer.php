@@ -2,7 +2,7 @@
 
 	// include base peer class
 	require_once 'model/om/BaseDocumentPeer.php';
-	
+
 	// include object class
 	include_once 'model/Document.php';
 
@@ -10,7 +10,7 @@
  * @package model
  */
 class DocumentPeer extends BaseDocumentPeer {
-	
+
 	public static $LICENSES = array(
 		"by" => array(
 			'image' => 'http://i.creativecommons.org/l/by/3.0/80x15.png',
@@ -59,11 +59,11 @@ class DocumentPeer extends BaseDocumentPeer {
 		$oSearchCriterion->addOr($oCriteria->getNewCriterion(self::DESCRIPTION, "%$sSearch%", Criteria::LIKE));
 		$oCriteria->add($oSearchCriterion);
 	}
-	
+
 	public static function getDocumentSize($mDocContent = null, $sFormat = 'auto', $iRoundCount=1) {
 		$iDocLength = 0;
 		if(is_string($mDocContent)) {
-			$iDocLength = strlen($mDocContent); 
+			$iDocLength = strlen($mDocContent);
 		} else if(is_resource($mDocContent)) {
 			fseek($mDocContent, 0, SEEK_END);
 			$iDocLength = ftell($mDocContent);
@@ -148,13 +148,22 @@ class DocumentPeer extends BaseDocumentPeer {
 		}
 
 		$oHashCriteria = clone $criteria;
+		$aHashes = array();
 		$stmt = DocumentPeer::doSelectStmt($oHashCriteria->clearSelectColumns()->addSelectColumn(DocumentPeer::HASH));
 		while(($row = $stmt->fetch(PDO::FETCH_NUM)) !== false) {
 			$sHash = $row[0];
-			$oDocumentData = DocumentDataQuery::create()->findPk($sHash);
-			if($oDocumentData && $oDocumentData->countDocuments() <= 1) {
-				// Only remaining document is the one to be deleted
-				$oDocumentData->delete();
+			if(!isset($aHashes[$sHash])) {
+				$aHashes[$sHash] = 0;
+			}
+			$aHashes[$sHash]++;
+		}
+		foreach($aHashes as $sHash => $iCount) {
+			// Should delete the data object if all documents with this hash are to be deleted
+			if(DocumentQuery::create()->filterByHash($sHash)->count() === $iCount) {
+				$oDocumentData = DocumentDataQuery::create()->findPk($sHash);
+				if($oDocumentData) {
+					$oDocumentData->delete();
+				}
 			}
 		}
 		$stmt->closeCursor();
@@ -179,21 +188,21 @@ class DocumentPeer extends BaseDocumentPeer {
 		}
 		return $oQuery->orderByName()->find();
 	}
-	
+
 	/**
 	* @deprecated
 	*/
 	public static function getDocumentsByCategory($iDocumentCategory=null, $sDocumentKind=null) {
 		return self::getDocumentsByKindAndCategory($sDocumentKind, $iDocumentCategory);
 	}
-	
+
 	/**
 	* @deprecated
 	*/
 	public static function getDocumentsByKindOfNotImage($bExcludeExternallyManaged = true) {
 		return self::getDocumentsByKindAndCategory('image', null, false, $bExcludeExternallyManaged);
 	}
-	
+
 	/**
 	* @deprecated
 	*/
@@ -208,7 +217,7 @@ class DocumentPeer extends BaseDocumentPeer {
 	public static function getDisplayUrl($iDocumentId, $aUrlParameters = array(), $sFileModule = 'display_document') {
 		return LinkUtil::link(array($sFileModule, $iDocumentId), "FileManager", $aUrlParameters);
 	}
-	
+
 	public static function mayOperateOnOwn($oUser, $mObject, $sOperation) {
 		$bResult = parent::mayOperateOnOwn($oUser, $mObject, $sOperation);
 		///When changing the sort or the category, I have to have the rights to said category as well
