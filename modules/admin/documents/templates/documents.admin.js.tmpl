@@ -23,7 +23,7 @@ jQuery(document).ready(function() {
 			file_upload.allow_drag_to(sidebar._element, '.ui-list-row:not(.magic_column)', function(target) {
 				var dropped_on_document_category_id = sidebar.collect_row_data(target).document_category_id;
 				return {document_category_id: dropped_on_document_category_id, callback: function(document_id) {
-					var selected_document_category_id = content_list.getDocumentCategoryId();
+					var selected_document_category_id = content_list.getOption('document_category_id');
 					if(selected_document_category_id == '__all' || selected_document_category_id == dropped_on_document_category_id) {
 						content_list.append_document(document_id);
 					}
