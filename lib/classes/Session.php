@@ -43,13 +43,13 @@ class Session {
 	public function isAuthenticated() {
 		return ($this->oUser !== null);
 	}
-	
+
 	public function isBackendAuthenticated() {
 		return $this->isAuthenticated() && $this->oUser->getIsBackendLoginEnabled();
 	}
 
 	public function login($sUsername, $sPassword) {
-		$oUser = UserQuery::create()->filterByUsername($sUsername)->findOne();
+		$oUser = UserQuery::create()->filterByUsername($sUsername)->_or()->filterByEmail($sUsername)->findOne();
 		if($oUser === null) {
 			return 0;
 		}
@@ -69,22 +69,22 @@ class Session {
 		}
 		return $this->loginUser($oUser);
 	}
-	
+
 	public static function startDigest() {
 		header('HTTP/1.1 401 Unauthorized');
 		header('WWW-Authenticate: Digest realm="'.self::getRealm().'",qop="auth",nonce="'.Util::uuid().'",opaque="'.self::getRealm().'"');
 	}
-	
+
 	public function loginUsingDigest() {
 		if(empty($_SERVER['PHP_AUTH_DIGEST'])) {
 			return 0;
 		}
-		
+
 		// analyze the PHP_AUTH_DIGEST variable
 		if(($aDigestContent = self::parseDigestHeader()) === false || ($oUser = UserQuery::create()->filterByUsername($aDigestContent['username'])->findOne()) === null) {
 			return 0;
 		}
-		
+
 		// generate the valid response
 		$sHA1 = $oUser->getDigestHA1();
 		if($sHA1 === null) {
@@ -96,10 +96,10 @@ class Session {
 		if($aDigestContent['response'] !== $sCorrectResponse) {
 			return 0;
 		}
-		
+
 		return $this->loginUser($oUser);
 	}
-	
+
 	private function loginUser($oUser) {
 		$iReturnValue = self::USER_IS_VALID;
 		if(!$oUser->getIsBackendLoginEnabled()) {
@@ -127,9 +127,9 @@ class Session {
 		$aNeededParts = array('nonce'=>1, 'nc'=>1, 'cnonce'=>1, 'qop'=>1, 'username'=>1, 'uri'=>1, 'response'=>1);
 		$aResult = array();
 		$sKeys = implode('|', array_keys($aNeededParts));
-		
+
 		preg_match_all('@(' . $sKeys . ')=(?:([\'"])([^\2]+?)\2|([^\s,]+))@', $_SERVER['PHP_AUTH_DIGEST'], $aMatches, PREG_SET_ORDER);
-		
+
 		foreach ($aMatches as $aMatch) {
 			$aResult[$aMatch[1]] = $aMatch[3] ? $aMatch[3] : $aMatch[4];
 			unset($aNeededParts[$aMatch[1]]);
@@ -168,7 +168,7 @@ class Session {
 		}
 		$this->aAttributes[$sAttribute] = $mValue;
 	}
-	
+
 	public function setArrayAttributeValueForKey($sAttribute, $sKey, $mValue = null) {
 		if(!$this->hasAttribute($sAttribute)) {
 			$this->aAttributes[$sAttribute] = array();
@@ -204,7 +204,7 @@ class Session {
 		}
 		return self::sessionDefaultFor($sAttribute);
 	}
-	
+
 	public function resetAttribute($sAttribute) {
 		$mResult = null;
 		if($this->hasAttribute($sAttribute)) {
