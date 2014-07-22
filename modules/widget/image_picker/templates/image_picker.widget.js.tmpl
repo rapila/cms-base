@@ -2,12 +2,12 @@ Widget.types.image_picker = {
 	set_callback: function(callback) {
 		this.settings.callback = callback;
 	},
-	
+
 	prepare: function() {
 		var _this = this;
 		this.image_area = jQuery('<div/>').addClass('image_browse_area ui-state-droppable').appendTo(this._element);
 		var ajax_loader = jQuery('<div/>').addClass();
-		
+
 		var file_uploader = Widget.create('file_upload');
 		file_uploader.allow_drag_to(this.image_area, null, function(target) {
 			return {
@@ -16,7 +16,7 @@ Widget.types.image_picker = {
 				error: function() {}
 			};
 		});
-		
+
 		Widget.createWithElement('document_category_input', function(document_category_input) {
 			document_category_input.settings.categories_with_documents_only = 'image';
 			document_category_input.settings.show_without = true;
@@ -59,7 +59,7 @@ Widget.types.image_picker = {
 			});
 		}
 	},
-	
+
 	reload: function() {
 		var _this = this;
 		Widget.load();
@@ -70,9 +70,9 @@ Widget.types.image_picker = {
 			this.image_area.empty();
 			jQuery.each(result, function() {
 				var document_id = this.id;
-				var url = _this.document_url_from_id(document_id, 50);
+				var url = _this.document_url_from_id(document_id, 100);
 				var image = jQuery('<div><img/></div>').addClass('ui-widget ui-widget-content ui-image-picker-image');
-				image.children('img').attr({src: url, width: '50'});
+				image.children('img').attr({src: url, width: '100'});
 				image.data('document_id', document_id);
 				image.hover(function() {
 					image.addClass('ui-state-hover');
@@ -86,7 +86,7 @@ Widget.types.image_picker = {
 			Widget.end_load();
 		});
 	},
-	
+
 	open_chooser: function() {
 		var _this = this;
 		if(!this.is_popup) {
@@ -108,16 +108,16 @@ Widget.types.image_picker = {
 		}
 		this.is_popup = true;
 		this._element.dialog('open');
-	}, 
-	
+	},
+
 	remove_picture: function() {
 		this.settings.callback();
 	},
-	
+
 	document_url_from_id: function(document_id, image_width) {
 		return FILE_PREFIX+'/display_document/'+document_id+(image_width ? '?max_width='+image_width : '');
 	},
-	
+
 	settings: {
 		callback: jQuery.noop,
 		allows_multiselect: false

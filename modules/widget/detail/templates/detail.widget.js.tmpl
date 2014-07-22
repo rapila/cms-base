@@ -208,7 +208,7 @@ Widget.types.detail = {
 		this.select();
 		this.fire('opened');
 		if(this.content.hasClass('accordion')) {
-			this.content.accordion({active: 0, autoHeight: false, clearStyle: true, heightStyle: 'content', collapsible:false});
+			this.content.accordion({active: 0, heightStyle: 'content', collapsible:false});
 		}
 		if(this.instance) {
 			this.instance.fire('opened');

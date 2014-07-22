@@ -162,19 +162,18 @@ class FileUploadWidgetModule extends WidgetModule {
 		if($oDocument->isNew()) {
 			$oDocument->setLanguageId($aOptions['language_id']);
 			$oDocument->setIsProtected($aOptions['is_protected']);
-			if($aOptions['document_category_id'] && $aOptions['document_category_id'] != 0) {
+			if(is_numeric($aOptions['document_category_id'])) {
 				$oDocument->setDocumentCategoryId($aOptions['document_category_id']);
 				$oDocument->setSort(DocumentQuery::create()->filterByDocumentCategoryId($oDocument->getDocumentCategoryId())->count() + 1);
 			}
 		}
 
 		// Resize image if necessary
-		if($oDocument->isImage() && $oDocument->getDocumentCategoryId() != null
-			&& ($oDocument->getDocumentCategory() && $oDocument->getDocumentCategory()->getMaxWidth() != null)) {
+		if($oDocument->isImage() && $oDocument->getDocumentCategory() && $oDocument->getDocumentCategory()->getMaxWidth() != null) {
 			$iMaxWidth = $oDocument->getDocumentCategory()->getMaxWidth();
 			$oImage = Image::imageFromData(stream_get_contents($oDocument->getData()));
-			if($oImage->getOriginalWidth() > $oDocument->getDocumentCategory()->getMaxWidth()) {
-				$oImage->setSize((int)$oDocument->getDocumentCategory()->getMaxWidth(), 200, Image::RESIZE_TO_WIDTH);
+			if($oImage->getOriginalWidth() > $iMaxWidth) {
+				$oImage->setSize((int)$iMaxWidth, 200, Image::RESIZE_TO_WIDTH);
 				ob_start();
 				$oImage->render();
 				$oDocument->setData(ob_get_contents());

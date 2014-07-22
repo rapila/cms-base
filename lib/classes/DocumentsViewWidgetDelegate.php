@@ -5,27 +5,27 @@
 class DocumentsViewWidgetDelegate {
 
 	public $oDelegateProxy;
-	
+
 	private $oDocumentKindFilter;
 	private $oLanguageFilter;
 	private $oTagFilter;
-	
+
 	public function __construct() {
 		$this->oDelegateProxy = new CriteriaListWidgetDelegate($this, "Document", "name_truncated", "asc");
 		$this->oDocumentKindFilter = WidgetModule::getWidget('document_kind_input', null, true);
 		$this->oDocumentKindFilter->setSetting('with_documents_only', false);
-		
+
 		if(!LanguageInputWidgetModule::isMonolingual()) {
 			$this->oLanguageFilter = WidgetModule::getWidget('language_input', null, true);
 		}
 		$this->oTagFilter = WidgetModule::getWidget('tag_input', null, true);
 		$this->oTagFilter->setSetting('model_name', 'Document');
 	}
-	
+
 	private static function hasTags() {
 		return TagInstanceQuery::create()->filterByModelName('Document')->count() > 0;
 	}
-	
+
 	public function setDelegateProxy($oDelegateProxy) {
 		$this->oDelegateProxy = $oDelegateProxy;
 	}
@@ -49,9 +49,9 @@ class DocumentsViewWidgetDelegate {
 			$oDocument->save();
 		}
 	}
-	
+
 	public function getColumnIdentifiers() {
-		$aResult = array('id', 'name_truncated', 'thumbnail', 'extension', 'file_size');
+		$aResult = array('id', 'name_truncated', 'document_kind', 'extension', 'file_size');
 		if($this->oLanguageFilter !== null) {
 			$aResult[] = 'language_id';
 		}
@@ -60,7 +60,7 @@ class DocumentsViewWidgetDelegate {
 		}
 		return array_merge($aResult, array('is_protected', 'sort', 'updated_at_formatted', 'delete'));
 	}
-	
+
 	public function getMetadataForColumn($sColumnIdentifier) {
 		$aResult = array('is_sortable' => true);
 		switch($sColumnIdentifier) {
@@ -78,7 +78,7 @@ class DocumentsViewWidgetDelegate {
 			case 'extension':
 				$aResult['heading'] = StringPeer::getString('wns.document.file.info');
 				break;
-			case 'thumbnail':
+			case 'document_kind':
 				$aResult['heading'] = '';
 				$aResult['heading_filter'] = array('document_kind_input', $this->oDocumentKindFilter->getSessionKey());
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_HTML;
@@ -114,7 +114,7 @@ class DocumentsViewWidgetDelegate {
 		}
 		return $aResult;
 	}
-	
+
 	public function getDatabaseColumnForColumn($sColumnIdentifier) {
 		if($sColumnIdentifier === 'category_name') {
 			return DocumentPeer::DOCUMENT_CATEGORY_ID;
@@ -136,7 +136,7 @@ class DocumentsViewWidgetDelegate {
 		}
 		return null;
 	}
-	
+
 	public function getFilterTypeForColumn($sColumnIdentifier) {
 		if($sColumnIdentifier === 'document_kind') {
 			return CriteriaListWidgetDelegate::FILTER_TYPE_BEGINS;
@@ -152,7 +152,7 @@ class DocumentsViewWidgetDelegate {
 		}
 		return null;
 	}
-	
+
 	public function allowSort($sSortColumn) {
 		$aListSettings = $this->oDelegateProxy->getListSettings();
 		if(!is_numeric($this->getDocumentCategoryId())) {
@@ -169,7 +169,7 @@ class DocumentsViewWidgetDelegate {
 		}
 		return true;
 	}
-	
+
 	public function doSort($sColumnIdentifier, $oDocumentToSort, $oRelatedDocument, $sPosition = 'before') {
 		$iNewPosition = $oRelatedDocument->getSort() + ($sPosition === 'before' ? 0 : 1);
 		if($oDocumentToSort->getSort() < $oRelatedDocument->getSort()) {
@@ -190,7 +190,7 @@ class DocumentsViewWidgetDelegate {
 			$i++;
 		}
 	}
-	
+
 	public function getCriteria() {
 		$oQuery = DocumentQuery::create()->joinDocumentType(null, Criteria::LEFT_JOIN)->joinDocumentData();
 		if(!Session::getSession()->getUser()->getIsAdmin() || Settings::getSetting('admin', 'hide_externally_managed_document_categories', true)) {
@@ -201,7 +201,7 @@ class DocumentsViewWidgetDelegate {
 		}
 		return $oQuery;
 	}
-	
+
 	public function setDocumentKind($sDocumentKind) {
 		return $this->oDelegateProxy->setDocumentKind($sDocumentKind);
 	}
@@ -209,7 +209,7 @@ class DocumentsViewWidgetDelegate {
 	public function getDocumentKind() {
 		return $this->oDelegateProxy->getDocumentKind();
 	}
-	
+
 	public function setDocumentCategoryId($iDocumentCategoryId = null) {
 		return $this->oDelegateProxy->setDocumentCategoryId($iDocumentCategoryId);
 	}
@@ -221,7 +221,7 @@ class DocumentsViewWidgetDelegate {
 	public function getLanguageName() {
 		return StringPeer::getString('language.'.$this->oDelegateProxy->getLanguageId(), null, $this->oDelegateProxy->getLanguageId());
 	}
-	
+
 	public function getDocumentCategoryName() {
 		$oDocumentCategory = DocumentCategoryQuery::create()->findPk($this->getDocumentCategoryId());
 		if($oDocumentCategory) {
@@ -232,7 +232,7 @@ class DocumentsViewWidgetDelegate {
 		}
 		return $this->getDocumentCategoryId();
 	}
-	
+
 	public function getDocumentKindName() {
 		if($this->getDocumentKind() === CriteriaListWidgetDelegate::SELECT_ALL) {
 			return $this->getDocumentKind();
@@ -247,5 +247,5 @@ class DocumentsViewWidgetDelegate {
 	public function getSearch() {
 		return $this->oDelegateProxy->getSearch();
 	}
-	
+
 }
