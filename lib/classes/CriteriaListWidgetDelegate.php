@@ -20,10 +20,10 @@ class CriteriaListWidgetDelegate {
 	private $oListSettings;
 	private $bDatabaseColumnForColumnDefined;
 	private $aFilterTypes;
-	
+
 	const SELECT_ALL = '__all';
 	const SELECT_WITHOUT = '__without';
-	
+
 	const FILTER_TYPE_IS = 'is';
 	const FILTER_TYPE_IN = 'in';
 	const FILTER_TYPE_BEGINS = 'begins';
@@ -31,7 +31,7 @@ class CriteriaListWidgetDelegate {
 	const FILTER_TYPE_TAG = 'tag';
 	const FILTER_TYPE_IS_NULL = 'is_null';
 	const FILTER_TYPE_MANUAL = 'manual';
-	
+
 	public function __construct($oCriteriaDelegate, $sModelName, $sDefaultOrderColumn=null, $sDefaultSortOrder='asc') {
 		$this->oListSettings = new ListSettings();
 		$this->oCriteriaDelegate = $oCriteriaDelegate;
@@ -43,7 +43,7 @@ class CriteriaListWidgetDelegate {
 		}
 		$this->aFilterTypes = method_exists($this->oCriteriaDelegate, 'getFilterTypeForColumn') ? array() : null;
 	}
-	
+
 	public function setModelName($sModelName) {
 		$this->sModelName = $sModelName;
 	}
@@ -51,15 +51,15 @@ class CriteriaListWidgetDelegate {
 	public function getModelName() {
 		return $this->sModelName;
 	}
-	
+
 	public function getListSettings() {
 		return $this->oListSettings;
 	}
-	
+
 	public function getDelegate() {
 		return $this->oCriteriaDelegate;
 	}
-	
+
 	private function filterTypeForColumn($sFilterColumn) {
 		if($this->aFilterTypes === null) {
 			return null;
@@ -70,7 +70,7 @@ class CriteriaListWidgetDelegate {
 		}
 		return $this->aFilterTypes[$sFilterColumn];
 	}
-	
+
 	public function __call($sMethodName, $aArguments) {
 		if($this->aFilterTypes !== null && StringUtil::startsWith($sMethodName, 'set') && $sMethodName[3] === strtoupper($sMethodName[3])) {
 			$sFilterColumn = StringUtil::deCamelize(lcfirst(substr($sMethodName, 3)));
@@ -93,7 +93,7 @@ class CriteriaListWidgetDelegate {
 		}
 		return array();
 	}
-	
+
 	public function getCriteria($bSortIsIrrelevant = false) {
 		$oCriteria = null;
 		if($this->oCriteriaDelegate === null || !method_exists($this->oCriteriaDelegate, 'getCriteria')) {
@@ -108,10 +108,10 @@ class CriteriaListWidgetDelegate {
 		$this->handleListFiltering($oCriteria);
 		return $oCriteria;
 	}
-	
+
 	public function getListContents($iRowStart = 0, $iRowCount = null) {
 		$oCriteria = $this->getCriteria();
-		
+
 		if($iRowStart > 0) {
 			$oCriteria->setOffset($iRowStart);
 		}
@@ -122,7 +122,7 @@ class CriteriaListWidgetDelegate {
 		$aResult = array_merge($this->getCustomListElements(), $aResult);
 		return $aResult;
 	}
-	
+
 	public function getCustomListElements() {
 		if(method_exists($this->oCriteriaDelegate, 'getCustomListElements')) {
 			return $this->oCriteriaDelegate->getCustomListElements();
@@ -136,7 +136,7 @@ class CriteriaListWidgetDelegate {
 			$oCriteria->$sMethod($this->getDatabaseColumnForColumn($sSortColumn));
 		}
 	}
-	
+
 	private function handleListFiltering($oCriteria) {
 		foreach($this->oListSettings->aFilters as $sFilterIdentifier => $mFilterValue) {
 			$sFilterType = $this->filterTypeForColumn($sFilterIdentifier);
@@ -176,7 +176,7 @@ class CriteriaListWidgetDelegate {
 			}
 		}
 	}
-	
+
 	private function getDatabaseColumnForColumn($sColumnIdentifier, $bLenient = false) {
 		$sSortOverride = null;
 		if($this->bDatabaseColumnForColumnDefined && ($sSortOverride = $this->oCriteriaDelegate->getDatabaseColumnForColumn($sColumnIdentifier)) !== null) {
@@ -196,7 +196,7 @@ class CriteriaListWidgetDelegate {
 		}
 		return constant($sConstant);
 	}
-	
+
 	private function handleListSearching($oCriteria) {
 		if($this->oListSettings->getSearchPhrase() === null) {
 			return;
@@ -218,7 +218,7 @@ class CriteriaListWidgetDelegate {
 		}
 		return array($sTopSortColumn, $this->oListSettings->getSortColumnValue($sTopSortColumn));
 	}
-	
+
 	private function criteriaFromRowData($aRowData, $oCriteria = null) {
 		if($oCriteria === null) {
 			$oCriteria = new Criteria();
@@ -232,31 +232,31 @@ class CriteriaListWidgetDelegate {
 		}
 		return $oCriteria;
 	}
-	
+
 	public function allowSort($sColumnIdentifier) {
 		if(method_exists($this->oCriteriaDelegate, 'allowSort')) {
 			return $this->oCriteriaDelegate->allowSort($sColumnIdentifier);
 		}
 		return false;
 	}
-	
+
 	public function doSort($sColumnIdentifier, $aRowData, $aRelatedRowData, $sPosition) {
 		$oObjectToSort = $this->rowFromData($aRowData);
 		$oRelatedObject = $this->rowFromData($aRelatedRowData);
 		$this->oCriteriaDelegate->doSort($sColumnIdentifier, $oObjectToSort, $oRelatedObject, $sPosition);
 	}
-	
+
 	public function setSearch($sSearch) {
 		return $this->oListSettings->setSearchPhrase($sSearch);
 	}
-	
+
 	/**
 	* Searching only works if the ModelNamePeer class has a Method named <code>addSearchToCriteria($sSearchString, $oCriteria)</code> which should set all the necessary search query params on the criteria.
 	*/
 	public function getSearch() {
 		return $this->oListSettings->getSearchPhrase();
 	}
-	
+
 	public function deleteRow($aRowData) {
 		$oCriteria = $this->criteriaFromRowData($aRowData);
 		if(method_exists($this->oCriteriaDelegate, 'deleteRow')) {
@@ -265,11 +265,11 @@ class CriteriaListWidgetDelegate {
 		$oObj = call_user_func(array($this->sPeerClassName, 'doSelectOne'), $oCriteria);
 		return $oObj->delete();
 	}
-	
+
 	public function rowFromData($aRowData) {
 		return call_user_func(array($this->sPeerClassName, 'doSelectOne'), $this->criteriaFromRowData($aRowData, $this->getCriteria(true)));
 	}
-	
+
 	public function numberOfRows() {
 		return call_user_func(array($this->sPeerClassName, 'doCount'), $this->getCriteria(true))+count($this->getCustomListElements());
 	}
