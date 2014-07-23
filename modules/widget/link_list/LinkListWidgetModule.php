@@ -40,7 +40,7 @@ class LinkListWidgetModule extends SpecializedListWidgetModule {
 		}
 		if($this->oLanguageFilter !== null) {
 			$aResult[] = 'language_id';
-		}		
+		}
 		if(self::hasTags()) {
 			$aResult[] = 'has_tags';
 		} else {

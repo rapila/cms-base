@@ -2,27 +2,18 @@
 /**
  * @package modules.widget
  */
-class DocumentListWidgetModule extends PersistentWidgetModule {
+class DocumentListWidgetModule extends SpecializedListWidgetModule {
 
-	private $oListWidget;
 	public $oDocumentsViewWidgetDelegate;
-	private $oLanguageFilter;
-	
-	public function __construct($sSessionKey = null, $oDocumentsViewWidgetDelegate = null) {
-		parent::__construct($sSessionKey);
-		$this->oListWidget = new ListWidgetModule();
-		if($oDocumentsViewWidgetDelegate === null) {
-			$oDocumentsViewWidgetDelegate = new DocumentsViewWidgetDelegate();
-		}
-		$this->oDocumentsViewWidgetDelegate = $oDocumentsViewWidgetDelegate;
-		$this->oListWidget->setDelegate($this->oDocumentsViewWidgetDelegate->getDelegateProxy());
-		$this->oListWidget->setSetting('row_model_drag_and_drop_identifier', 'id');
+
+	protected function createListWidget() {
+		$this->oDocumentsViewWidgetDelegate = new DocumentsViewWidgetDelegate();
+		$oListWidget = new ListWidgetModule();
+		$oListWidget->setDelegate($this->oDocumentsViewWidgetDelegate->getDelegateProxy());
+		$oListWidget->setSetting('row_model_drag_and_drop_identifier', 'id');
+		return $oListWidget;
 	}
 
-	public function doWidget() {
-		return $this->oListWidget->doWidget('document_list');
-	}
-	
 	public function setDocumentKind($sDocumentKind) {
 		return $this->oDocumentsViewWidgetDelegate->setDocumentKind($sDocumentKind);
 	}
@@ -38,7 +29,7 @@ class DocumentListWidgetModule extends PersistentWidgetModule {
 	public function getDocumentCategoryId() {
 		return $this->oDocumentsViewWidgetDelegate->getDocumentCategoryId();
 	}
-		
+
 	public function setSearch($sSearch) {
 		return $this->oDocumentsViewWidgetDelegate->setSearch($sSearch);
 	}
