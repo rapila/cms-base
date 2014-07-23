@@ -49,9 +49,14 @@ class Session {
 	}
 
 	public function login($sUsername, $sPassword) {
-		$oUser = UserQuery::create()->filterByUsername($sUsername)->_or()->filterByEmail($sUsername)->findOne();
+		$oUser = UserQuery::create()->filterByUsername($sUsername)->findOne();
 		if($oUser === null) {
-			return 0;
+			$oUser = UserQuery::create()->filterByEmail($sUsername)->find();
+			if(count($oUser) === 1) {
+				$oUser = $oUser[0];
+			} else {
+				return 0;
+			}
 		}
 		if(!PasswordHash::comparePassword($sPassword, $oUser->getPassword())) {
 			if(PasswordHash::comparePasswordFallback($sPassword, $oUser->getPassword())) {
