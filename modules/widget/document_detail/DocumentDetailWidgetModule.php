@@ -83,6 +83,7 @@ class DocumentDetailWidgetModule extends PersistentWidgetModule {
 		if($aDocumentData['name'] == null && $oDocument->getName()) {
 			$aDocumentData['name'] = $oDocument->getName();
 		}
+		$aDocumentData['document_category_id'] = is_numeric($aDocumentData['document_category_id']) ? $aDocumentData['document_category_id'] : null;
 		$oDocument->fromArray($aDocumentData, BasePeer::TYPE_FIELDNAME);
 		$this->validate($aDocumentData, $oDocument);
 		if(!Flash::noErrors()) {
