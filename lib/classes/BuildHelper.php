@@ -292,7 +292,7 @@ EOT;
 		$aSQL = ResourceFinder::findResourceObjectsByExpressions(array(DIRNAME_GENERATED, str_replace('.xml', '.sql', self::SCHEMA_FILE_PATTERN)), ResourceFinder::SEARCH_MAIN_ONLY);
 		foreach($aSQL as $oSQLFile) {
 			$sSchemaName = self::schemaNameFromFileBasename($oSQLFile->getFileName('.sql'));
-			if($aModelInfo[$sSchemaName]->didMoveBase) {
+			if(isset($aModelInfo[$sSchemaName]) && $aModelInfo[$sSchemaName]->didMoveBase) {
 				rename($oSQLFile->getFullPath(), BASE_DIR.'/'.DIRNAME_DATA.'/sql/'.$oSQLFile->getFileName());
 			}
 		}
