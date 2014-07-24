@@ -26,7 +26,7 @@
 	background-image url('../../images/admin/drag_and_drop_hover.png')
 	background-repeat no-repeat
 	background-position center center
-	
+
 .ui-dialog.document_detail .ui-state-droppable-hover
 	background-color #FFFFFF !important
 
@@ -76,12 +76,12 @@ option.rapila-icon
 		background transparent url("../../images/admin/icon_edit_condition.png") no-repeat center bottom
 	&.ui-icon-pencil
 		background transparent url("../../images/admin/icon_edit.png") no-repeat center bottom
-		
-.add-new-item, 
-.remove-item, 
-.edit-item, 
-.item-action, 
-.print_area, 
+
+.add-new-item,
+.remove-item,
+.edit-item,
+.item-action,
+.print_area,
 .go-to-documentation
 	background-image url('../../images/admin/add_new_item.png')
 	background-repeat no-repeat
@@ -110,3 +110,12 @@ option.rapila-icon
 
 .help
 	cursor help
+
+label span.error_display:before,
+legend span.error_display:before
+	content ' '
+
+label span.error_display,
+legend span.error_display,
+.error_display
+	color red
