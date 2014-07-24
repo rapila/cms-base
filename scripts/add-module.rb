@@ -223,16 +223,17 @@ write_file(:php, "#{class_name}.php") do
 		
 		if $aspects.include? 'list' then
 			model_name = module_name.gsub('_list', '').capitalize
-			php_methods.push php_field('oListWidget')
+			extends = "SpecializedListWidgetModule"
+			constructor_content = ''
 			php_methods.push php_field('oCriteriaListWidgetDelegate')
-			constructor_content += "$this->oCriteriaListWidgetDelegate = new CriteriaListWidgetDelegate($this, '#{model_name}');
-		$this->oListWidget = WidgetModule::getWidget('list', null, $this->oCriteriaListWidgetDelegate);"
-			php_methods.push php_method('doWidget', "return $this->oListWidget->doWidget('#{module_name}');")
+			php_methods.push php_method('createListWidget', "$oListWidget = new ListWidgetModule();
+		$this->oCriteriaListWidgetDelegate = new CriteriaListWidgetDelegate($this, '#{model_name}');
+		$oListWidget->setDelegate($this->oCriteriaListWidgetDelegate);
+		return $oListWidget;", [], 'protected')
 			php_methods.push php_method('getColumnIdentifiers', 'return array();')
 			php_methods.push php_method('getMetadataForColumn', '', ['aColumnIdentifier'])
 			php_methods.push php_method('getDatabaseColumnForColumn', '', ['aColumnIdentifier'])
-			php_methods.push php_method('getCriteria', '$oCriteria = new Criteria();
-		return $oCriteria;')
+			php_methods.push php_method('getCriteria', "return #{model_name}Query::create();")
 		end
 		if $aspects.include? 'detail' then
 			php_methods.push php_method('getElementType', 'return "form";')
@@ -245,7 +246,7 @@ write_file(:php, "#{class_name}.php") do
 			php_methods.push php_method('updatePreview', 'return TagWriter::quickTag()->render();', ['$oPreviewData'])
 		end
 		
-		php_methods.push php_method('__construct', constructor_content, constructor_args)
+		php_methods.push php_method('__construct', constructor_content, constructor_args) unless constructor_content.empty?
 	elsif $options[:type] == :frontend then
 		php_methods.push php_method('__construct', 'parent::__construct($oLanguageObject, $aRequestPath, $iId);', ['oLanguageObject = null', 'aRequestPath = null', 'iId = 1'])
 		php_methods.push php_method('renderFrontend')
