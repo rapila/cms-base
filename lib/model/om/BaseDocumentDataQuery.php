@@ -8,6 +8,7 @@
  *
  * @method DocumentDataQuery orderByHash($order = Criteria::ASC) Order by the hash column
  * @method DocumentDataQuery orderByData($order = Criteria::ASC) Order by the data column
+ * @method DocumentDataQuery orderByDataSize($order = Criteria::ASC) Order by the data_size column
  * @method DocumentDataQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method DocumentDataQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  * @method DocumentDataQuery orderByCreatedBy($order = Criteria::ASC) Order by the created_by column
@@ -15,6 +16,7 @@
  *
  * @method DocumentDataQuery groupByHash() Group by the hash column
  * @method DocumentDataQuery groupByData() Group by the data column
+ * @method DocumentDataQuery groupByDataSize() Group by the data_size column
  * @method DocumentDataQuery groupByCreatedAt() Group by the created_at column
  * @method DocumentDataQuery groupByUpdatedAt() Group by the updated_at column
  * @method DocumentDataQuery groupByCreatedBy() Group by the created_by column
@@ -40,6 +42,7 @@
  * @method DocumentData findOneOrCreate(PropelPDO $con = null) Return the first DocumentData matching the query, or a new DocumentData object populated from the query conditions when no match is found
  *
  * @method DocumentData findOneByData(resource $data) Return the first DocumentData filtered by the data column
+ * @method DocumentData findOneByDataSize(int $data_size) Return the first DocumentData filtered by the data_size column
  * @method DocumentData findOneByCreatedAt(string $created_at) Return the first DocumentData filtered by the created_at column
  * @method DocumentData findOneByUpdatedAt(string $updated_at) Return the first DocumentData filtered by the updated_at column
  * @method DocumentData findOneByCreatedBy(int $created_by) Return the first DocumentData filtered by the created_by column
@@ -47,6 +50,7 @@
  *
  * @method array findByHash(string $hash) Return DocumentData objects filtered by the hash column
  * @method array findByData(resource $data) Return DocumentData objects filtered by the data column
+ * @method array findByDataSize(int $data_size) Return DocumentData objects filtered by the data_size column
  * @method array findByCreatedAt(string $created_at) Return DocumentData objects filtered by the created_at column
  * @method array findByUpdatedAt(string $updated_at) Return DocumentData objects filtered by the updated_at column
  * @method array findByCreatedBy(int $created_by) Return DocumentData objects filtered by the created_by column
@@ -158,7 +162,7 @@ abstract class BaseDocumentDataQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `hash`, `created_at`, `updated_at`, `created_by`, `updated_by` FROM `document_data` WHERE `hash` = :p0';
+        $sql = 'SELECT `hash`, `data_size`, `created_at`, `updated_at`, `created_by`, `updated_by` FROM `document_data` WHERE `hash` = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_STR);
@@ -288,6 +292,48 @@ abstract class BaseDocumentDataQuery extends ModelCriteria
     {
 
         return $this->addUsingAlias(DocumentDataPeer::DATA, $data, $comparison);
+    }
+
+    /**
+     * Filter the query on the data_size column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByDataSize(1234); // WHERE data_size = 1234
+     * $query->filterByDataSize(array(12, 34)); // WHERE data_size IN (12, 34)
+     * $query->filterByDataSize(array('min' => 12)); // WHERE data_size >= 12
+     * $query->filterByDataSize(array('max' => 12)); // WHERE data_size <= 12
+     * </code>
+     *
+     * @param     mixed $dataSize The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return DocumentDataQuery The current query, for fluid interface
+     */
+    public function filterByDataSize($dataSize = null, $comparison = null)
+    {
+        if (is_array($dataSize)) {
+            $useMinMax = false;
+            if (isset($dataSize['min'])) {
+                $this->addUsingAlias(DocumentDataPeer::DATA_SIZE, $dataSize['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($dataSize['max'])) {
+                $this->addUsingAlias(DocumentDataPeer::DATA_SIZE, $dataSize['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(DocumentDataPeer::DATA_SIZE, $dataSize, $comparison);
     }
 
     /**

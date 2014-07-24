@@ -399,6 +399,7 @@ CREATE TABLE `document_data`
 (
     `hash` VARCHAR(40) NOT NULL,
     `data` LONGBLOB,
+    `data_size` INTEGER,
     `created_at` DATETIME,
     `updated_at` DATETIME,
     `created_by` INTEGER,

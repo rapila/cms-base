@@ -24,19 +24,22 @@ abstract class BaseDocumentDataPeer
     const TM_CLASS = 'DocumentDataTableMap';
 
     /** The total number of columns. */
-    const NUM_COLUMNS = 6;
+    const NUM_COLUMNS = 7;
 
     /** The number of lazy-loaded columns. */
     const NUM_LAZY_LOAD_COLUMNS = 1;
 
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
-    const NUM_HYDRATE_COLUMNS = 5;
+    const NUM_HYDRATE_COLUMNS = 6;
 
     /** the column name for the hash field */
     const HASH = 'document_data.hash';
 
     /** the column name for the data field */
     const DATA = 'document_data.data';
+
+    /** the column name for the data_size field */
+    const DATA_SIZE = 'document_data.data_size';
 
     /** the column name for the created_at field */
     const CREATED_AT = 'document_data.created_at';
@@ -71,12 +74,12 @@ abstract class BaseDocumentDataPeer
      * e.g. DocumentDataPeer::$fieldNames[DocumentDataPeer::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        BasePeer::TYPE_PHPNAME => array ('Hash', 'Data', 'CreatedAt', 'UpdatedAt', 'CreatedBy', 'UpdatedBy', ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('hash', 'data', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy', ),
-        BasePeer::TYPE_COLNAME => array (DocumentDataPeer::HASH, DocumentDataPeer::DATA, DocumentDataPeer::CREATED_AT, DocumentDataPeer::UPDATED_AT, DocumentDataPeer::CREATED_BY, DocumentDataPeer::UPDATED_BY, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('HASH', 'DATA', 'CREATED_AT', 'UPDATED_AT', 'CREATED_BY', 'UPDATED_BY', ),
-        BasePeer::TYPE_FIELDNAME => array ('hash', 'data', 'created_at', 'updated_at', 'created_by', 'updated_by', ),
-        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, )
+        BasePeer::TYPE_PHPNAME => array ('Hash', 'Data', 'DataSize', 'CreatedAt', 'UpdatedAt', 'CreatedBy', 'UpdatedBy', ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('hash', 'data', 'dataSize', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy', ),
+        BasePeer::TYPE_COLNAME => array (DocumentDataPeer::HASH, DocumentDataPeer::DATA, DocumentDataPeer::DATA_SIZE, DocumentDataPeer::CREATED_AT, DocumentDataPeer::UPDATED_AT, DocumentDataPeer::CREATED_BY, DocumentDataPeer::UPDATED_BY, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('HASH', 'DATA', 'DATA_SIZE', 'CREATED_AT', 'UPDATED_AT', 'CREATED_BY', 'UPDATED_BY', ),
+        BasePeer::TYPE_FIELDNAME => array ('hash', 'data', 'data_size', 'created_at', 'updated_at', 'created_by', 'updated_by', ),
+        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, )
     );
 
     /**
@@ -86,12 +89,12 @@ abstract class BaseDocumentDataPeer
      * e.g. DocumentDataPeer::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        BasePeer::TYPE_PHPNAME => array ('Hash' => 0, 'Data' => 1, 'CreatedAt' => 2, 'UpdatedAt' => 3, 'CreatedBy' => 4, 'UpdatedBy' => 5, ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('hash' => 0, 'data' => 1, 'createdAt' => 2, 'updatedAt' => 3, 'createdBy' => 4, 'updatedBy' => 5, ),
-        BasePeer::TYPE_COLNAME => array (DocumentDataPeer::HASH => 0, DocumentDataPeer::DATA => 1, DocumentDataPeer::CREATED_AT => 2, DocumentDataPeer::UPDATED_AT => 3, DocumentDataPeer::CREATED_BY => 4, DocumentDataPeer::UPDATED_BY => 5, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('HASH' => 0, 'DATA' => 1, 'CREATED_AT' => 2, 'UPDATED_AT' => 3, 'CREATED_BY' => 4, 'UPDATED_BY' => 5, ),
-        BasePeer::TYPE_FIELDNAME => array ('hash' => 0, 'data' => 1, 'created_at' => 2, 'updated_at' => 3, 'created_by' => 4, 'updated_by' => 5, ),
-        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, )
+        BasePeer::TYPE_PHPNAME => array ('Hash' => 0, 'Data' => 1, 'DataSize' => 2, 'CreatedAt' => 3, 'UpdatedAt' => 4, 'CreatedBy' => 5, 'UpdatedBy' => 6, ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('hash' => 0, 'data' => 1, 'dataSize' => 2, 'createdAt' => 3, 'updatedAt' => 4, 'createdBy' => 5, 'updatedBy' => 6, ),
+        BasePeer::TYPE_COLNAME => array (DocumentDataPeer::HASH => 0, DocumentDataPeer::DATA => 1, DocumentDataPeer::DATA_SIZE => 2, DocumentDataPeer::CREATED_AT => 3, DocumentDataPeer::UPDATED_AT => 4, DocumentDataPeer::CREATED_BY => 5, DocumentDataPeer::UPDATED_BY => 6, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('HASH' => 0, 'DATA' => 1, 'DATA_SIZE' => 2, 'CREATED_AT' => 3, 'UPDATED_AT' => 4, 'CREATED_BY' => 5, 'UPDATED_BY' => 6, ),
+        BasePeer::TYPE_FIELDNAME => array ('hash' => 0, 'data' => 1, 'data_size' => 2, 'created_at' => 3, 'updated_at' => 4, 'created_by' => 5, 'updated_by' => 6, ),
+        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, )
     );
 
     /**
@@ -166,12 +169,14 @@ abstract class BaseDocumentDataPeer
     {
         if (null === $alias) {
             $criteria->addSelectColumn(DocumentDataPeer::HASH);
+            $criteria->addSelectColumn(DocumentDataPeer::DATA_SIZE);
             $criteria->addSelectColumn(DocumentDataPeer::CREATED_AT);
             $criteria->addSelectColumn(DocumentDataPeer::UPDATED_AT);
             $criteria->addSelectColumn(DocumentDataPeer::CREATED_BY);
             $criteria->addSelectColumn(DocumentDataPeer::UPDATED_BY);
         } else {
             $criteria->addSelectColumn($alias . '.hash');
+            $criteria->addSelectColumn($alias . '.data_size');
             $criteria->addSelectColumn($alias . '.created_at');
             $criteria->addSelectColumn($alias . '.updated_at');
             $criteria->addSelectColumn($alias . '.created_by');

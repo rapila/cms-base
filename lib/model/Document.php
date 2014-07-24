@@ -168,14 +168,15 @@ class Document extends BaseDocument {
 		if($oDocumentData === null) {
 			$oDocumentData = new DocumentData();
 			$oDocumentData->setHash($sHash);
+			$oDocumentData->setDataSize(strlen($mData));
 			$oDocumentData->setData($mData);
 		}
 		$this->setDocumentData($oDocumentData);
 		return $this;
 	}
 
-	public function getDataSize(PropelPDO $oConnection = null) {
-		return $this->getDocumentData()->getDataSize($oConnection);
+	public function getDataSize() {
+		return $this->getDocumentData()->getDataSize();
 	}
 
 	public function getFileSize($sFilesizeFormat = 'auto_iso') {

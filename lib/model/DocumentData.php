@@ -14,15 +14,7 @@
  * @package    propel.generator.model
  */
 class DocumentData extends BaseDocumentData {
-	private $iDataSize = null;
-	
-	public function getDataSize(PropelPDO $oConnection = null) {
-		if($this->iDataSize === null) {
-			$oCriteria = $this->buildPkeyCriteria();
-			$oCriteria->addSelectColumn('OCTET_LENGTH(data)');
-			$rs = DocumentPeer::doSelectStmt($oCriteria, $oConnection);
-			$this->iDataSize = (int)$rs->fetchColumn(0);
-		}
-		return $this->iDataSize;
+	public function getFileSize($sFilesizeFormat = 'auto_iso') {
+		return DocumentPeer::getDocumentSize($this->getDataSize(), $sFilesizeFormat);
 	}
 }

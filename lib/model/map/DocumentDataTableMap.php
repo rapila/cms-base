@@ -40,6 +40,7 @@ class DocumentDataTableMap extends TableMap
         // columns
         $this->addPrimaryKey('hash', 'Hash', 'VARCHAR', true, 40, null);
         $this->addColumn('data', 'Data', 'BLOB', false, null, null);
+        $this->addColumn('data_size', 'DataSize', 'INTEGER', false, null, null);
         $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, null);
         $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', false, null, null);
         $this->addForeignKey('created_by', 'CreatedBy', 'INTEGER', 'users', 'id', false, null, null);

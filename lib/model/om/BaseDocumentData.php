@@ -49,6 +49,12 @@ abstract class BaseDocumentData extends BaseObject implements Persistent
     protected $data_isLoaded = false;
 
     /**
+     * The value for the data_size field.
+     * @var        int
+     */
+    protected $data_size;
+
+    /**
      * The value for the created_at field.
      * @var        string
      */
@@ -172,6 +178,17 @@ abstract class BaseDocumentData extends BaseObject implements Persistent
             throw new PropelException("Error loading value for [data] column on demand.", $e);
         }
     }
+    /**
+     * Get the [data_size] column value.
+     *
+     * @return int
+     */
+    public function getDataSize()
+    {
+
+        return $this->data_size;
+    }
+
     /**
      * Get the [optionally formatted] temporal [created_at] column value.
      *
@@ -331,6 +348,27 @@ abstract class BaseDocumentData extends BaseObject implements Persistent
     } // setData()
 
     /**
+     * Set the value of [data_size] column.
+     *
+     * @param  int $v new value
+     * @return DocumentData The current object (for fluent API support)
+     */
+    public function setDataSize($v)
+    {
+        if ($v !== null && is_numeric($v)) {
+            $v = (int) $v;
+        }
+
+        if ($this->data_size !== $v) {
+            $this->data_size = $v;
+            $this->modifiedColumns[] = DocumentDataPeer::DATA_SIZE;
+        }
+
+
+        return $this;
+    } // setDataSize()
+
+    /**
      * Sets the value of [created_at] column to a normalized version of the date/time value specified.
      *
      * @param mixed $v string, integer (timestamp), or DateTime value.
@@ -459,10 +497,11 @@ abstract class BaseDocumentData extends BaseObject implements Persistent
         try {
 
             $this->hash = ($row[$startcol + 0] !== null) ? (string) $row[$startcol + 0] : null;
-            $this->created_at = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
-            $this->updated_at = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
-            $this->created_by = ($row[$startcol + 3] !== null) ? (int) $row[$startcol + 3] : null;
-            $this->updated_by = ($row[$startcol + 4] !== null) ? (int) $row[$startcol + 4] : null;
+            $this->data_size = ($row[$startcol + 1] !== null) ? (int) $row[$startcol + 1] : null;
+            $this->created_at = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
+            $this->updated_at = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
+            $this->created_by = ($row[$startcol + 4] !== null) ? (int) $row[$startcol + 4] : null;
+            $this->updated_by = ($row[$startcol + 5] !== null) ? (int) $row[$startcol + 5] : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -472,7 +511,7 @@ abstract class BaseDocumentData extends BaseObject implements Persistent
             }
             $this->postHydrate($row, $startcol, $rehydrate);
 
-            return $startcol + 5; // 5 = DocumentDataPeer::NUM_HYDRATE_COLUMNS.
+            return $startcol + 6; // 6 = DocumentDataPeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating DocumentData object", $e);
@@ -785,6 +824,9 @@ abstract class BaseDocumentData extends BaseObject implements Persistent
         if ($this->isColumnModified(DocumentDataPeer::DATA)) {
             $modifiedColumns[':p' . $index++]  = '`data`';
         }
+        if ($this->isColumnModified(DocumentDataPeer::DATA_SIZE)) {
+            $modifiedColumns[':p' . $index++]  = '`data_size`';
+        }
         if ($this->isColumnModified(DocumentDataPeer::CREATED_AT)) {
             $modifiedColumns[':p' . $index++]  = '`created_at`';
         }
@@ -816,6 +858,9 @@ abstract class BaseDocumentData extends BaseObject implements Persistent
                             rewind($this->data);
                         }
                         $stmt->bindValue($identifier, $this->data, PDO::PARAM_LOB);
+                        break;
+                    case '`data_size`':
+                        $stmt->bindValue($identifier, $this->data_size, PDO::PARAM_INT);
                         break;
                     case '`created_at`':
                         $stmt->bindValue($identifier, $this->created_at, PDO::PARAM_STR);
@@ -989,15 +1034,18 @@ abstract class BaseDocumentData extends BaseObject implements Persistent
                 return $this->getData();
                 break;
             case 2:
-                return $this->getCreatedAt();
+                return $this->getDataSize();
                 break;
             case 3:
-                return $this->getUpdatedAt();
+                return $this->getCreatedAt();
                 break;
             case 4:
-                return $this->getCreatedBy();
+                return $this->getUpdatedAt();
                 break;
             case 5:
+                return $this->getCreatedBy();
+                break;
+            case 6:
                 return $this->getUpdatedBy();
                 break;
             default:
@@ -1031,10 +1079,11 @@ abstract class BaseDocumentData extends BaseObject implements Persistent
         $result = array(
             $keys[0] => $this->getHash(),
             $keys[1] => ($includeLazyLoadColumns) ? $this->getData() : null,
-            $keys[2] => $this->getCreatedAt(),
-            $keys[3] => $this->getUpdatedAt(),
-            $keys[4] => $this->getCreatedBy(),
-            $keys[5] => $this->getUpdatedBy(),
+            $keys[2] => $this->getDataSize(),
+            $keys[3] => $this->getCreatedAt(),
+            $keys[4] => $this->getUpdatedAt(),
+            $keys[5] => $this->getCreatedBy(),
+            $keys[6] => $this->getUpdatedBy(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1092,15 +1141,18 @@ abstract class BaseDocumentData extends BaseObject implements Persistent
                 $this->setData($value);
                 break;
             case 2:
-                $this->setCreatedAt($value);
+                $this->setDataSize($value);
                 break;
             case 3:
-                $this->setUpdatedAt($value);
+                $this->setCreatedAt($value);
                 break;
             case 4:
-                $this->setCreatedBy($value);
+                $this->setUpdatedAt($value);
                 break;
             case 5:
+                $this->setCreatedBy($value);
+                break;
+            case 6:
                 $this->setUpdatedBy($value);
                 break;
         } // switch()
@@ -1129,10 +1181,11 @@ abstract class BaseDocumentData extends BaseObject implements Persistent
 
         if (array_key_exists($keys[0], $arr)) $this->setHash($arr[$keys[0]]);
         if (array_key_exists($keys[1], $arr)) $this->setData($arr[$keys[1]]);
-        if (array_key_exists($keys[2], $arr)) $this->setCreatedAt($arr[$keys[2]]);
-        if (array_key_exists($keys[3], $arr)) $this->setUpdatedAt($arr[$keys[3]]);
-        if (array_key_exists($keys[4], $arr)) $this->setCreatedBy($arr[$keys[4]]);
-        if (array_key_exists($keys[5], $arr)) $this->setUpdatedBy($arr[$keys[5]]);
+        if (array_key_exists($keys[2], $arr)) $this->setDataSize($arr[$keys[2]]);
+        if (array_key_exists($keys[3], $arr)) $this->setCreatedAt($arr[$keys[3]]);
+        if (array_key_exists($keys[4], $arr)) $this->setUpdatedAt($arr[$keys[4]]);
+        if (array_key_exists($keys[5], $arr)) $this->setCreatedBy($arr[$keys[5]]);
+        if (array_key_exists($keys[6], $arr)) $this->setUpdatedBy($arr[$keys[6]]);
     }
 
     /**
@@ -1146,6 +1199,7 @@ abstract class BaseDocumentData extends BaseObject implements Persistent
 
         if ($this->isColumnModified(DocumentDataPeer::HASH)) $criteria->add(DocumentDataPeer::HASH, $this->hash);
         if ($this->isColumnModified(DocumentDataPeer::DATA)) $criteria->add(DocumentDataPeer::DATA, $this->data);
+        if ($this->isColumnModified(DocumentDataPeer::DATA_SIZE)) $criteria->add(DocumentDataPeer::DATA_SIZE, $this->data_size);
         if ($this->isColumnModified(DocumentDataPeer::CREATED_AT)) $criteria->add(DocumentDataPeer::CREATED_AT, $this->created_at);
         if ($this->isColumnModified(DocumentDataPeer::UPDATED_AT)) $criteria->add(DocumentDataPeer::UPDATED_AT, $this->updated_at);
         if ($this->isColumnModified(DocumentDataPeer::CREATED_BY)) $criteria->add(DocumentDataPeer::CREATED_BY, $this->created_by);
@@ -1214,6 +1268,7 @@ abstract class BaseDocumentData extends BaseObject implements Persistent
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
         $copyObj->setData($this->getData());
+        $copyObj->setDataSize($this->getDataSize());
         $copyObj->setCreatedAt($this->getCreatedAt());
         $copyObj->setUpdatedAt($this->getUpdatedAt());
         $copyObj->setCreatedBy($this->getCreatedBy());
@@ -1785,6 +1840,7 @@ abstract class BaseDocumentData extends BaseObject implements Persistent
         $this->hash = null;
         $this->data = null;
         $this->data_isLoaded = false;
+        $this->data_size = null;
         $this->created_at = null;
         $this->updated_at = null;
         $this->created_by = null;
