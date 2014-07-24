@@ -300,7 +300,7 @@ write_file(:php, "#{class_name}.php") do
 		php_methods.push php_method('renderFile')
 	elsif $options[:type] == :page_type then
 		php_methods.push php_method('__construct', 'parent::__construct($oPage, $oNavigationItem);', ['Page $oPage = null', 'NavigationItem $oNavigationItem = null'])
-		php_methods.push php_method('display', '$oTemplate = $this->oPage->getTemplate(true);', ['Template $oTemplate', '$bIsPreview = false'])
+		php_methods.push php_method('display', '', ['Template $oTemplate', '$bIsPreview = false'])
 	end
 	
 	"<?php
