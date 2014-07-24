@@ -91,7 +91,7 @@ class DocumentListWidgetModule extends SpecializedListWidgetModule {
 			return DocumentPeer::NAME;
 		}
 		if($sColumnIdentifier === 'file_size') {
-			return "OCTET_LENGTH(document_data.DATA)";
+			return DocumentDataPeer::DATA_SIZE;
 		}
 		if($sColumnIdentifier === 'extension') {
 			return DocumentTypePeer::EXTENSION;
