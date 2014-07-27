@@ -1,7 +1,7 @@
 <?php
 
-class NotFoundFrontendModule extends FrontendModule {
-                                          
+class NotFoundFrontendModule extends DynamicFrontendModule {
+
   public function __construct($oLanguageObject, $aRequestPath = null) {
     parent::__construct($oLanguageObject, $aRequestPath);
   }
