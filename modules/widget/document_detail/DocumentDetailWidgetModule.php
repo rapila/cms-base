@@ -23,11 +23,11 @@ class DocumentDetailWidgetModule extends PersistentWidgetModule {
 		}
 		return $aResult;
 	}
-	
+
 	public function setDocumentId($iDocumentId) {
 		$this->iDocumentId = $iDocumentId;
 	}
-	
+
 	public function documentData() {
 		$aResult = array();
 		$oDocument = DocumentQuery::create()->findPk($this->iDocumentId);
@@ -43,7 +43,7 @@ class DocumentDetailWidgetModule extends PersistentWidgetModule {
     // self::addReferences($oDocument, $aResult);
 		return $aResult;
 	}
-	
+
 	private static function addReferences($oDocument, &$aResult) {
 		if($oDocument->isInternallyManaged()) {
 			$aResult['References'] = array();
@@ -52,7 +52,7 @@ class DocumentDetailWidgetModule extends PersistentWidgetModule {
 			}
 		}
 	}
-	
+
 	public static function documentPreview($iDocumentId, $iSize) {
 		$oDocument = DocumentQuery::create()->findPk($iDocumentId);
 		if($oDocument) {
@@ -60,11 +60,11 @@ class DocumentDetailWidgetModule extends PersistentWidgetModule {
 		}
 		return null;
 	}
-	
+
 	public function preview() {
 		return self::documentPreview($this->iDocumentId, 190);
 	}
-	
+
 	public function validate($aDocumentData, $oDocument) {
 		$oFlash = Flash::getFlash();
 		$oFlash->setArrayToCheck($aDocumentData);
@@ -83,15 +83,18 @@ class DocumentDetailWidgetModule extends PersistentWidgetModule {
 		if($aDocumentData['name'] == null && $oDocument->getName()) {
 			$aDocumentData['name'] = $oDocument->getName();
 		}
-		$aDocumentData['document_category_id'] = is_numeric($aDocumentData['document_category_id']) ? $aDocumentData['document_category_id'] : null;
-		$oDocument->fromArray($aDocumentData, BasePeer::TYPE_FIELDNAME);
 		$this->validate($aDocumentData, $oDocument);
 		if(!Flash::noErrors()) {
 			throw new ValidationException();
 		}
-		$oDocument->setDescription($aDocumentData['description'] == '' ? null : $aDocumentData['description']);
-		$oDocument->setAuthor($aDocumentData['author'] == '' ? null : $aDocumentData['author']);
-		$oDocument->setLicense($aDocumentData['license'] == '' ? null : $aDocumentData['license']);
+		$oDocument->setName($aDocumentData['name']);
+		$oDocument->setLanguageId($aDocumentData['language_id']);
+		$oDocument->setDocumentCategoryId(is_numeric($aDocumentData['document_category_id']) ? $aDocumentData['document_category_id'] : null);
+		$oDocument->setIsProtected($aDocumentData['is_protected']);
+		$oDocument->setIsInactive($aDocumentData['is_inactive']);
+		$oDocument->setDescription($aDocumentData['description']);
+		$oDocument->setAuthor($aDocumentData['author']);
+		$oDocument->setLicense($aDocumentData['license']);
 		$oDocument->setContentCreatedAt($aDocumentData['content_created_at'] == '' ? null : $aDocumentData['content_created_at']);
 		// Set/reset sort order
 		if($oDocument->getDocumentCategoryId() != null) {
@@ -102,7 +105,7 @@ class DocumentDetailWidgetModule extends PersistentWidgetModule {
 		$oDocument->save();
 		return $oDocument->getId();
 	}
-	
+
 	public function deleteDocument() {
 		if($this->iDocumentId === null) {
 			return false;
