@@ -9,7 +9,6 @@ Widget.types.document_list = {
 				Widget.confirm("{{writeString=wns.delete_warning_title}}", delete_message, function(confirmed) {
 					if(confirmed) {
 						this.delete_row(row);
-						widget.fire('document-removed', row);
 					}
 				}.bind(this));
 				event.stopPropagation();

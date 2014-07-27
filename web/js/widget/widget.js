@@ -30,7 +30,7 @@ String.prototype.escapeSelector = function() {
 	//Widget class
 	var Widget = function() {
 	};
-	
+
 	var EventHook = function(el) {
 		if(!el._eventHook) {
 			el._eventHook = {
@@ -113,7 +113,7 @@ String.prototype.escapeSelector = function() {
 		_widgetJSON: function(action, callback, options, attributes) {
 			return Widget.widgetJSON(this.widgetType, this, action, callback, options, attributes);
 		},
-	
+
 		_callMethod: function(name) {
 			var args = jQuery.makeArray(arguments).slice(arguments.callee.length);
 			var options = args.pop();
@@ -162,11 +162,11 @@ String.prototype.escapeSelector = function() {
 			}
 			return result;
 		},
-	
+
 		fire: function(eventName, realEvent) {
 			return EventHook(this).fire(eventName, realEvent, jQuery.makeArray(arguments));
 		},
-	
+
 		handle: function(event, handler, isOnce, fireIfPast) {
 			return EventHook(this).handle(event, handler, isOnce, fireIfPast);
 		},
@@ -174,10 +174,10 @@ String.prototype.escapeSelector = function() {
 		unhandle: function(event, handler) {
 			return EventHook(this).unhandle(event, handler);
 		},
-	
+
 		_widgetInformation: {},
 		_instanceInformation: {},
-	
+
 		widgetType: null,
 		widgetId: null
 	});
@@ -192,19 +192,19 @@ String.prototype.escapeSelector = function() {
 			}
 			return html;
 		},
-		
+
 		fire: function(eventName, realEvent) {
 			return EventHook(this).fire(eventName, realEvent, jQuery.makeArray(arguments));
 		},
-	
+
 		handle: function(event, handler, isOnce, fireIfPast) {
 			return EventHook(this).handle(event, handler, isOnce, fireIfPast);
 		},
-	
+
 		unhandle: function(event, handler) {
 			return EventHook(this).unhandle(event, handler);
 		},
-	
+
 		uuid: function() {
 			return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
 				var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
@@ -239,7 +239,7 @@ String.prototype.escapeSelector = function() {
 				}
 			});
 		},
-	
+
 		loadInfo: function(widgetType) {
 			var widgetInformation = null;
 			if(!Widget.widgetInformation[widgetType]) {
@@ -256,7 +256,7 @@ String.prototype.escapeSelector = function() {
 				}, WidgetJSONOptions.with_async(false));
 				Widget.widgetInformation[widgetType] = widgetInformation;
 			}
-		
+
 			//If the widget is not yet a function… (its Constructor not the Function constructor)
 			if(Widget.types[widgetType].constructor !== Function) {
 				widgetInformation = Widget.widgetInformation[widgetType];
@@ -310,10 +310,10 @@ String.prototype.escapeSelector = function() {
 					Widget.types[widgetType].types = old_type.types;
 				}
 			}
-		
+
 			return Widget.widgetInformation[widgetType];
 		},
-	
+
 		create: function(widgetType, finishCallback, session) {
 			var intermediateCallback = jQuery.noop;
 			if(session && (jQuery.isFunction(session) || session.resolveWith)) {
@@ -382,7 +382,7 @@ String.prototype.escapeSelector = function() {
 				return Widget.singletons[widgetType];
 			}
 		},
-	
+
 		createWithElement: function(widgetType, finishCallback, session) {
 			var intermediateCallback = jQuery.noop;
 			if(session && (jQuery.isFunction(session) || session.resolveWith)) {
@@ -403,7 +403,7 @@ String.prototype.escapeSelector = function() {
 				}, false);
 			}, session);
 		},
-		
+
 		createOnce: function(widgetType, apply, finish, intermediate, context) {
 			context = context || Widget.types[widgetType];
 			if(!Array.isArray(context)) {
@@ -425,7 +425,7 @@ String.prototype.escapeSelector = function() {
 				});
 			}
 		},
-	
+
 		notifyUser: function(severity, message) {
 			var options = {
 				closeDelay: 5000,
@@ -439,9 +439,9 @@ String.prototype.escapeSelector = function() {
 				options.closable = true;
 			}
 			jQuery.extend(options, arguments[2] || {});
-		
+
 			var notification_area = jQuery('#widget-notifications');
-		
+
 			//Handle messages with identical identifier
 			if(options.identifier) {
 				var prev_message = Widget.notificationWithIdentifier(options.identifier);
@@ -459,11 +459,11 @@ String.prototype.escapeSelector = function() {
 				display = Widget.parseHTML('<div class="ui-widget ui-notify search_info"><div class="ui-state-'+highlight+' ui-corner-all"><div class="ui-badge">1</div><div class="ui-icon ui-icon-circle-close close-handle"></div><div><span class="ui-icon ui-icon-'+severity+'"></span><span class="message"></span></div></div></div>');
 			}
 			display.hide().appendTo(notification_area).data('identifier', options.identifier);
-		
+
 			var badge = display.find('.ui-badge').hide();
 			var close_button = display.find('.close-handle').hide();
 			var message_container = display.find('.message');
-		
+
 			var functions = {
 				element: display,
 				options: options,
@@ -529,7 +529,7 @@ String.prototype.escapeSelector = function() {
 			}
 			return functions;
 		},
-	
+
 		notificationWithIdentifier: function(identifier) {
 			var notification_area = jQuery('#widget-notifications');
 			var result = null;
@@ -542,11 +542,11 @@ String.prototype.escapeSelector = function() {
 			});
 			return result;
 		},
-	
+
 		tooltip: function(element, text) {
 			jQuery(element).bind('mouseenter', alert.bind(window, text));
 		},
-	
+
 		confirm: function(title, message, callback, cancelButtonText, okButtonText) {
 			message = title+' '+message;
 			// We don’t support the changing of button texts but still need to follow the convention of not displaying the cancel button if it is false-y but not undefined
@@ -556,19 +556,19 @@ String.prototype.escapeSelector = function() {
 			}
 			callback(confirm(message));
 		},
-	
+
 		//Show Ajax loader
 		load: jQuery.noop,
-	
+
 		//Hide Ajax loader
 		end_load: jQuery.noop,
-	
+
 		//Show activity indicator
 		activity: jQuery.noop,
-	
+
 		//Hide activity indicator
 		end_activity: jQuery.noop,
-	
+
 		widgetJSON: function(widgetType, widgetOrId, action, callback, options) {
 			options = options || new WidgetJSONOptions();
 			var attributes = arguments[arguments.callee.length] || {};
@@ -701,7 +701,7 @@ String.prototype.escapeSelector = function() {
 			};
 			jQuery.ajax(ajaxOpts);
 		},
-	
+
 		callStatic: function(widgetType, methodName) {
 			var parameters = jQuery.makeArray(arguments).slice(2);
 			if(!Widget.types[widgetType]) {
@@ -715,18 +715,18 @@ String.prototype.escapeSelector = function() {
 			}
 			return method.apply(Widget.types[widgetType].prototype, parameters);
 		},
-	
+
 		defaultJSONHandler: jQuery.noop,
 		defaultMethodHandler: jQuery.noop,
-	
+
 		log: jQuery.noop,
-	
+
 		types: {},
 		singletons: {},
 		widgetInformation: {},
-	
+
 		seenWidgets: {},
-	
+
 		//Called when a specific type of Exception is thrown in _widgetJSON and options.callback_handles_error is not true. Return true from the function to execute the callback or false to cancel it. The Widget.notifyUser function will not be called either way.
 		exception_type_handlers: {
 			fallback: function(error, widgetType, widgetOrId, action, callback, options, attributes) {
@@ -734,7 +734,7 @@ String.prototype.escapeSelector = function() {
 				Widget.notifyUser(Widget.logSeverity.ALERT, error.message);
 				return true;
 			},
-		
+
 			needs_login: function(error, widgetType, widgetOrId, action, callback, options, attributes) {
 				Widget.create('login_window', function(login_widget) {
 					login_widget.show();
@@ -745,7 +745,7 @@ String.prototype.escapeSelector = function() {
 				});
 				return false;
 			},
-		
+
 			ValidationException: function(error, widgetType, widgetOrId, action, callback, options, attributes) {
 				if(widgetOrId.validate_with && widgetOrId.validate_with.constructor === Function) {
 					error.reporting_done = true;
@@ -768,7 +768,7 @@ String.prototype.escapeSelector = function() {
 				}
 				return false;
 			},
-		
+
 			StillReferencedException: function(error, widgetType, widgetOrId, action, callback, options, attributes) {
 				message = jQuery('<div/>').text(error.message);
 				var error_list = jQuery('<ul/>').appendTo(message);
@@ -861,7 +861,7 @@ String.prototype.escapeSelector = function() {
 			var email_regex = /^[\w._\-%+]+@[\w\-]+(\.[\w\-]+)*(\.\w+)$/;
 			return email.length > 4 && email_regex.test(email);
 		},
-	
+
 		openLink: function(link, event) {
 			if(event[jQuery.support.linkOpenModifierKey] || event.shiftKey) {
 				window.open(link);
@@ -933,7 +933,7 @@ String.prototype.escapeSelector = function() {
 			});
 			return this;
 		},
-	
+
 		widgetElements: function(type) {
 			if(type) {
 				return this.find('*[data-widget-type='+type+']');
@@ -941,7 +941,7 @@ String.prototype.escapeSelector = function() {
 				return this.find('*[data-widget-type]');
 			}
 		},
-	
+
 		prepareWidget: function() {
 			if(this.length === 0) {
 				return this;
@@ -954,16 +954,16 @@ String.prototype.escapeSelector = function() {
 			}
 			callback && this.ensureWidget(callback);
 			intermediateCallback && this.ensureWidget(intermediateCallback, true);
-		
+
 			if(this.didPrepareWidget() || this.hasWidget()) {
 				return this;
 			}
 			this.data('prepareWidget_called', true);
-		
+
 			var widget_type = this.attr('data-widget-type');
 			var widget_session = this.attr('data-widget-session');
 			var widget_element = this;
-		
+
 			Widget.create(widget_type, function(widget) {
 				widget_element.data('widget', widget);
 				widget._element = widget_element;
@@ -972,18 +972,18 @@ String.prototype.escapeSelector = function() {
 					(widget_element.data('waiting_prepare_callbacks') || {resolve: jQuery.noop}).resolve(widget);
 				});
 			}, widget_session);
-		
+
 			return this;
 		},
-	
+
 		hasWidget: function() {
 			return !!this.data('widget');
 		},
-	
+
 		didPrepareWidget: function() {
 			return !!this.data('prepareWidget_called');
 		},
-	
+
 		/**
 		* Use this to make sure a specific element’s widget is initialized/prepared when the callback is called but DO NOT WANT to cause the widget to initialize, for example if you know that the widget will be initialized eventually.
 		*/
@@ -1003,12 +1003,12 @@ String.prototype.escapeSelector = function() {
 			}
 			return this;
 		},
-	
+
 		isInDom: function() {
 			var doc = document || arguments[0];
 			return jQuery(doc).has(this[0]).length > 0;
 		},
-	
+
 		populate: function(options, default_value, use_text_as_value) {
 			var _this = this;
 			use_text_as_value = (use_text_as_value === undefined) ? jQuery.isArray(options) : !!use_text_as_value;
@@ -1074,12 +1074,12 @@ String.prototype.escapeSelector = function() {
 			element.undelegate('.UnsavedChanges');
 			return this;
 		};
-	
+
 		element && this.protect(element);
 	}
 
 	UnsavedChanges.global = 0;
-	
+
 	window.UnsavedChanges = UnsavedChanges;
 	window.Widget = Widget;
 	window.WidgetJSONOptions = WidgetJSONOptions;
