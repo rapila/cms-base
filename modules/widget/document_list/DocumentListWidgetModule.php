@@ -202,6 +202,21 @@ class DocumentListWidgetModule extends SpecializedListWidgetModule {
 		return $this->oDelegateProxy->getDocumentKind();
 	}
 
+	public function getLanguageName() {
+		return StringPeer::getString('language.'.$this->oDelegateProxy->getLanguageId(), null, $this->oDelegateProxy->getLanguageId());
+	}
+
+	public function getDocumentCategoryName() {
+		$oDocumentCategory = LinkCategoryQuery::create()->findPk($this->oDelegateProxy->getDocumentCategoryId());
+		if($oDocumentCategory) {
+			return $oDocumentCategory->getName();
+		}
+		if($this->oDelegateProxy->getDocumentCategoryId() === CriteriaListWidgetDelegate::SELECT_WITHOUT) {
+			return StringPeer::getString('wns.documents.without_category');
+		}
+		return $this->oDelegateProxy->getDocumentCategoryId();
+	}
+
 	public function getCriteria() {
 		$oQuery = DocumentQuery::create()->joinDocumentType(null, Criteria::LEFT_JOIN)->joinDocumentData();
 		if(!Session::getSession()->getUser()->getIsAdmin() || Settings::getSetting('admin', 'hide_externally_managed_document_categories', true)) {

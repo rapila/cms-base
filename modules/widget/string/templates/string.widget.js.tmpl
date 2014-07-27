@@ -3,12 +3,12 @@ Widget.types.string = {
 		var result = this.getString.apply(this, arguments);
 		return result;
 	},
-	
+
 	get_string_as_html: function() {
 		var result = this.getStringAsHTML.apply(this, arguments);
 		return Widget.parseHTML(result.string);
 	},
-	
+
 	handle_strings_for_list_result: function(string_key, keys, widget, no_result_message, option_getter) {
 		option_getter = option_getter || 'getOption';
 		no_result_message = no_result_message || "{{writeString=wns.no_result.default_message}}";
@@ -20,13 +20,13 @@ Widget.types.string = {
 				prev_message && prev_message.data('functions').close();
 				return;
 			}
-		
+
 			message = jQuery('<div/>').text(strings.get_string(string_key));
 			var criteria_list = jQuery('<ul/>').appendTo(message);
 			var append_message = function(string_detail, parameters) {
 				criteria_list.append(jQuery('<li/>').text(strings.get_string(string_key+'.'+string_detail, parameters)));
 			};
-		
+
 			var search = widget.getSearch({search: search});
 			if(search !== null) {
 				append_message('search', {search: search});
@@ -46,7 +46,7 @@ Widget.types.string = {
 			}
 		}, false, true);
 	},
-	
+
 	get_parameterized_string: function() {
 		// For compatibility reasons
 		return this.get_string.apply(this, arguments);
