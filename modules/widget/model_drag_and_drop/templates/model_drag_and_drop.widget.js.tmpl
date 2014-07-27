@@ -5,10 +5,10 @@ Widget.types.model_drag_and_drop = {
 		helper.css({pointerEvents: ''});
 		return droppable.is(onto) || droppable.has(onto).length > 0;
 	},
-	
+
 	init_dnd: function(element, model_name, item_id, droppable_only) {
 		var _this = this;
-		
+
 		if(!this.possible_targets[model_name]) {
 			this.possible_targets[model_name] = this.getPossibleTargetsFor(model_name);
 		}
@@ -41,7 +41,7 @@ Widget.types.model_drag_and_drop = {
 					return;
 				}
 				if(_this.draggable_is_on_top_of(element, ui.helper, {x: event.clientX, y: event.clientY})) {
-					element.effect('highlight', {}, 1500);
+					element.effect('highlight', {}, 500);
 					_this.drop(dragged_model, dragged_item_id, model_name, item_id, function(success) {
 						_this.fire('model_drag_and_drop', success, dragged_model, dragged_item_id, model_name, item_id);
 						if(success) { // success.status is either false or a domain-specific string like “tagged”, depending on the model of the dragged item
@@ -57,6 +57,6 @@ Widget.types.model_drag_and_drop = {
 			tolerance: 'pointer'
 		});
 	},
-	
+
 	possible_targets: {}
 };
