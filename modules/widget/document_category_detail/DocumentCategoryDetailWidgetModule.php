@@ -4,14 +4,14 @@
  */
 class DocumentCategoryDetailWidgetModule extends PersistentWidgetModule {
 
-	private $iCategoryId = null;
-	
-	public function setDocumentCategoryId($iCategoryId) {
-		$this->iCategoryId = $iCategoryId;
+	private $iDocumentCategoryId = null;
+
+	public function setDocumentCategoryId($iDocumentCategoryId) {
+		$this->iDocumentCategoryId = $iDocumentCategoryId;
 	}
-	
+
 	public function categoryData() {
-		$oDocumentCategory = DocumentCategoryQuery::create()->findPk($this->iCategoryId);
+		$oDocumentCategory = DocumentCategoryQuery::create()->findPk($this->iDocumentCategoryId);
 		$aResult = $oDocumentCategory->toArray();
 		$aResult['CreatedInfo'] = Util::formatCreatedInfo($oDocumentCategory);
 		$aResult['UpdatedInfo'] = Util::formatUpdatedInfo($oDocumentCategory);
@@ -24,30 +24,30 @@ class DocumentCategoryDetailWidgetModule extends PersistentWidgetModule {
 		$oFlash->checkForValue('name', 'name_required');
 		$oFlash->finishReporting();
 	}
-	
+
 	public function saveData($aDocumentCategoryData) {
-		if($this->iCategoryId === null) {
-			$oCategory = new DocumentCategory();
+		if($this->iDocumentCategoryId === null) {
+			$oDocumentCategory = new DocumentCategory();
 		} else {
-			$oCategory = DocumentCategoryQuery::create()->findPk($this->iCategoryId);
+			$oDocumentCategory = DocumentCategoryQuery::create()->findPk($this->iDocumentCategoryId);
 		}
-		$oCategory->fromArray($aDocumentCategoryData, BasePeer::TYPE_FIELDNAME);
-		if($aDocumentCategoryData['max_width'] == null) {
-			$oCategory->setMaxWidth(null);
-		}
-    $this->validate($aDocumentCategoryData);
+		$this->validate($aDocumentCategoryData);
 		if(!Flash::noErrors()) {
 			throw new ValidationException();
 		}
-		$oCategory->save();
+
+		$oDocumentCategory->setMaxWidth($aDocumentCategoryData['max_width'] == null ? null : $aDocumentCategoryData['max_width']);
+		$oDocumentCategory->setName($aDocumentCategoryData['name']);
+		$oDocumentCategory->setIsExternallyManaged($aDocumentCategoryData['is_externally_managed']);
+		$oDocumentCategory->save();
+
 		$oResult = new stdClass();
-		$oResult->id = $oCategory->getId();
-		if($this->iCategoryId === null) {
+		if($this->iDocumentCategoryId === null) {
 			$oResult->inserted = true;
 		} else {
 			$oResult->updated = true;
 		}
-		$this->iCategoryId = $oResult->id;
+		$oResult->id = $this->iDocumentCategoryId = $oDocumentCategory->getId();
 		return $oResult;
 	}
 }

@@ -7,33 +7,33 @@ class LinksAdminModule extends AdminModule {
 	private $oListWidget;
 	private $oSidebarWidget;
 	private $oInputWidget;
-	
+
 	public function __construct() {
 		$this->oListWidget = new LinkListWidgetModule();
 		if(isset($_REQUEST['link_category_id'])) {
 			$this->oListWidget->oDelegateProxy->setLinkCategoryId($_REQUEST['link_category_id']);
 		}
-		
+
 		$this->oSidebarWidget = new ListWidgetModule();
 		$this->oSidebarWidget->setListTag(new TagWriter('ul'));
 		$this->oSidebarWidget->setDelegate(new CriteriaListWidgetDelegate($this, 'LinkCategory', 'name'));
     $this->oSidebarWidget->setSetting('initial_selection', array('link_category_id' => $this->oListWidget->getLinkCategoryId()));
-		
+
 		$this->oInputWidget = new SidebarInputWidgetModule();
 	}
-	
+
 	public function mainContent() {
 		return $this->oListWidget->doWidget();
 	}
-	
+
 	public function sidebarContent() {
 		return $this->oSidebarWidget->doWidget();
 	}
-	
+
 	public function getColumnIdentifiers() {
 		return array('link_category_id', 'name', 'magic_column');
 	}
-	
+
 	public function getMetadataForColumn($sColumnIdentifier) {
 		$aResult = array();
 		switch($sColumnIdentifier) {
@@ -51,7 +51,7 @@ class LinksAdminModule extends AdminModule {
 		}
 		return $aResult;
 	}
-	
+
 	public function getCustomListElements() {
 		if($this->getCriteria()->count() > 0) {
 			return array(
@@ -74,6 +74,7 @@ class LinksAdminModule extends AdminModule {
 
 	public function getCriteria() {
 		$oQuery = LinkCategoryQuery::create();
+		ErrorHandler::log('externally_managed', Session::getSession()->getUser()->getIsAdmin(), Settings::getSetting('admin', 'hide_externally_managed_link_categories', true));
 		if(!Session::getSession()->getUser()->getIsAdmin() || Settings::getSetting('admin', 'hide_externally_managed_link_categories', true)) {
 			return $oQuery->filterByIsExternallyManaged(false);
 		}

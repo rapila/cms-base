@@ -4,14 +4,14 @@
  */
 class LinkCategoryDetailWidgetModule extends PersistentWidgetModule {
 
-	private $iCategoryId = null;
-	
-	public function setLinkCategoryId($iCategoryId) {
-		$this->iCategoryId = $iCategoryId;
+	private $iLinkCategoryId = null;
+
+	public function setLinkCategoryId($iLinkCategoryId) {
+		$this->iLinkCategoryId = $iLinkCategoryId;
 	}
-	
+
 	public function loadData() {
-		$oLinkCategory = LinkCategoryQuery::create()->findPk($this->iCategoryId);
+		$oLinkCategory = LinkCategoryQuery::create()->findPk($this->iLinkCategoryId);
 		$aResult = $oLinkCategory->toArray();
 		$aResult['CreatedInfo'] = Util::formatCreatedInfo($oLinkCategory);
 		$aResult['UpdatedInfo'] = Util::formatUpdatedInfo($oLinkCategory);
@@ -24,28 +24,28 @@ class LinkCategoryDetailWidgetModule extends PersistentWidgetModule {
 		$oFlash->checkForValue('name', 'name_required');
 		$oFlash->finishReporting();
 	}
-	
+
 	public function saveData($aLinkCategoryData) {
-		if($this->iCategoryId === null) {
-			$oCategory = new LinkCategory();
+		if($this->iLinkCategoryId === null) {
+			$oLinkCategory = new LinkCategory();
 		} else {
-			$oCategory = LinkCategoryQuery::create()->findPk($this->iCategoryId);
+			$oLinkCategory = LinkCategoryQuery::create()->findPk($this->iLinkCategoryId);
 		}
-		$oCategory->fromArray($aLinkCategoryData, BasePeer::TYPE_FIELDNAME);
 		$this->validate($aLinkCategoryData);
 		if(!Flash::noErrors()) {
 			throw new ValidationException();
 		}
-		$oCategory->save();
-		
+		$oLinkCategory->setName($aLinkCategoryData['name']);
+		$oLinkCategory->setIsExternallyManaged($aLinkCategoryData['is_externally_managed']);
+		$oLinkCategory->save();
+
 		$oResult = new stdClass();
-		$oResult->id = $oCategory->getId();
-		if($this->iCategoryId === null) {
+		if($this->iLinkCategoryId === null) {
 			$oResult->inserted = true;
 		} else {
 			$oResult->updated = true;
 		}
-		$this->iCategoryId = $oResult->id;
+		$oResult->id = $this->iLinkCategoryId = $oLinkCategory->getId();
 		return $oResult;
 	}
 }
