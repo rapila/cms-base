@@ -18,7 +18,7 @@ jQuery(document).ready(function() {
 
 	jQuery.when.apply(jQuery, handlers).then(function() {
 
-		// Prepare file_uplaod
+		// Prepare file_upload in sidebar
 		Widget.create('file_upload', function(file_upload) {
 			file_upload.allow_drag_to(sidebar._element, '.ui-list-row:not(.magic_column)', function(target) {
 				var dropped_on_document_category_id = sidebar.collect_row_data(target).document_category_id;
@@ -60,12 +60,7 @@ jQuery(document).ready(function() {
 			}
 		}, 't', 'commons').text('thumbnails');
 
-		// tag remove and drop handlers
-		Widget.handle('rapila-tag-removed-from-Document', function(event, result) {
-			if(result.was_last_of_model) {
-				content_list.reload('force');
-			}
-		});
+		// Add and remove tag and force reload list with heading if it was the first or the last one
 		Widget.create('model_drag_and_drop').handle('model-dragged-onto-Document', function(event, item_id, dragged_model, dragged_item_id, status, success) {
 			if(dragged_model !== 'Tag') {
 				return;
@@ -74,7 +69,13 @@ jQuery(document).ready(function() {
 				content_list.reload('force');
 			}
 		});
+		Widget.handle('rapila-tag-removed-from-Document', function(event, result) {
+			if(result.was_last_of_model) {
+				content_list.reload('force');
+			}
+		});
 
+		// Remove sidebar item
 		var remove_item = info_bar.add_button('remove-item', function() {
 			var row = sidebar.active_row();
 			var rowData = sidebar.collect_row_data(row);
@@ -99,6 +100,7 @@ jQuery(document).ready(function() {
 			}
 		}).disable();
 
+		// Edit sidebar item
 		var edit_item = info_bar.add_button('edit-item', function() {
 			Widget.create('document_category_detail', function(widget) {
 				widget.setDocumentCategoryId(sidebar.active_row_datas()[0].document_category_id);
@@ -107,6 +109,7 @@ jQuery(document).ready(function() {
 			});
 		}).disable();
 
+		// Sidebar element changed
 		Widget.handle('rapila-document_category_changed', function(event, info) {
 			if(info.updated) {
 				sidebar.update_row(sidebar.row_from_row_data({document_category_id: info.id}));
@@ -120,7 +123,7 @@ jQuery(document).ready(function() {
 			}
 		});
 
-		// Sidebar
+		// Sidebar selection changed
 		sidebar.settings.row_click_active_mode = 'activate';
 		sidebar.handle('list-selection_changed', function(event, selection) {
 			var document_category_id = selection[0] && selection[0].document_category_id;
@@ -131,6 +134,8 @@ jQuery(document).ready(function() {
 			content_list.reload();
 			jQuery('#new_sidebar_input').remove();
 		});
+
+		// Search no result handling
 		AdminInterface.strings.handle_strings_for_list_result('wns.documents.no_result', ['document_category_name', 'document_kind_name', 'language_name'], content_list);
 	});
 });
