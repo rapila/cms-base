@@ -54,6 +54,8 @@ div.ui-widget-content
 	> div
 		float left
 		display none
+	> div.is_not_shown
+		display inline-block
 	.ui-icon.edit,
 	&.editing .ui-icon,
 	&.editing .additional-buttons,
@@ -68,15 +70,18 @@ div.ui-widget-content
 			height 19px
 			cursor pointer
 			&.ui-icon-pencil
-				background transparent url("../../images/admin/icon_edit.png") no-repeat center center
+				background transparent url('../../images/admin/icon_edit.png') no-repeat center center
 			&.ui-icon-trash
-				background transparent url("../../images/admin/icon_trash.png") no-repeat center center
+				background transparent url('../../images/admin/icon_trash.png') no-repeat center center
 			&.ui-icon-wrench
-				background transparent url("../../images/admin/icon_edit_condition.png") no-repeat center center
+				background transparent url('../../images/admin/icon_edit_condition.png') no-repeat center center
 			&.ui-icon-preview-cancel
-				background transparent url("../../images/admin/icon_preview_edit_cancel.png") no-repeat center center
+				background transparent url('../../images/admin/icon_preview_edit_cancel.png') no-repeat center center
 			&.ui-icon-save
-				background transparent url("../../images/admin/icon_save.png") no-repeat center center
+				background transparent url('../../images/admin/icon_save.png') no-repeat center center
+			&.ui-icon-is-hidden
+				background transparent url('../../images/admin/page_hidden_default.png') no-repeat center center
+
 // add style for add_entry button, used in journal plugin, but could be used anywhere
 	.add_entry_wrapper
 		outline 1px solid #f2f2f2
@@ -85,6 +90,16 @@ div.ui-widget-content
 		button.add-entry.ui-widget
 			font-size 12px
 			margin 0
+		ul.ui-menu
+			.ui-menu-item
+				background none
+				font-size 11px
+				padding 0
+				a
+					background none
+	button.ui-state-hover
+		background url('../../images/admin/button_gradient_dark.png') repeat scroll 0 0 transparent
+		color #e3ef99 !important
 
 #widget-notifications
 	left 20px !important
@@ -100,18 +115,8 @@ div.ui-widget-content
 	background transparent url('../../images/preview/loader.gif') no-repeat scroll top left
 	min-width 17px
 	min-height 17px
-button.ui-state-hover
-	background url("../../images/admin/button_gradient_dark.png") repeat scroll 0 0 transparent
-	color #e3ef99 !important
 
-.add_entry_wrapper
-	ul.ui-menu
-		.ui-menu-item
-			background none
-			font-size 11px
-			padding 0
-			a
-				background none
+
 
 
 

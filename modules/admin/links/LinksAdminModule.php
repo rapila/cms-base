@@ -33,7 +33,7 @@ class LinksAdminModule extends AdminModule {
 	public function getColumnIdentifiers() {
 		return array('link_category_id', 'name', 'magic_column');
 	}
-
+	
 	public function getMetadataForColumn($sColumnIdentifier) {
 		$aResult = array();
 		switch($sColumnIdentifier) {
