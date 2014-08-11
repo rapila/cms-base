@@ -33,46 +33,55 @@ Widget.types.page_detail = {
 		});
 		this.delete_button = buttons.find('[name=delete]').click(function() {
 			_this.protector.release();
-			Widget.confirm("{{writeString=wns.delete_confirm}}", "{{writeParameterizedString=wns.page.delete_alert;name=$\{name\};}}".replace(/\$\{name\}/, _this.current_page_name()), function(confirmed) {
+			Widget.confirm("{{writeString=wns.delete_confirm}}", "{{writeParameterizedString=wns.page.delete_alert;name=$\\{name\\};}}".replace(/\$\{name\}/, _this.current_page_name()), function(confirmed) {
 				if(confirmed) {
 					_this.delete_page();
 				}
 			});
 			return false;
 		});
-		
+
 		this.description_has_been_loaded = false;
 		this.configuration_has_been_loaded = false;
 		this.current_page_id = null;
-		
-		// templates
+
+		// Templates
 		var option = jQuery('<option/>');
-		var template_select = this._element.find("select[name='template_name']");
-		template_select.change(function() {
+		this.template_select = this._element.find("select[name='template_name']");
+		this.template_select.change(function() {
 			_this.save();
+			_this.update_template_info();
 		});
 		jQuery.each(this._staticMethods.getFrontendTemplates(), function(i, template) {
-			option.clone().text(template.name).attr('value', template.value).addClass(template.is_default ? 'default' : '').appendTo(template_select);
+			option.clone().text(template.name).attr('value', template.value).addClass(template.is_default ? 'default' : '').appendTo(this.template_select);
 		}.bind(this));
-		var page_type_select = this._element.find("select[name='page_type']");
+
+		// Page types
+		this.page_type_select = this._element.find("select[name='page_type']");
+		this.page_type_select.change(function() {
+			_this.update_pagetype_info();
+			_this.configuration_has_been_loaded = false;
+		});
 		jQuery.each(this.getPageTypes(), function(i, page_type) {
-			option.clone().text(page_type.name).attr('value', page_type.value).appendTo(page_type_select);
+			option.clone().text(page_type.name).attr('value', page_type.value).appendTo(this.page_type_select);
 		}.bind(this));
+
+		// Prepare canonical pages dropdown
 		this.canonical_id_dropdown = this._element.find("select[name='canonical_id']").prepareWidget(function(widget) {
 			widget.settings.default_value_label = '-------';
 		}, jQuery.noop);
 		Widget.callStatic('detail', 'clickable_labels_for', this._element);
 	},
-	
+
 	validate_with: function(exception) {
 		Widget.callStatic('detail', 'validate_with', exception, this._element);
 	},
-	
+
 	disable_input: function() {
 		this.inputs_enabled = false;
 		this._element.find(':input, :button').prop('disabled', true).filter(':button').button('disable');
 	},
-	
+
 	enable_input: function(enable_delete) {
 		if(enable_delete !== undefined) {
 			this.enable_delete_button = enable_delete;
@@ -99,7 +108,7 @@ Widget.types.page_detail = {
 		});
 		return result;
 	},
-	
+
 	load_page: function(page_id) {
 		this.protector.warn(function(ok) {
 			if(!ok) {
@@ -153,7 +162,7 @@ Widget.types.page_detail = {
 			}, false, true);
 		});
 	},
-	
+
 	load_configuration: function(container) {
 		var _this = this;
 		if(this.current_page_id === null || this.configuration_has_been_loaded === true) {
@@ -161,18 +170,18 @@ Widget.types.page_detail = {
 		}
 		// empty container, so when page type is changed, ie from default to journal then filled modules are not displayed anymore
 		container.empty();
-		
-		var new_type = _this._element.find("select[name='page_type']").val();
-		
+
+		var new_type = this.page_type_select.val();
+
 		container[0].className = container[0].className.replace(/\bpage-type-[^\s$]+/g, '')+' page-type-'+new_type;
-		
+
 		this.configuration_has_been_loaded = true;
 		this.current_page_type = null;
 
 		Widget.create('page_type', function(page_type) {
 			//	Intermediate callback
 			_this.current_page_type = page_type;
-			
+
 			page_type.settings.page_type = new_type;
 			page_type.settings.container = container;
 			page_type.settings.page_id = _this.current_page_id;
@@ -182,10 +191,9 @@ Widget.types.page_detail = {
 		});
 	},
 
-	
+
 	fill_data: function() {
 		Widget.callStatic('detail', 'clear_validation', this._element);
-		var _this = this;
 		var page_data = this.getPageData();
 		this.current_page_id = page_data.Id;
 		this._element.find("input[name='name']").val(page_data.Name);
@@ -193,17 +201,17 @@ Widget.types.page_detail = {
 		this._element.find("input[name='is_folder']").prop('checked', page_data.IsFolder);
 		this._element.find("input[name='is_hidden']").prop('checked', page_data.IsHidden);
 		this._element.find("input[name='is_protected']").prop('checked', page_data.IsProtected);
-		this.canonical_id_dropdown.val(page_data.CanonicalId == null ? "" : page_data.CanonicalId);
-		this._element.find("select[name='template_name']").val(page_data.TemplateName == null ? "" : page_data.TemplateName);
-		this._element.find("select[name='page_type']").val(page_data.PageType == null ? "" : page_data.PageType).change(function() {
-			_this.configuration_has_been_loaded = false;
-		});
+		this.canonical_id_dropdown.val(page_data.CanonicalId === null ? "" : page_data.CanonicalId);
+		this.template_select.val(page_data.TemplateName === null ? "" : page_data.TemplateName);
+		this.page_type_select.val(page_data.PageType === null ? "" : page_data.PageType);
+		this.update_template_info();
+		this.update_pagetype_info();
 		this._element.find(".page_href").text(page_data.PageLink).attr('href', page_data.PageHref);
 		this.delete_button.prop({title: page_data.DeleteNotPermitted});
 		// references
 		var count_references = page_data.CountReferences;
 		var count_text = count_references > 0 ? " ("+count_references+")" : '';
-		if(count_references == 0) {
+		if(count_references === 0) {
 			this._element.find(".page_references").remove();
 		} else {
 			this._element.find(".references_count").text(count_text);
@@ -213,11 +221,15 @@ Widget.types.page_detail = {
 		var page_properties_container = this._element.find('div.page_properties');
 		var page_properties_header = this.accordion.children('h3.page_properties');
 
-		if(page_data.page_properties != undefined) {
+		var count_properties = 0;
+		if(page_data.page_properties !== undefined) {
 			page_properties_container.empty().show();
 			page_properties_header.show();
 			for(var property_name in page_data.page_properties) {
 				var attrs = page_data.page_properties[property_name];
+				if(!(property_name === 'page_identifier' && attrs.value === null)) {
+					count_properties++;
+				}
 				var property_container = Widget.parseHTML('{{includeTemplate=property_container}}');
 				property_container.data('propertyName', property_name);
 				property_container.find('label').text(attrs.display_name);
@@ -241,23 +253,39 @@ Widget.types.page_detail = {
 		} else {
 			page_properties_header.hide();
 		}
+		this.update_properties_info(count_properties);
 	},
-	
+
+	update_template_info: function() {
+		this._element.find("span.template_info").text(this.template_select.find(":selected").text());
+	},
+
+	update_pagetype_info: function() {
+		this._element.find("span.pagetype_info").text(this.page_type_select.find(":selected").text());
+	},
+
+	update_properties_info: function(count_properties) {
+		if(this.canonical_id_dropdown.val() !== '') {
+			count_properties++;
+		}
+		this._element.find("span.properties_info").text(count_properties === 0 ? '-' : count_properties);
+	},
+
 	current_page_name: function() {
 		return this._element.find("input[name='name']").val();
 	},
-	
+
 	delete_page: function() {
 		this.disable_input();
 		this.deletePage(this.settings.delete_callback);
 	},
-	
+
 	save: function() {
 		//Send all page_type widget instances the will_save message
 		if(this.current_page_type) {
 			this.current_page_type.will_save();
 		}
-		
+
 		this.protector.release();
 		var data = this._element.serializeArrayKV();
 		delete data.page_property;
@@ -270,19 +298,19 @@ Widget.types.page_detail = {
 				data.page_properties[property_name] = property_value;
 			}
 		});
-		
+
 		//Save the data
 		this.saveData(data, function() {
 			this.fill_data();
 			this.fire('saved');
-			
+
 			//Send all page_type widget instances the did_save message
 			if(this.current_page_type) {
 				this.current_page_type.did_save();
 			}
 		});
 	},
-	
+
 	settings: {
 		active_accordion: 0,
 		delete_callback: jQuery.noop

@@ -3,19 +3,19 @@
  * @package modules.widget
  */
 class PageDetailWidgetModule extends PersistentWidgetModule {
-	
+
 	private $iPageId = null;
 	private $oPage;
-	
+
 	public function __construct($sSessionId) {
 		parent::__construct($sSessionId);
 		$this->setSetting('active_accordion', $this->getActiveAccordion());
 	}
-	
+
 	public function activeAccordion($iAccordion) {
 		Session::getSession()->setAttribute('active_accordion', $iAccordion);
 	}
-	
+
 	public function getActiveAccordion() {
 		$iAccordion = Session::getSession()->getAttribute('active_accordion');
 		if($iAccordion) {
@@ -27,12 +27,12 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 	public function doWidget() {
 		return $this->constructTemplate('edit');
 	}
-	
+
 	public function setPageId($iPageId) {
 		$this->iPageId = (int) $iPageId;
 		Session::getSession()->setAttribute('persistent_page_id', $this->iPageId);
 	}
-	
+
 	public function getPageData() {
 		$oPage = PageQuery::create()->findPk($this->iPageId);
 		$aResult = $oPage->toArray(BasePeer::TYPE_PHPNAME, false);
@@ -58,7 +58,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		}
 		return $aResult;
 	}
-	
+
 	public function getActiveLanguages() {
 		$oPage = PageQuery::create()->findPk($this->iPageId);
 		$aActiveStrings = array();
@@ -69,7 +69,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		}
 		return $aActiveStrings;
 	}
-	
+
 	public function getLanguageData($sLanguageId) {
 		$oPage = PageQuery::create()->findPk($this->iPageId);
 		$oPageString = $oPage->getPageStringByLanguage($sLanguageId);
@@ -84,22 +84,22 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		$aResult['HasLanguageObjectsFilled'] = $oPageString->hasLanguageObjectsFilled($sLanguageId);
 		return $aResult;
 	}
-	
- /** 
+
+ /**
 	* getFrontendTemplates()
-	* 
+	*
 	* @param boolean $bExcludeDefault, @see config.yml frontend: main_template
-	* description: 
+	* description:
 	* called once at page_detail widget prepare
 	* @return array of template name options
-	*/	
+	*/
 	public static function getFrontendTemplates($bExcludeDefault = true) {
 		$aResult = array();
 		$sDefaultTemplate = Settings::getSetting('frontend', 'main_template', 'general');
 		foreach(Template::listTemplates(DIRNAME_TEMPLATES) as $i => $sTemplateName) {
 			if (Settings::getSetting('frontend', 'main_template', 'general') === $sTemplateName && $bExcludeDefault) {
 				continue;
-			} 
+			}
 			$aResult[$i]['is_default'] = false;
 			$aResult[$i]['value'] = $sTemplateName;
 			$aResult[$i]['name'] = StringUtil::makeReadableName($sTemplateName);
@@ -107,14 +107,14 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		$aResult[$i+1]['value'] = "";
 		$aResult[$i+1]['is_default'] = true;
 		$aResult[$i+1]['name'] = StringPeer::getString('wns.default');
-		
+
 		krsort($aResult);
 		return $aResult;
 	}
 
- /** 
+ /**
 	* getPageTypes()
-	* description: 
+	* description:
 	* called once in page_detail widget prepare
 	* @return hash of page_types options
 	*/
@@ -125,16 +125,16 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 			$aResult[$sKey]['name'] = StringUtil::makeReadableName(isset($aValues['display_name']) ? $aValues['display_name'] : $aValues['name']);
 		}
 		return $aResult;
-	} 
+	}
 
- /** 
+ /**
 	* getAvailablePageProperties()
-	* 
-	* description: 
+	*
+	* description:
 	* - gets instances of 'pageProperty' with default values in template and fills the stored page related properties if exist
 	* - called at page_detail.load_page @see getPageData()
 	* @return mixed null/hash of page_properties
-	*/	
+	*/
 	private function getAvailablePageProperties($oPage) {
 		$aAvailablePageProperties = $oPage->getTemplate()->identifiersMatching('pageProperty', Template::$ANY_VALUE);
 		$aResult = array();
@@ -144,34 +144,34 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		}
 		foreach($aAvailablePageProperties as $oProperty) {
 			$sPropertyName = $oProperty->getValue();
-			
+
 			$aResult[$sPropertyName]['value'] = isset($aSetProperties[$sPropertyName]) ? $aSetProperties[$sPropertyName] : '';
 			$aResult[$sPropertyName]['defaultValue'] = $oProperty->getParameter('defaultValue');
 			$aResult[$sPropertyName]['type'] = $oProperty->getParameter('propertyType');
-			
+
 			unset($aSetProperties[$sPropertyName]);
 		}
 		foreach($aSetProperties as $sRemainingPropertyName => $sRemainingPropertyValue) {
 			$aResult[$sRemainingPropertyName] = array('value' => $sRemainingPropertyValue, 'defaultValue' => null, 'type' => null);
 		}
 		$aResult['page_identifier'] = array('value' => $oPage->getIdentifier(), 'defaultValue' => null, 'type' => null);
-		
+
 		foreach($aResult as $sName => &$aValues) {
 			$aValues['display_name'] = StringPeer::getString("page_property.$sName", null, StringUtil::makeReadableName($sName));
 		}
-		
+
 		return $aResult;
 	}
-	
+
 	public function deletePage() {
 		$oPage = PageQuery::create()->findPk($this->iPageId);
 		if($oPage->isRoot()) {
 			throw new LocalizedException('wns.page.delete_root_restriction_message', array('page_name' => $oPage->getName()));
-		} 
+		}
 		$oPage->delete();
 		return $this->iPageId;
 	}
-	
+
 	public function createPage($iParentId, $sPageName) {
 		$oParentPage = PageQuery::create()->findPk($iParentId);
 		if($oParentPage == null) {
@@ -239,23 +239,23 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		$mCanonicalId = null;
 		if($aPageData['canonical_id'] !== '') {
 			$mCanonicalId = $this->validateCanonicalId($aPageData['canonical_id']);
-		} 
+		}
 		$this->oPage->setCanonicalId($mCanonicalId);
 		if($aPageData['template_name'] === "") {
 			$this->oPage->setTemplateName(null);
 		} else {
 			$this->oPage->setTemplateName($aPageData['template_name']);
-		}		
+		}
 		$this->oPage->setPageType($aPageData['page_type']);
 		// handle related tables
 		$this->handlePageStrings($aPageData);
 		$this->handleLanguageObjects($aPageData);
 		$this->handlePageProperties($aPageData);
-		
+
 		// save if no errors
 		return $this->oPage->save();
 	}
-	
+
 	private function validateCanonicalId($mCanonicalId) {
 		$oCanonicalPage = PageQuery::create()->findPk($mCanonicalId);
 		if($oCanonicalPage === null) {
@@ -270,15 +270,15 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		// • root
 		return $mCanonicalId;
 	}
-	
+
 	private function handlePageStrings($aPageData) {
 		if(isset($aPageData['edited_languages'])) {
 			foreach($aPageData['edited_languages'] as $iCounter => $sLanguageId) {
-				$oPageString = $this->oPage->getPageStringByLanguage($sLanguageId); 
+				$oPageString = $this->oPage->getPageStringByLanguage($sLanguageId);
 				if($oPageString === null) {
 					$oPageString = new PageString();
 					$oPageString->setLanguageId($sLanguageId);
-					$this->oPage->addPageString($oPageString); 
+					$this->oPage->addPageString($oPageString);
 				}
 				$oPageString->setPageTitle($aPageData['page_title'][$iCounter] ? $aPageData['page_title'][$iCounter] : null);
 				$oPageString->setLinkText($aPageData['link_text'][$iCounter] ? $aPageData['link_text'][$iCounter] : null);
@@ -290,12 +290,12 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 			}
 		}
 	}
-	
+
 	private function handleLanguageObjects($aPageData) {
 		foreach($this->oPage->getContentObjects() as $oContentObject) {
 		}
 	}
-	
+
 	private function handlePageProperties($aPageData) {
 		foreach($this->oPage->getPagePropertyQuery()->byNamespace(false)->find() as $oProperty) {
 			$oProperty->delete();
