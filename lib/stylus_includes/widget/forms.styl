@@ -9,18 +9,18 @@ label
 	text-align left
 	width auto
 
-.status_section 
+.status_section
 	label
+	.hide_if_not_saved
 		display inline-block
 		padding-right 0.5em
-	.hide_if_not_saved 
 		label
 			width 6em
 			margin-top 0.4em
 			margin-right 0.3em
 
 .ui-widget-content
-	.status_section 
+	.status_section
 		font-family Arial
 		padding-right 2em
 		width 16.2em
@@ -37,7 +37,7 @@ label
 	margin-top 0.8em
 	label
 		display inline-block
-	&.bottom 
+	&.bottom
 		label
 			margin-left 1em
 			&:first-child
@@ -113,8 +113,8 @@ button.rapila-button
 			padding 0
 
 button
-	&.primary, 
-	&.ui-state-active, 
+	&.primary,
+	&.ui-state-active,
 	&.ui-state-hover
 		color #e3ef99 !important
 

@@ -1,6 +1,6 @@
 jQuery(document).ready(function() {
 	var db = AdminInterface.content.find('#dashboard-columns');
-	
+
 	var dashboard_layout_icons = {
 		"2cols2thirds": '\ue624',
 		"2cols3cols": '\ue623',
@@ -8,7 +8,7 @@ jQuery(document).ready(function() {
 		"3columns": '\ue620',
 		"head3cols": '\ue621'
 	};
-	
+
 	var add_to_column = function(column_name, skeleton) {
 		var column = db.find('.dashboard-column#'+column_name);
 		if(column.length !== 1) {
@@ -17,9 +17,9 @@ jQuery(document).ready(function() {
 		column.append(skeleton.container);
 		column.data('dashboardSkeleton', skeleton);
 	};
-	
+
 	Widget.create('dashboard_control', function(dashboard_control) {
-		
+
 		function create_module(settings) {
 			var module = jQuery.extend(true, {
 				config: {},
@@ -33,7 +33,7 @@ jQuery(document).ready(function() {
 			}
 			return module;
 		}
-		
+
 		function create_skeleton(module) {
 			var uid = module.uid;
 			var container = Widget.parseHTML('{{includeTemplate=container}}').hide();
@@ -41,7 +41,7 @@ jQuery(document).ready(function() {
 			container.attr('id', uid);
 			container.css({backgroundColor: module.color});
 			heading.css({color: module.contrastColor});
-			
+
 			var skeleton = {
 				module: module,
 				container: container,
@@ -51,7 +51,7 @@ jQuery(document).ready(function() {
 					container.addClass('collapsed');
 				}
 			};
-			
+
 			//Change handlers
 			container.bind('db-configured.dashboard', function(event) {
 				module.color = container.css('backgroundColor');
@@ -88,10 +88,10 @@ jQuery(document).ready(function() {
 					}
 				});
 			});
-			
+
 			return skeleton;
 		};
-		
+
 		function init_widget(skeleton) {
 			var module = skeleton.module;
 			if(module.collapsed) {
@@ -107,7 +107,7 @@ jQuery(document).ready(function() {
 				widget.handle('element_set', function(event, element) {
 					skeleton.content.append(element);
 				});
-				
+
 				//Config area
 				var form = (widget.dashboard_config_form ? widget.dashboard_config_form() : jQuery('<form/>')).unserialize(widget.settings.dashboard);
 				Widget.callStatic('detail', 'clickable_labels_for', form);
@@ -119,12 +119,12 @@ jQuery(document).ready(function() {
 				skeleton.container.show();
 			}, jQuery.noop);
 		};
-		
+
 		function reload() {
 			dashboard_control.template(function(template) {
 				//Clear elements and bound handlers
 				db.find('.dashboard-widget').unbind('.dashboard').empty();
-				
+
 				//Reload
 				db.html(template);
 				dashboard_control.allDashboardModules(function(modules) {
@@ -135,10 +135,10 @@ jQuery(document).ready(function() {
 						add_to_column(module.container, skeleton);
 						skeletons.push(skeleton);
 					});
-					
+
 					//Init the dashboard, init widgets afterwards
 					Dashboard.init();
-					
+
 					jQuery.each(skeletons, function(i, skeleton) {
 						init_widget(skeleton);
 					});
@@ -146,18 +146,18 @@ jQuery(document).ready(function() {
 				});
 			});
 		}
-		
+
 		function update_empty_message() {
 			var has_widgets = AdminInterface.content.find('.dashboard-widget').length !== 0;
 			AdminInterface.content[has_widgets ? 'removeClass' : 'addClass']('empty-dashboard');
 		}
-		
+
 
 		AdminInterface.info_bar.prepareWidget(function(info_bar) {
 			dashboard_control.listDashboardModules(true, function(modules) {
 				info_bar.add_button('add-new-item', function() {
 					var dialog = Widget.parseHTML('{{includeTemplate=add_dialog}}');
-					
+
 					var columns = {};
 					db.find('.dashboard-column').each(function() {
 						columns[this.id] = this.id;
@@ -178,11 +178,11 @@ jQuery(document).ready(function() {
 								var skeleton = create_skeleton(module);
 								add_to_column(module.container, skeleton);
 								update_empty_message();
-				
+
 								//Add the controls
 								Dashboard.addWidgetControls();
 								Dashboard.makeSortable();
-				
+
 								init_widget(skeleton);
 								dialog.dialog("destroy");
 							}
@@ -198,9 +198,9 @@ jQuery(document).ready(function() {
 					dialog.dialog({
 						buttons: buttons
 					});
-				}, 'n', true, false, "{{wns.dashboard.create_widget}}", {documentation: 'dashboard/add-new-item'});
+				}, 'n', true, false, "{{writeString=wns.dashboard.create_widget}}", {documentation: 'dashboard/add-new-item'});
 			});
-			
+
 			dashboard_control.possibleTemplates(function(templates) {
 				var template_chooser = jQuery('<select/>');
 				template_chooser.populate(templates);
