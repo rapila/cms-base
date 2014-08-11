@@ -45,7 +45,7 @@ Widget.types.page_detail = {
 		this.configuration_has_been_loaded = false;
 		this.current_page_id = null;
 
-		// Templates
+		//Templates
 		var option = jQuery('<option/>');
 		this.template_select = this._element.find("select[name='template_name']");
 		this.template_select.change(function() {
@@ -56,7 +56,7 @@ Widget.types.page_detail = {
 			option.clone().text(template.name).attr('value', template.value).addClass(template.is_default ? 'default' : '').appendTo(this.template_select);
 		}.bind(this));
 
-		// Page types
+		//Page types
 		this.page_type_select = this._element.find("select[name='page_type']");
 		this.page_type_select.change(function() {
 			_this.update_pagetype_info();
@@ -66,7 +66,7 @@ Widget.types.page_detail = {
 			option.clone().text(page_type.name).attr('value', page_type.value).appendTo(this.page_type_select);
 		}.bind(this));
 
-		// Prepare canonical pages dropdown
+		//Prepare canonical pages dropdown
 		this.canonical_id_dropdown = this._element.find("select[name='canonical_id']").prepareWidget(function(widget) {
 			widget.settings.default_value_label = '-------';
 		}, jQuery.noop);
@@ -201,14 +201,17 @@ Widget.types.page_detail = {
 		this._element.find("input[name='is_folder']").prop('checked', page_data.IsFolder);
 		this._element.find("input[name='is_hidden']").prop('checked', page_data.IsHidden);
 		this._element.find("input[name='is_protected']").prop('checked', page_data.IsProtected);
+		this._element.find(".page_href").text(page_data.PageLink).attr('href', page_data.PageHref);
+
 		this.canonical_id_dropdown.val(page_data.CanonicalId === null ? "" : page_data.CanonicalId);
 		this.template_select.val(page_data.TemplateName === null ? "" : page_data.TemplateName);
 		this.page_type_select.val(page_data.PageType === null ? "" : page_data.PageType);
 		this.update_template_info();
 		this.update_pagetype_info();
-		this._element.find(".page_href").text(page_data.PageLink).attr('href', page_data.PageHref);
+
 		this.delete_button.prop({title: page_data.DeleteNotPermitted});
-		// references
+
+		// References
 		var count_references = page_data.CountReferences;
 		var count_text = count_references > 0 ? " ("+count_references+")" : '';
 		if(count_references === 0) {
@@ -217,7 +220,7 @@ Widget.types.page_detail = {
 			this._element.find(".references_count").text(count_text);
 		}
 
-		// page_properties
+		// Page properties, including “page_identifier” that is a property of the page itself
 		var page_properties_container = this._element.find('div.page_properties');
 		var page_properties_header = this.accordion.children('h3.page_properties');
 
@@ -227,6 +230,7 @@ Widget.types.page_detail = {
 			page_properties_header.show();
 			for(var property_name in page_data.page_properties) {
 				var attrs = page_data.page_properties[property_name];
+				// Count properties, ignore unused page_identifier
 				if(!(property_name === 'page_identifier' && attrs.value === null)) {
 					count_properties++;
 				}
