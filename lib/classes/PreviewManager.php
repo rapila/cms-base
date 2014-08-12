@@ -3,9 +3,9 @@
 class PreviewManager extends FrontendManager {
 	private $sOldSessionLanguage;
 	private $oAdminMenuWidget;
-	
+
 	private static $PREVIOUS_MANAGER;
-	
+
 	public function __construct($bShouldLogin=true) {
 		parent::__construct();
 		SanityCheck::basicCheck();
@@ -50,7 +50,7 @@ class PreviewManager extends FrontendManager {
 		$this->oPageTypeWidget = WidgetModule::getWidget('page_type');
 		PageTypeWidgetModule::includeResources();
 	}
-	
+
 	protected function initLanguage() {
 		$this->sOldSessionLanguage = Session::language();
 		if(isset($_REQUEST[AdminManager::CONTENT_LANGUAGE_SESSION_KEY]) && LanguageQuery::languageExists($_REQUEST[AdminManager::CONTENT_LANGUAGE_SESSION_KEY])) {
@@ -67,11 +67,11 @@ class PreviewManager extends FrontendManager {
 		}
 		Session::getSession()->setLanguage(AdminManager::getContentLanguage());
 	}
-	
+
 	protected function getXHTMLOutput() {
 		return new XHTMLOutput('html5', true, 'preview');
 	}
-	
+
 	public function render() {
 		if(!$this->bIsNotFound) {
 			Session::getSession()->setAttribute('persistent_page_id', self::$CURRENT_PAGE->getId());
@@ -84,13 +84,14 @@ class PreviewManager extends FrontendManager {
 		TemplateResourceFileModule::includeAvailableResources(get_class($this->oPageType));
 		return parent::fillAttributes();
 	}
-	
+
 	protected function fillContent() {
 		$this->oPageTypeWidget->setPageTypeModule($this->oPageType);
 		$oResourceIncluder = ResourceIncluder::defaultIncluder();
 
 		$oConstants = new Template('constants.js', array(DIRNAME_TEMPLATES, 'preview'));
 		$oConstants->replaceIdentifier('language_id', Session::getSession()->getUser()->getLanguageId());
+		$oConstants->replaceIdentifier('page_type', $this->oPageType->getModuleName());
 		$oConstants->replaceIdentifier('page_type_widget_session', $this->oPageTypeWidget->getSessionKey());
 		$oConstants->replaceIdentifier('admin_menu_widget_session', $this->oAdminMenuWidget->getSessionKey());
 		$oConstants->replaceIdentifier('current_page_id', self::$CURRENT_PAGE->getId());
@@ -100,17 +101,17 @@ class PreviewManager extends FrontendManager {
 
 		$this->oPageType->display($this->oTemplate, true);
 	}
-	
+
 	private function addNamespacedCss($mLocation) {
 		array_unshift($mLocation, 'namespaced_preview_css');
 		$oResourceIncluder = ResourceIncluder::defaultIncluder();
 		$oResourceIncluder->addResource(LinkUtil::link($mLocation, 'FileManager'), ResourceIncluder::RESOURCE_TYPE_CSS);
 	}
-	
+
 	public static function shouldIncludeLanguageInLink() {
 		return false;
 	}
-	
+
 	public static function setTemporaryManager($sManager = null) {
 		if($sManager === null) {
 			$sManager = get_class();
@@ -118,7 +119,7 @@ class PreviewManager extends FrontendManager {
 		self::$PREVIOUS_MANAGER = Manager::getCurrentManager();
 		self::$CURRENT_MANAGER = $sManager;
 	}
-	
+
 	public static function revertTemporaryManager() {
 		self::$CURRENT_MANAGER = self::$PREVIOUS_MANAGER;
 	}

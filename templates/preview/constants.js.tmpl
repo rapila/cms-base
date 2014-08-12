@@ -7,13 +7,14 @@ jQuery(document).ready(function() {
 		},
 		strings: Widget.create('string')
 	};
-	
+
 	window.PreviewInterface = {
 		current_page_id: {{current_page_id}},
+		page_type: "{{page_type}}",
 		page_type_widget: "{{page_type_widget_session}}",
 		admin_menu_widget: "{{admin_menu_widget_session}}"
 	};
-	
+
 	Widget.handle('widget-json-call', function(event, action, attributes, options) {
 		if(attributes.constructor !== String) {
 			attributes.session_language = "{{language_id}}";
