@@ -1,9 +1,9 @@
 <?php
 class DocumentationDisplayWidgetModule extends WidgetModule {
 	public function __construct() {
-		
+
 	}
-	
+
 	public function partFor($sDocumentationPartKey) {
 		$oResult = new stdClass();
 		$aData = DocumentationProviderTypeModule::dataForPart($sDocumentationPartKey, Session::language());
@@ -12,6 +12,7 @@ class DocumentationDisplayWidgetModule extends WidgetModule {
 		}
 		$oResult->title = $aData['title'];
 		$oResult->content = $aData['content'];
+		$oResult->url = $aData['url'];
 		return $oResult;
 	}
 }

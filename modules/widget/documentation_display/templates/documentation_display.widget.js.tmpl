@@ -5,11 +5,23 @@ Widget.types.documentation_display = {
 			if(!event.altKey) {
 				return;
 			}
+			var key = jQuery(this).data('documentationPart');
 			event.stopPropagation();
 			event.preventDefault();
-			_this.partFor(jQuery(this).data('documentationPart'), function(result) {
+			_this.partFor(key, function(result) {
 				var html = jQuery('<div/>').html(result.content);
-				html.dialog({title: result.title});
+				Widget.notifyUser(Widget.logSeverity.DOCUMENTATION, html, {
+					closeDelay: null,
+					identifier: 'documentation-'+key,
+					closable: true,
+					hideIcon: true,
+					isHTML: true,
+					buttons: {
+						link: {click: function(event) {
+							jQuery.openLink(result.url, event);
+						}}
+					}
+				});
 			});
 			return false;
 		});
@@ -22,5 +34,5 @@ Widget.types.documentation_display = {
 			_this._element.removeClass('highlight-documentation');
 		});
 	}
-	
+
 };

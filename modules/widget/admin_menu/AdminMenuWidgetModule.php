@@ -4,17 +4,17 @@
  */
 class AdminMenuWidgetModule extends PersistentWidgetModule {
 	private $bPreview;
-	
+
 	public function __construct($bPreview = false) {
 		parent::__construct(null);
 		$this->bPreview = $bPreview;
 		$this->setSetting('current_manager', Manager::getManagerClassNormalized());
 	}
-	
+
 	public static function isSingleton() {
 		return true;
 	}
-	
+
 	public function getUserInfo() {
 		if(Session::getSession()->isAuthenticated()) {
 			$aResult['FullName'] = Session::getSession()->getUser()->getFullName();
@@ -22,7 +22,7 @@ class AdminMenuWidgetModule extends PersistentWidgetModule {
 			return $aResult;
 		}
 	}
-	
+
 	public function moduleConfig() {
 		$oUser = Session::getSession()->getUser();
 		$aSettings = $oUser->getAdminSettings('admin_menu');
@@ -34,7 +34,7 @@ class AdminMenuWidgetModule extends PersistentWidgetModule {
 		}
 		return $aResult;
 	}
-	
+
 	private function cleanModules($aSettings, &$aResult = array()) {
 		foreach($aSettings as $iKey => &$mValue) {
 			if(is_array($mValue)) {
@@ -66,7 +66,7 @@ class AdminMenuWidgetModule extends PersistentWidgetModule {
 			}
 		}
 	}
-	
+
 	public function doWidget() {
 		$oTemplate = $this->constructTemplate('menu_bar');
 		$oTemplate->replaceIdentifier('session', $this->getSessionKey());
@@ -75,21 +75,40 @@ class AdminMenuWidgetModule extends PersistentWidgetModule {
 		}
 		return $oTemplate;
 	}
-	
+
+	public static function includeResources($oResourceIncluder = null) {
+		if($oResourceIncluder === null) {
+			$oResourceIncluder = ResourceIncluder::defaultIncluder();
+		}
+		$oResourceIncluder->addResource('widget/popover/jquery.popover.js');
+		$oResourceIncluder->addResource(array(DIRNAME_WEB, 'js', 'widget', 'popover', 'jquery.popover.css'));
+		self::includeWidgetResources(false, $oResourceIncluder);
+	}
+
+
 	private function getModule($sName) {
 		$aResult = array('link' => LinkUtil::link(array($sName), 'AdminManager'), 'title' => AdminModule::getDisplayNameByName($sName));
 		return $aResult;
 	}
-	
+
 	public function getPreviewLink() {
 		return LinkUtil::link(self::getPageFullPathArray(), 'PreviewManager', array(), false);
 	}
-	
+
+	public function documentationExists($sDocumentationName) {
+		$aMetadata = DocumentationProviderTypeModule::dataForPart($sDocumentationName, Session::language());
+		return $aMetadata !== null;
+	}
+
+	public function documentationData($sDocumentationName) {
+		return DocumentationProviderTypeModule::dataForPart($sDocumentationName, Session::language());
+	}
+
 	private static function getPageFullPathArray() {
 		$oPage = PageQuery::create()->findPk(Session::getSession()->getAttribute('persistent_page_id'));
 		return ($oPage ? $oPage->getFullPathArray() : array());
 	}
-	
+
 	public function getPageLink() {
 		return LinkUtil::link(self::getPageFullPathArray(), 'FrontendManager', array(), AdminManager::getContentLanguage());
 	}

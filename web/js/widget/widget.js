@@ -432,7 +432,9 @@ String.prototype.escapeSelector = function() {
 				identifier: null,
 				isHTML: false,
 				closable: false,
-				searchInfo: false
+				searchInfo: false,
+				buttons: {},
+				hideIcon: false
 			};
 			if(severity === Widget.logSeverity.ALERT) {
 				delete options.closeDelay;
@@ -451,12 +453,12 @@ String.prototype.escapeSelector = function() {
 					return;
 				}
 			}
-			var highlight = severity == 'info' ? 'highlight' : 'error';
+			var highlight = severity === Widget.logSeverity.DOCUMENTATION || severity === Widget.logSeverity.INFO ? 'highlight' : 'error';
 			var display;
-			if(options.searchInfo) {
-				display = Widget.parseHTML('<div class="ui-widget ui-notify search_info"><div class="ui-state-'+highlight+' ui-corner-all"><div class="ui-icon ui-icon-circle-close close-handle"></div><div><span class="message"></span></div></div></div>');
+			if(options.searchInfo || options.hideIcon) {
+				display = Widget.parseHTML('<div class="ui-widget ui-notify search_info"><div class="ui-state-'+highlight+' ui-corner-all"><div><span class="message"></span></div></div></div>');
 			} else {
-				display = Widget.parseHTML('<div class="ui-widget ui-notify search_info"><div class="ui-state-'+highlight+' ui-corner-all"><div class="ui-badge">1</div><div class="ui-icon ui-icon-circle-close close-handle"></div><div><span class="ui-icon ui-icon-'+severity+'"></span><span class="message"></span></div></div></div>');
+				display = Widget.parseHTML('<div class="ui-widget ui-notify search_info"><div class="ui-state-'+highlight+' ui-corner-all"><div class="ui-badge">1</div><div><span class="ui-icon ui-icon-'+severity+'"></span><span class="message"></span></div></div></div>');
 			}
 			display.hide().appendTo(notification_area).data('identifier', options.identifier);
 
@@ -516,12 +518,19 @@ String.prototype.escapeSelector = function() {
 					}
 				},
 				enable_close_button: function() {
-					close_button.show().click(function() {
-						this.close();
-					}.bind(this));
+					options.buttons.close.element.show();
 				}
 			};
 			functions.set_message(message);
+			options.buttons.close = {click: functions.close, hidden: true, icon: 'circle-close'};
+			jQuery.each(options.buttons, function(identifier, button) {
+				button.element = Widget.parseHTML('<div class="ui-icon ui-icon-'+(button.icon || identifier)+'"></div>');
+				if(button.hidden) {
+					button.element.hide();
+				}
+				button.element.click(button.click);
+				display.find('> div').prepend(button.element);
+			});
 			display.data('functions', functions).show('blind');
 			functions.reset_timeout();
 			if(options.closable) {
@@ -817,6 +826,7 @@ String.prototype.escapeSelector = function() {
 	Widget.logSeverity = {
 		DEBUG: 'debug',
 		INFO: 'info',
+		DOCUMENTATION: 'documentation',
 		ALERT: 'alert'
 	};
 

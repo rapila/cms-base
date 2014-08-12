@@ -119,6 +119,7 @@ Widget.types.admin_menu = {
 					separator_class = 'separator_top';
 					return;
 				}
+
 				var item_contents = _this.predefined_elements[item.type].apply(_this, item.args);
 				if(!item_contents) {
 					return;
@@ -219,9 +220,30 @@ Widget.types.admin_menu = {
 			var _this = this;
 			var element = jQuery('<button/>').addClass('open-documentation').text('Documentation');
 			element.button();
+			var key;
+			if(window.PreviewInterface && window.PreviewInterface.page_type) {
+				key = 'page_type.'+window.PreviewInterface.page_type;
+			} else {
+				key = 'admin.'+window.AdminInterface.current_admin_module;
+			}
+			this.documentationExists(key, function(exists) {
+				element.button('option', 'disabled', !exists);
+			});
 			return {element: element, callback: function(event) {
-				// get url for documentation, or get menu with optional urls for documentations
-				// AdminInterface.current_admin_module;
+				_this.documentationData(key, function(data) {
+					Widget.notifyUser(Widget.logSeverity.DOCUMENTATION, data.content, {
+						closeDelay: null,
+						identifier: 'documentation-'+key,
+						closable: true,
+						hideIcon: true,
+						isHTML: true,
+						buttons: {
+							link: {click: function(event) {
+								jQuery.openLink(data.url, event);
+							}}
+						}
+					});
+				});
 			}};
 		},
 
