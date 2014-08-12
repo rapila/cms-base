@@ -2,7 +2,7 @@
 
 	// include base peer class
 	require_once 'model/om/BaseTagInstancePeer.php';
-	
+
 	// include object class
 	include_once 'model/TagInstance.php';
 
@@ -29,11 +29,11 @@ class TagInstancePeer extends BaseTagInstancePeer {
 		$oTagInstance->save();
 		return $oTagInstance;
 	}
-	
+
 	public static function newTagInstanceForObject($sTagName, $oObject) {
 		return self::newTagInstance($sTagName, get_class($oObject), $oObject->getPKString());
 	}
-	
+
 	/**
 	* @deprecated use query methods
 	*/
@@ -46,7 +46,7 @@ class TagInstancePeer extends BaseTagInstancePeer {
 
 	/**
 	* @deprecated use query methods
-	*/	
+	*/
 	public static function getByModelNameAndTagIdCriteria($sModelName, $iTagId=null) {
 		$oCriteria = new Criteria();
 		$oCriteria->add(self::MODEL_NAME, $sModelName);
@@ -55,21 +55,21 @@ class TagInstancePeer extends BaseTagInstancePeer {
 		}
 		return $oCriteria;
 	}
-	
+
 	/**
 	* @deprecated use query methods
 	*/
 	public static function countByModelNameAndIdCriteria($sModelName, $iId) {
 		return self::doCount(self::getByModelNameAndIdCriteria($sModelName, $iId));
 	}
-	
+
 	/**
 	* @deprecated use query methods
 	*/
 	public static function getByModelNameAndTagId($sModelName, $sTagId = null) {
 		return self::doSelect(self::getByModelNameAndTagIdCriteria($sModelName, $iId));
 	}
-	
+
 	public static function getByModelNameAndTagName($sModelName, $sTagName = null) {
 		$oCriteria = new Criteria();
 		$oCriteria->add(self::MODEL_NAME, $sModelName);
@@ -79,21 +79,21 @@ class TagInstancePeer extends BaseTagInstancePeer {
 		}
 		return self::doSelect($oCriteria);
 	}
-	
+
 	public static function getTaggedModels() {
 		$aResult = array();
 		foreach(TagInstancePeer::doSelectStmt(self::getTaggedModelsCriteria())->fetchAll(PDO::FETCH_ASSOC) as $aTag) {
-			$sTableName = constant($aTag['MODEL_NAME'].'Peer::TABLE_NAME');
-			$sName = StringPeer::getString('module.admin.'.$sTableName);
-			$aResult[$aTag['MODEL_NAME']] = $sName;
+			$sTableName = constant($aTag['model_name'].'Peer::TABLE_NAME');
+			$sName = StringPeer::getString('model.'.$sTableName, null, $sTableName);
+			$aResult[$aTag['model_name']] = $sName;
 		}
 		return $aResult;
 	}
-	
+
 	public static function getTaggedModelsCriteria() {
 		$oCriteria = new Criteria();
 		$oCriteria->clearSelectColumns()->addSelectColumn(TagInstancePeer::MODEL_NAME);
 		return $oCriteria->setDistinct();
 	}
-	
+
 }
