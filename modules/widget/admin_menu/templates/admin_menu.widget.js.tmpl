@@ -195,7 +195,7 @@ Widget.types.admin_menu = {
 		},
 
 		tag: function() {
-			var element = jQuery('<span/>').addClass('open-tag-panel rapila-icon').html('&#xe610;');
+			var element = jQuery('<span/>').addClass('open-tag-panel rapila-icon').text('tags');
 			var title = "{{writeString=wns.tag_panel.button_title}}"
 			if(title) element.attr('title', title);
 			return {element: element, callback: function(event) {
