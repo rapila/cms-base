@@ -66,11 +66,13 @@ div.ui-dialog.file_upload_error
 	.ui-notify
 		margin-bottom 5px
 		.ui-badge,
-		.close-handle.ui-icon
-			float right
-			display block
-			margin-top -8px
-			margin-right -8px
+		> div
+			> .ui-icon
+				float right
+				display block
+				margin-right 0
+				margin-top -12px
+				cursor pointer
 		.ui-badge
 			background-color red
 			border-radius 12px
@@ -78,8 +80,4 @@ div.ui-dialog.file_upload_error
 			font-weight bold
 			color white
 			padding 1px 5px
-		.close-handle.ui-icon
-			margin-right 0
-			margin-top -12px
-			cursor pointer
 
