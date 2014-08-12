@@ -35,11 +35,11 @@ class AdminMenuWidgetModule extends PersistentWidgetModule {
 		return $aResult;
 	}
 
-	private function cleanModules($aSettings, &$aResult = array()) {
+	private function cleanModules($aSettings, &$aResult = array(), $bIsMenu = false) {
 		foreach($aSettings as $iKey => &$mValue) {
 			if(is_array($mValue)) {
 				$aRes = array();
-				$this->cleanModules($mValue, $aRes);
+				$this->cleanModules($mValue, $aRes, true);
 				$aResult[] = array('type' => 'menu', 'args' => array($aRes));
 			} else if(is_string($mValue)) {
 				if($mValue === 'edit') {
@@ -53,7 +53,7 @@ class AdminMenuWidgetModule extends PersistentWidgetModule {
 					if(!Module::isModuleAllowed('admin', $sModuleName, Session::getSession()->getUser())) {
 						continue;
 					}
-					$aInfo = $this->getModule($sModuleName);
+					$aInfo = $this->getModule($sModuleName, $bIsMenu);
 				} else if($sType === 'user') {
 					$aInfo = $this->getUserInfo();
 				} else if($sType === 'logout') {
@@ -86,8 +86,14 @@ class AdminMenuWidgetModule extends PersistentWidgetModule {
 	}
 
 
-	private function getModule($sName) {
-		$aResult = array('link' => LinkUtil::link(array($sName), 'AdminManager'), 'title' => AdminModule::getDisplayNameByName($sName));
+	private function getModule($sName, $bIsMenu) {
+		$aResult = array('link' => LinkUtil::link(array($sName), 'AdminManager'), 'name' => AdminModule::getDisplayNameByName($sName));
+		//Special-case dashboard to print icon
+		if($sName === 'dashboard' && !$bIsMenu) {
+			$aResult['title'] = $aResult['name'];
+			$aResult['name'] = DashboardControlWidgetModule::layoutName();
+			$aResult['class'] = 'rapila-icon';
+		}
 		return $aResult;
 	}
 

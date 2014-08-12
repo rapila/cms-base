@@ -163,8 +163,13 @@ Widget.types.admin_menu = {
 			} else {
 				result.callback = jQuery.openLink.bind(window, module_info.link);
 			}
-			result.text = module_info.title;
-			result.element = this.button_prototype.clone().addClass('module_link '+module).attr('title', module_info.title);
+			result.text = module_info.name;
+			result.element = this.button_prototype.clone();
+			result.element.addClass('module_link '+module);
+			result.element.attr('title', module_info.title||module_info.name);
+			if(module_info['class']) {
+				result.element.addClass(module_info['class']);
+			}
 			return result;
 		},
 
@@ -196,7 +201,8 @@ Widget.types.admin_menu = {
 		},
 
 		tag: function() {
-			var element = jQuery('<span/>').addClass('open-tag-panel rapila-icon').text('tags');
+			var element = jQuery('<button/>').addClass('open-tag-panel rapila-icon').text('tags');
+			element.button();
 			var title = "{{writeString=wns.tag_panel.button_title}}"
 			if(title) element.attr('title', title);
 			return {element: element, callback: function(event) {
@@ -209,7 +215,7 @@ Widget.types.admin_menu = {
 		},
 
 		action: function() {
-			var element = jQuery('<button/>').addClass('open-action').text('Action');
+			var element = jQuery('<button/>').addClass('open-action rapila-icon').text('action');
 			element.button();
 			return {element: element, callback: function(event) {
 				// do what
@@ -218,7 +224,7 @@ Widget.types.admin_menu = {
 
 		documentation: function() {
 			var _this = this;
-			var element = jQuery('<button/>').addClass('open-documentation').text('Documentation');
+			var element = jQuery('<button/>').addClass('open-documentation rapila-icon').text('info');
 			element.button();
 			var key;
 			if(window.PreviewInterface && window.PreviewInterface.page_type) {
@@ -248,7 +254,7 @@ Widget.types.admin_menu = {
 		},
 
 		logo: function() {
-			return {element: jQuery("<span/>").text('rapila').attr('class', "rapila_logo")};
+			return {element: jQuery("<span/>").text('rapila').addClass("rapila_logo")};
 		},
 
 		preview: function() {
@@ -272,8 +278,8 @@ Widget.types.admin_menu = {
 					this.hide();
 				}.bind(this));
 			}.bind(this);
-			result.text = '{{writeString=wns.logout}}';
-			result.element = this.button_prototype.clone().addClass('logout_link').attr('title', result.text);
+			result.text = 'power';
+			result.element = this.button_prototype.clone().addClass('logout_link rapila-icon').attr('title', '{{writeString=wns.logout}}');
 			return result;
 		},
 

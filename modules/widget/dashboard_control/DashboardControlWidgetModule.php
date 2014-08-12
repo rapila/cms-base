@@ -1,7 +1,7 @@
 <?php
 
 class DashboardControlWidgetModule extends WidgetModule {
-	
+
 	public function allDashboardModules() {
 		$aDashboardConfig = self::dashboardConfig();
 		$aWidgets = &$aDashboardConfig['widgets'];
@@ -19,57 +19,63 @@ class DashboardControlWidgetModule extends WidgetModule {
 		}
 		return $aWidgets;
 	}
-	
+
 	public function possibleTemplates() {
 		$aResult = array();
 		foreach(ResourceFinder::findResourceObjectsByExpressions(array(DIRNAME_MODULES, AdminModule::getType(), AdminModule::getNameByClassName('DashboardAdminModule'), DIRNAME_TEMPLATES, 'layouts', '/^[\\w_\\d-]+\.tmpl$/')) as $oResource) {
 			$aResult[] = $oResource->getFileName('.tmpl');
 		}
-		
+
 		return $aResult;
 	}
-	
+
 	public function template() {
-		$sLayoutName = $this->getLayoutName();
+		$sLayoutName = self::getLayoutName();
 		if(isset($aDashboardConfig['layout'])) {
 			$sLayoutName = $aDashboardConfig['layout'];
 		}
 		return Module::constructTemplateForModuleAndType(AdminModule::getType(), AdminModule::getNameByClassName('DashboardAdminModule'), 'layouts/'.$sLayoutName)->render();
 	}
-	
+
 	public function setLayoutName($sLayoutName) {
-		$oUser = Session::getSession()->getUser();
-		$aDashboardConfig = $oUser->getAdminSettings('dashboard');
-		$aDashboardConfig['layout'] = $sLayoutName;
-		$oUser->setAdminSettings('dashboard', $aDashboardConfig);
-		$oUser->save();
+		self::layoutName($sLayoutName);
 	}
 
 	public function getLayoutName() {
+		return self::layoutName();
+	}
+
+	public static function layoutName($sNewLayoutName = null) {
 		$oUser = Session::getSession()->getUser();
 		$aDashboardConfig = $oUser->getAdminSettings('dashboard');
-		$sLayoutName = '3columns';
-		if(isset($aDashboardConfig['layout'])) {
-			$sLayoutName = $aDashboardConfig['layout'];
+		if($sNewLayoutName !== null) {
+			$aDashboardConfig['layout'] = $sNewLayoutName;
+			$oUser->setAdminSettings('dashboard', $aDashboardConfig);
+			return $oUser->save();
+		} else {
+			$sLayoutName = '3columns';
+			if(isset($aDashboardConfig['layout'])) {
+				$sLayoutName = $aDashboardConfig['layout'];
+			}
+			return $sLayoutName;
 		}
-		return $sLayoutName;
 	}
-	
+
 	public function saveSettings($sUid, $aSettings) {
 		self::saveModuleSettings($sUid, $aSettings);
 	}
-	
+
 	public function changeCollapsed($sUid, $bCollapsed) {
 		$aSettings = self::moduleSettingsByUid($sUid);
 		$aSettings['collapsed'] = $bCollapsed;
 		self::saveModuleSettings($sUid, $aSettings);
 	}
-	
+
 	public function move($sUid, $sContainer, $iPosition) {
 		$aDashboardConfig = self::dashboardConfig();
 		$aSettings = null;
 		$aWidgets = &$aDashboardConfig['widgets'];
-		
+
 		// Step 1: Remove said widget from all widgets
 		foreach($aWidgets as $iKey => &$aWidget) {
 			if($aWidget['uid'] === $sUid) {
@@ -80,7 +86,7 @@ class DashboardControlWidgetModule extends WidgetModule {
 		}
 		//Step 2: Change the container
 		$aSettings['container'] = &$sContainer;
-		
+
 		//Step 3: Find new position
 		$iCounter = 0;
 		$iInsertionKey = null;
@@ -99,15 +105,15 @@ class DashboardControlWidgetModule extends WidgetModule {
 		} else {
 			$iInsertionKey++;
 		}
-		
+
 		// Step 4: Re-Insert
 		array_splice($aWidgets, $iInsertionKey, 0, array($aSettings));
-		
+
 		$oUser = Session::getSession()->getUser();
 		$oUser->setAdminSettings('dashboard', $aDashboardConfig);
 		$oUser->save();
 	}
-	
+
 	public function remove($sUid) {
 		$aDashboardConfig = self::dashboardConfig();
 		$aWidgets = &$aDashboardConfig['widgets'];
@@ -125,7 +131,7 @@ class DashboardControlWidgetModule extends WidgetModule {
 		$oUser->save();
 		UserPeer::ignoreRights(false);
 	}
-	
+
 	public function listDashboardModules($bFilterByAllowed = false) {
 		$aResult = array();
 		foreach(WidgetModule::listModulesByAspect('dashboard') as $aModuleInfo) {
@@ -136,11 +142,11 @@ class DashboardControlWidgetModule extends WidgetModule {
 		}
 		return $aResult;
 	}
-	
+
 	public function add($aSettings) {
-		
+
 	}
-	
+
 	private static function dashboardConfig() {
 		$oUser = Session::getSession()->getUser();
 		$aDashboardConfig = $oUser->getAdminSettings('dashboard');
@@ -149,7 +155,7 @@ class DashboardControlWidgetModule extends WidgetModule {
 		}
 		return $aDashboardConfig;
 	}
-	
+
 	private static function moduleSettingsByUid($sUid) {
 		$aDashboardConfig = self::dashboardConfig();
 		$aWidgets = &$aDashboardConfig['widgets'];
@@ -160,7 +166,7 @@ class DashboardControlWidgetModule extends WidgetModule {
 		}
 		return array();
 	}
-	
+
 	private static function saveModuleSettings($sUid, $aSettings) {
 		$oUser = Session::getSession()->getUser();
 		$aDashboardConfig = self::dashboardConfig();
