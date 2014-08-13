@@ -6,9 +6,9 @@ class TagListWidgetModule extends WidgetModule {
 
 	private $oListWidget;
 	public $oDelegateProxy;
-	
+
 	public $sTagModelName = CriteriaListWidgetDelegate::SELECT_ALL;
-	
+
 	public function __construct() {
 		$this->oListWidget = new ListWidgetModule();
 		$this->oDelegateProxy = new CriteriaListWidgetDelegate($this, "Tag", 'name');
@@ -39,6 +39,7 @@ class TagListWidgetModule extends WidgetModule {
 				break;
 			case 'tag_instance_count':
 				$aResult['heading'] = StringPeer::getString('wns.tag.instance_count');
+				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_NUMERIC;
 				break;
 			case 'language_ids_of_strings':
 				$aResult['heading'] = StringPeer::getString('wns.tag.available_strings');
@@ -51,13 +52,13 @@ class TagListWidgetModule extends WidgetModule {
 		}
 		return $aResult;
 	}
-	
+
 	public function getFilterTypeForColumn($sFilterColumn) {
 		if($sFilterColumn === 'tag_model_name') {
 			return CriteriaListWidgetDelegate::FILTER_TYPE_MANUAL;
 		}
 	}
-	
+
 	public function getCriteria() {
 		$oQuery = TagQuery::create();
 		$aExcludes = array(CriteriaListWidgetDelegate::SELECT_ALL, 'Tag');
@@ -66,5 +67,5 @@ class TagListWidgetModule extends WidgetModule {
 		}
 		return $oQuery;
 	}
-	
+
 }
