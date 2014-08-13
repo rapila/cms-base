@@ -2,7 +2,6 @@
 	position: absolute;
 	background-color: white;
 	width: 300px;
-	min-height: 200px;
 	z-index: 20;
 }
 
@@ -15,8 +14,6 @@
 }
 
 .tag_panel.ui-widget-content {
-	border: 1px solid #111;
-	border-right: 1px solid transparent;
 	background-color: #888;
 	z-index: 10000;
 }
@@ -27,14 +24,17 @@
 }
 
 .tag_panel .admin_area input {
-	float: left;
-	margin: -1px 5px 0.8em 0.8em;
+	margin: 0.5em;
 	width: 190px;
 }
 
+.tag_panel button {
+	margin-bottom: 0.2em;
+}
+
 .tag_panel .tag_area {
-	margin: 0.6em;
+/*	margin: 0.6em;*/
 	/* for lots of tags, should be improved to fixed bottom space */
-	height: 85%;
+	height: 86%;
 	overflow-y: scroll;
 }

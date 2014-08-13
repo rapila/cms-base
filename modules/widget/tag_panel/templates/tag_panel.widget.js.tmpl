@@ -36,14 +36,14 @@ Widget.types.tag_panel = {
 			}
 		});
 	},
-		
+
 	is_visible: function() {
 		if(this.panel.css('visibility') === 'hidden') {
 			return false;
 		}
 		return this.panel.is(":visible");
 	},
-	
+
 	hide: function(to) {
 		if(this.panel.css('visibility') === 'hidden') {
 			this.panel.hide().css('visibility', '');
@@ -59,7 +59,7 @@ Widget.types.tag_panel = {
 		}
 		this.panel.animate(destination, {complete: jQuery.fn.hide.bind(this.panel)});
 	},
-	
+
 	show_at: function(origin, from) {
 		origin = jQuery.extend({
 			left: undefined,
@@ -88,19 +88,22 @@ Widget.types.tag_panel = {
 		var destination = jQuery.extend({opacity: 1}, origin);
 		this.panel.animate(destination);
 	},
-	
+
 	toggle_at: function(origin, from) {
 		if(this.is_visible()) {
+			this.settings.is_open = false;
 			this.hide(from);
 		} else {
+			this.settings.is_open = true;
 			this.show_at(origin, from);
 		}
 	},
-	
+
 	settings: {
 		panel_style: {
 			width: null,
 			height: null
-		}
+		},
+		is_open: false
 	}
 };

@@ -209,7 +209,8 @@ Widget.types.admin_menu = {
 				Widget.create('tag_panel', function(tag_panel) {
 					tag_panel.settings.panel_style = {width: '300px'}
 				}, function(tag_panel) {
-					tag_panel.toggle_at({right: '0px', top: '86px', bottom: '60px'}, 'right');
+					tag_panel.toggle_at({right: '0px', top: '65px', bottom: '63px'}, 'right');
+					element.toggleClass('open' ,tag_panel.settings.is_open);
 				});
 			}};
 		},
