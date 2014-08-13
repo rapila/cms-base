@@ -3,17 +3,17 @@ require_once 'model/om/BasePage.php';
 
 /**
  * @package model
- */	 
-class Page extends BasePage {	 
-	
+ */
+class Page extends BasePage {
+
 	const DELETE_NOT_ALLOWED_CODE = 11;
 	const REFERENCE_EXISTS_CODE = 44;
-	
+
 	private $aFullPathArray = null;
 
 	///Stores the “old” parent (before move operations)
 	private $oOldParent = null;
-	
+
 	public function getChildByName($sName) {
 		$oPage = PageQuery::create()->childrenOf($this)->filterByName($sName)->findOne();
 		if($oPage === null) {
@@ -41,19 +41,19 @@ class Page extends BasePage {
 		}
 		return $oResult;
 	}
-	
+
 	public function getDescription($sLanguageId = null) {
 		if($sLocalDescription = $this->getActivePageString($sLanguageId)->getMetaDescription()) {
 			return $sLocalDescription;
 		}
 		return StringPeer::getString('meta.description', $sLanguageId, '');
 	}
-	
+
 	public function getConsolidatedKeywords($sLanguageId = null, $bReturnArray = false) {
 		if($sLanguageId == null) {
 			$sLanguageId = Session::language();
 		}
-		
+
 		$aKeywords = array();
 		$aKeywords[] = StringPeer::getString('meta.keywords', null, '');
 		$aTags = TagPeer::tagInstancesForObject($this);
@@ -64,12 +64,12 @@ class Page extends BasePage {
 		$aKeywords[] = Settings::getSetting('frontend', 'keywords', '');
 		$aKeywords[] = $this->getActivePageString()->getMetaKeywords();
 		$aResult = array();
-		
+
 		foreach($aKeywords as $iKey => $mKeywords) {
 			if(!is_array($mKeywords)) {
 				$mKeywords = explode(',', $mKeywords);
 			}
-			
+
 			foreach($mKeywords as $sKeyword) {
 				$sKeyword = trim($sKeyword);
 				if(!isset($aResult[$sKeyword]) && $sKeyword !== '') {
@@ -81,14 +81,14 @@ class Page extends BasePage {
 		if($bReturnArray) {
 			return array_keys($aResult);
 		}
-		
+
 		return implode(', ', array_keys($aResult));
 	}
 
 	public function getPageStringByLanguage($sLanguageId) {
 		return PageStringQuery::create()->filterByPage($this)->filterByLanguageId($sLanguageId)->findOne();
 	}
-	
+
 	public function hasPageStringByLanguage($sLanguageId, $bOnlyActive = true) {
 		$oQuery = PageStringQuery::create()->filterByPage($this)->filterByLanguageId($sLanguageId);
 		if($bOnlyActive) {
@@ -103,15 +103,15 @@ class Page extends BasePage {
 	public function getPageProperties() {
 		return $this->getPagePropertys();
 	}
-	
+
 	public function getPagePropertyQuery() {
 		return PagePropertyQuery::create()->filterByPage($this);
 	}
-	
+
 	public function getPagePropertyByName($sPropertyName) {
 	  return $this->getPagePropertyQuery()->filterByName($sPropertyName)->findOne();
 	}
-	
+
 	public function getPagePropertyValue($sPropertyName, $sDefaultValue = null) {
 		$oProperty = $this->getPagePropertyByName($sPropertyName);
 		if($oProperty) {
@@ -119,7 +119,7 @@ class Page extends BasePage {
 		}
 		return $sDefaultValue;
 	}
-	
+
 	/**
 	* Updated page properties: changes them if they exist and creates them otherwise.
 	* @param $sPropertyName the property name
@@ -145,7 +145,7 @@ class Page extends BasePage {
 		$this->addPageProperty($oTempProperty);
 		$oTempProperty->save();
 	}
-	
+
 	/**
 	* Add a temporary page property to the page for the duration of the request.
 	*/
@@ -175,7 +175,7 @@ class Page extends BasePage {
 		}
 		return $this->collNestedSetChildren;
 	}
-	
+
 	public function getChildrenWith($sLanguageId = null, $bIncludeDisabled = false, $bIncludeInvisible = false) {
 		$oCriteria = PageQuery::create();
 		if(!$bIncludeDisabled) {
@@ -193,7 +193,7 @@ class Page extends BasePage {
 		}
 		return $this->getChildren($oCriteria);
 	}
-	
+
 	public function countChildrenWith($sLanguageId = null, $bIncludeDisabled = false, $bIncludeInvisible = false) {
 		$oCriteria = PageQuery::create();
 		if(!$bIncludeDisabled) {
@@ -208,19 +208,19 @@ class Page extends BasePage {
 		}
 		return $this->countChildren($oCriteria);
 	}
-	
+
 	public function hasChildrenWith($sLanguageId = null, $bIncludeDisabled = false, $bIncludeInvisible = false) {
 		return $this->countChildrenWith($sLanguageId, $bIncludeDisabled, $bIncludeInvisible) > 0;
 	}
-	
+
 	public function isFolder() {
 		return $this->getIsFolder();
 	}
-	
+
 	public function isLoginPage() {
 		return $this->isOfType('login');
 	}
-	
+
 	public function isOfType($sType) {
 		return $this->getPageType() === $sType;
 	}
@@ -228,7 +228,7 @@ class Page extends BasePage {
 	public function getLoginPage() {
 		return $this->getPageOfType('login');
 	}
-	
+
 	public function getPageOfType($sPageType) {
 		if($this->isOfType($sPageType)) {
 			return $this;
@@ -243,7 +243,7 @@ class Page extends BasePage {
 		}
 		return $this->getParent()->getPageOfType($sPageType);
 	}
-	
+
 	public function getPageOfName($sName) {
 		if($this->getName() === $sName) {
 			return $this;
@@ -258,7 +258,7 @@ class Page extends BasePage {
 		}
 		return $this->getParent()->getPageOfName($sName);
 	}
-	
+
 	public function getLinkText($sLanguageId = null) {
 		$oActivePageString = $this->getActivePageString($sLanguageId);
 		if($oActivePageString !== null) {
@@ -266,7 +266,7 @@ class Page extends BasePage {
 		}
 		return $this->getName();
 	}
-	
+
 	public function getPageTitle($sLanguageId = null) {
 		$oActivePageString = $this->getActivePageString($sLanguageId);
 		if($oActivePageString !== null) {
@@ -282,13 +282,13 @@ class Page extends BasePage {
 	public function getTemplate($bDirectOutput = false) {
 		return new Template($this->getTemplateNameUsed(), null, false, $bDirectOutput);
 	}
-	
+
 	public function getObjectsForContainerCriteria($sContainerName) {
 		$oCrit = new Criteria();
 		$oCrit->add(ContentObjectPeer::CONTAINER_NAME, $sContainerName);
 		return $oCrit;
 	}
-	
+
 	public function getObjectsForContainer($sContainerName, $mEqualHigherSort=null, $bSortAsc = false) {
 		$oCrit = $this->getObjectsForContainerCriteria($sContainerName);
 		if($mEqualHigherSort) {
@@ -302,7 +302,7 @@ class Page extends BasePage {
 		}
 		return $this->getContentObjects($oCrit);
 	}
-	
+
 	public function countObjectsForContainer($sContainerName) {
 		return $this->countContentObjects($this->getObjectsForContainerCriteria($sContainerName));
 	}
@@ -321,7 +321,7 @@ class Page extends BasePage {
 	public function shouldBeIncludedInList($sLanguageId, $oPage) {
 		return $oPage === null || $this->getId() !== $oPage->getId();
 	}
-	
+
 	public function renderListItem($oTemplate) {
 		$oTemplate->replaceIdentifier("id", $this->getId());
 		$oTemplate->replaceIdentifier("name", $this->getName());
@@ -330,7 +330,7 @@ class Page extends BasePage {
 		$oTemplate->replaceIdentifier("description", $this->getPageTitle());
 		$oTemplate->replaceIdentifier("url", LinkUtil::link($this->getFullPathArray(), 'FrontendManager'));
 	}
-	
+
 	/**
 	* Returns the path leading to this page.
 	* @param array $aSubpages An array to append to the output
@@ -346,7 +346,7 @@ class Page extends BasePage {
 		}
 		return array_merge($this->aFullPathArray, $aSubpages);
 	}
-	
+
 	/**
 	* Alias of getFullPathArray()
 	* @deprecated Use getFullPathArray() for clarity
@@ -354,18 +354,18 @@ class Page extends BasePage {
 	public function getLink() {
 		return $this->getFullPathArray();
 	}
-	
+
 	/**
 	* Exploded alias of getFullPathArray(). All params given to this method will be passed as the first parameter of getFullPathArray.
 	*/
 	public function getLinkArray() {
 		return $this->getFullPathArray(func_get_args());
 	}
-	
+
 	public function getCanonical() {
 		return $this->getPageRelatedByCanonicalId();
 	}
-	
+
 	public function deletePageAndDescendants() {
 		if($this->hasChildren()) {
 			foreach($this->getChildren() as $oPage) {
@@ -402,5 +402,4 @@ class Page extends BasePage {
 	public function getOldParent() {
 		return $this->oOldParent;
 	}
-
 }

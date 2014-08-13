@@ -70,6 +70,21 @@ Widget.types.page_detail = {
 		this.canonical_id_dropdown = this._element.find("select[name='canonical_id']").prepareWidget(function(widget) {
 			widget.settings.default_value_label = '-------';
 		}, jQuery.noop);
+
+		//Tag area
+		this.tags_in_detail = this._element.find('div.tags_in_detail');
+		var page_detail = this;
+		Widget.createWithElement('tag_area', function(widget) {
+			page_detail.tag_area = widget;
+			widget.settings.auto_load = false;
+			widget.settings.dnd = false;
+			widget.settings.deletable = true;
+			widget.setModelName('Page');
+			widget.handle('element_set', function(event, element) {
+				page_detail.tags_in_detail.append(element);
+			});
+		}, jQuery.noop);
+
 		Widget.callStatic('detail', 'clickable_labels_for', this._element);
 	},
 
@@ -191,7 +206,6 @@ Widget.types.page_detail = {
 		});
 	},
 
-
 	fill_data: function() {
 		Widget.callStatic('detail', 'clear_validation', this._element);
 		var page_data = this.getPageData();
@@ -206,8 +220,6 @@ Widget.types.page_detail = {
 		this.canonical_id_dropdown.val(page_data.CanonicalId === null ? "" : page_data.CanonicalId);
 		this.template_select.val(page_data.TemplateName === null ? "" : page_data.TemplateName);
 		this.page_type_select.val(page_data.PageType === null ? "" : page_data.PageType);
-		this.update_template_info();
-		this.update_pagetype_info();
 
 		this.delete_button.prop({title: page_data.DeleteNotPermitted});
 
@@ -220,7 +232,7 @@ Widget.types.page_detail = {
 			this._element.find(".references_count").text(count_text);
 		}
 
-		// Page properties, including “page_identifier” that is a property of the page itself
+		// Page properties, "including page_identifier" that is a property of the page itself
 		var page_properties_container = this._element.find('div.page_properties');
 		var page_properties_header = this.accordion.children('h3.page_properties');
 
@@ -257,6 +269,14 @@ Widget.types.page_detail = {
 		} else {
 			page_properties_header.hide();
 		}
+
+		// Tag panel
+		this.tag_area.setTaggedItemId(page_data.Id);
+		this.tag_area.reload_tags();
+
+		// Update info in accordion headings
+		this.update_template_info();
+		this.update_pagetype_info();
 		this.update_properties_info(count_properties);
 	},
 
