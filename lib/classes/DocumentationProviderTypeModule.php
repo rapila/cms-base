@@ -1,26 +1,25 @@
 <?php
 
-
 abstract class DocumentationProviderTypeModule extends Module {
 	protected static $MODULE_TYPE = 'documentation_provider_type';
-	
+
 	protected $aConfig;
-	
+
 	public function __construct($aConfig) {
 		$this->aConfig = $aConfig;
 	}
-	
+
 	public abstract function metadataForAllParts();
 	public abstract function contentForPart($sDocumentationPart, $sLanguageId);
-	
+
 	public function getPriority() {
 		return $this->aConfig['priority'];
 	}
-	
+
 	public function getConfigKey() {
 		return $this->aConfig['config_key'];
 	}
-	
+
 	// Helper methods
 	public static function completeMetadata() {
 		$aSettings = array_keys(Settings::getInstance('documentation')->getSettingsArray());
@@ -59,7 +58,7 @@ abstract class DocumentationProviderTypeModule extends Module {
 		$oCache->setContents($aResult);
 		return $aResult;
 	}
-	
+
 	public static function dataForPart($sDocumentationPart, $sLanguageId) {
 		$oCache = new Cache("documentation_content_$sLanguageId:$sDocumentationPart", DIRNAME_CONFIG);
 		$oSettingsCache = new Cache(Settings::createCacheKey('documentation'), DIRNAME_CONFIG);
@@ -76,7 +75,7 @@ abstract class DocumentationProviderTypeModule extends Module {
 		$oCache->setContents($aMetadata);
 		return $aMetadata;
 	}
-	
+
 	public static function providerInstance($sConfigKey) {
 		$aMetadata = Settings::getSetting($sConfigKey, null, null, 'documentation');
 		if($aMetadata === null) {
