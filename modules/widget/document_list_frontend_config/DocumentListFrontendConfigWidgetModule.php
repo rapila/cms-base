@@ -1,10 +1,10 @@
 <?php
 class DocumentListFrontendConfigWidgetModule extends FrontendConfigWidgetModule {
-	
+
 	public function allDocuments($aOptions = array()) {
 		return DocumentListFrontendModule::listQuery($aOptions)->select(array('Id', 'Name'))->find()->toKeyValue('Id', 'Name');
 	}
-	
+
 	public function getConfigurationModes() {
 		$aResult = array();
 		$aDocumentCategories = DocumentListFrontendModule::getCategoryOptions();

@@ -18,7 +18,7 @@ Widget.types.link_list_frontend_config = {
 			}
 		});
 		this._element.append(this.content);
-		
+
 		this.result_list = jQuery('<ol/>').addClass('ui-editable-items-list');;
 		this._element.append(this.result_list);
 
@@ -27,7 +27,7 @@ Widget.types.link_list_frontend_config = {
 			_this.detail_widget = widget;
 			widget.save_callback = _this.reload_preview.bind(_this);
 		});
-		
+
 		this.reload_preview();
 		this.result_list.delegate('li', 'click', function() {
 			var id = jQuery(this).data('id');
@@ -36,12 +36,12 @@ Widget.types.link_list_frontend_config = {
 			_this.detail_widget.open();
 		});
 	},
-	
+
 	reload_preview: function() {
 		var _this = this;
 		this.result_list.empty();
 		var options = this._element.serializeArrayKV();
-		if(options.tags && options.tags[0] === '') {
+		if(options.tags && options.tags[0] === null) {
 			options.tags = [];
 		}
 		this.allLinks(options, function(links) {
@@ -50,11 +50,11 @@ Widget.types.link_list_frontend_config = {
 			});
 		});
 	},
-	
+
 	save: function() {
 		return this._element.serializeArrayKV();
 	},
-	
+
 	additional_buttons: [
 		{
 			text: '{{writeString=links.do_admin}}',

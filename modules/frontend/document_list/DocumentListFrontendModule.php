@@ -4,11 +4,11 @@
  */
 
 class DocumentListFrontendModule extends DynamicFrontendModule {
-	
+
 	const LIST_ITEM_POSTFIX = '_item';
 	const SORT_BY_NAME = 'by_name';
 	const SORT_BY_SORT = 'by_sort';
-	
+
 	public function renderFrontend() {
 		$aOptions = @unserialize($this->getData());
 		try {
@@ -24,32 +24,32 @@ class DocumentListFrontendModule extends DynamicFrontendModule {
 		}
 		return $oListTemplate;
 	}
-	
+
 	public static function listQuery($aOptions) {
 		$oQuery = DocumentQuery::create()->filterByDisplayLanguage();
 		if(!Session::getSession()->isAuthenticated()) {
 			$oQuery->filterByIsProtected(false);
 		}
-		
+
 		// Link categories
 		$aCategories = isset($aOptions['document_categories']) ? (is_array($aOptions['document_categories']) ? $aOptions['document_categories'] : array($aOptions['document_categories'])) : array();
 		$iCountCategories = count($aCategories);
 		if($iCountCategories > 0) {
 			$oQuery->filterByDocumentCategoryId($aCategories);
 		}
-		
+
 		// Tags
 		$aTags = isset($aOptions['tags']) ? (is_array($aOptions['tags']) ? $aOptions['tags'] : array($aOptions['tags'])) : array();
 		$bHasTags = count($aTags) > 0;
 		if($bHasTags) {
 			$oQuery->filterByTagId($aTags);
 		}
-		
+
 		// Check document kind
 		if(isset($aOptions['document_kind']) && $aOptions['document_kind'] != null) {
 			$oQuery->filterByDocumentKind($aOptions['document_kind']);
 		}
-		
+
 		// Sort order only in case of one category and no tags
 		if($iCountCategories === 1 && $bHasTags === false && $aOptions['sort_by'] === self::SORT_BY_SORT) {
 			$oQuery->orderBySort();
@@ -68,7 +68,7 @@ class DocumentListFrontendModule extends DynamicFrontendModule {
 		}
 		return $aResult;
 	}
-	
+
 	public static function getTagOptions() {
 		$aResult = TagQuery::create()->filterByTagged('Document')->select(array('Id', 'Name'))->find()->toKeyValue('Id', 'Name');
 		if(count($aResult) > 0 && !Settings::getSetting('admin', 'list_allows_multiple_categories', true)) {
@@ -80,13 +80,13 @@ class DocumentListFrontendModule extends DynamicFrontendModule {
 	public static function getTemplateOptions() {
 		return AdminManager::getSiteTemplatesForListOutput(self::LIST_ITEM_POSTFIX);
 	}
-	
+
 	public static function getSortOptions() {
 		$aResult[self::SORT_BY_NAME] = StringPeer::getString('wns.order.by_name');
 		$aResult[self::SORT_BY_SORT] = StringPeer::getString('wns.order.by_sort');
 		return $aResult;
 	}
-	
+
 	public function getSaveData($mData) {
 		if($this->oLanguageObject instanceof LanguageObject) {
 			ReferencePeer::removeReferences($this->oLanguageObject);
@@ -98,7 +98,7 @@ class DocumentListFrontendModule extends DynamicFrontendModule {
 		}
 		return parent::getSaveData($mData);
 	}
-	
+
 	public static function getContentInfo($oLanguageObject) {
 		if(!$oLanguageObject) {
 			return null;
@@ -129,5 +129,5 @@ class DocumentListFrontendModule extends DynamicFrontendModule {
 		}
 		return implode("\n", $aOutput);
 	}
-	
+
 }

@@ -1,11 +1,11 @@
 <?php
 class LinkListFrontendConfigWidgetModule extends FrontendConfigWidgetModule {
-	
+
 	public function allLinks($aOptions = array()) {
 		$oQuery = LinkListFrontendModule::listQuery($aOptions);
 		return $oQuery->select(array('Id', 'Name'))->find()->toKeyValue('Id', 'Name');
 	}
-	
+
 	public function getConfigurationModes() {
 		$aResult = array();
 		$aLinkCategories = LinkListFrontendModule::getCategoryOptions();
@@ -17,7 +17,7 @@ class LinkListFrontendConfigWidgetModule extends FrontendConfigWidgetModule {
 		}
 		return $aResult;
 	}
-	
+
 	public function saveData($mData) {
 		return $this->oFrontendModule->widgetSave($mData);
 	}

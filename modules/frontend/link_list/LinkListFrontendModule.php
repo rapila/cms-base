@@ -4,11 +4,11 @@
  */
 
 class LinkListFrontendModule extends DynamicFrontendModule {
-	
+
 	const LIST_ITEM_POSTFIX = '_item';
 	const SORT_BY_NAME = 'by_name';
 	const SORT_BY_SORT = 'by_sort';
-	
+
 	public function renderFrontend() {
 		$aOptions = @unserialize($this->getData());
 		try {
@@ -39,42 +39,41 @@ class LinkListFrontendModule extends DynamicFrontendModule {
 		}
 		return $bResult;
 	}
-	
+
 	public static function listQuery($aOptions) {
 		$oQuery = LinkQuery::create()->filterByDisplayLanguage();
-		
+
 		// Link categories
 		$aCategories = isset($aOptions['link_categories']) ? (is_array($aOptions['link_categories']) ? $aOptions['link_categories'] : array($aOptions['link_categories'])) : array();
 		$iCountCategories = count($aCategories);
 		if($iCountCategories > 0) {
 			$oQuery->filterByLinkCategoryId($aCategories);
 		}
-		
+
 		// Tags
 		$aTags = isset($aOptions['tags']) ? (is_array($aOptions['tags']) ? $aOptions['tags'] : array($aOptions['tags'])) : array();
 		$bHasTags = count($aTags) > 0;
 		if($bHasTags) {
 			$oQuery->filterByTagId($aTags);
 		}
-		
+
 		// Sort order only in case of one category and no tags
 		if($iCountCategories === 1 && $bHasTags === false && $aOptions['sort_by'] === self::SORT_BY_SORT) {
 			$oQuery->orderBySort();
 		}
-		
 		return $oQuery->orderByName();
 	}
-	
+
 	public static function getTemplateOptions() {
-		return AdminManager::getSiteTemplatesForListOutput(self::LIST_ITEM_POSTFIX);	
+		return AdminManager::getSiteTemplatesForListOutput(self::LIST_ITEM_POSTFIX);
 	}
-	
+
 	public static function getSortOptions() {
 		$aResult[self::SORT_BY_NAME] = StringPeer::getString('wns.order.by_name');
 		$aResult[self::SORT_BY_SORT] = StringPeer::getString('wns.order.by_sort');
 		return $aResult;
-	} 
-	
+	}
+
 	public static function getCategoryOptions() {
 		$oQuery = LinkCategoryQuery::create()->orderByName();
 		if(!Session::getSession()->getUser()->getIsAdmin() || Settings::getSetting('admin', 'hide_externally_managed_link_categories', true)) {
@@ -86,7 +85,7 @@ class LinkListFrontendModule extends DynamicFrontendModule {
 		}
 		return $aResult;
 	}
-	
+
 	public static function getTagOptions() {
 		$aResult = TagQuery::create()->filterByTagged('Link')->select(array('Id', 'Name'))->find()->toKeyValue('Id', 'Name');
 		if(count($aResult) > 0 && !Settings::getSetting('admin', 'list_allows_multiple_categories', true)) {
@@ -94,7 +93,7 @@ class LinkListFrontendModule extends DynamicFrontendModule {
 		}
 		return $aResult;
 	}
-	
+
 	public static function getContentInfo($oLanguageObject) {
 		if(!$oLanguageObject) {
 			return null;
