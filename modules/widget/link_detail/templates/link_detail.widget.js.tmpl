@@ -8,7 +8,7 @@ Widget.types.link_detail = {
 			link_category_input_widget.settings.initial_selection = _this.settings.initial_category_id || '';
 			link_category_input_widget.settings.disabled = !!_this.settings.predefined_link_category_id;
 		}, function(link_category_input_widget) {
-			if(_this.settings.predefined_link_category_id) { 
+			if(_this.settings.predefined_link_category_id) {
 				link_category_input_widget._element.val(_this.settings.predefined_link_category_id);
 			}
 		});
@@ -59,7 +59,7 @@ Widget.types.link_detail = {
 	settings: {
 		detail_widget: {
 			title: "{{writeString=wns.new_entry}}",
-			width: 530
+			width: 560
 		},
 		initial_category_id: null,
 		predefined_link_category_id: null

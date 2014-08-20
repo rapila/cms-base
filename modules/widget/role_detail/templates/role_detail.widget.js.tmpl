@@ -21,7 +21,7 @@ Widget.types.role_detail = {
 		});
 		rights_container.after(add_new_right_button);
 	},
-	
+
 	fill_data: function() {
 		var _this = this;
 		this.detail_widget.disable();
@@ -45,10 +45,10 @@ Widget.types.role_detail = {
 				right_content.appendTo(rights_container);
 			});
 			this.detail_widget.set_title(this.detail_widget.settings.title = role_data.RoleKey);
-			this.detail_widget.enable();		
+			this.detail_widget.enable();
 		});
 	},
-	
+
 	settings: {
 		detail_widget: {
 			title: "{{writeString=wns.role.create}}",

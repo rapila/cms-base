@@ -5,7 +5,7 @@ Widget.types.language_detail = {
 
 		Widget.callStatic('detail', 'create_for_instance', this);
 	},
-	
+
 	fill_data: function() {
 		this.detail_widget.disable();
 		this.languageData(function(language_data) {
@@ -24,14 +24,14 @@ Widget.types.language_detail = {
 			}
 
 			this.detail_widget.set_title(this.detail_widget.settings.title = "{{writeString=wns.content_language}}"+language_data.LanguageName);
-			this.detail_widget.enable();		
+			this.detail_widget.enable();
 		});
 	},
-	
+
 	settings: {
 		detail_widget: {
 			title: "{{writeString=wns.language.create}}",
-			width: 500
+			width: 520
 		}
 	}
 };
