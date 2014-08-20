@@ -1,0 +1,49 @@
+Widget.types.documentation = {
+	initialize: function() {
+		//called before this._element is available
+
+	},
+
+	prepare: function() {
+		var _this = this;
+		this.loadDocumentations(function(documentations) {
+			var link_prototype = jQuery('<a/>');
+			jQuery.each(documentations, function(name, part) {
+				var link = link_prototype.clone();
+				link.attr('href', part.de.url);
+				if(part.de.is_part) {
+					link.addClass('is_part');
+				}
+				link.text(part.de.title);
+				_this._element.append(link);
+			});
+		});
+	},
+
+	alternative: function() {
+		var _this = this;
+		this.loadDocumentations(function(documentations) {
+			var ul = jQuery('<ul/>');
+			var li = jQuery('<li/>');
+			var link = jQuery('<a/>')
+			var list = ul.clone();
+			_this._element.append(list);
+			jQuery.each(documentations, function(name, part) {
+				var link = jQuery('<a/>').text(part.de.title);
+				link.attr('href', part.de.url);
+				if(!part.de.is_part) {
+					console.log('documentation', part.de.title );
+					var documentation = li.clone();
+					list.append(documentation.append(link));
+					var sublist = ul.clone();
+					list.append(sublist);
+				} else {
+					console.log('part', part.de.title );
+					var part = li.clone();
+					sublist.append(part.append(link));
+				}
+			});
+		});
+	}
+
+};

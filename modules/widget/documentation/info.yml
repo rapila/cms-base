@@ -1,0 +1,5 @@
+---
+aspects:
+  - dashboard
+  - persistent
+enabled: true
