@@ -45,13 +45,14 @@ abstract class DocumentationProviderTypeModule extends Module {
 		$aResult = array();
 		// Consolidate all
 		foreach($aProviders as $oProvider) {
+
 			foreach($oProvider->metadataForAllParts() as $sPart => $aData) {
 				$sPart = strtolower($sPart);
 				if(!isset($aResult[$sPart])) {
 					$aResult[$sPart] = array();
 				}
 				foreach($aData as $sLanguageId => $sLanguageData) {
-					$aResult[$sPart][$sLanguageId] = array('title' => $sLanguageData['title'], 'url' => $sLanguageData['url'], 'provider' => $oProvider->getConfigKey());
+					$aResult[$sPart][$sLanguageId] = array('title' => $sLanguageData['title'], 'url' => $sLanguageData['url'], 'is_part' => $sLanguageData['is_part'], 'provider' => $oProvider->getConfigKey());
 				}
 			}
 		}
