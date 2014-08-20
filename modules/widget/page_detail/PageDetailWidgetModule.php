@@ -122,7 +122,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		$aResult = array();
 		foreach(Module::listModulesByType(PageTypeModule::getType()) as $sKey => $aValues) {
 			$aResult[$sKey]['value'] = $sKey;
-			$aResult[$sKey]['name'] = StringUtil::makeReadableName(isset($aValues['display_name']) ? $aValues['display_name'] : $aValues['name']);
+			$aResult[$sKey]['name'] = StringPeer::getString('page_type.'.$aValues['name'], null, StringUtil::makeReadableName($aValues['name']));
 		}
 		return $aResult;
 	}
