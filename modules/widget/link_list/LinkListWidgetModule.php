@@ -7,7 +7,7 @@ class LinkListWidgetModule extends SpecializedListWidgetModule {
 	protected $oLanguageFilter;
 	protected $oTagFilter;
 	public $oDelegateProxy;
-	
+
 	protected function createListWidget() {
 		$oListWidget = new ListWidgetModule();
 		$this->oDelegateProxy = new CriteriaListWidgetDelegate($this, "Link", "name_truncated", "asc");
@@ -20,11 +20,11 @@ class LinkListWidgetModule extends SpecializedListWidgetModule {
 		$this->oTagFilter->setSetting('model_name', 'Link');
 		return $oListWidget;
 	}
-	
+
 	protected static function hasTags() {
 		return TagInstanceQuery::create()->filterByModelName('Link')->count() > 0;
 	}
-	
+
 	public function toggleIsInactive($aRowData) {
 		$oLink = LinkQuery::create()->findPk($aRowData['id']);
 		if($oLink) {
@@ -32,7 +32,7 @@ class LinkListWidgetModule extends SpecializedListWidgetModule {
 			$oLink->save();
 		}
 	}
-	
+
 	public function getColumnIdentifiers() {
 		$aResult = array('id', 'name_truncated', 'sort', 'url');
 		if(LinkCategoryQuery::create()->count() > 0) {
@@ -48,7 +48,7 @@ class LinkListWidgetModule extends SpecializedListWidgetModule {
 		}
 		return array_merge($aResult, array('updated_at_formatted', 'delete'));
 	}
-	
+
 	public function getMetadataForColumn($sColumnIdentifier) {
 		$aResult = array('is_sortable' => true);
 		switch($sColumnIdentifier) {
@@ -122,11 +122,11 @@ class LinkListWidgetModule extends SpecializedListWidgetModule {
 	public function getLinkCategoryId() {
 		return $this->oDelegateProxy->getLinkCategoryId();
 	}
-	
+
 	public function getLanguageName() {
 		return StringPeer::getString('language.'.$this->oDelegateProxy->getLanguageId(), null, $this->oDelegateProxy->getLanguageId());
 	}
-	
+
 	public function getLinkCategoryName() {
 		$oLinkCategory = LinkCategoryQuery::create()->findPk($this->oDelegateProxy->getLinkCategoryId());
 		if($oLinkCategory) {
@@ -137,11 +137,11 @@ class LinkListWidgetModule extends SpecializedListWidgetModule {
 		}
 		return $this->oDelegateProxy->getLinkCategoryId();
 	}
-	
+
   public function allowSort($sSortColumn) {
 		return $this->oDelegateProxy->getLinkCategoryId() !== CriteriaListWidgetDelegate::SELECT_ALL;
 	}
-	
+
 	public function doSort($sColumnIdentifier, $oLinkToSort, $oRelatedLink, $sPosition = 'before') {
 		$iNewPosition = $oRelatedLink->getSort() + ($sPosition === 'before' ? 0 : 1);
 		if($oLinkToSort->getSort() < $oRelatedLink->getSort()) {
@@ -162,7 +162,7 @@ class LinkListWidgetModule extends SpecializedListWidgetModule {
 			$i++;
 		}
 	}
-	
+
 	public function getCategoryHasLinks($iLinkCategoryId) {
 		return LinkQuery::create()->filterByLinkCategoryId($iLinkCategoryId)->count() > 0;
 	}
