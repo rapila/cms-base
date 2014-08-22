@@ -33,7 +33,7 @@ class LinksAdminModule extends AdminModule {
 	public function getColumnIdentifiers() {
 		return array('link_category_id', 'name', 'magic_column');
 	}
-	
+
 	public function getMetadataForColumn($sColumnIdentifier) {
 		$aResult = array();
 		switch($sColumnIdentifier) {
@@ -74,7 +74,6 @@ class LinksAdminModule extends AdminModule {
 
 	public function getCriteria() {
 		$oQuery = LinkCategoryQuery::create();
-		ErrorHandler::log('externally_managed', Session::getSession()->getUser()->getIsAdmin(), Settings::getSetting('admin', 'hide_externally_managed_link_categories', true));
 		if(!Session::getSession()->getUser()->getIsAdmin() || Settings::getSetting('admin', 'hide_externally_managed_link_categories', true)) {
 			return $oQuery->filterByIsExternallyManaged(false);
 		}
