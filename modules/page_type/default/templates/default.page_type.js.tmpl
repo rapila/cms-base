@@ -124,6 +124,9 @@
 						return;
 					}
 					var item = jQuery(ui.item);
+					if(item.data('removing')) {
+						return;
+					}
 					// get final target (not original one)
 					var target = item.parent();
 					var position = target.children().index(item);
@@ -324,7 +327,11 @@
 		remove_object: function(event, item_to_remove, force) {
 			var _this = this;
 			var container = item_to_remove.parent();
+			if(force) {
+				item_to_remove.data('removing', true);
+			}
 			this.methods.adminRemoveObject(item_to_remove.attr('data-object-id'), !!force, function(deleted) {
+				item_to_remove.data('removing', false);
 				var md = _this.find_structure(item_to_remove);
 				if(deleted && !force) {
 					var language_id = item_to_remove.attr('data-language-id');
