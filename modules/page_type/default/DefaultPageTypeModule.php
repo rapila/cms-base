@@ -5,18 +5,18 @@
 require_once("cssparser/CSSParser.php");
 
 class DefaultPageTypeModule extends PageTypeModule {
-	
+
 	private $oFrontendTemplate;
 	private $iModuleId;
 	private $sContainerName;
 	protected $sLanguageId;
 	private $bIsPreview;
-	
+
 	public function __construct(Page $oPage = null, NavigationItem $oNavigationItem = null, $sLanguageId = null) {
 		parent::__construct($oPage, $oNavigationItem);
 		$this->sLanguageId = $sLanguageId;
 	}
-	
+
 	//Frontend stuff
 	public function display(Template $oTemplate, $bIsPreview = false) {
 		$this->bIsPreview = $bIsPreview;
@@ -31,7 +31,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 		$this->oFrontendTemplate->replaceIdentifierCallback("autofill", $this, "fillAutofill", Template::NO_HTML_ESCAPE);
 		$this->oFrontendTemplate->replaceIdentifierCallback("container", $this, "fillContainer", Template::NO_HTML_ESCAPE);
 	}
-	
+
 	public function fillAutofill($oTemplateIdentifier, $iFlags) {
 		$oModule = FrontendModule::getModuleInstance($oTemplateIdentifier->getValue(), $oTemplateIdentifier->getParameter('data'));
 		$mResult = $oModule->cachedFrontend();
@@ -43,7 +43,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 		}
 		return $mResult;
 	}
-	
+
 	public function getWords() {
 		$aWords = array();
 
@@ -58,7 +58,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 		}
 		return $aWords;
 	}
-	
+
 	public function fillContainer($oTemplateIdentifier, $iFlags) {
 		if($oTemplateIdentifier->hasParameter('declaration_only')) {
 			// Container exists only to appear in admin area, not be rendered in frontend (at least not directly)
@@ -76,7 +76,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 		if(count($aPageObjects) === 0) {
 			return null;
 		}
-		
+
 		$aObjectTypes = array();
 		$oTemplate = new Template(TemplateIdentifier::constructIdentifier('container'), null, true);
 		foreach($aPageObjects as $oContainer) {
@@ -85,7 +85,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 			}
 			FilterModule::getFilters()->handleDefaultPageTypeFilledContainer($oContainer, $this->oPage, $oTemplate, $this->oFrontendTemplate, $this->iModuleId);
 			$this->iModuleId++;
-			
+
 			if(isset($aObjectTypes[$oContainer->getObjectType()])) {
 				$aObjectTypes[$oContainer->getObjectType()]++;
 			} else {
@@ -93,13 +93,13 @@ class DefaultPageTypeModule extends PageTypeModule {
 			}
 		}
 		$this->oFrontendTemplate->replaceIdentifier("container_filled_types", implode(',', array_keys($aObjectTypes)), $sContainerName);
-		
+
 		if(count($aObjectTypes) === 0) {
 			return null;
 		}
 		return $oTemplate;
 	} // fillOneContainer()
-			
+
 	/**
 	 * fillContainerWithModule()
 	 */
@@ -144,14 +144,14 @@ class DefaultPageTypeModule extends PageTypeModule {
 		}
 		return true;
 	}
-	
+
 	protected function getPreviewMarkup($oContentObject, $mFrontentContents) {
 		if(!($mFrontentContents instanceof Template)) {
 			$mFrontentContents = new Template($mFrontentContents, null, true);
 		}
 		return TagWriter::quickTag('div', array('data-object-id' => $oContentObject->getId(), 'data-container' => $oContentObject->getContainerName(), 'class' => 'filled-container'), $mFrontentContents);
 	}
-	
+
 	protected function getModuleContents($oModule, $bAllowTemplate = true) {
 		$mResult = $oModule->cachedFrontend();
 		if(!$bAllowTemplate && $mResult instanceof Template) {
@@ -159,7 +159,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 		}
 		return $mResult;
 	}
-	
+
 	public function acceptedRequestParams($aModulesToCheck = null) {
 		$aResult = array();
 		foreach($this->oPage->getContentObjects() as $oContentObject) {
@@ -174,18 +174,18 @@ class DefaultPageTypeModule extends PageTypeModule {
 
 	//Admin stuff
 	private $aContentObjects = array();
-	
+
 	private function contentObjectById($iObjectId) {
 		if(!isset($this->aContentObjects[$iObjectId])) {
 			$this->aContentObjects[$iObjectId] = ContentObjectQuery::create()->findPk($iObjectId);
 		}
 		return $this->aContentObjects[$iObjectId];
 	}
-	
+
 	private function backendModuleInstanceByLanguageObject($oLanguageObject) {
 		return FrontendModule::getModuleInstance($oLanguageObject->getContentObject()->getObjectType(), $oLanguageObject->getDraft());
 	}
-	
+
 	public function adminListPossibleFrontendModules() {
 		$aContainers = $this->oPage->getTemplate()->identifiersMatching("container", Template::$ANY_VALUE);
 		$bContentIsInherited = false;
@@ -197,7 +197,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 		}
 		return FrontendModule::listContentModules($bContentIsInherited);
 	}
-	
+
 	public function adminListFilledFrontendModules() {
 		if($this->sLanguageId === null) {
 			$this->sLanguageId = AdminManager::getContentLanguage();
@@ -220,7 +220,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 	private function paramsForObject($oObject) {
 		$aObject = array('id' => $oObject->getId());
 		$aObject['language_objects'] = array();
-		
+
 		foreach(LanguageQuery::create()->orderById()->find() as $oLanguage) {
 			$aLanguageInfo = array();
 			$oLanguageObject = $oObject->getLanguageObject($oLanguage->getId());
@@ -245,21 +245,16 @@ class DefaultPageTypeModule extends PageTypeModule {
 		$aObject['object_type_display_name'] = FrontendModule::getDisplayNameByName($oObject->getObjectType());
 		return $aObject;
 	}
-	
+
 	public function adminAddObjectToContainer($sContainerName, $sObjectType, $iSort=0) {
-		foreach($this->oPage->getObjectsForContainer($sContainerName, $iSort) as $oObject) {
-			$oObject->setSort($oObject->getSort()+1);
-			$oObject->save();
-		}
 		$oContentObject = new ContentObject();
-		$oContentObject->setContainerName($sContainerName);
+		$oContentObject->sortIntoNew($sContainerName, $iSort);
 		$oContentObject->setObjectType($sObjectType);
-		$oContentObject->setSort($iSort);
 		$oContentObject->setPageId($this->oPage->getId());
 		$oContentObject->save();
 		return $this->paramsForObject($oContentObject);
 	}
-	
+
 	public function adminEdit($iObjectId, $sLanguageId = null) {
 		if($sLanguageId !== null) {
 			$this->sLanguageId = $sLanguageId;
@@ -275,7 +270,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 			$oCurrentLanguageObject->setContentObject($oCurrentContentObject);
 			$oCurrentLanguageObject->setData(null);
 		}
-		
+
 		$oModuleInstance = $this->backendModuleInstanceByLanguageObject($oCurrentLanguageObject);
 		$oWidget = WidgetModule::getWidget('language_object_control', null, $oCurrentLanguageObject, $oModuleInstance);
 		$oResult = new stdClass();
@@ -283,14 +278,14 @@ class DefaultPageTypeModule extends PageTypeModule {
 		$oResult->type = $oCurrentContentObject->getObjectType();
 		return $oResult;
 	}
-	
+
 	public function adminPreview($iObjectId) {
 		if($this->sLanguageId === null) {
 			$this->sLanguageId = AdminManager::getContentLanguage();
 		}
 		$oCurrentContentObject = $this->contentObjectById($iObjectId);
 		$oCurrentLanguageObject = $oCurrentContentObject->getLanguageObject($this->sLanguageId);
-		
+
 		//Some frontend modules use this
 		FrontendManager::$CURRENT_PAGE = $oCurrentContentObject->getPage();
 		//Some frontend modules generate links into the current manager – those need to be correct
@@ -300,7 +295,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 		PreviewManager::revertTemporaryManager();
 		return $aResult;
 	}
-	
+
 	public function adminMoveObject($iObjectId, $iSort, $sNewContainerName=null) {
 		$iSort = (int) $iSort;
 		$oContentObject = ContentObjectQuery::create()->findPk((int) $iObjectId);
@@ -308,20 +303,15 @@ class DefaultPageTypeModule extends PageTypeModule {
 		if($oContentObject === null) {
 			return;
 		}
-		$bSortAsc = $iSort > $oContentObject->getSort();
 		if($sNewContainerName) {
-			$oContentObject->setContainerName($sNewContainerName);
-			$oContentObject->setSort($iSort);
-			$oContentObject->setUpdatedAt(time());
+			$oContentObject->sortIntoNew($sNewContainerName, $iSort);
 		} else {
-			$oContentObject->setSort($iSort);
-			$oContentObject->setUpdatedAt(time());
+			$oContentObject->sortInsideExisting($iSort);
 		}
 		$oContentObject->save();
-		$this->adminSortObjects($oContentObject, $bSortAsc);
 		return $oContentObject->getId();
 	}
-		
+
 	private function adminSortObjects($oContentObject, $bSortAsc) {
 		foreach($this->oPage->getObjectsForContainer($oContentObject->getContainerName(), null, $bSortAsc) as $i => $oObject) {
 			$oObject->setSort($i);
@@ -342,14 +332,16 @@ class DefaultPageTypeModule extends PageTypeModule {
 		$oCurrentLanguageObject->setHasDraft(false);
 		return $oCurrentLanguageObject->save();
 	}
-	
+
 	public function adminRemoveObject($iObjectId, $bForce = false) {
 		$oCurrentContentObject = $this->contentObjectById($iObjectId);
 		if(!Session::getSession()->getUser()->mayEditPageStructure($oCurrentContentObject->getPage())) {
 			return false;
-		} 
+		}
 		if($bForce) {
-			return ContentObjectPeer::doDelete($iObjectId);
+			$oCurrentContentObject->sortIntoNew();
+			$oCurrentContentObject->delete();
+			return true;
 		}
 		if($this->sLanguageId === null) {
 			$this->sLanguageId = AdminManager::getContentLanguage();
@@ -393,10 +385,10 @@ class DefaultPageTypeModule extends PageTypeModule {
 			//Replace actual container
 			$oTemplate->replaceIdentifier($oIdentifier, $mInnerTemplate);
 		}
-		
+
 		$bUseParsedCss = Settings::getSetting('admin', 'use_parsed_css_in_config', true);
 		$oStyle = null;
-		
+
 		if($bUseParsedCss) {
 			$sTemplateName = $this->oPage->getTemplateNameUsed().Template::$SUFFIX;
 			$sCacheKey = 'parsed-css-'.$sTemplateName;
@@ -424,7 +416,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 						}
 					}
 				}
-		
+
 				$oParser = new CSSParser($sCssContents, Settings::getSetting("encoding", "browser", "utf-8"));
 				$oCss = $oParser->parse();
 				$this->cleanupCSS($oCss);
@@ -433,14 +425,14 @@ class DefaultPageTypeModule extends PageTypeModule {
 			} else {
 				$sCssContents = $oCssCache->getContentsAsString();
 			}
-			
+
 			$oStyle = new HtmlTag('style');
 			$oStyle->addParameters(array('scoped' => 'scoped'));
 			$oStyle->appendChild($sCssContents);
 		}
-		
+
 		$sTemplate = $oTemplate->render();
-		
+
 		$sTemplate = substr($sTemplate, strpos($sTemplate, '<body')+5);
 		$sTemplate = substr($sTemplate, strpos($sTemplate, '>')+1);
 		$sTemplate = substr($sTemplate, 0, strpos($sTemplate, '</body'));
@@ -455,7 +447,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 		$sResult = substr($sResult, 0, strrpos($sResult, '</body>'));
 		return array('html' => $sResult, 'css_parsed' => $bUseParsedCss);
 	}
-	
+
 	private function cleanupContainerStructure($mTag, $oParent = null) {
 		if(!($mTag instanceof HtmlTag)) {
 			//Text node
@@ -480,7 +472,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 			$mTag->setParameter('style', "margin:0!important;padding:0!important;$sStyle");
 		}
 	}
-	
+
 	private function cleanupCSS($oCss) {
 		//Change selectors
 		$sContainerClass = '.filled_modules';
@@ -500,14 +492,14 @@ class DefaultPageTypeModule extends PageTypeModule {
 				$oSelector->setSelector($sSelector);
 			}
 		}
-		
+
 		//Change values
 		foreach($oCss->getAllValues(null, true) as $mValue) {
 			if($mValue instanceof CSSSize && $mValue->isSize() && !$mValue->isRelative()) {
 				$mValue->setSize($mValue->getSize()/3);
 			}
 		}
-		
+
 		//Remove properties
 		foreach($oCss->getAllRuleSets() as $oRuleSet) {
 			$oRuleSet->removeRule('font-');
