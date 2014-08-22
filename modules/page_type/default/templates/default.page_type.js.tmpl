@@ -40,14 +40,14 @@
 			if(this.is_updating_structure) {
 				return jQuery.when.apply(jQuery, this.is_updating_structure).then(callback);
 			}
-			
+
 			var waiters = this.is_updating_structure = [];
 			var _this = this;
-			
+
 			this.methods.adminGetContainers(function(containers) {
 				_this.containers = containers;
 			}.deferred(waiters));
-			
+
 			this.methods.adminListFilledFrontendModules(function(filled_frontend_modules) {
 				_this.filled_frontend_modules = filled_frontend_modules;
 			}.deferred(waiters));
@@ -89,6 +89,7 @@
 				hoverClass: 'ui-state-droppable',
 				drop: function(event, ui) {
 					_this.remove_object(event, ui.draggable, true);
+					event.stopPropagation();
 				}
 			});
 
@@ -170,7 +171,7 @@
 				element.appendTo(available_modules);
 			});
 		},
-		
+
 		handle_admin: function() {
 			var _this = this;
 			Widget.createWithElement('language_tabs', function(widget) {
@@ -184,9 +185,9 @@
 					_this.update_structure(_this.update_admin_container.bind(_this, tab_content, language_id));
 				}, false, true);
 			});
-			
+
 		},
-		
+
 		handle_preview: function(page_id, page_type) {
 			//Initialized callback
 			jQuery('div.filled-container').each(function() {
@@ -197,7 +198,7 @@
 				preview_bar.data('filled_container', filled_container);
 				filled_container.data('preview_bar', preview_bar);
 				filled_container.data('protector', new UnsavedChanges());
-			
+
 				// Preview bar show/hide stuff
 				filled_container.position_bar = function() {
 					var offset = filled_container.offset();
@@ -205,7 +206,7 @@
 					offset.left = Math.max(offset.left, 0);
 					preview_bar.css({top: ''+offset.top+'px', left: ''+(offset.left)+'px'});
 				};
-			
+
 				var leave_timeout = null;
 				var leave = function(event) {
 					leave_timeout = window.setTimeout(function() {
@@ -216,11 +217,11 @@
 						leave_timeout = null;
 					}, 1000);
 				};
-			
+
 				filled_container.resize(function() {
 					filled_container.position_bar();
 				});
-			
+
 				filled_container.bind('mouseenter', function() {
 					if(leave_timeout) {
 						window.clearTimeout(leave_timeout); leave_timeout = null;
@@ -228,7 +229,7 @@
 					preview_bar.show('fast');
 					filled_container.position_bar();
 				}).bind('mouseleave', leave);
-			
+
 				preview_bar.bind('mouseenter', function(event) {
 					if(leave_timeout) {
 						window.clearTimeout(leave_timeout); leave_timeout = null;
@@ -250,7 +251,7 @@
 					preview_bar.find('.additional-buttons').empty();
 				});
 			};
-		
+
 			jQuery('.preview_bar').delegate('.edit', 'click', function() {
 				var preview_bar = jQuery(this).closest('.preview_bar');
 				if(!preview_bar.is('.may_edit')) {
@@ -318,7 +319,7 @@
 				}
 			});
 		},
-	
+
 		//Admin helper methods
 		remove_object: function(event, item_to_remove, force) {
 			var _this = this;
@@ -347,7 +348,7 @@
 				}, edit_info.control_session_key);
 			});
 		},
-	
+
 		edit_object: function(event, item_to_edit) {
 			var _this = this;
 			this.control_widget(item_to_edit, function(language_object_control) {
@@ -357,7 +358,7 @@
 						if(widget.setObjectId) {
 							widget.setObjectId(item_to_edit.attr('data-object-id'));
 						}
-				
+
 						widget.handle('element_set', function(event, element) {
 							Widget.callStatic('detail', 'clickable_labels_for', element);
 							var save = function(is_draft) {
@@ -429,7 +430,7 @@
 				});
 			});
 		},
-	
+
 		edit_condition: function(event, item_to_edit) {
 			var _this = this;
 			Widget.create('content_display_condition', function(widget) {
@@ -441,7 +442,7 @@
 				};
 			}, jQuery.noop);
 		},
-	
+
 		update_content_properties: function(element, md) {
 			if(!md) {
 				md = this.find_structure(element);
@@ -488,7 +489,7 @@
 				this.update_content_properties(item_to_edit, md);
 			}.bind(this));
 		}
-	
+
 	});
 
 	Widget.types.page_type.types['default'] = PageType;
