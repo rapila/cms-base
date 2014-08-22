@@ -2,7 +2,6 @@
 /**
 	* @package modules.page_type
 	*/
-require_once("cssparser/CSSParser.php");
 
 class DefaultPageTypeModule extends PageTypeModule {
 
@@ -388,7 +387,6 @@ class DefaultPageTypeModule extends PageTypeModule {
 
 		$bUseParsedCss = Settings::getSetting('admin', 'use_parsed_css_in_config', true);
 		$oStyle = null;
-
 		if($bUseParsedCss) {
 			$sTemplateName = $this->oPage->getTemplateNameUsed().Template::$SUFFIX;
 			$sCacheKey = 'parsed-css-'.$sTemplateName;
@@ -417,10 +415,10 @@ class DefaultPageTypeModule extends PageTypeModule {
 					}
 				}
 
-				$oParser = new CSSParser($sCssContents, Settings::getSetting("encoding", "browser", "utf-8"));
+				$oParser = new Sabberworm\CSS\Parser($sCssContents, Sabberworm\CSS\Settings::create()->withDefaultCharset(Settings::getSetting("encoding", "browser", "utf-8")));
 				$oCss = $oParser->parse();
 				$this->cleanupCSS($oCss);
-				$sCssContents = Template::htmlEncode($oCss->__toString());
+				$sCssContents = Template::htmlEncode($oCss->render(Sabberworm\CSS\OutputFormat::createCompact()));
 				$oCssCache->setContents($sCssContents);
 			} else {
 				$sCssContents = $oCssCache->getContentsAsString();
