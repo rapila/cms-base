@@ -22,20 +22,30 @@ class Autoloader {
 	
 	public static function autoload($sClassName) {
 		if(isset(self::$CLASS_MAPPING[$sClassName])) {
+			if(self::$CLASS_MAPPING[$sClassName] === null) {
+				return;
+			}
 			require_once(self::$CLASS_MAPPING[$sClassName]);
 			return;
 		}
-		
-		$sIncludeFilePath = self::findIncludePath($sClassName);
-	
-		if($sIncludeFilePath === null) {
-			return false;
+
+		foreach(self::getClassFinders() as $sClassFinder) {
+			$sIncludeFilePath = self::$sClassFinder($sClassName);
+			if($sIncludeFilePath) {
+				$sIncludeFilePath = stream_resolve_include_path($sIncludeFilePath);
+				if($sIncludeFilePath === false) {
+					$sIncludeFilePath = null;
+					continue;
+				}
+				break;
+			}
 		}
-		
+
 		self::$CLASS_MAPPING[$sClassName] = $sIncludeFilePath;
 		self::$MAPPING_HAS_BEEN_MODIFIED = true;
-		require_once($sIncludeFilePath);
-		return true;
+		if($sIncludeFilePath) {
+			require_once($sIncludeFilePath);
+		}
 	}
 	
 	public static function saveIncludeCache() {
@@ -44,9 +54,15 @@ class Autoloader {
 		}
 	}
 	
-	private static function findIncludePath($sClassName) {
+	private static function getClassFinders() {
+		return array_filter(get_class_methods(get_class()), function($sFinderName) {
+			return strpos($sFinderName, 'find') === 0;
+		});
+	}
+	
+	private static function findRapilaClass($sClassName) {
 		$sFileName = "$sClassName.php";
-		
+
 		//Standard Classes
 		$sPath = ResourceFinder::create()->addPath(DIRNAME_LIB, DIRNAME_CLASSES, $sFileName)->find();
 		if($sPath) {
@@ -79,7 +95,7 @@ class Autoloader {
 				if(!class_exists($sModuleBaseClass)) {
 					continue;
 				}
-			
+
 				if($sModuleBaseClass::isValidModuleClassName($sClassName)) {
 					$sPath = ResourceFinder::create(array(DIRNAME_MODULES, $sModuleType, $sModuleBaseClass::getNameByClassName($sClassName), $sFileName))->find();
 					if($sPath) {
@@ -88,7 +104,27 @@ class Autoloader {
 				}
 			}
 		}
-		
+
 		return null;
+	}
+	
+	/**
+	* Finds PSR-0 compatible classes in a vendor subdir
+	*/
+	private static function findVendorClass($sClassName) {
+		$sClassName = ltrim($sClassName, '\\');
+		$sFileName  = '';
+		$sNamespace = '';
+		if ($lastNsPos = strripos($sClassName, '\\')) {
+			$sNamespace = substr($sClassName, 0, $lastNsPos);
+			$sClassName = substr($sClassName, $lastNsPos + 1);
+			$sFileName  = str_replace('\\', DIRECTORY_SEPARATOR, $sNamespace) . DIRECTORY_SEPARATOR;
+		}
+		$sFileName .= str_replace('_', DIRECTORY_SEPARATOR, $sClassName) . '.php';
+		return $sFileName;
+	}
+	
+	private static function findVendorLibClass($sClassName) {
+		return 'lib/'.self::findVendorClass($sClassName);
 	}
 }

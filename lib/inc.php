@@ -37,7 +37,7 @@ Autoloader::loadIncludeCache();
 spl_autoload_register(array('Autoloader', 'autoload'));
 
 // include path for all classes
-$aLibDirs = ResourceFinder::create()->addPath(DIRNAME_LIB)->addOptionalPath(DIRNAME_VENDOR)->all()->searchSiteFirst()->find();
+$aLibDirs = ResourceFinder::create()->addPath(DIRNAME_LIB)->addOptionalPath(DIRNAME_VENDOR)->addDirPath(true)->all()->searchSiteFirst()->find();
 
 set_include_path(MAIN_DIR.'/'.DIRNAME_GENERATED.PATH_SEPARATOR.implode(PATH_SEPARATOR, $aLibDirs).PATH_SEPARATOR.get_include_path());
 
