@@ -41,6 +41,6 @@ fi
 
 cp base/build.properties generated/
 
-sudo -u $owner "$PHP_PATH" -r "require_once('base/lib/inc.php');BuildHelper::preBuild($is_dev);"
-sudo -u $owner /bin/sh "$PHING_PATH" -f "$path_to_buildfile" -Dproject.dir=generated/ sql om
-sudo -u $owner "$PHP_PATH" -r "require_once('base/lib/inc.php');BuildHelper::postBuild($is_dev);"
+sudo -u $owner -E "$PHP_PATH" -r "require_once('base/lib/inc.php');BuildHelper::preBuild($is_dev);"
+sudo -u $owner -E /bin/sh "$PHING_PATH" -f "$path_to_buildfile" -Dproject.dir=generated/ sql om
+sudo -u $owner -E "$PHP_PATH" -r "require_once('base/lib/inc.php');BuildHelper::postBuild($is_dev);"

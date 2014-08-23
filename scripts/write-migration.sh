@@ -51,7 +51,7 @@ if [ ! -r "$path_to_buildfile" ]; then
 	exit 1
 fi
 
-SUDO="sudo -u $owner env RAPILA_ENVIRONMENT=${RAPILA_ENVIRONMENT}"
+SUDO="sudo -u $owner -E"
 
 cp base/build.properties generated/ && \
 $SUDO "$PHP_PATH" -r "require_once('base/lib/inc.php');BuildHelper::preMigrate();" && \

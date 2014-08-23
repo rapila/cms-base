@@ -70,7 +70,7 @@ if [ ! -r "$path_to_buildfile" ]; then
 	exit 1
 fi
 
-SUDO="sudo -u $owner env RAPILA_ENVIRONMENT=${RAPILA_ENVIRONMENT}"
+SUDO="sudo -u $owner -E"
 
 mkdir -p "./generated/migrations"
 
