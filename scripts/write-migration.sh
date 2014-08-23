@@ -55,7 +55,7 @@ SUDO="sudo -u $owner -E"
 
 cp base/build.properties generated/ && \
 $SUDO "$PHP_PATH" -r "require_once('base/lib/inc.php');BuildHelper::preMigrate();" && \
-$SUDO /bin/sh "$PHING_PATH" -f "$path_to_buildfile" -Dproject.dir=generated/ "-Dpropel.migration.table=_migration_${context/\//_}" diff && \
+$SUDO "$PHP_PATH" ./base/lib/vendor/phing/bin/phing -f "$path_to_buildfile" -Dproject.dir=generated/ "-Dpropel.migration.table=_migration_${context/\//_}" diff && \
 $SUDO "$PHP_PATH" -r "require_once('base/lib/inc.php');BuildHelper::postMigrate();" && \
 
 mkdir -p "$destination_path" && \
