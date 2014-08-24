@@ -1,49 +1,40 @@
 Widget.types.documentation = {
-	initialize: function() {
-		//called before this._element is available
-
-	},
 
 	prepare: function() {
 		var _this = this;
+		this._element.append(jQuery('<div/>').addClass('accordion'));
+		var container = this._element.find('div.accordion');
+
+		container.accordion({active: 0, heightStyle: 'content', collapsible:false});
+
+		var heading_prototype = jQuery('<h3/>').html(jQuery('<a/>').attr('href', '#'));
+		var panel_prototype = jQuery('<div/>').addClass('panel');
+		var link_prototype = jQuery('<a/>');
+
 		this.loadDocumentations(function(documentations) {
-			var link_prototype = jQuery('<a/>');
-			jQuery.each(documentations, function(name, part) {
-				var link = link_prototype.clone();
-				link.attr('href', part.de.url);
-				if(part.de.is_part) {
-					link.addClass('is_part');
+			var count = 0;
+			var main_key = null;
+			jQuery.each(documentations, function(key, documentation) {
+				if(documentation.is_main) {
+					count = 0;
+					main_key = key;
+					var heading = heading_prototype.clone();
+					heading.find('a').text(documentation.title);
+					container.append(heading);
+				} else {
+					if(count === 0) {
+						var parts_panel = panel_prototype.clone().addClass(main_key);
+						container.append(parts_panel);
+					}
+					count++;
+					var link = link_prototype.clone().text(documentation.title).attr('href', documentation.url);
+					_this.append_to_element(container, link);
 				}
-				link.text(part.de.title);
-				_this._element.append(link);
 			});
 		});
 	},
 
-	alternative: function() {
-		var _this = this;
-		this.loadDocumentations(function(documentations) {
-			var ul = jQuery('<ul/>');
-			var li = jQuery('<li/>');
-			var link = jQuery('<a/>')
-			var list = ul.clone();
-			_this._element.append(list);
-			jQuery.each(documentations, function(name, part) {
-				var link = jQuery('<a/>').text(part.de.title);
-				link.attr('href', part.de.url);
-				if(!part.de.is_part) {
-					console.log('documentation', part.de.title );
-					var documentation = li.clone();
-					list.append(documentation.append(link));
-					var sublist = ul.clone();
-					list.append(sublist);
-				} else {
-					console.log('part', part.de.title );
-					var part = li.clone();
-					sublist.append(part.append(link));
-				}
-			});
-		});
+	append_to_element: function(container, link) {
+		container.find('div.panel').last().append(link);
 	}
-
 };
