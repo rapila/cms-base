@@ -5,9 +5,9 @@ Widget.types.documentation = {
 		this._element.append(jQuery('<div/>').addClass('accordion'));
 		var container = this._element.find('div.accordion');
 
-		container.accordion({active: 0, heightStyle: 'content', collapsible:false});
+		container.accordion({header: "h4", active: 0, heightStyle: 'content', collapsible:false});
 
-		var heading_prototype = jQuery('<h3/>').html(jQuery('<a/>').attr('href', '#'));
+		var heading_prototype = jQuery('<h4/>').html(jQuery('<a/>').attr('href', '#'));
 		var panel_prototype = jQuery('<div/>').addClass('panel');
 		var link_prototype = jQuery('<a/>');
 
@@ -18,13 +18,18 @@ Widget.types.documentation = {
 				if(documentation.is_main) {
 					count = 0;
 					main_key = key;
+					main_url = documentation.url;
 					var heading = heading_prototype.clone();
 					heading.find('a').text(documentation.title);
 					container.append(heading);
 				} else {
 					if(count === 0) {
-						var parts_panel = panel_prototype.clone().addClass(main_key);
+						var parts_panel = panel_prototype.clone();
 						container.append(parts_panel);
+						// add link to overview with video tutorial info
+						var link = link_prototype.clone().text('Übersicht (VideoTutorial)').attr('href', main_url);
+						_this.append_to_element(container, link);
+
 					}
 					count++;
 					var link = link_prototype.clone().text(documentation.title).attr('href', documentation.url);
