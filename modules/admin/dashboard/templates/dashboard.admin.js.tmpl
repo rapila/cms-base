@@ -46,7 +46,7 @@ jQuery(document).ready(function() {
 				module: module,
 				container: container,
 				heading: heading,
-				content: container.find('.dashboard-widget-content'),
+				content: container.find('.dashboard-widget-content').addClass(module.type),
 				collapse: function() {
 					container.addClass('collapsed');
 				}
