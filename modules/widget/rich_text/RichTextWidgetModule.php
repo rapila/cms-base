@@ -3,10 +3,10 @@
  * @package modules.widget
  */
 class RichTextWidgetModule extends PersistentWidgetModule {
-	
+
 	private $sModuleContents;
 	private $aModuleSettings;
-	
+
 	public function __construct($sSessionKey = null, $sModuleContents = null, $mModuleSettings = null) {
 		parent::__construct($sSessionKey);
 		$this->sModuleContents = $sModuleContents;
@@ -40,7 +40,7 @@ class RichTextWidgetModule extends PersistentWidgetModule {
 
 		$this->setSetting('language', Session::language());
 	}
-	
+
 	public static function includeResources($oResourceIncluder = null) {
 		if($oResourceIncluder === null) {
 			$oResourceIncluder = ResourceIncluder::defaultIncluder();
@@ -52,7 +52,7 @@ class RichTextWidgetModule extends PersistentWidgetModule {
 		$oResourceIncluder->addCustomJs('CKEDITOR_BASEPATH = "'.$oCkEditor->getFrontendPath().'/";');
 		$oResourceIncluder->addResource('widget/ckeditor/ckeditor.js');
 	}
-	
+
 	public function setTemplate($mTemplate) {
 		$aCssUrls = array();
 		//Important for CSS
@@ -84,7 +84,7 @@ class RichTextWidgetModule extends PersistentWidgetModule {
 		}
 		$this->setSetting('contentsCss', $aCssUrls);
 	}
-	
+
 	private function cleanupCss() {
 		$aCssUrls = array();
 		if(isset($this->aModuleSettings['css_files'])) {
@@ -101,7 +101,7 @@ class RichTextWidgetModule extends PersistentWidgetModule {
 		unset($this->aModuleSettings['css_files']);
 		$this->setSetting('contentsCss', $aCssUrls);
 	}
-	
+
 	private function cleanupStyles() {
 		$aClasses = array();
 		if(isset($this->aModuleSettings['classes'])) {
@@ -152,7 +152,7 @@ class RichTextWidgetModule extends PersistentWidgetModule {
 			unset($this->aModuleSettings['toolbar']);
 		}
 	}
-	
+
 	private function cleanupFormatTags() {
 		$aTags = array();
 		if(isset($this->aModuleSettings['blockformats'])) {
@@ -172,18 +172,18 @@ class RichTextWidgetModule extends PersistentWidgetModule {
 			$this->setSetting('format_tags', implode(';', $aTags));
 		}
 	}
-	
+
 	public function getSettings($sKey, $mDefault = null) {
 		if(isset($this->aModuleSettings[$sKey])) {
 			return $this->aModuleSettings[$sKey];
 		}
 		return $mDefault;
 	}
-	
+
 	public function getElementType() {
 		return new TagWriter('div', array(), new TagWriter('textarea', array(), ' '));
 	}
-	
+
 	public function getModuleContents() {
 		return $this->sModuleContents;
 	}
