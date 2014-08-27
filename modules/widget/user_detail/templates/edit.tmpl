@@ -1,9 +1,11 @@
 <form>
 	<div class="status_section">
-		<input type="checkbox" name="is_admin" /><label for="is_admin">{{writeString=wns.user.is_admin}}</label><br />
-		<input type="checkbox" name="is_backend_login_enabled" /><label for="is_backend_login_enabled">{{writeString=wns.user.is_backend_login_enabled}}</label><br />
-		<input type="checkbox" name="is_admin_login_enabled" /><label for="is_admin_login_enabled">{{writeString=wns.user.is_admin_login_enabled}}</label><br />
-		<input type="checkbox" name="is_inactive" /><label for="is_inactive">{{writeString=wns.is_inactive}}</label><br />
+		<div class="checkboxes">
+			<input type="checkbox" name="is_admin" /><label for="is_admin">{{writeString=wns.user.is_admin}}</label><br />
+			<input type="checkbox" name="is_backend_login_enabled" /><label for="is_backend_login_enabled">{{writeString=wns.user.is_backend_login_enabled}}</label><br />
+			<input type="checkbox" name="is_admin_login_enabled" /><label for="is_admin_login_enabled">{{writeString=wns.user.is_admin_login_enabled}}</label><br />
+			<input type="checkbox" name="is_inactive" /><label for="is_inactive">{{writeString=wns.is_inactive}}</label><br />
+		</div>
 		<div class="hide_if_not_saved">
 			<label>{{writeString=wns.created_info}}:</label><span class="created_info status"></span><br />
 			<label>{{writeString=wns.updated.info}}:</label><span class="updated_info status"></span><br />

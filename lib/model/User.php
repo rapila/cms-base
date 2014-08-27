@@ -5,11 +5,11 @@ require_once 'model/om/BaseUser.php';
 
 /**
  * @package model
- */ 
+ */
 class User extends BaseUser {
-	
+
 	public static $ALL_ROLES = null;
-	
+
 	private static $CACHED_ADMIN_SETTINGS = null;
 	private static $ADMIN_SETTINGS_SET = array();
 
@@ -17,15 +17,15 @@ class User extends BaseUser {
 	const IS_ADMIN_LOGIN_ENABLED = 'user-admin_area';
 	const IS_FRONTEND_USER = 'user-frontend';
 	const IS_ADMIN_USER = 'user-admin';
-	
+
 	public function getFullName() {
 		return implode(' ', $this->getFullNameArray());
 	}
-	
+
 	public function getFullNameInverted($sSeparator=', ') {
 		return implode($sSeparator=', ', array_reverse($this->getFullNameArray()));
 	}
-	
+
 	public function getFullNameArray() {
 		$aResult = array();
 		if($this->getFirstName()) {
@@ -36,7 +36,7 @@ class User extends BaseUser {
 		}
 		return $aResult;
 	}
-	
+
 	public function getInitials() {
 		return strtolower(substr($this->getFirstName(),0,1).substr($this->getLastName(),0,1));
 	}
@@ -53,18 +53,18 @@ class User extends BaseUser {
 		}
 		return self::IS_BACKEND_LOGIN_ENABLED;
 	}
-	
+
 	public function isFirstAdministrator() {
-		return (UserPeer::doCount(new Criteria()) === 1) 
-						&& $this->getIsAdmin() 
+		return (UserPeer::doCount(new Criteria()) === 1)
+						&& $this->getIsAdmin()
 						&& !$this->getIsInactive()
 						&& $this->getIsBackendLoginEnabled();
 	}
-	
+
 	public function requiresUserName() {
 		return trim($this->getFullName()) === '';
 	}
-	
+
 	public function isSessionUser() {
 		return $this->getId() === Session::getSession()->getUserId();
 	}
@@ -73,7 +73,7 @@ class User extends BaseUser {
 		if($this->getIsAdmin()) {
 			return true;
 		}
-		
+
 		foreach($this->allRoles() as $oRole) {
 			if($oRole->may($mPage, $sRightName)) {
 				return true;
@@ -81,7 +81,7 @@ class User extends BaseUser {
 		}
 		return false;
 	}
-	
+
 	public function mayEditPageDetails($mPage) {
 		return $this->may($mPage, 'edit_page_details');
 	}
@@ -105,11 +105,11 @@ class User extends BaseUser {
 	public function mayViewPage($mPage) {
 		return $this->may($mPage, 'view_page');
 	}
-	
+
 	public function mayUseAdminModule($sAdminModuleName, $bCheckEnabled = true) {
 		return $this->mayUseModuleOfTypeAndName('admin', $sAdminModuleName, $bCheckEnabled);
 	}
-	
+
 	public function mayUseModuleOfTypeAndName($sModuleType, $sModuleName, $bCheckEnabled = true) {
 		//Case 1: Module is disabled (this check is not mandatory): deny
 		if($bCheckEnabled && !Module::isModuleEnabled($sModuleType, $sModuleName)) {
@@ -147,7 +147,7 @@ class User extends BaseUser {
 		//Case 7: User is not in allowed roles
 		return false;
 	}
-	
+
 	public function getAdminSettings($sSection, $mDefaultResult = array()) {
 		if(self::$CACHED_ADMIN_SETTINGS === null) {
 			self::$CACHED_ADMIN_SETTINGS = $this->allAdminSettings();
@@ -157,7 +157,7 @@ class User extends BaseUser {
 		}
 		return self::$CACHED_ADMIN_SETTINGS[$sSection];
 	}
-	
+
 	public function setAdminSettings($sSection, $mValue) {
 		if(self::$CACHED_ADMIN_SETTINGS === null) {
 			self::$CACHED_ADMIN_SETTINGS = $this->allAdminSettings();
@@ -170,20 +170,20 @@ class User extends BaseUser {
 		}
 		parent::setBackendSettings(serialize($aToSave));
 	}
-	
+
 	public function resetBackendSettings() {
 		return parent::setBackendSettings(null);
 	}
-	
+
 	public function getBackendSettings() {
 		// Never call getBackendSettings directly!
 		return null;
 	}
-	
+
 	public function setBackendSettings($mSettings) {
 		throw new Exception('Never call setBackendSettings directly!');
 	}
-	
+
 	private function allAdminSettings() {
 		$mSettings = parent::getBackendSettings();
 		if($mSettings === null) {
@@ -194,7 +194,7 @@ class User extends BaseUser {
 		}
 		return unserialize($mSettings);
 	}
-	
+
 	public function getGroups($bReturnNamesOnly = false) {
 		$aResult = array();
 		foreach($this->getUserGroupsRelatedByUserIdJoinGroup() as $oGroupUser) {
@@ -206,7 +206,7 @@ class User extends BaseUser {
 		}
 		return $aResult;
 	}
-	
+
 	public function getRoles($bReturnNamesOnly = false) {
 		$aResult = array();
 		$aUserRoles = $bReturnNamesOnly ? $this->getUserRolesRelatedByUserId() : $this->getUserRolesRelatedByUserIdJoinRole();
@@ -219,7 +219,7 @@ class User extends BaseUser {
 		}
 		return $aResult;
 	}
-	
+
 	public function allRoles() {
 		if(self::$ALL_ROLES === null) {
 			self::$ALL_ROLES = array();
@@ -234,11 +234,11 @@ class User extends BaseUser {
 		}
 		return self::$ALL_ROLES;
 	}
-	
+
 	public function mayEditUser($oUser = null) {
 		return UserPeer::mayOperateOn($this, $oUser, 'update');
 	}
-	
+
 	public function getMissingRights($mPage, $bInheritedOnly = false) {
 		$aResult = null;
 		foreach($this->allRoles() as $oRole) {
@@ -250,15 +250,15 @@ class User extends BaseUser {
 		}
 		return $aResult;
 	}
-	
+
 	public function getActiveUserGroupIds($bAsString = false) {
 		$aResult = array();
 		foreach($this->getUserGroupsRelatedByUserId() as $oUserGroup) {
 			$aResult[] = $bAsString ? (string) $oUserGroup->getGroupId() : $oUserGroup->getGroupId();
 		}
 		return $aResult;
-	} 
-	
+	}
+
 	public function getActiveUserRoleKeys() {
 		return $this->getRoles(true);
 	}
@@ -274,7 +274,7 @@ class User extends BaseUser {
 		}
 		return false;
 	}
-	
+
 	public function hasRole($mRole) {
 		if($mRole instanceof Role) {
 			$mRole = $mRole->getRoleKey();
@@ -282,7 +282,7 @@ class User extends BaseUser {
 		$aRoles = $this->allRoles();
 		return isset($aRoles[$mRole]);
 	}
-	
+
 	public function setPassword($sPassword, $cPasswordHashMethod = null) {
 		if(Settings::getSetting('security', 'generate_digest_secrets', false) === true) {
 			$this->setDigestHA1(md5($this->getUsername().':'.Session::getRealm().':'.$sPassword));
@@ -297,7 +297,7 @@ class User extends BaseUser {
 		}
 		return parent::setPassword($sPassword);
 	}
-	
+
 	public function getLanguageName() {
 		return StringPeer::getString('language.'.$this->getLanguageId(), null, $this->getLanguageId());
 	}
