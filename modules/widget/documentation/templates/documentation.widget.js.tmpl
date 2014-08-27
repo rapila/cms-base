@@ -3,12 +3,10 @@ Widget.types.documentation = {
 	prepare: function() {
 		var _this = this;
 
-		this._element.append(jQuery('<div/>').addClass('accordion'));
-		var container = this._element.find('div.accordion');
+		var container =jQuery('<div/>').addClass('accordion').hide();
+		this._element.append(container);
 
-		container.accordion({header: "h4", active: 0, heightStyle: 'content', collapsible:false});
-
-		var heading_prototype = jQuery('<h4/>').html(jQuery('<a/>').attr('href', '#'));
+		var heading_prototype = jQuery('<h4/>').append(jQuery('<a/>').attr('href', '#'));
 		var panel_prototype = jQuery('<div/>').addClass('panel');
 		var link_prototype = jQuery('<a/>');
 		var intro_link_text = " {{writeString=wns.documentation.intro_link_text}}";
@@ -43,6 +41,7 @@ Widget.types.documentation = {
 			// append support tab and content
 			this.loadSupportTab(function(support) {
 				if(support.heading) {
+					loaded = false;
 					var heading = heading_prototype.clone();
 					heading.find('a').text(support.heading);
 					container.append(heading);
@@ -54,11 +53,17 @@ Widget.types.documentation = {
 					var link = link_prototype.clone().text(support.link_text).attr('href', support.link);
 					_this.append_to_element(container, link);
 				}
+				container.accordion({active: 0, heightStyle: 'content', collapsible:false});
+				container.show();
 			});
 		});
 	},
 
 	append_to_element: function(container, link) {
 		container.find('div.panel').last().append(link);
+	},
+
+	load_support_tab: function() {
+
 	}
 };
