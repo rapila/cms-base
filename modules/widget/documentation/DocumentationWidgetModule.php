@@ -38,8 +38,16 @@ class DocumentationWidgetModule extends PersistentWidgetModule {
 				unset(self::$COUNT_PARTS[$sName]);
 			}
 		}
-		ErrorHandler::log('$METADATA', self::$METADATA);
 		return self::$METADATA;
+	}
+
+	public function loadSupportTab() {
+		// should be configurable
+		$oSupport = new StdClass();
+		$oSupport->heading = "Support SchulCMS";
+		$oSupport->link_text = "Support und Vorgehen";
+		$oSupport->link = "http://www.schulcms.ch/support";
+		return $oSupport;
 	}
 
 	private function format($sKey, $aLanguageData) {
