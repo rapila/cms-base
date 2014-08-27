@@ -1,22 +1,21 @@
 <?php
 
 class NotFoundFrontendModule extends DynamicFrontendModule {
-                                          
-  public function __construct($oLanguageObject, $aRequestPath = null) {
-    parent::__construct($oLanguageObject, $aRequestPath);
-  }
+	public function __construct($oLanguageObject, $aRequestPath = null) {
+		parent::__construct($oLanguageObject, $aRequestPath);
+	}
 
-  public function renderFrontend() {
-    $oTemplate = $this->constructTemplate('detail');
-    $oTemplate->replaceIdentifier('request_uri', $_SERVER['REQUEST_URI']);
-    return $oTemplate;
-  }
+	public function renderFrontend() {
+		$oTemplate = $this->constructTemplate('detail');
+		$oTemplate->replaceIdentifier('request_uri', $_SERVER['REQUEST_URI']);
+		return $oTemplate;
+	}
 
-  public function renderBackend() {
-    return StringPeer::getString('frontend_module.save_to_activate');
-  }
+	public function renderBackend() {
+		return StringPeer::getString('frontend_module.save_to_activate');
+	}
 
-  public function getSaveData($aData) {
-    return "";
-  }
+	public function getSaveData($aData) {
+		return "";
+	}
 }

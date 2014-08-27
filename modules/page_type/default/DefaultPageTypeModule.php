@@ -492,9 +492,9 @@ class DefaultPageTypeModule extends PageTypeModule {
 		}
 
 		//Change values
-		foreach($oCss->getAllValues(null, true) as $mValue) {
-			if($mValue instanceof CSSSize && $mValue->isSize() && !$mValue->isRelative()) {
-				$mValue->setSize($mValue->getSize()/3);
+		foreach($oCss->getAllValues() as $mValue) {
+			if($mValue instanceof CSSSize && !$mValue->isRelative()) {
+					$mValue->setSize($mValue->getSize()/3);
 			}
 		}
 
