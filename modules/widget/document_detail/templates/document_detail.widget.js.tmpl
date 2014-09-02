@@ -2,37 +2,13 @@ Widget.types.document_detail = {
 	initialize: function() {
 		var _this = this;
 
-		// Handle initial values
-		this.handle('saving', function(event, saveData) {
-			for(var key in _this.settings.initial) {
-				if(key in saveData) {
-					continue;
-				}
-				saveData[key] = _this.settings.initial[key];
-			}
-		});
-
 		this._element = Widget.parseHTML("{{includeTemplate=edit}}");
 		this._element.find('div.hide_if_not_saved').hide();
-		this.file_upload = this._element.find("input[name='file_upload']");
-		this.upload_file_button = this._element.find('.upload_file').button();
-		this.file_upload.change(function() {
-			_this.upload_file_button.button('option','disabled', !_this.file_upload.val());
-		});
-		_this.upload_file_button.click(function() {
-			var file = _this.file_upload[0].files[0];
-			_this.file_upload.prop('disabled', true);
-			_this.uploader.upload_file(file, _this.upload_settings());
-			return false;
-		});
-		this.current_detail_id = null;
-		this.settings.hidden_inputs = this.settings.hidden_inputs.concat(this.settings.is_called_externally ? this.settings.externally_hidden_inputs : []);
-		jQuery.each(_this.settings.hidden_inputs, function(i, input_name) {
-			var input = _this._element.find(":input[name='" + input_name + "']");
-			input.remove();
-			_this._element.find("label[for='" + input_name + "']").remove();
-		});
 
+		this.current_detail_id = null;
+		this.hide_inputs_if_externally_managed();
+
+		// Prepare document_category_id, language_id dropdowns and others
 		this._element.find(":input[name='document_category_id']").prepareWidget(function(category_widget) {
 			category_widget.settings.initial_selection = _this.settings.initial.document_category_id;
 			category_widget.settings.show_all = false;
@@ -44,6 +20,26 @@ Widget.types.document_detail = {
 			popover.handle('popover-chosen', function(event, chosen) {
 				popover._element.val(chosen.children('img').data('license'));
 			});
+		});
+
+		// Handle file upload
+		this.file_upload = this._element.find("input[name='file_upload']");
+		this.upload_file_button = this._element.find('.upload_file').button();
+		this.file_upload.change(function() {
+			_this.upload_file_button.button('option','disabled', !_this.file_upload.val());
+		});
+		_this.upload_file_button.click(function() {
+			var file = _this.file_upload[0].files[0];
+			_this.file_upload.prop('disabled', true);
+			_this.uploader.upload_file(file, _this.upload_settings());
+			return false;
+		});
+		this.uploader = Widget.create('file_upload', function(uploader) {
+			_this.uploader = uploader;
+			_this.uploader.allow_drag_to(_this._element, null, _this.upload_settings.bind(_this), true);
+		});
+		this.file_upload.change(function(event) {
+			_this.detail_widget.clear_validation();
 		});
 
 		// Tagging
@@ -58,16 +54,15 @@ Widget.types.document_detail = {
 			});
 		}, jQuery.noop);
 
-		// Upload stuff
-		this.uploader = Widget.create('file_upload', function(uploader) {
-			_this.uploader = uploader;
-			_this.uploader.allow_drag_to(_this._element, null, _this.upload_settings.bind(_this), true);
+		// Handle initial values
+		this.handle('saving', function(event, saveData) {
+			for(var key in _this.settings.initial) {
+				if(key in saveData) {
+					continue;
+				}
+				saveData[key] = _this.settings.initial[key];
+			}
 		});
-
-		this.file_upload.change(function(event) {
-			_this.detail_widget.clear_validation();
-		});
-
 		// Delete “unsaved” documents on close
 		this.handle('saved', function() {
 			this.has_been_saved = true;
@@ -81,6 +76,18 @@ Widget.types.document_detail = {
 
 		// Create widget
 		Widget.callStatic('detail', 'create_for_instance', this);
+	},
+
+	hide_inputs_if_externally_managed: function() {
+		var _this = this;
+		if(!this.settings.is_called_externally) {
+			return;
+		}
+		jQuery.each(this.settings.hidden_inputs.concat(this.settings.externally_hidden_inputs), function(i, input_name) {
+			var input = _this._element.find(":input[name='" + input_name + "']");
+			input.remove();
+			_this._element.find("label[for='" + input_name + "']").remove();
+		});
 	},
 
 	upload_settings: function() {
@@ -104,6 +111,8 @@ Widget.types.document_detail = {
 		if(!for_update) {
 			this.has_been_saved = true;
 		}
+		this.hide_inputs_if_externally_managed();
+
 		this.detail_widget.disable();
 		this.documentData(function(document_data) {
 			this.current_detail_id = document_data.Id;

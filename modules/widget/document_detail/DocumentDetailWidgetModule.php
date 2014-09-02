@@ -90,8 +90,12 @@ class DocumentDetailWidgetModule extends PersistentWidgetModule {
 		$oDocument->setName($aDocumentData['name']);
 		$oDocument->setLanguageId($aDocumentData['language_id']);
 		$oDocument->setDocumentCategoryId(is_numeric($aDocumentData['document_category_id']) ? $aDocumentData['document_category_id'] : null);
-		$oDocument->setIsProtected($aDocumentData['is_protected']);
-		$oDocument->setIsInactive($aDocumentData['is_inactive']);
+		if(isset($aDocumentData['is_protected'])) {
+			$oDocument->setIsProtected($aDocumentData['is_protected']);
+		}
+		if(isset($aDocumentData['is_inactive'])) {
+			$oDocument->setIsInactive($aDocumentData['is_inactive']);
+		}
 		$oDocument->setDescription($aDocumentData['description']);
 		$oDocument->setAuthor($aDocumentData['author']);
 		$oDocument->setLicense($aDocumentData['license']);

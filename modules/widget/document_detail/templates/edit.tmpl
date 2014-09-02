@@ -36,21 +36,21 @@
 		<label for="language_id">{{writeString=wns.language}}</label>
 		<select name="language_id" class="ui-widget-content" data-widget-type="language_input"></select><br />
 		<div class="group_fields">
-			<label for="content_created_at">{{writeString=wns.document.content_created_at}}</label>
-			<input type="text" name="content_created_at" class="ui-widget-content autowidth" size="10" /><br />
-		</div>
-		<div class="group_fields" style="margin-left:2em;">
-			<label for="is_protected">{{writeString=wns.is_protected}}</label>
-			<input type="checkbox" name="is_protected" />
-		</div>
-		<br clear="left" />
-		<div class="group_fields">
 			<label for="author">{{writeString=wns.document.author-license}}</label>
-			<input type="text" name="author" class="ui-widget-content" style="width:10em;margin-right:1em;"  />
+			<input type="text" name="author" class="ui-widget-content author" />
 		</div>
 		<div class="group_fields">
 			<label for="license">{{writeString=wns.document.author-license_type}}</label>
-			<input type="text" name="license" class="ui-widget-content help" title="{{writeString=wns.document.author-license_type.info}}" data-widget-type="popover" style="width:10em;"/><br />
+			<input type="text" name="license" class="ui-widget-content license help" title="{{writeString=wns.document.author-license_type.info}}" data-widget-type="popover" /><br />
+		</div>
+		<br clear="left" />
+		<div class="group_fields">
+			<label for="content_created_at">{{writeString=wns.document.content_created_at}}</label>
+			<input type="text" name="content_created_at" class="ui-widget-content content_created_at_created_at" size="10" /><br />
+		</div>
+		<div class="group_fields" style="margin-left:5em;">
+			<label for="is_protected">{{writeString=wns.is_protected}}</label>
+			<input type="checkbox" name="is_protected" />
 		</div>
 	</div>
 </form>
