@@ -3,25 +3,25 @@ Widget.types.link_category_input = {
 		this.reload();
 		Widget.handle('rapila-link_category_changed', this.reload.bind(this));
 	},
-	
+
 	reload: function() {
 		var _this = this;
 		var current = this._element.val();
 		this._element.empty();
 		this.listCategories(function(categories) {
 			this._element.populate({'': "{{writeString=wns.choose}}"});
-			this._element.populate(categories);
+			this._element.populate(categories, null, false);
 			if(current) {
 				this._element.val(current);
 			} else {
-				this._element.val(_this.settings.initial_selection || '');
+				this._element.val(jQuery.isNumeric(_this.settings.initial_selection) ?  _this.settings.initial_selection : '');
 			}
 		});
 		if(this.settings.disabled) {
 			this._element.attr('disabled', true);
 		}
 	},
-	
+
 	val: function(value) {
 		if(arguments.length) {
 			this._element.val(value);
@@ -30,7 +30,7 @@ Widget.types.link_category_input = {
 		}
 		return this._element.val();
 	},
-	
+
 	settings: {
 		initial_selection: null
 	}
