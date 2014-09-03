@@ -18,7 +18,6 @@
  * @method DocumentQuery orderByDocumentTypeId($order = Criteria::ASC) Order by the document_type_id column
  * @method DocumentQuery orderByDocumentCategoryId($order = Criteria::ASC) Order by the document_category_id column
  * @method DocumentQuery orderByIsPrivate($order = Criteria::ASC) Order by the is_private column
- * @method DocumentQuery orderByIsInactive($order = Criteria::ASC) Order by the is_inactive column
  * @method DocumentQuery orderByIsProtected($order = Criteria::ASC) Order by the is_protected column
  * @method DocumentQuery orderBySort($order = Criteria::ASC) Order by the sort column
  * @method DocumentQuery orderByHash($order = Criteria::ASC) Order by the hash column
@@ -39,7 +38,6 @@
  * @method DocumentQuery groupByDocumentTypeId() Group by the document_type_id column
  * @method DocumentQuery groupByDocumentCategoryId() Group by the document_category_id column
  * @method DocumentQuery groupByIsPrivate() Group by the is_private column
- * @method DocumentQuery groupByIsInactive() Group by the is_inactive column
  * @method DocumentQuery groupByIsProtected() Group by the is_protected column
  * @method DocumentQuery groupBySort() Group by the sort column
  * @method DocumentQuery groupByHash() Group by the hash column
@@ -94,7 +92,6 @@
  * @method Document findOneByDocumentTypeId(int $document_type_id) Return the first Document filtered by the document_type_id column
  * @method Document findOneByDocumentCategoryId(int $document_category_id) Return the first Document filtered by the document_category_id column
  * @method Document findOneByIsPrivate(boolean $is_private) Return the first Document filtered by the is_private column
- * @method Document findOneByIsInactive(boolean $is_inactive) Return the first Document filtered by the is_inactive column
  * @method Document findOneByIsProtected(boolean $is_protected) Return the first Document filtered by the is_protected column
  * @method Document findOneBySort(int $sort) Return the first Document filtered by the sort column
  * @method Document findOneByHash(string $hash) Return the first Document filtered by the hash column
@@ -115,7 +112,6 @@
  * @method array findByDocumentTypeId(int $document_type_id) Return Document objects filtered by the document_type_id column
  * @method array findByDocumentCategoryId(int $document_category_id) Return Document objects filtered by the document_category_id column
  * @method array findByIsPrivate(boolean $is_private) Return Document objects filtered by the is_private column
- * @method array findByIsInactive(boolean $is_inactive) Return Document objects filtered by the is_inactive column
  * @method array findByIsProtected(boolean $is_protected) Return Document objects filtered by the is_protected column
  * @method array findBySort(int $sort) Return Document objects filtered by the sort column
  * @method array findByHash(string $hash) Return Document objects filtered by the hash column
@@ -230,7 +226,7 @@ abstract class BaseDocumentQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `id`, `name`, `original_name`, `description`, `content_created_at`, `license`, `author`, `language_id`, `owner_id`, `document_type_id`, `document_category_id`, `is_private`, `is_inactive`, `is_protected`, `sort`, `hash`, `created_at`, `updated_at`, `created_by`, `updated_by` FROM `documents` WHERE `id` = :p0';
+        $sql = 'SELECT `id`, `name`, `original_name`, `description`, `content_created_at`, `license`, `author`, `language_id`, `owner_id`, `document_type_id`, `document_category_id`, `is_private`, `is_protected`, `sort`, `hash`, `created_at`, `updated_at`, `created_by`, `updated_by` FROM `documents` WHERE `id` = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -735,33 +731,6 @@ abstract class BaseDocumentQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(DocumentPeer::IS_PRIVATE, $isPrivate, $comparison);
-    }
-
-    /**
-     * Filter the query on the is_inactive column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByIsInactive(true); // WHERE is_inactive = true
-     * $query->filterByIsInactive('yes'); // WHERE is_inactive = true
-     * </code>
-     *
-     * @param     boolean|string $isInactive The value to use as filter.
-     *              Non-boolean arguments are converted using the following rules:
-     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
-     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
-     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return DocumentQuery The current query, for fluid interface
-     */
-    public function filterByIsInactive($isInactive = null, $comparison = null)
-    {
-        if (is_string($isInactive)) {
-            $isInactive = in_array(strtolower($isInactive), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
-        }
-
-        return $this->addUsingAlias(DocumentPeer::IS_INACTIVE, $isInactive, $comparison);
     }
 
     /**

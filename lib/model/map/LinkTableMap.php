@@ -47,7 +47,6 @@ class LinkTableMap extends TableMap
         $this->addForeignKey('link_category_id', 'LinkCategoryId', 'INTEGER', 'link_categories', 'id', false, null, null);
         $this->addColumn('sort', 'Sort', 'INTEGER', false, null, null);
         $this->addColumn('is_private', 'IsPrivate', 'BOOLEAN', false, 1, false);
-        $this->addColumn('is_inactive', 'IsInactive', 'BOOLEAN', false, 1, false);
         $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, null);
         $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', false, null, null);
         $this->addForeignKey('created_by', 'CreatedBy', 'INTEGER', 'users', 'id', false, null, null);

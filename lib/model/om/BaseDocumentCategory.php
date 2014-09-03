@@ -61,13 +61,6 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
     protected $is_externally_managed;
 
     /**
-     * The value for the is_inactive field.
-     * Note: this column has a database default value of: false
-     * @var        boolean
-     */
-    protected $is_inactive;
-
-    /**
      * The value for the created_at field.
      * @var        string
      */
@@ -142,7 +135,6 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
     public function applyDefaultValues()
     {
         $this->is_externally_managed = false;
-        $this->is_inactive = false;
     }
 
     /**
@@ -208,17 +200,6 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
     {
 
         return $this->is_externally_managed;
-    }
-
-    /**
-     * Get the [is_inactive] column value.
-     *
-     * @return boolean
-     */
-    public function getIsInactive()
-    {
-
-        return $this->is_inactive;
     }
 
     /**
@@ -437,35 +418,6 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
     } // setIsExternallyManaged()
 
     /**
-     * Sets the value of the [is_inactive] column.
-     * Non-boolean arguments are converted using the following rules:
-     *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
-     *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
-     * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
-     *
-     * @param boolean|integer|string $v The new value
-     * @return DocumentCategory The current object (for fluent API support)
-     */
-    public function setIsInactive($v)
-    {
-        if ($v !== null) {
-            if (is_string($v)) {
-                $v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
-            } else {
-                $v = (boolean) $v;
-            }
-        }
-
-        if ($this->is_inactive !== $v) {
-            $this->is_inactive = $v;
-            $this->modifiedColumns[] = DocumentCategoryPeer::IS_INACTIVE;
-        }
-
-
-        return $this;
-    } // setIsInactive()
-
-    /**
      * Sets the value of [created_at] column to a normalized version of the date/time value specified.
      *
      * @param mixed $v string, integer (timestamp), or DateTime value.
@@ -575,10 +527,6 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
                 return false;
             }
 
-            if ($this->is_inactive !== false) {
-                return false;
-            }
-
         // otherwise, everything was equal, so return true
         return true;
     } // hasOnlyDefaultValues()
@@ -606,11 +554,10 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
             $this->sort = ($row[$startcol + 2] !== null) ? (int) $row[$startcol + 2] : null;
             $this->max_width = ($row[$startcol + 3] !== null) ? (int) $row[$startcol + 3] : null;
             $this->is_externally_managed = ($row[$startcol + 4] !== null) ? (boolean) $row[$startcol + 4] : null;
-            $this->is_inactive = ($row[$startcol + 5] !== null) ? (boolean) $row[$startcol + 5] : null;
-            $this->created_at = ($row[$startcol + 6] !== null) ? (string) $row[$startcol + 6] : null;
-            $this->updated_at = ($row[$startcol + 7] !== null) ? (string) $row[$startcol + 7] : null;
-            $this->created_by = ($row[$startcol + 8] !== null) ? (int) $row[$startcol + 8] : null;
-            $this->updated_by = ($row[$startcol + 9] !== null) ? (int) $row[$startcol + 9] : null;
+            $this->created_at = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
+            $this->updated_at = ($row[$startcol + 6] !== null) ? (string) $row[$startcol + 6] : null;
+            $this->created_by = ($row[$startcol + 7] !== null) ? (int) $row[$startcol + 7] : null;
+            $this->updated_by = ($row[$startcol + 8] !== null) ? (int) $row[$startcol + 8] : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -620,7 +567,7 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
             }
             $this->postHydrate($row, $startcol, $rehydrate);
 
-            return $startcol + 10; // 10 = DocumentCategoryPeer::NUM_HYDRATE_COLUMNS.
+            return $startcol + 9; // 9 = DocumentCategoryPeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating DocumentCategory object", $e);
@@ -942,9 +889,6 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
         if ($this->isColumnModified(DocumentCategoryPeer::IS_EXTERNALLY_MANAGED)) {
             $modifiedColumns[':p' . $index++]  = '`is_externally_managed`';
         }
-        if ($this->isColumnModified(DocumentCategoryPeer::IS_INACTIVE)) {
-            $modifiedColumns[':p' . $index++]  = '`is_inactive`';
-        }
         if ($this->isColumnModified(DocumentCategoryPeer::CREATED_AT)) {
             $modifiedColumns[':p' . $index++]  = '`created_at`';
         }
@@ -982,9 +926,6 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
                         break;
                     case '`is_externally_managed`':
                         $stmt->bindValue($identifier, (int) $this->is_externally_managed, PDO::PARAM_INT);
-                        break;
-                    case '`is_inactive`':
-                        $stmt->bindValue($identifier, (int) $this->is_inactive, PDO::PARAM_INT);
                         break;
                     case '`created_at`':
                         $stmt->bindValue($identifier, $this->created_at, PDO::PARAM_STR);
@@ -1174,18 +1115,15 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
                 return $this->getIsExternallyManaged();
                 break;
             case 5:
-                return $this->getIsInactive();
-                break;
-            case 6:
                 return $this->getCreatedAt();
                 break;
-            case 7:
+            case 6:
                 return $this->getUpdatedAt();
                 break;
-            case 8:
+            case 7:
                 return $this->getCreatedBy();
                 break;
-            case 9:
+            case 8:
                 return $this->getUpdatedBy();
                 break;
             default:
@@ -1222,11 +1160,10 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
             $keys[2] => $this->getSort(),
             $keys[3] => $this->getMaxWidth(),
             $keys[4] => $this->getIsExternallyManaged(),
-            $keys[5] => $this->getIsInactive(),
-            $keys[6] => $this->getCreatedAt(),
-            $keys[7] => $this->getUpdatedAt(),
-            $keys[8] => $this->getCreatedBy(),
-            $keys[9] => $this->getUpdatedBy(),
+            $keys[5] => $this->getCreatedAt(),
+            $keys[6] => $this->getUpdatedAt(),
+            $keys[7] => $this->getCreatedBy(),
+            $keys[8] => $this->getUpdatedBy(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1293,18 +1230,15 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
                 $this->setIsExternallyManaged($value);
                 break;
             case 5:
-                $this->setIsInactive($value);
-                break;
-            case 6:
                 $this->setCreatedAt($value);
                 break;
-            case 7:
+            case 6:
                 $this->setUpdatedAt($value);
                 break;
-            case 8:
+            case 7:
                 $this->setCreatedBy($value);
                 break;
-            case 9:
+            case 8:
                 $this->setUpdatedBy($value);
                 break;
         } // switch()
@@ -1336,11 +1270,10 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
         if (array_key_exists($keys[2], $arr)) $this->setSort($arr[$keys[2]]);
         if (array_key_exists($keys[3], $arr)) $this->setMaxWidth($arr[$keys[3]]);
         if (array_key_exists($keys[4], $arr)) $this->setIsExternallyManaged($arr[$keys[4]]);
-        if (array_key_exists($keys[5], $arr)) $this->setIsInactive($arr[$keys[5]]);
-        if (array_key_exists($keys[6], $arr)) $this->setCreatedAt($arr[$keys[6]]);
-        if (array_key_exists($keys[7], $arr)) $this->setUpdatedAt($arr[$keys[7]]);
-        if (array_key_exists($keys[8], $arr)) $this->setCreatedBy($arr[$keys[8]]);
-        if (array_key_exists($keys[9], $arr)) $this->setUpdatedBy($arr[$keys[9]]);
+        if (array_key_exists($keys[5], $arr)) $this->setCreatedAt($arr[$keys[5]]);
+        if (array_key_exists($keys[6], $arr)) $this->setUpdatedAt($arr[$keys[6]]);
+        if (array_key_exists($keys[7], $arr)) $this->setCreatedBy($arr[$keys[7]]);
+        if (array_key_exists($keys[8], $arr)) $this->setUpdatedBy($arr[$keys[8]]);
     }
 
     /**
@@ -1357,7 +1290,6 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
         if ($this->isColumnModified(DocumentCategoryPeer::SORT)) $criteria->add(DocumentCategoryPeer::SORT, $this->sort);
         if ($this->isColumnModified(DocumentCategoryPeer::MAX_WIDTH)) $criteria->add(DocumentCategoryPeer::MAX_WIDTH, $this->max_width);
         if ($this->isColumnModified(DocumentCategoryPeer::IS_EXTERNALLY_MANAGED)) $criteria->add(DocumentCategoryPeer::IS_EXTERNALLY_MANAGED, $this->is_externally_managed);
-        if ($this->isColumnModified(DocumentCategoryPeer::IS_INACTIVE)) $criteria->add(DocumentCategoryPeer::IS_INACTIVE, $this->is_inactive);
         if ($this->isColumnModified(DocumentCategoryPeer::CREATED_AT)) $criteria->add(DocumentCategoryPeer::CREATED_AT, $this->created_at);
         if ($this->isColumnModified(DocumentCategoryPeer::UPDATED_AT)) $criteria->add(DocumentCategoryPeer::UPDATED_AT, $this->updated_at);
         if ($this->isColumnModified(DocumentCategoryPeer::CREATED_BY)) $criteria->add(DocumentCategoryPeer::CREATED_BY, $this->created_by);
@@ -1429,7 +1361,6 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
         $copyObj->setSort($this->getSort());
         $copyObj->setMaxWidth($this->getMaxWidth());
         $copyObj->setIsExternallyManaged($this->getIsExternallyManaged());
-        $copyObj->setIsInactive($this->getIsInactive());
         $copyObj->setCreatedAt($this->getCreatedAt());
         $copyObj->setUpdatedAt($this->getUpdatedAt());
         $copyObj->setCreatedBy($this->getCreatedBy());
@@ -2003,7 +1934,6 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
         $this->sort = null;
         $this->max_width = null;
         $this->is_externally_managed = null;
-        $this->is_inactive = null;
         $this->created_at = null;
         $this->updated_at = null;
         $this->created_by = null;

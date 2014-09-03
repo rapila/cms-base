@@ -50,7 +50,6 @@ class DocumentTableMap extends TableMap
         $this->addForeignKey('document_type_id', 'DocumentTypeId', 'INTEGER', 'document_types', 'id', true, null, null);
         $this->addForeignKey('document_category_id', 'DocumentCategoryId', 'INTEGER', 'document_categories', 'id', false, null, null);
         $this->addColumn('is_private', 'IsPrivate', 'BOOLEAN', false, 1, false);
-        $this->addColumn('is_inactive', 'IsInactive', 'BOOLEAN', false, 1, false);
         $this->addColumn('is_protected', 'IsProtected', 'BOOLEAN', false, 1, false);
         $this->addColumn('sort', 'Sort', 'INTEGER', false, null, null);
         $this->addForeignKey('hash', 'Hash', 'VARCHAR', 'document_data', 'hash', true, 40, null);

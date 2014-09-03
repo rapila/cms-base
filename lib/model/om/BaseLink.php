@@ -85,13 +85,6 @@ abstract class BaseLink extends BaseObject implements Persistent
     protected $is_private;
 
     /**
-     * The value for the is_inactive field.
-     * Note: this column has a database default value of: false
-     * @var        boolean
-     */
-    protected $is_inactive;
-
-    /**
      * The value for the created_at field.
      * @var        string
      */
@@ -169,7 +162,6 @@ abstract class BaseLink extends BaseObject implements Persistent
     public function applyDefaultValues()
     {
         $this->is_private = false;
-        $this->is_inactive = false;
     }
 
     /**
@@ -279,17 +271,6 @@ abstract class BaseLink extends BaseObject implements Persistent
     {
 
         return $this->is_private;
-    }
-
-    /**
-     * Get the [is_inactive] column value.
-     *
-     * @return boolean
-     */
-    public function getIsInactive()
-    {
-
-        return $this->is_inactive;
     }
 
     /**
@@ -604,35 +585,6 @@ abstract class BaseLink extends BaseObject implements Persistent
     } // setIsPrivate()
 
     /**
-     * Sets the value of the [is_inactive] column.
-     * Non-boolean arguments are converted using the following rules:
-     *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
-     *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
-     * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
-     *
-     * @param boolean|integer|string $v The new value
-     * @return Link The current object (for fluent API support)
-     */
-    public function setIsInactive($v)
-    {
-        if ($v !== null) {
-            if (is_string($v)) {
-                $v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
-            } else {
-                $v = (boolean) $v;
-            }
-        }
-
-        if ($this->is_inactive !== $v) {
-            $this->is_inactive = $v;
-            $this->modifiedColumns[] = LinkPeer::IS_INACTIVE;
-        }
-
-
-        return $this;
-    } // setIsInactive()
-
-    /**
      * Sets the value of [created_at] column to a normalized version of the date/time value specified.
      *
      * @param mixed $v string, integer (timestamp), or DateTime value.
@@ -742,10 +694,6 @@ abstract class BaseLink extends BaseObject implements Persistent
                 return false;
             }
 
-            if ($this->is_inactive !== false) {
-                return false;
-            }
-
         // otherwise, everything was equal, so return true
         return true;
     } // hasOnlyDefaultValues()
@@ -777,11 +725,10 @@ abstract class BaseLink extends BaseObject implements Persistent
             $this->link_category_id = ($row[$startcol + 6] !== null) ? (int) $row[$startcol + 6] : null;
             $this->sort = ($row[$startcol + 7] !== null) ? (int) $row[$startcol + 7] : null;
             $this->is_private = ($row[$startcol + 8] !== null) ? (boolean) $row[$startcol + 8] : null;
-            $this->is_inactive = ($row[$startcol + 9] !== null) ? (boolean) $row[$startcol + 9] : null;
-            $this->created_at = ($row[$startcol + 10] !== null) ? (string) $row[$startcol + 10] : null;
-            $this->updated_at = ($row[$startcol + 11] !== null) ? (string) $row[$startcol + 11] : null;
-            $this->created_by = ($row[$startcol + 12] !== null) ? (int) $row[$startcol + 12] : null;
-            $this->updated_by = ($row[$startcol + 13] !== null) ? (int) $row[$startcol + 13] : null;
+            $this->created_at = ($row[$startcol + 9] !== null) ? (string) $row[$startcol + 9] : null;
+            $this->updated_at = ($row[$startcol + 10] !== null) ? (string) $row[$startcol + 10] : null;
+            $this->created_by = ($row[$startcol + 11] !== null) ? (int) $row[$startcol + 11] : null;
+            $this->updated_by = ($row[$startcol + 12] !== null) ? (int) $row[$startcol + 12] : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -791,7 +738,7 @@ abstract class BaseLink extends BaseObject implements Persistent
             }
             $this->postHydrate($row, $startcol, $rehydrate);
 
-            return $startcol + 14; // 14 = LinkPeer::NUM_HYDRATE_COLUMNS.
+            return $startcol + 13; // 13 = LinkPeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating Link object", $e);
@@ -1138,9 +1085,6 @@ abstract class BaseLink extends BaseObject implements Persistent
         if ($this->isColumnModified(LinkPeer::IS_PRIVATE)) {
             $modifiedColumns[':p' . $index++]  = '`is_private`';
         }
-        if ($this->isColumnModified(LinkPeer::IS_INACTIVE)) {
-            $modifiedColumns[':p' . $index++]  = '`is_inactive`';
-        }
         if ($this->isColumnModified(LinkPeer::CREATED_AT)) {
             $modifiedColumns[':p' . $index++]  = '`created_at`';
         }
@@ -1190,9 +1134,6 @@ abstract class BaseLink extends BaseObject implements Persistent
                         break;
                     case '`is_private`':
                         $stmt->bindValue($identifier, (int) $this->is_private, PDO::PARAM_INT);
-                        break;
-                    case '`is_inactive`':
-                        $stmt->bindValue($identifier, (int) $this->is_inactive, PDO::PARAM_INT);
                         break;
                     case '`created_at`':
                         $stmt->bindValue($identifier, $this->created_at, PDO::PARAM_STR);
@@ -1404,18 +1345,15 @@ abstract class BaseLink extends BaseObject implements Persistent
                 return $this->getIsPrivate();
                 break;
             case 9:
-                return $this->getIsInactive();
-                break;
-            case 10:
                 return $this->getCreatedAt();
                 break;
-            case 11:
+            case 10:
                 return $this->getUpdatedAt();
                 break;
-            case 12:
+            case 11:
                 return $this->getCreatedBy();
                 break;
-            case 13:
+            case 12:
                 return $this->getUpdatedBy();
                 break;
             default:
@@ -1456,11 +1394,10 @@ abstract class BaseLink extends BaseObject implements Persistent
             $keys[6] => $this->getLinkCategoryId(),
             $keys[7] => $this->getSort(),
             $keys[8] => $this->getIsPrivate(),
-            $keys[9] => $this->getIsInactive(),
-            $keys[10] => $this->getCreatedAt(),
-            $keys[11] => $this->getUpdatedAt(),
-            $keys[12] => $this->getCreatedBy(),
-            $keys[13] => $this->getUpdatedBy(),
+            $keys[9] => $this->getCreatedAt(),
+            $keys[10] => $this->getUpdatedAt(),
+            $keys[11] => $this->getCreatedBy(),
+            $keys[12] => $this->getUpdatedBy(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1545,18 +1482,15 @@ abstract class BaseLink extends BaseObject implements Persistent
                 $this->setIsPrivate($value);
                 break;
             case 9:
-                $this->setIsInactive($value);
-                break;
-            case 10:
                 $this->setCreatedAt($value);
                 break;
-            case 11:
+            case 10:
                 $this->setUpdatedAt($value);
                 break;
-            case 12:
+            case 11:
                 $this->setCreatedBy($value);
                 break;
-            case 13:
+            case 12:
                 $this->setUpdatedBy($value);
                 break;
         } // switch()
@@ -1592,11 +1526,10 @@ abstract class BaseLink extends BaseObject implements Persistent
         if (array_key_exists($keys[6], $arr)) $this->setLinkCategoryId($arr[$keys[6]]);
         if (array_key_exists($keys[7], $arr)) $this->setSort($arr[$keys[7]]);
         if (array_key_exists($keys[8], $arr)) $this->setIsPrivate($arr[$keys[8]]);
-        if (array_key_exists($keys[9], $arr)) $this->setIsInactive($arr[$keys[9]]);
-        if (array_key_exists($keys[10], $arr)) $this->setCreatedAt($arr[$keys[10]]);
-        if (array_key_exists($keys[11], $arr)) $this->setUpdatedAt($arr[$keys[11]]);
-        if (array_key_exists($keys[12], $arr)) $this->setCreatedBy($arr[$keys[12]]);
-        if (array_key_exists($keys[13], $arr)) $this->setUpdatedBy($arr[$keys[13]]);
+        if (array_key_exists($keys[9], $arr)) $this->setCreatedAt($arr[$keys[9]]);
+        if (array_key_exists($keys[10], $arr)) $this->setUpdatedAt($arr[$keys[10]]);
+        if (array_key_exists($keys[11], $arr)) $this->setCreatedBy($arr[$keys[11]]);
+        if (array_key_exists($keys[12], $arr)) $this->setUpdatedBy($arr[$keys[12]]);
     }
 
     /**
@@ -1617,7 +1550,6 @@ abstract class BaseLink extends BaseObject implements Persistent
         if ($this->isColumnModified(LinkPeer::LINK_CATEGORY_ID)) $criteria->add(LinkPeer::LINK_CATEGORY_ID, $this->link_category_id);
         if ($this->isColumnModified(LinkPeer::SORT)) $criteria->add(LinkPeer::SORT, $this->sort);
         if ($this->isColumnModified(LinkPeer::IS_PRIVATE)) $criteria->add(LinkPeer::IS_PRIVATE, $this->is_private);
-        if ($this->isColumnModified(LinkPeer::IS_INACTIVE)) $criteria->add(LinkPeer::IS_INACTIVE, $this->is_inactive);
         if ($this->isColumnModified(LinkPeer::CREATED_AT)) $criteria->add(LinkPeer::CREATED_AT, $this->created_at);
         if ($this->isColumnModified(LinkPeer::UPDATED_AT)) $criteria->add(LinkPeer::UPDATED_AT, $this->updated_at);
         if ($this->isColumnModified(LinkPeer::CREATED_BY)) $criteria->add(LinkPeer::CREATED_BY, $this->created_by);
@@ -1693,7 +1625,6 @@ abstract class BaseLink extends BaseObject implements Persistent
         $copyObj->setLinkCategoryId($this->getLinkCategoryId());
         $copyObj->setSort($this->getSort());
         $copyObj->setIsPrivate($this->getIsPrivate());
-        $copyObj->setIsInactive($this->getIsInactive());
         $copyObj->setCreatedAt($this->getCreatedAt());
         $copyObj->setUpdatedAt($this->getUpdatedAt());
         $copyObj->setCreatedBy($this->getCreatedBy());
@@ -2030,7 +1961,6 @@ abstract class BaseLink extends BaseObject implements Persistent
         $this->link_category_id = null;
         $this->sort = null;
         $this->is_private = null;
-        $this->is_inactive = null;
         $this->created_at = null;
         $this->updated_at = null;
         $this->created_by = null;
