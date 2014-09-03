@@ -44,7 +44,6 @@ Widget.types.link_detail = {
 			this._element.find("input[name='name']").val(link_data.Name);
 			this._element.find("input[name='url']").val(link_data.Url);
 			this._element.find("textarea[name='description']").val(link_data.Description);
-			this._element.find("input[name='is_inactive']").prop('checked', link_data.IsInactive);
 			this._element.find("select[name='language_id']").val(link_data.LanguageId || '');
 			this._element.find(".updated_info").text(link_data.UpdatedInfo);
 			this._element.find(".created_info").text(link_data.CreatedInfo);

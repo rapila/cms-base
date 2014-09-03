@@ -93,9 +93,6 @@ class DocumentDetailWidgetModule extends PersistentWidgetModule {
 		if(isset($aDocumentData['is_protected'])) {
 			$oDocument->setIsProtected($aDocumentData['is_protected']);
 		}
-		if(isset($aDocumentData['is_inactive'])) {
-			$oDocument->setIsInactive($aDocumentData['is_inactive']);
-		}
 		$oDocument->setDescription($aDocumentData['description']);
 		$oDocument->setAuthor($aDocumentData['author']);
 		$oDocument->setLicense($aDocumentData['license']);

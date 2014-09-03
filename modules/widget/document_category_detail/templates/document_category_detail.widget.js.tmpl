@@ -11,7 +11,6 @@ Widget.types.document_category_detail = {
 		this.categoryData(function(category_data) {
 			this._element.find("input[name='name']").val(category_data.Name);
 			this._element.find("input[name='max_width']").val(category_data.MaxWidth);
-			this._element.find("input[name='is_inactive']").prop('checked', category_data.IsInactive);
 			this._element.find("input[name='is_externally_managed']").prop('checked', category_data.IsExternallyManaged);
 			this._element.find(".updated_info").text(category_data.UpdatedInfo);
 			this._element.find(".created_info").text(category_data.CreatedInfo);

@@ -280,7 +280,6 @@
 		<reference local="document_category_id" foreign="id" />
 	</foreign-key>
 	<column name="is_private" type="boolean" size="1" default="0" />
-	<column name="is_inactive" type="boolean" size="1" default="0" />
 	<column name="is_protected" type="boolean" size="1" default="0" />
 	<column name="sort" type="integer" />
 	<behavior name="referenceable" />
@@ -326,7 +325,6 @@
 	<column name="sort" type="integer" />
 	<column name="max_width" type="integer" />
 	<column name="is_externally_managed" type="boolean" size="1" default="0" />
-	<column name="is_inactive" type="boolean" size="1" default="0" />
 	<behavior name="referenceable" />
 	<behavior name="denyable">
 		<parameter name="role_key" value="documents" />
@@ -376,7 +374,6 @@
 	</foreign-key>
 	<column name="sort" type="integer" />
 	<column name="is_private" type="boolean" size="1" default="0" />
-	<column name="is_inactive" type="boolean" size="1" default="0" />
 	<behavior name="referenceable" />
 	<behavior name="taggable" />
 	<behavior name="denyable">
