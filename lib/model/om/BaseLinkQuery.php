@@ -15,7 +15,6 @@
  * @method LinkQuery orderByLinkCategoryId($order = Criteria::ASC) Order by the link_category_id column
  * @method LinkQuery orderBySort($order = Criteria::ASC) Order by the sort column
  * @method LinkQuery orderByIsPrivate($order = Criteria::ASC) Order by the is_private column
- * @method LinkQuery orderByIsInactive($order = Criteria::ASC) Order by the is_inactive column
  * @method LinkQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method LinkQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  * @method LinkQuery orderByCreatedBy($order = Criteria::ASC) Order by the created_by column
@@ -30,7 +29,6 @@
  * @method LinkQuery groupByLinkCategoryId() Group by the link_category_id column
  * @method LinkQuery groupBySort() Group by the sort column
  * @method LinkQuery groupByIsPrivate() Group by the is_private column
- * @method LinkQuery groupByIsInactive() Group by the is_inactive column
  * @method LinkQuery groupByCreatedAt() Group by the created_at column
  * @method LinkQuery groupByUpdatedAt() Group by the updated_at column
  * @method LinkQuery groupByCreatedBy() Group by the created_by column
@@ -71,7 +69,6 @@
  * @method Link findOneByLinkCategoryId(int $link_category_id) Return the first Link filtered by the link_category_id column
  * @method Link findOneBySort(int $sort) Return the first Link filtered by the sort column
  * @method Link findOneByIsPrivate(boolean $is_private) Return the first Link filtered by the is_private column
- * @method Link findOneByIsInactive(boolean $is_inactive) Return the first Link filtered by the is_inactive column
  * @method Link findOneByCreatedAt(string $created_at) Return the first Link filtered by the created_at column
  * @method Link findOneByUpdatedAt(string $updated_at) Return the first Link filtered by the updated_at column
  * @method Link findOneByCreatedBy(int $created_by) Return the first Link filtered by the created_by column
@@ -86,7 +83,6 @@
  * @method array findByLinkCategoryId(int $link_category_id) Return Link objects filtered by the link_category_id column
  * @method array findBySort(int $sort) Return Link objects filtered by the sort column
  * @method array findByIsPrivate(boolean $is_private) Return Link objects filtered by the is_private column
- * @method array findByIsInactive(boolean $is_inactive) Return Link objects filtered by the is_inactive column
  * @method array findByCreatedAt(string $created_at) Return Link objects filtered by the created_at column
  * @method array findByUpdatedAt(string $updated_at) Return Link objects filtered by the updated_at column
  * @method array findByCreatedBy(int $created_by) Return Link objects filtered by the created_by column
@@ -198,7 +194,7 @@ abstract class BaseLinkQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `id`, `name`, `url`, `description`, `language_id`, `owner_id`, `link_category_id`, `sort`, `is_private`, `is_inactive`, `created_at`, `updated_at`, `created_by`, `updated_by` FROM `links` WHERE `id` = :p0';
+        $sql = 'SELECT `id`, `name`, `url`, `description`, `language_id`, `owner_id`, `link_category_id`, `sort`, `is_private`, `created_at`, `updated_at`, `created_by`, `updated_by` FROM `links` WHERE `id` = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -600,33 +596,6 @@ abstract class BaseLinkQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(LinkPeer::IS_PRIVATE, $isPrivate, $comparison);
-    }
-
-    /**
-     * Filter the query on the is_inactive column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByIsInactive(true); // WHERE is_inactive = true
-     * $query->filterByIsInactive('yes'); // WHERE is_inactive = true
-     * </code>
-     *
-     * @param     boolean|string $isInactive The value to use as filter.
-     *              Non-boolean arguments are converted using the following rules:
-     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
-     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
-     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return LinkQuery The current query, for fluid interface
-     */
-    public function filterByIsInactive($isInactive = null, $comparison = null)
-    {
-        if (is_string($isInactive)) {
-            $isInactive = in_array(strtolower($isInactive), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
-        }
-
-        return $this->addUsingAlias(LinkPeer::IS_INACTIVE, $isInactive, $comparison);
     }
 
     /**

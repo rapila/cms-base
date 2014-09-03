@@ -11,7 +11,6 @@
  * @method DocumentCategoryQuery orderBySort($order = Criteria::ASC) Order by the sort column
  * @method DocumentCategoryQuery orderByMaxWidth($order = Criteria::ASC) Order by the max_width column
  * @method DocumentCategoryQuery orderByIsExternallyManaged($order = Criteria::ASC) Order by the is_externally_managed column
- * @method DocumentCategoryQuery orderByIsInactive($order = Criteria::ASC) Order by the is_inactive column
  * @method DocumentCategoryQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method DocumentCategoryQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  * @method DocumentCategoryQuery orderByCreatedBy($order = Criteria::ASC) Order by the created_by column
@@ -22,7 +21,6 @@
  * @method DocumentCategoryQuery groupBySort() Group by the sort column
  * @method DocumentCategoryQuery groupByMaxWidth() Group by the max_width column
  * @method DocumentCategoryQuery groupByIsExternallyManaged() Group by the is_externally_managed column
- * @method DocumentCategoryQuery groupByIsInactive() Group by the is_inactive column
  * @method DocumentCategoryQuery groupByCreatedAt() Group by the created_at column
  * @method DocumentCategoryQuery groupByUpdatedAt() Group by the updated_at column
  * @method DocumentCategoryQuery groupByCreatedBy() Group by the created_by column
@@ -51,7 +49,6 @@
  * @method DocumentCategory findOneBySort(int $sort) Return the first DocumentCategory filtered by the sort column
  * @method DocumentCategory findOneByMaxWidth(int $max_width) Return the first DocumentCategory filtered by the max_width column
  * @method DocumentCategory findOneByIsExternallyManaged(boolean $is_externally_managed) Return the first DocumentCategory filtered by the is_externally_managed column
- * @method DocumentCategory findOneByIsInactive(boolean $is_inactive) Return the first DocumentCategory filtered by the is_inactive column
  * @method DocumentCategory findOneByCreatedAt(string $created_at) Return the first DocumentCategory filtered by the created_at column
  * @method DocumentCategory findOneByUpdatedAt(string $updated_at) Return the first DocumentCategory filtered by the updated_at column
  * @method DocumentCategory findOneByCreatedBy(int $created_by) Return the first DocumentCategory filtered by the created_by column
@@ -62,7 +59,6 @@
  * @method array findBySort(int $sort) Return DocumentCategory objects filtered by the sort column
  * @method array findByMaxWidth(int $max_width) Return DocumentCategory objects filtered by the max_width column
  * @method array findByIsExternallyManaged(boolean $is_externally_managed) Return DocumentCategory objects filtered by the is_externally_managed column
- * @method array findByIsInactive(boolean $is_inactive) Return DocumentCategory objects filtered by the is_inactive column
  * @method array findByCreatedAt(string $created_at) Return DocumentCategory objects filtered by the created_at column
  * @method array findByUpdatedAt(string $updated_at) Return DocumentCategory objects filtered by the updated_at column
  * @method array findByCreatedBy(int $created_by) Return DocumentCategory objects filtered by the created_by column
@@ -174,7 +170,7 @@ abstract class BaseDocumentCategoryQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `id`, `name`, `sort`, `max_width`, `is_externally_managed`, `is_inactive`, `created_at`, `updated_at`, `created_by`, `updated_by` FROM `document_categories` WHERE `id` = :p0';
+        $sql = 'SELECT `id`, `name`, `sort`, `max_width`, `is_externally_managed`, `created_at`, `updated_at`, `created_by`, `updated_by` FROM `document_categories` WHERE `id` = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -443,33 +439,6 @@ abstract class BaseDocumentCategoryQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(DocumentCategoryPeer::IS_EXTERNALLY_MANAGED, $isExternallyManaged, $comparison);
-    }
-
-    /**
-     * Filter the query on the is_inactive column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByIsInactive(true); // WHERE is_inactive = true
-     * $query->filterByIsInactive('yes'); // WHERE is_inactive = true
-     * </code>
-     *
-     * @param     boolean|string $isInactive The value to use as filter.
-     *              Non-boolean arguments are converted using the following rules:
-     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
-     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
-     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return DocumentCategoryQuery The current query, for fluid interface
-     */
-    public function filterByIsInactive($isInactive = null, $comparison = null)
-    {
-        if (is_string($isInactive)) {
-            $isInactive = in_array(strtolower($isInactive), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
-        }
-
-        return $this->addUsingAlias(DocumentCategoryPeer::IS_INACTIVE, $isInactive, $comparison);
     }
 
     /**

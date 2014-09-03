@@ -43,7 +43,6 @@ class DocumentCategoryTableMap extends TableMap
         $this->addColumn('sort', 'Sort', 'INTEGER', false, null, null);
         $this->addColumn('max_width', 'MaxWidth', 'INTEGER', false, null, null);
         $this->addColumn('is_externally_managed', 'IsExternallyManaged', 'BOOLEAN', false, 1, false);
-        $this->addColumn('is_inactive', 'IsInactive', 'BOOLEAN', false, 1, false);
         $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, null);
         $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', false, null, null);
         $this->addForeignKey('created_by', 'CreatedBy', 'INTEGER', 'users', 'id', false, null, null);

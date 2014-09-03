@@ -103,13 +103,6 @@ abstract class BaseDocument extends BaseObject implements Persistent
     protected $is_private;
 
     /**
-     * The value for the is_inactive field.
-     * Note: this column has a database default value of: false
-     * @var        boolean
-     */
-    protected $is_inactive;
-
-    /**
      * The value for the is_protected field.
      * Note: this column has a database default value of: false
      * @var        boolean
@@ -216,7 +209,6 @@ abstract class BaseDocument extends BaseObject implements Persistent
     public function applyDefaultValues()
     {
         $this->is_private = false;
-        $this->is_inactive = false;
         $this->is_protected = false;
     }
 
@@ -389,17 +381,6 @@ abstract class BaseDocument extends BaseObject implements Persistent
     {
 
         return $this->is_private;
-    }
-
-    /**
-     * Get the [is_inactive] column value.
-     *
-     * @return boolean
-     */
-    public function getIsInactive()
-    {
-
-        return $this->is_inactive;
     }
 
     /**
@@ -816,35 +797,6 @@ abstract class BaseDocument extends BaseObject implements Persistent
     } // setIsPrivate()
 
     /**
-     * Sets the value of the [is_inactive] column.
-     * Non-boolean arguments are converted using the following rules:
-     *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
-     *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
-     * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
-     *
-     * @param boolean|integer|string $v The new value
-     * @return Document The current object (for fluent API support)
-     */
-    public function setIsInactive($v)
-    {
-        if ($v !== null) {
-            if (is_string($v)) {
-                $v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
-            } else {
-                $v = (boolean) $v;
-            }
-        }
-
-        if ($this->is_inactive !== $v) {
-            $this->is_inactive = $v;
-            $this->modifiedColumns[] = DocumentPeer::IS_INACTIVE;
-        }
-
-
-        return $this;
-    } // setIsInactive()
-
-    /**
      * Sets the value of the [is_protected] column.
      * Non-boolean arguments are converted using the following rules:
      *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
@@ -1029,10 +981,6 @@ abstract class BaseDocument extends BaseObject implements Persistent
                 return false;
             }
 
-            if ($this->is_inactive !== false) {
-                return false;
-            }
-
             if ($this->is_protected !== false) {
                 return false;
             }
@@ -1071,14 +1019,13 @@ abstract class BaseDocument extends BaseObject implements Persistent
             $this->document_type_id = ($row[$startcol + 9] !== null) ? (int) $row[$startcol + 9] : null;
             $this->document_category_id = ($row[$startcol + 10] !== null) ? (int) $row[$startcol + 10] : null;
             $this->is_private = ($row[$startcol + 11] !== null) ? (boolean) $row[$startcol + 11] : null;
-            $this->is_inactive = ($row[$startcol + 12] !== null) ? (boolean) $row[$startcol + 12] : null;
-            $this->is_protected = ($row[$startcol + 13] !== null) ? (boolean) $row[$startcol + 13] : null;
-            $this->sort = ($row[$startcol + 14] !== null) ? (int) $row[$startcol + 14] : null;
-            $this->hash = ($row[$startcol + 15] !== null) ? (string) $row[$startcol + 15] : null;
-            $this->created_at = ($row[$startcol + 16] !== null) ? (string) $row[$startcol + 16] : null;
-            $this->updated_at = ($row[$startcol + 17] !== null) ? (string) $row[$startcol + 17] : null;
-            $this->created_by = ($row[$startcol + 18] !== null) ? (int) $row[$startcol + 18] : null;
-            $this->updated_by = ($row[$startcol + 19] !== null) ? (int) $row[$startcol + 19] : null;
+            $this->is_protected = ($row[$startcol + 12] !== null) ? (boolean) $row[$startcol + 12] : null;
+            $this->sort = ($row[$startcol + 13] !== null) ? (int) $row[$startcol + 13] : null;
+            $this->hash = ($row[$startcol + 14] !== null) ? (string) $row[$startcol + 14] : null;
+            $this->created_at = ($row[$startcol + 15] !== null) ? (string) $row[$startcol + 15] : null;
+            $this->updated_at = ($row[$startcol + 16] !== null) ? (string) $row[$startcol + 16] : null;
+            $this->created_by = ($row[$startcol + 17] !== null) ? (int) $row[$startcol + 17] : null;
+            $this->updated_by = ($row[$startcol + 18] !== null) ? (int) $row[$startcol + 18] : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -1088,7 +1035,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
             }
             $this->postHydrate($row, $startcol, $rehydrate);
 
-            return $startcol + 20; // 20 = DocumentPeer::NUM_HYDRATE_COLUMNS.
+            return $startcol + 19; // 19 = DocumentPeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating Document object", $e);
@@ -1466,9 +1413,6 @@ abstract class BaseDocument extends BaseObject implements Persistent
         if ($this->isColumnModified(DocumentPeer::IS_PRIVATE)) {
             $modifiedColumns[':p' . $index++]  = '`is_private`';
         }
-        if ($this->isColumnModified(DocumentPeer::IS_INACTIVE)) {
-            $modifiedColumns[':p' . $index++]  = '`is_inactive`';
-        }
         if ($this->isColumnModified(DocumentPeer::IS_PROTECTED)) {
             $modifiedColumns[':p' . $index++]  = '`is_protected`';
         }
@@ -1536,9 +1480,6 @@ abstract class BaseDocument extends BaseObject implements Persistent
                         break;
                     case '`is_private`':
                         $stmt->bindValue($identifier, (int) $this->is_private, PDO::PARAM_INT);
-                        break;
-                    case '`is_inactive`':
-                        $stmt->bindValue($identifier, (int) $this->is_inactive, PDO::PARAM_INT);
                         break;
                     case '`is_protected`':
                         $stmt->bindValue($identifier, (int) $this->is_protected, PDO::PARAM_INT);
@@ -1780,27 +1721,24 @@ abstract class BaseDocument extends BaseObject implements Persistent
                 return $this->getIsPrivate();
                 break;
             case 12:
-                return $this->getIsInactive();
-                break;
-            case 13:
                 return $this->getIsProtected();
                 break;
-            case 14:
+            case 13:
                 return $this->getSort();
                 break;
-            case 15:
+            case 14:
                 return $this->getHash();
                 break;
-            case 16:
+            case 15:
                 return $this->getCreatedAt();
                 break;
-            case 17:
+            case 16:
                 return $this->getUpdatedAt();
                 break;
-            case 18:
+            case 17:
                 return $this->getCreatedBy();
                 break;
-            case 19:
+            case 18:
                 return $this->getUpdatedBy();
                 break;
             default:
@@ -1844,14 +1782,13 @@ abstract class BaseDocument extends BaseObject implements Persistent
             $keys[9] => $this->getDocumentTypeId(),
             $keys[10] => $this->getDocumentCategoryId(),
             $keys[11] => $this->getIsPrivate(),
-            $keys[12] => $this->getIsInactive(),
-            $keys[13] => $this->getIsProtected(),
-            $keys[14] => $this->getSort(),
-            $keys[15] => $this->getHash(),
-            $keys[16] => $this->getCreatedAt(),
-            $keys[17] => $this->getUpdatedAt(),
-            $keys[18] => $this->getCreatedBy(),
-            $keys[19] => $this->getUpdatedBy(),
+            $keys[12] => $this->getIsProtected(),
+            $keys[13] => $this->getSort(),
+            $keys[14] => $this->getHash(),
+            $keys[15] => $this->getCreatedAt(),
+            $keys[16] => $this->getUpdatedAt(),
+            $keys[17] => $this->getCreatedBy(),
+            $keys[18] => $this->getUpdatedBy(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1951,27 +1888,24 @@ abstract class BaseDocument extends BaseObject implements Persistent
                 $this->setIsPrivate($value);
                 break;
             case 12:
-                $this->setIsInactive($value);
-                break;
-            case 13:
                 $this->setIsProtected($value);
                 break;
-            case 14:
+            case 13:
                 $this->setSort($value);
                 break;
-            case 15:
+            case 14:
                 $this->setHash($value);
                 break;
-            case 16:
+            case 15:
                 $this->setCreatedAt($value);
                 break;
-            case 17:
+            case 16:
                 $this->setUpdatedAt($value);
                 break;
-            case 18:
+            case 17:
                 $this->setCreatedBy($value);
                 break;
-            case 19:
+            case 18:
                 $this->setUpdatedBy($value);
                 break;
         } // switch()
@@ -2010,14 +1944,13 @@ abstract class BaseDocument extends BaseObject implements Persistent
         if (array_key_exists($keys[9], $arr)) $this->setDocumentTypeId($arr[$keys[9]]);
         if (array_key_exists($keys[10], $arr)) $this->setDocumentCategoryId($arr[$keys[10]]);
         if (array_key_exists($keys[11], $arr)) $this->setIsPrivate($arr[$keys[11]]);
-        if (array_key_exists($keys[12], $arr)) $this->setIsInactive($arr[$keys[12]]);
-        if (array_key_exists($keys[13], $arr)) $this->setIsProtected($arr[$keys[13]]);
-        if (array_key_exists($keys[14], $arr)) $this->setSort($arr[$keys[14]]);
-        if (array_key_exists($keys[15], $arr)) $this->setHash($arr[$keys[15]]);
-        if (array_key_exists($keys[16], $arr)) $this->setCreatedAt($arr[$keys[16]]);
-        if (array_key_exists($keys[17], $arr)) $this->setUpdatedAt($arr[$keys[17]]);
-        if (array_key_exists($keys[18], $arr)) $this->setCreatedBy($arr[$keys[18]]);
-        if (array_key_exists($keys[19], $arr)) $this->setUpdatedBy($arr[$keys[19]]);
+        if (array_key_exists($keys[12], $arr)) $this->setIsProtected($arr[$keys[12]]);
+        if (array_key_exists($keys[13], $arr)) $this->setSort($arr[$keys[13]]);
+        if (array_key_exists($keys[14], $arr)) $this->setHash($arr[$keys[14]]);
+        if (array_key_exists($keys[15], $arr)) $this->setCreatedAt($arr[$keys[15]]);
+        if (array_key_exists($keys[16], $arr)) $this->setUpdatedAt($arr[$keys[16]]);
+        if (array_key_exists($keys[17], $arr)) $this->setCreatedBy($arr[$keys[17]]);
+        if (array_key_exists($keys[18], $arr)) $this->setUpdatedBy($arr[$keys[18]]);
     }
 
     /**
@@ -2041,7 +1974,6 @@ abstract class BaseDocument extends BaseObject implements Persistent
         if ($this->isColumnModified(DocumentPeer::DOCUMENT_TYPE_ID)) $criteria->add(DocumentPeer::DOCUMENT_TYPE_ID, $this->document_type_id);
         if ($this->isColumnModified(DocumentPeer::DOCUMENT_CATEGORY_ID)) $criteria->add(DocumentPeer::DOCUMENT_CATEGORY_ID, $this->document_category_id);
         if ($this->isColumnModified(DocumentPeer::IS_PRIVATE)) $criteria->add(DocumentPeer::IS_PRIVATE, $this->is_private);
-        if ($this->isColumnModified(DocumentPeer::IS_INACTIVE)) $criteria->add(DocumentPeer::IS_INACTIVE, $this->is_inactive);
         if ($this->isColumnModified(DocumentPeer::IS_PROTECTED)) $criteria->add(DocumentPeer::IS_PROTECTED, $this->is_protected);
         if ($this->isColumnModified(DocumentPeer::SORT)) $criteria->add(DocumentPeer::SORT, $this->sort);
         if ($this->isColumnModified(DocumentPeer::HASH)) $criteria->add(DocumentPeer::HASH, $this->hash);
@@ -2123,7 +2055,6 @@ abstract class BaseDocument extends BaseObject implements Persistent
         $copyObj->setDocumentTypeId($this->getDocumentTypeId());
         $copyObj->setDocumentCategoryId($this->getDocumentCategoryId());
         $copyObj->setIsPrivate($this->getIsPrivate());
-        $copyObj->setIsInactive($this->getIsInactive());
         $copyObj->setIsProtected($this->getIsProtected());
         $copyObj->setSort($this->getSort());
         $copyObj->setHash($this->getHash());
@@ -2570,7 +2501,6 @@ abstract class BaseDocument extends BaseObject implements Persistent
         $this->document_type_id = null;
         $this->document_category_id = null;
         $this->is_private = null;
-        $this->is_inactive = null;
         $this->is_protected = null;
         $this->sort = null;
         $this->hash = null;
