@@ -13,17 +13,13 @@ Widget.types.document_list = {
 				}.bind(this));
 				event.stopPropagation();
 			}
-			if(col.identifier === 'is_inactive') {
-				this.toggle_boolean(row, col.identifier);
-				event.stopPropagation();
-			}
 			if(col.identifier === 'is_protected') {
 				this.toggle_boolean(row, col.identifier);
 				event.stopPropagation();
 			}
 		});
 		widget.handle('list-cell_hover', function(event, rowIndex, col, row, cell) {
-			if(col.identifier === 'is_inactive' || col.identifier === 'is_protected') {
+			if(col.identifier === 'is_protected') {
 				cell.css({cursor: 'pointer'});
 			}
 		});

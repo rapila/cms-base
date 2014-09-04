@@ -8,7 +8,7 @@ class DocumentCategoryListWidgetModule extends PersistentWidgetModule {
 	private $oDelegateProxy;
 	private $oExternallyManagedInputFilter;
 	private $bExcludeExternallyManaged;
-	
+
 	public function __construct($sSessionKey = null) {
 		parent::__construct($sSessionKey);
 		$this->oListWidget = new ListWidgetModule();
@@ -68,11 +68,11 @@ class DocumentCategoryListWidgetModule extends PersistentWidgetModule {
 	public function setIsExternallyManaged($bIsExternallyManaged) {
 		$this->oDelegateProxy->setInternallyManagedOnly($bIsExternallyManaged);
 	}
-	
+
 	public function setInternallyManagedOnly($bExcludeExternallyManaged) {
 	  $this->bExcludeExternallyManaged = $bExcludeExternallyManaged;
 	}
-	
+
 	public function getCriteria() {
 		$oQuery = DocumentCategoryQuery::create();
 		if($this->bExcludeExternallyManaged) {

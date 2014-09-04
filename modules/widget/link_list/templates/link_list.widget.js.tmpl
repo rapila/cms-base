@@ -13,10 +13,6 @@ Widget.types.link_list = {
 				}.bind(this));
 				event.stopPropagation();
 			}
-			if(col.identifier === 'is_inactive') {
-				this.toggle_boolean(row, col.identifier);
-				event.stopPropagation();
-			}
 		});
 	}
 };

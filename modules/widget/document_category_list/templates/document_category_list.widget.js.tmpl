@@ -13,13 +13,9 @@ jQuery(document).ready(function() {
 					}.bind(this));
 					event.stopPropagation();
 				}
-				if(col.identifier === 'is_inactive') {
-					this.toggle_boolean(row, col.identifier);
-					event.stopPropagation();
-				}
 			});
 			widget.handle('list-cell_hover', function(event, rowIndex, col, row, cell) {
-				if(col.identifier === 'is_inactive' || col.identifier === 'is_protected' || col.identifier === 'delete') {
+				if(col.identifier === 'is_protected' || col.identifier === 'delete') {
 					cell.css({cursor: 'pointer'});
 				}
 			});
