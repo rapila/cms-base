@@ -1,13 +1,15 @@
 <?php
 
 class WidgetJsonFileModule extends FileModule {
-	
+
+	public static $JSON_ERRORS = array();
+
 	public function __construct($aRequestPath) {
 		parent::__construct($aRequestPath);
 		$this->sWidgetType = Manager::usePath();
 		$this->sAction = Manager::usePath();
 	}
-	
+
 	public function renderFile() {
 		header("Content-Type: application/json;charset=utf-8");
 		$aRequest = array();
@@ -38,7 +40,13 @@ class WidgetJsonFileModule extends FileModule {
 		}
 		try {
 			try {
-				print json_encode($this->getJSON($aRequest));
+				$mJSONData = $this->getJSON($aRequest);
+				$sResult = json_encode($mJSONData);
+				$iError = json_last_error();
+				if($iError !== JSON_ERROR_NONE) {
+					throw new LocalizedException('wns.error.json', array('json_error' => $iError, 'json_error_message' => self::$JSON_ERRORS[$iError]));
+				}
+				print $sResult;
 			} catch(Exception $e) {
 				//Handle the gift, not the wrapping…
 				if($e->getPrevious()) {
@@ -58,7 +66,7 @@ class WidgetJsonFileModule extends FileModule {
 			$oSession->setLanguage($sPrevSessionLanguage);
 		}
 	}
-	
+
 	private function getJSON(&$aRequest) {
 		if($this->sAction === 'destroy') {
 			foreach($aRequest['session_key'] as $sSessionKey) {
@@ -113,7 +121,7 @@ class WidgetJsonFileModule extends FileModule {
 			return array("result" => call_user_func_array(array($oWidget, $sMethodName), isset($aRequest['method_parameters']) ? $aRequest['method_parameters'] : array()));
 		}
 	}
-	
+
 	private function checkPermissions($sWidgetClass) {
 		if(!$sWidgetClass::needsLogin()) {
 			return;
@@ -124,7 +132,7 @@ class WidgetJsonFileModule extends FileModule {
 		}
 		throw new LocalizedException('wns.file.widget_json.needs_login', null, 'needs_login');
 	}
-	
+
 	public static function jsonOrderedObject($aObject) {
 		$aResult = array();
 		foreach($aObject as $sKey => $mValue) {
@@ -132,7 +140,7 @@ class WidgetJsonFileModule extends FileModule {
 		}
 		return $aResult;
 	}
-	
+
 	public static function jsonBaseObjects($aBaseObjects, $aOriginalColumnNames) {
 		if($aBaseObjects instanceof PropelCollection) {
 			$aBaseObjects = $aBaseObjects->getArrayCopy();
@@ -156,5 +164,14 @@ class WidgetJsonFileModule extends FileModule {
 			}
 		}
 		return $aResult;
+	}
+}
+
+{
+	$aJsonErrorConstants = get_defined_constants();
+	foreach($aJsonErrorConstants as $sJsonErrorConstant => $iJsonErrorConstantValue) {
+		if(StringUtil::startsWith($sJsonErrorConstant, 'JSON_ERROR_')) {
+			WidgetJsonFileModule::$JSON_ERRORS[$iJsonErrorConstantValue] = $sJsonErrorConstant;
+		}
 	}
 }

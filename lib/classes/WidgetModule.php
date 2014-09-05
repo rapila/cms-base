@@ -1,17 +1,17 @@
 <?php
 abstract class WidgetModule extends Module {
-	
+
 	const USE_NAMESPACED_CSS = true;
-	
+
 	const WIDGET_SESSION_KEY = 'widget_storage';
-	
+
 	protected static $MODULE_TYPE = 'widget';
-	
+
 	protected $sPersistentSessionKey = null;
 	protected $sInputName = null;
 	private $bIsNew = false;
 	protected $aInitialSettings = array();
-	
+
 	public function doWidget() {
 		$oElement = $this->getElementType();
 		if($oElement === null) {
@@ -27,35 +27,35 @@ abstract class WidgetModule extends Module {
 		}
 		return $oElement->parse();
 	}
-	
+
 	public static function includeResources($oResourceIncluder = null) {
 		self::includeWidgetResources(false, $oResourceIncluder);
 	}
-	
+
 	protected static function includeWidgetResources($bEndDependenciesOnJS = false, $oResourceIncluder = null) {
 		TemplateResourceFileModule::includeAvailableResources(get_called_class(), $bEndDependenciesOnJS, $oResourceIncluder);
 	}
-	
+
 	public static function isPersistent() {
 		return false;
 	}
-	
+
 	public static function needsLogin() {
 		return true;
 	}
-	
+
 	public function setNew($bIsNew = true) {
 		$this->bIsNew = $bIsNew;
 	}
-	
+
 	public function isNew() {
 		return $this->bIsNew;
 	}
-	
+
 	public function setInputName($sInputName) {
 		$this->sInputName = $sInputName;
 	}
-	
+
 	public function getElementType() {
 		return $this->sInputName === null ? 'div' : 'input';
 	}
@@ -63,15 +63,15 @@ abstract class WidgetModule extends Module {
 	public function getInputName() {
 		return $this->sInputName;
 	}
-	
+
 	public function getSessionKey() {
 		return $this->sPersistentSessionKey;
 	}
-	
+
 	public function setSetting($sSettingName, $mSettingValue) {
 		$this->aInitialSettings[$sSettingName] = $mSettingValue;
 	}
-	
+
 	public function allSettings() {
 		return $this->aInitialSettings;
 	}
@@ -96,14 +96,14 @@ abstract class WidgetModule extends Module {
 		}
 		$aMethods[] = 'getInputName';
 		$aMethods[] = 'setInputName';
-		
+
 		return array('static' => $aStaticMethods, 'instance' => $aMethods);
 	}
-	
+
 	public static function removeStoredWidgets() {
 		Session::getSession()->setAttribute(self::WIDGET_SESSION_KEY, array());
 	}
-	
+
 	/**
 	 * Instanciates a widget or extracts it from the session.
 	 * This method is preferred over using “new MyWidgetModule()” because it takes into account the session key as well as the disabled flag.
@@ -134,7 +134,7 @@ abstract class WidgetModule extends Module {
 		$oWidget->setNew(true); //Widget just been created → mark as being “new”
 		return $oWidget;
 	}
-	
+
 	//This method is all the way at the bottom because phpDocumentor can’t handle the static:: keyword.
 	public function __construct($sSessionKey = null) {
 		if(static::isPersistent()) {
@@ -149,5 +149,5 @@ abstract class WidgetModule extends Module {
 			Session::getSession()->setArrayAttributeValueForKey(self::WIDGET_SESSION_KEY, $this->sPersistentSessionKey, $this);
 		}
 	}
-	
+
 }
