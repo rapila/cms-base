@@ -3,35 +3,35 @@
  * @package utils
  */
 class RichtextUtil {
-	
+
 	private static $RICHTEXT_INDEX = 0;
-	
+
 	public static $USE_ABSOLUTE_LINKS = 'default';
-	
+
 	private $sAreaName;
 	private $aSettings;
-	
+
 	private $mTrackReferences = null;
-	
+
 	public function __construct($sAreaName=null, $aSettings=null) {
 		if($sAreaName === null) {
 			$sAreaName = "richtext_area_";
 		}
 		$this->sAreaName = $sAreaName.self::$RICHTEXT_INDEX;
 		self::$RICHTEXT_INDEX++;
-		
+
 		if($aSettings === null) {
 			$aSettings = Settings::getSetting('admin', 'text_module', array());
 		}
 		$this->aSettings = $aSettings;
 	}
-	
+
 	public static function parseInputFromEditorForStorage($sInput) {
 		$oRichtextUtil = new RichtextUtil();
 		$_POST[$oRichtextUtil->sAreaName] = $sInput;
 		return $oRichtextUtil->parseInputFromEditor();
 	}
-	
+
 	/**
 	* Returns a TagParser instance all the handlers set correctly to parse text coming from a richtext area.
 	*/
@@ -43,7 +43,7 @@ class RichtextUtil {
 		$oTagParser->getTag()->setParseCallback(array($this, 'textTagParseCallback'));
 		return $oTagParser;
 	}
-	
+
 	/**
 	* Returns a string with parsed text coming from a richtext area.
 	* Calls getTagParser internally but also does the parsing by calling __toString.
@@ -51,7 +51,7 @@ class RichtextUtil {
 	public function parseInputFromEditor($sInput = null) {
 		return $this->getTagParser($sInput)->getTag()->__toString();
 	}
-	
+
 	public static function parseStorageForOutput($sStorage, $bIsAdmin) {
 		if(is_resource($sStorage)) {
 			$sStorage = stream_get_contents($sStorage);
@@ -64,22 +64,22 @@ class RichtextUtil {
 		self::replaceIdentifierWithCallback($oTemplate, 'mailto_link', 'mailtoLinkCallback', $bIsAdmin);
 		return $oTemplate;
 	}
-	
+
 	public static function parseStorageForFrontendOutput($sStorage) {
 		return self::parseStorageForOutput($sStorage, false);
 	}
-	
+
 	public static function parseStorageForBackendOutput($sStorage) {
 		return self::parseStorageForOutput($sStorage, true);
 	}
-	
+
 	private static function replaceIdentifierWithCallback($oTemplate, $sIdentifierName, $sCallbackName, $bIsAdmin) {
 		if($bIsAdmin) {
 			$sCallbackName .= 'Be';
 		}
 		$oTemplate->replaceIdentifierCallback($sIdentifierName, 'RichtextUtil', $sCallbackName, Template::NO_HTML_ESCAPE|Template::LEAVE_IDENTIFIERS);
 	}
-	
+
 	private static function writeTagForIdentifier($sTagName, $aParameters, $oIdentifier, $sTagContent = null, $mCallbackContext = null) {
 		if($sTagContent === null) {
 			$sTagContent = $oIdentifier->getParameter("link_text");
@@ -91,7 +91,7 @@ class RichtextUtil {
 		}
 		return self::writeTagForIdentifierWithWriter($oIdentifier, $oWriter);
 	}
-	
+
 	private static function writeTagForIdentifierWithWriter($oIdentifier, $oWriter) {
 		foreach($oIdentifier->getParameters() as $sName => $sValue) {
 			if($sName === 'class') {
@@ -102,7 +102,7 @@ class RichtextUtil {
 		}
 		return $oWriter->parse(true);
 	}
-	
+
 	public static function imageCallback($oIdentifier) {
 		$iDocumentId = $oIdentifier->getValue();
 		$oDocument = DocumentQuery::create()->findPk($iDocumentId);
@@ -119,7 +119,7 @@ class RichtextUtil {
 			return $oWriter->parse();
 		}
 	}
-	
+
 	public static function imageCallbackBe($oIdentifier) {
 		$iDocumentId = $oIdentifier->getValue();
 		$oDocument = DocumentQuery::create()->findPk($iDocumentId);
@@ -134,7 +134,7 @@ class RichtextUtil {
 			return $oWriter->parse();
 		}
 	}
-	
+
 	public static function internalLinkCallback($oIdentifier) {
 		$aValue = explode('/', $oIdentifier->getValue());
 		$iId = array_shift($aValue);
@@ -148,7 +148,7 @@ class RichtextUtil {
 			return self::writeTagForIdentifier("a", array('href' => $sLink, 'title' => $oPage->getPageTitle(), 'rel' => 'internal', 'class' => 'internal_link'), $oIdentifier, null, $oPage);
 		}
 	}
-	
+
 	public static function internalLinkCallbackBe($oIdentifier) {
 		$aValue = explode('/', $oIdentifier->getValue());
 		$iId = $aValue[0];
@@ -159,18 +159,18 @@ class RichtextUtil {
 			return self::writeTagForIdentifier("a", array('href' => $sLink), $oIdentifier, null, $oPage);
 		}
 	}
-	
+
 	public static function mailtoLinkCallback($oIdentifier) {
 		$sLinkUrl = $oIdentifier->getValue();
 		$sText = $oIdentifier->getParameter("link_text");
 		$oWriter = TagWriter::getEmailLinkWriter($sLinkUrl, $sText);
 		return self::writeTagForIdentifierWithWriter($oIdentifier, $oWriter);
 	}
-	
+
 	public static function mailtoLinkCallbackBe($oIdentifier) {
 		return self::writeTagForIdentifier("a", array('href' => "mailto:".$oIdentifier->getValue()), $oIdentifier);
 	}
-	
+
 	public static function externalLinkCallback($oIdentifier) {
 		$oLink = LinkQuery::create()->findPk($oIdentifier->getValue());
 		if($oLink) {
@@ -182,7 +182,7 @@ class RichtextUtil {
 		}
 		return new Template($oIdentifier->getParameter('link_text'), null, true);
 	}
-	
+
 	public static function externalLinkCallbackBe($oIdentifier) {
 		$oLink = LinkQuery::create()->findPk($oIdentifier->getValue());
 		if($oLink) {
@@ -191,7 +191,7 @@ class RichtextUtil {
 			return self::writeTagForIdentifier("a", array('href' => '#', 'style' => "color: red;!important;"), $oIdentifier, $oIdentifier->getParameter("link_text").' [Link missing!]');
 		}
 	}
-	
+
 	public static function fileLinkCallback($oIdentifier) {
 		$oDocument = DocumentQuery::create()->findPk($oIdentifier->getValue());
 		if($oDocument !== null) {
@@ -200,7 +200,7 @@ class RichtextUtil {
 		 return new Template($oIdentifier->getParameter('link_text'), null, true);
 		}
 	}
-	
+
 	public static function fileLinkCallbackBe($oIdentifier) {
 		$oDocument = DocumentQuery::create()->findPk($oIdentifier->getValue());
 		if($oDocument !== null) {
@@ -209,11 +209,11 @@ class RichtextUtil {
 			return self::writeTagForIdentifier("a", array('style' => "color: red;"), $oIdentifier, $oIdentifier->getParameter("link_text").' [Document missing!]');
 		}
 	}
-	
+
 	private static function getLink($mLocation, $sManager=null, $aParameters=array()) {
 		return self::link(LinkUtil::link($mLocation, $sManager, $aParameters));
 	}
-	
+
 	private static function link($sLocation) {
 		if(self::$USE_ABSOLUTE_LINKS !== null) {
 			return LinkUtil::absoluteLink($sLocation, null, self::$USE_ABSOLUTE_LINKS);
@@ -225,7 +225,7 @@ class RichtextUtil {
 	public function getAreaName() {
 		return $this->sAreaName;
 	}
-	
+
 	public function setTrackReferences($mTrackReferences) {
 		$this->mTrackReferences = $mTrackReferences;
 		if($this->mTrackReferences !== null) {
@@ -237,14 +237,14 @@ class RichtextUtil {
 	public function getTrackReferences() {
 		return $this->mTrackReferences;
 	}
-	
+
 	private function addTrackReference($iToId, $sToClass) {
 		if($this->mTrackReferences === null) {
 			return;
 		}
 		ReferencePeer::addReference($this->mTrackReferences, array($iToId, $sToClass));
 	}
-	
+
 	public function textTagParseCallback($oHtmlTag, $sParsedChildren) {
 		if($oHtmlTag->getName() === 'text') {
 			return $sParsedChildren;
@@ -287,5 +287,5 @@ class RichtextUtil {
 		$oTagTemplate = $oTagWriter->parse(true);
 		$oTagTemplate->bKillIdentifiersBeforeRender = false;
 		return $oTagTemplate->render();
-	}	
+	}
 }// end class RichtextUtil

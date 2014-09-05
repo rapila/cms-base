@@ -23,16 +23,16 @@ OptionParser.new("Usage: "+File.basename(__FILE__)+" [options] module_name") do|
 	opts.on('-t', '--type [TYPE]', [:widget, :frontend, :admin, :filter, :file, :page_type], {:w => :widget, :f => :frontend, :a => :admin, :r => :filter, :e => :file, :p => :page_type}, 'Create module of type TYPE (one of w[idget], f[rontend], a[dmin], [filte]r, [fil]e, p[age_type]; default: widget)') do |type|
 		$options[:type] = type if type
 	end
-	
+
 	opts.on('-f', '--[no-]force', 'Override files if they exist') do |force|
 		$options[:force] = force
 	end
-	
+
 	## LOCATION
 	opts.on('-b', '--base', 'Put module into base. Not applicable with -p') do
 		$options[:location] = :base
 	end
-	
+
 	opts.on('-p', '--plugin PLUGIN', 'Put module into plugin PLUGIN. Not applicable with -b') do |plugin|
 		$options[:location] = plugin
 	end
@@ -45,48 +45,48 @@ OptionParser.new("Usage: "+File.basename(__FILE__)+" [options] module_name") do|
 	opts.on('-d', '--dashboard', 'Add the dashboard aspect. Applicable to widget modules') do
 		$aspects << "dashboard"
 	end
-	
+
 	opts.on('-l', '--[no-]list', 'Add the list aspect. Applicable to widget modules (default for modules ending in _list)') do |list|
 		$options[:list_aspect] = list
 	end
-	
+
 	opts.on('--[no-]detail', 'Add the detail aspect. Applicable to widget modules (default for modules ending in _detail)') do |detail|
 		$options[:detail_aspect] = detail
 	end
-	
+
 	opts.on('--[no-]frontend-config', 'Add the frontend_config aspect. Applicable to widget modules (default for modules ending in _frontend_config)') do |frontend_config|
 		$options[:frontend_config_aspect] = frontend_config
 	end
-	
+
 	opts.on('--single-screen', 'Add the single_screen aspect. Applicable to admin modules') do
 		$aspects << "single_screen"
 	end
-	
+
 	opts.on('--dynamic', 'Add the dynamic aspect. Applicable to frontend modules (deprecated)') do |dynamic|
 		$aspects << "dynamic"
 	end
-	
+
 	opts.on('--[no-]persistent', 'Add the persistent aspect. Applicable to widget modules (default)') do |persistent|
 		$options[:persistent_aspect] = persistent
 	end
-	
+
 	opts.on('--[no-]widget-based', 'Add the widget_based aspect. Applicable to frontend modules (default)') do |widget_based|
 		$options[:widget_based_aspect] = widget_based
 	end
-	
+
 	opts.on('--[no-]php', 'Write a php class file (default)') do |php|
 		$files.delete :php unless php
 	end
-	
+
 	opts.on('--[no-]yaml', 'Write a info.yml file (default)') do |yaml|
 		$files.delete :yaml unless yaml
 	end
-	
+
 	## INFO STUFF
 	opts.on('--desc DESCRIPTION', 'Sets the module’s description in its info.yml to DESCRIPTION') do |description|
 		$options[:description] = description
 	end
-	
+
 	opts.on('--ver VERSION', 'Sets the module’s version in its info.yml to VERSION') do |version|
 		$options[:version] = version
 	end
@@ -94,12 +94,12 @@ OptionParser.new("Usage: "+File.basename(__FILE__)+" [options] module_name") do|
 	opts.on('--[no-]enabled', 'Sets the module to be enabled (default)') do |enabled|
 		$options[:enabled] = enabled
 	end
-	
+
 	## ADDITIONAL FILES
 	opts.on('-j', '--js', 'Adds a js template. Applicable with widgets and admin modules') do
 		$files << :js
 	end
-	
+
 	opts.on('-c', '--css', 'Adds a css template. Applicable with widgets and admin modules') do
 		$files << :css
 	end
@@ -116,7 +116,7 @@ OptionParser.new("Usage: "+File.basename(__FILE__)+" [options] module_name") do|
 		puts opts
 		exit
 	end
-	
+
 	opts.parse!
 end
 
@@ -141,8 +141,14 @@ else
 end
 $folder = "#{$folder}/modules/#{$options[:type]}/#{module_name}"
 
-class_name = "#{module_name}_#{$options[:type]}_module".gsub(/^[a-z]|_[a-z]/) { |a| a.upcase }.gsub(/_/, '')
-super_class_name = "#{$options[:type]}_module".gsub(/^[a-z]|_[a-z]/) { |a| a.upcase }.gsub(/_/, '')
+class String
+  def camelize
+    self.gsub(/^[a-z]|_[a-z]/) { |a| a.upcase }.gsub(/_/, '')
+  end
+end
+
+class_name = "#{module_name}_#{$options[:type]}_module".camelize
+super_class_name = "#{$options[:type]}_module".camelize
 
 puts "Creating “#{class_name}” in #{$folder}."
 puts "Frontend Module is NOT widget-based" if not $aspects.include? 'widget_based' and $options[:type] == :frontend
@@ -209,9 +215,9 @@ write_file(:php, "#{class_name}.php") do
 			extends = "Persistent#{super_class_name}"
 		end
 	end
-	
+
 	php_methods = []
-	
+
 	if $options[:type] == :widget then
 		constructor_content = "parent::__construct($sSessionKey);";
 		constructor_args = ['sSessionKey = null']
@@ -220,9 +226,9 @@ write_file(:php, "#{class_name}.php") do
 			constructor_content = ""
 			constructor_args = []
 		end
-		
+
 		if $aspects.include? 'list' then
-			model_name = module_name.gsub('_list', '').capitalize
+			model_name = module_name.gsub('_list', '').camelize
 			extends = "SpecializedListWidgetModule"
 			constructor_content = ''
 			php_methods.push php_field('oCriteriaListWidgetDelegate')
@@ -245,7 +251,7 @@ write_file(:php, "#{class_name}.php") do
 			constructor_args = ['sSessionKey', 'oFrontendModule']
 			php_methods.push php_method('updatePreview', 'return TagWriter::quickTag()->render();', ['$oPreviewData'])
 		end
-		
+
 		php_methods.push php_method('__construct', constructor_content, constructor_args) unless constructor_content.empty?
 	elsif $options[:type] == :frontend then
 		php_methods.push php_method('__construct', 'parent::__construct($oLanguageObject, $aRequestPath, $iId);', ['oLanguageObject = null', 'aRequestPath = null', 'iId = 1'])
@@ -302,11 +308,11 @@ write_file(:php, "#{class_name}.php") do
 		php_methods.push php_method('__construct', 'parent::__construct($oPage, $oNavigationItem);', ['Page $oPage = null', 'NavigationItem $oNavigationItem = null'])
 		php_methods.push php_method('display', '', ['Template $oTemplate', '$bIsPreview = false'])
 	end
-	
+
 	"<?php
 class #{class_name} extends #{extends}#{implements} {
 	#{php_methods.sort.join('
-	
+
 	')}
 }"
 end
@@ -334,7 +340,7 @@ write_file(:js, "#{module_name}.#{$options[:type]}.js.tmpl", 'templates') do
 			add += "
 	fill_data: function() {
 		this.loadData(function(data) {
-			
+
 		});
 	},
 	"
@@ -354,9 +360,9 @@ write_file(:js, "#{module_name}.#{$options[:type]}.js.tmpl", 'templates') do
 			//TODO: append/replace the resulting HTML to this._element
 		});
 	},
-	
+
 	resize_to: function(width, height) {
-		
+
 	},
 
 	save: function() {
@@ -405,8 +411,8 @@ write_file(:js, "#{module_name}.#{$options[:type]}.js.tmpl", 'templates') do
 		res += "AdminInterface.sidebar.children('[data-widget-type]').prepareWidget(function(widget) {
 		sidebar = widget;
 	});
-	" unless $aspects.include? "single_screen" 
-		
+	" unless $aspects.include? "single_screen"
+
 		res += "AdminInterface.content.children('[data-widget-type]').prepareWidget(function(widget) {
 		content = widget;
 	});
@@ -418,7 +424,7 @@ write_file(:js, "#{module_name}.#{$options[:type]}.js.tmpl", 'templates') do
 	elsif $options[:type] == :page_type then
 		"Widget.types.page_type.types['#{module_name}'] = {
 	handle_preview: function(page_id, page_type) {
-		
+
 	},
 
 	handle_admin: function(page_id, container, page_type) {
@@ -431,36 +437,36 @@ end
 write_file(:css, "#{module_name}.#{$options[:type]}.css.tmpl", 'templates') do
 	if $options[:type] == :widget then
 		res = "*[data-widget-type='#{module_name}'] {
-	
+
 }"
 		if $aspects.include? 'detail' then
 			res = "#{res}
 
 .ui-dialog.detail-widget-#{module_name} {
-	
+
 }
 
 .ui-dialog.detail-widget-#{module_name} .ui-dialog-content {
-	
+
 }"
 		end
 		if $aspects.include? 'dashboard' then
 			res = "#{res}
 
 .dashboard-widget-content > *[data-widget-type='#{module_name}'] {
-	
+
 }"
 		end
 		res
 	elsif $options[:type] == :admin then
 		res = "body.#{module_name} #admin_main {
-	
+
 }"
 		if not $aspects.include? 'single_screen' then
 			res = "#{res}
 
 body.#{module_name} #admin_sidebar {
-	
+
 }"
 		end
 		res
