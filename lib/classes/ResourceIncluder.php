@@ -82,9 +82,6 @@ class ResourceIncluder {
 		if($bIncludeAll && $sIdentifier !== null) {
 			$sIdentifier = null;
 		}
-		if($aExtraInfo === null) {
-			$aExtraInfo = array();
-		}
 		$sResourcePrefix = self::RESOURCE_PREFIX_EXTERNAL;
 		$mFileResource = null;
 		$sFinalLocation = null;
@@ -144,7 +141,11 @@ class ResourceIncluder {
 			$mFileResource = array($mFileResource);
 		}
 
+		if($aExtraInfo === null) {
+			$aExtraInfo = array();
+		}
 		foreach($mFileResource as $oFileResource) {
+			$aExtraInfoForResource = $aExtraInfo;
 			if($sFinalLocation === null) {
 				$sFinalLocation = $oFileResource->getFrontendPath();
 				$sResourcePrefix = self::RESOURCE_PREFIX_INTERNAL;
@@ -164,38 +165,38 @@ class ResourceIncluder {
 				$sFinalLocation = LinkUtil::absoluteLink($sFinalLocation, null, 'default', true);
 			}
 
-			$aExtraInfo['location'] = $sFinalLocation;
-			if(!isset($aExtraInfo['resource_type'])) {
-				$aExtraInfo['resource_type'] = $sTemplateName;
+			$aExtraInfoForResource['location'] = $sFinalLocation;
+			if(!isset($aExtraInfoForResource['resource_type'])) {
+				$aExtraInfoForResource['resource_type'] = $sTemplateName;
 			}
-			if(!isset($aExtraInfo['template'])) {
-				$aExtraInfo['template'] = $sTemplateName;
+			if(!isset($aExtraInfoForResource['template'])) {
+				$aExtraInfoForResource['template'] = $sTemplateName;
 			}
-			if($sIeCondition !== null && !isset($aExtraInfo['ie_condition'])) {
-				$aExtraInfo['ie_condition'] = $sIeCondition;
+			if($sIeCondition !== null && !isset($aExtraInfoForResource['ie_condition'])) {
+				$aExtraInfoForResource['ie_condition'] = $sIeCondition;
 			}
-			if(!isset($aExtraInfo['dependees'])) {
-				$aExtraInfo['dependees'] = array();
+			if(!isset($aExtraInfoForResource['dependees'])) {
+				$aExtraInfoForResource['dependees'] = array();
 			}
-			if($oFileResource instanceof FileResource && !isset($aExtraInfo['file_resource'])) {
-				$aExtraInfo['file_resource'] = $oFileResource;
+			if($oFileResource instanceof FileResource && !isset($aExtraInfoForResource['file_resource'])) {
+				$aExtraInfoForResource['file_resource'] = $oFileResource;
 			}
 			if($bEndsDependencyList) {
 				$this->endDependencyList($sIdentifier);
 			}
 
 			if(($iPrevResoucePriority = $this->containsResource($sIdentifier)) !== false) {
-				$aExtraInfo = array_merge($this->aIncludedResources[$iPrevResoucePriority][$sIdentifier], $aExtraInfo);
-				$aExtraInfo['dependees'] = array_merge($this->aIncludedResources[$iPrevResoucePriority][$sIdentifier]['dependees'], $aExtraInfo['dependees']);
+				$aExtraInfoForResource = array_merge($this->aIncludedResources[$iPrevResoucePriority][$sIdentifier], $aExtraInfoForResource);
+				$aExtraInfoForResource['dependees'] = array_merge($this->aIncludedResources[$iPrevResoucePriority][$sIdentifier]['dependees'], $aExtraInfoForResource['dependees']);
 				unset($this->aIncludedResources[$iPrevResoucePriority][$sIdentifier]);
 			}
 			
 			//Include resource
-			$this->aIncludedResources[$iPriority][$sIdentifier] = $aExtraInfo;
+			$this->aIncludedResources[$iPriority][$sIdentifier] = $aExtraInfoForResource;
 			
 			//move down all dependent resources that already exist
-			if(isset($aExtraInfo['dependees'])) {
-				$this->moveDependees($aExtraInfo['dependees'], $sIdentifier);
+			if(isset($aExtraInfoForResource['dependees'])) {
+				$this->moveDependees($aExtraInfoForResource['dependees'], $sIdentifier);
 			}
 			
 			//Add dependency
@@ -514,23 +515,20 @@ class ResourceIncluder {
 							$sUrl = substr($sUrl, 1, -1);
 						}
 						if(StringUtil::startsWith($sUrl, '//')) {
-							return (LinkUtil::isSSL() ? 'https:' : 'http:').$sUrl;
-						}
-						if(StringUtil::startsWith($sUrl, '/')) {
-							return $sAbsoluteLocationRoot.$sUrl;
-						}
-						// Absolutize only relative URLs (the ones not starting with a protocol)
-						if(!preg_match(',^[a-z][a-z.\\-+]*:,', $sRelativeLocationRoot)) {
-							return $sUrl;
-						}
- 						// Fix explicit relative URLs (./)
-						$sUrl = preg_replace(',^\\./+,', '', $sUrl);
-						// Prepend the coomon root for the relative location
-						$sUrl = $sRelativeLocationRoot.$sUrl;
-						// Resolve Uplinks (/some-place/../)
-						$sParentPattern = ',/[^/]+/\\.\\./,';
-						while(preg_match($sParentPattern, $sUrl) === 1) {
-							$sUrl = preg_replace($sParentPattern, '/', $sUrl, 1);
+							$sUrl = (LinkUtil::isSSL() ? 'https:' : 'http:').$sUrl;
+						} else if(StringUtil::startsWith($sUrl, '/')) {
+							$sUrl =  $sAbsoluteLocationRoot.$sUrl;
+						} else if(!preg_match(',^[a-z][a-z.\\-+]*:,', $sUrl)) {
+							// Absolutize only relative URLs (the ones not starting with a protocol)
+	 						// Fix explicit relative URLs (./)
+							$sUrl = preg_replace(',^\\./+,', '', $sUrl);
+							// Prepend the coomon root for the relative location
+							$sUrl = $sRelativeLocationRoot.$sUrl;
+							// Resolve Uplinks (/some-place/../)
+							$sParentPattern = ',/[^/]+/\\.\\./,';
+							while(preg_match($sParentPattern, $sUrl) === 1) {
+								$sUrl = preg_replace($sParentPattern, '/', $sUrl, 1);
+							}
 						}
 						return "url($sQuote$sUrl$sQuote)";
 					}, $sContents);
