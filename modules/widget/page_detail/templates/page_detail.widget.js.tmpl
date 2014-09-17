@@ -2,6 +2,8 @@ Widget.types.page_detail = {
 	prepare: function() {
 		var _this = this;
 		this.protector = new UnsavedChanges(this._element);
+		this.page_type = null;
+		this.template = null;
 		this.accordion = this._element.find('div.accordion');
 		this.accordion.accordion({
 			active: this.settings.active_accordion || 0,
@@ -16,6 +18,10 @@ Widget.types.page_detail = {
 					_this.load_configuration(ui.newPanel);
 				}
 			}
+		});
+
+		this.edit_template_and_page_type = this._element.find('.edit_template_and_page_type').on('click', function(event) {
+			// create modal window
 		});
 
 		//Init buttons
@@ -47,24 +53,24 @@ Widget.types.page_detail = {
 
 		//Templates
 		var option = jQuery('<option/>');
-		this.template_select = this._element.find("select[name='template_name']");
-		this.template_select.change(function() {
-			_this.save();
-			_this.update_template_info();
-		});
-		jQuery.each(this._staticMethods.getFrontendTemplates(), function(i, template) {
-			option.clone().text(template.name).attr('value', template.value).addClass(template.is_default ? 'default' : '').appendTo(this.template_select);
-		}.bind(this));
+		// this.template_select = this._element.find("select[name='template_name']");
+		// this.template_select.change(function() {
+		// 	_this.save();
+		// 	_this.update_template_info();
+		// });
+		// jQuery.each(this._staticMethods.getFrontendTemplates(), function(i, template) {
+		// 	option.clone().text(template.name).attr('value', template.value).addClass(template.is_default ? 'default' : '').appendTo(this.template_select);
+		// }.bind(this));
 
 		//Page types
-		this.page_type_select = this._element.find("select[name='page_type']");
-		this.page_type_select.change(function() {
-			_this.update_pagetype_info();
-			_this.configuration_has_been_loaded = false;
-		});
-		jQuery.each(this.getPageTypes(), function(i, page_type) {
-			option.clone().text(page_type.name).attr('value', page_type.value).appendTo(this.page_type_select);
-		}.bind(this));
+		// this.page_type_select = this._element.find("select[name='page_type']");
+		// this.page_type_select.change(function() {
+		// 	_this.update_pagetype_info();
+		// 	_this.configuration_has_been_loaded = false;
+		// });
+		// jQuery.each(this.getPageTypes(), function(i, page_type) {
+		// 	option.clone().text(page_type.name).attr('value', page_type.value).appendTo(this.page_type_select);
+		// }.bind(this));
 
 		//Prepare canonical pages dropdown
 		this.canonical_id_dropdown = this._element.find("select[name='canonical_id']").prepareWidget(function(widget) {
@@ -186,7 +192,7 @@ Widget.types.page_detail = {
 		// empty container, so when page type is changed, ie from default to journal then filled modules are not displayed anymore
 		container.empty();
 
-		var new_type = this.page_type_select.val();
+		var new_type = this.page_type;
 
 		container[0].className = container[0].className.replace(/\bpage-type-[^\s$]+/g, '')+' page-type-'+new_type;
 
@@ -218,8 +224,10 @@ Widget.types.page_detail = {
 		this._element.find(".page_href").text(page_data.PageLink).attr('href', page_data.PageHref);
 
 		this.canonical_id_dropdown.val(page_data.CanonicalId === null ? "" : page_data.CanonicalId);
-		this.template_select.val(page_data.TemplateName === null ? "" : page_data.TemplateName);
-		this.page_type_select.val(page_data.PageType === null ? "" : page_data.PageType);
+		this.page_type = page_data.PageType === null ? "" : page_data.PageType;
+		this.template_name = page_data.TemplateName === null ? "" : page_data.TemplateName;
+		// this.template_select.val(page_data.TemplateName === null ? "" : page_data.TemplateName);
+		// this.page_type_select.val(page_data.PageType === null ? "" : page_data.PageType);
 
 		this.delete_button.prop({title: page_data.DeleteNotPermitted});
 
@@ -281,11 +289,11 @@ Widget.types.page_detail = {
 	},
 
 	update_template_info: function() {
-		this._element.find("span.template_info").text(this.template_select.find(":selected").text());
+		this._element.find("span.template_info").text(this.template_name);
 	},
 
 	update_pagetype_info: function() {
-		this._element.find("span.pagetype_info").text(this.page_type_select.find(":selected").text());
+		this._element.find("span.pagetype_info").text(this.page_type);
 	},
 
 	update_properties_info: function(count_properties) {

@@ -6,6 +6,10 @@
 	margin-left: 1em;
 }
 
+.status_section label[for="name"] {
+	display: inline-block;
+}
+
 input.path_input.ui-widget-content:hover,
 input.path_input.ui-widget-content:selected {
 	background: url() #fff;
@@ -69,9 +73,45 @@ div.container {
 	background: url("{{writeDirectInclude=admin/button_gradient_dark.png;template=location_only}}") repeat-x 0 bottom;
 }
 
+.page_detail_controls button.ui-button span.info:before {
+	content: ' (';
+}
+.page_detail_controls button.ui-button span.info:after {
+	content: ') ';
+}
+
+h3.ptat span:before,
+h3.ptat span:after,
+h3.ptat span.info:before,
+h3.ptat span.info:after {
+	content: '';
+}
+
+h3.ptat span.edit_template_and_page_type {
+	width: 26px;
+	padding-left: 14px;
+	padding-right: 14px;
+	margin-left: 3px;
+	visibility: hidden;
+}
+h3.ui-state-active.ptat span.edit_template_and_page_type {
+	visibility: visible;
+}
+
+h3 span.edit_pagetype_and_template {
+	display: inline-block;
+	height: 20px;
+	margin: -2px 2px 0px 0px;
+	width: 26px;
+	visibility: hidden;
+}
+
+h3.ui-state-active span.edit_pagetype_and_template {
+	visibility: visible;
+}
+
 .page_detail_controls div {
 	height: 100%;
-	border-top: 1px solid #FFF;
 	padding: 0.5em 8em 0;
 	float: right;
 }
