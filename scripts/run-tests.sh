@@ -26,5 +26,5 @@ if [ "$2" != "" ]; then
 		filter="--filter $2"
 fi
 
-"$PHPUNIT_PATH" $filter --bootstrap "base/lib/tests/RapilaTestLoader.php" "base/lib/tests/Test$test_module"
+"$PHPUNIT_PATH" $filter --bootstrap "base/lib/tests/RapilaTestLoader.php" "./base/lib/tests/Test$test_module"
 
