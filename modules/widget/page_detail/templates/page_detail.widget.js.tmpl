@@ -4,6 +4,8 @@ Widget.types.page_detail = {
 		this.protector = new UnsavedChanges(this._element);
 		this.page_type = null;
 		this.template = null;
+		this.template_and_pagetype = Widget.parseHTML("{{includeTemplate=edit}}");
+
 		this.accordion = this._element.find('div.accordion');
 		this.accordion.accordion({
 			active: this.settings.active_accordion || 0,
