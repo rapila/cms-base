@@ -6,6 +6,10 @@
 	margin-left: 1em;
 }
 
+.status_section label[for="name"] {
+	display: inline-block;
+}
+
 input.path_input.ui-widget-content:hover,
 input.path_input.ui-widget-content:selected {
 	background: url() #fff;
@@ -69,9 +73,25 @@ div.container {
 	background: url("{{writeDirectInclude=admin/button_gradient_dark.png;template=location_only}}") repeat-x 0 bottom;
 }
 
+h3 span.edit_template_and_page_type {
+	width: 26px;
+	padding-left: 14px;
+	padding-right: 14px;
+	margin-left: 3px;
+	visibility: hidden;
+}
+
+h3 span.edit_template_and_page_type:before,
+h3 span.edit_template_and_page_type:after {
+	content: '';
+}
+
+h3.ui-state-active span.edit_template_and_page_type {
+	visibility: visible;
+}
+
 .page_detail_controls div {
 	height: 100%;
-	border-top: 1px solid #FFF;
 	padding: 0.5em 8em 0;
 	float: right;
 }

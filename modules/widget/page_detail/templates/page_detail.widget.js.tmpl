@@ -2,6 +2,9 @@ Widget.types.page_detail = {
 	prepare: function() {
 		var _this = this;
 		this.protector = new UnsavedChanges(this._element);
+
+		this.template_and_pagetype = Widget.parseHTML("{{includeTemplate=edit_template_and_pagetype}}");
+
 		this.accordion = this._element.find('div.accordion');
 		this.accordion.accordion({
 			active: this.settings.active_accordion || 0,
@@ -16,6 +19,20 @@ Widget.types.page_detail = {
 					_this.load_configuration(ui.newPanel);
 				}
 			}
+		});
+
+		this.edit_template_and_page_type = this._element.find('.edit_template_and_page_type').on('click', function(event) {
+			// create modal window
+			_this.template_and_pagetype.dialog({
+				modal: true,
+				buttons: {
+					'{{writeString=wns.save}}': function() {
+						_this.save();
+						_this.template_and_pagetype.dialog('close');
+						_this.load_page(_this.current_page_id);
+					}
+				}
+			});
 		});
 
 		//Init buttons
@@ -47,7 +64,7 @@ Widget.types.page_detail = {
 
 		//Templates
 		var option = jQuery('<option/>');
-		this.template_select = this._element.find("select[name='template_name']");
+		this.template_select = this.template_and_pagetype.find("select[name='template_name']");
 		this.template_select.change(function() {
 			_this.save();
 			_this.update_template_info();
@@ -57,7 +74,7 @@ Widget.types.page_detail = {
 		}.bind(this));
 
 		//Page types
-		this.page_type_select = this._element.find("select[name='page_type']");
+		this.page_type_select = this.template_and_pagetype.find("select[name='page_type']");
 		this.page_type_select.change(function() {
 			_this.update_pagetype_info();
 			_this.configuration_has_been_loaded = false;
@@ -314,6 +331,10 @@ Widget.types.page_detail = {
 		var data = this._element.serializeArrayKV();
 		delete data.page_property;
 		data.page_properties = {};
+
+		data.template_name = this.template_select.val();
+		data.page_type = this.page_type_select.val();
+
 		this._element.find("div.page_properties .page_property_container").each(function() {
 			var page_property_container = jQuery(this);
 			var property_name = page_property_container.data('propertyName');
