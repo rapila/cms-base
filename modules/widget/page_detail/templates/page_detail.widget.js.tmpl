@@ -2,8 +2,6 @@ Widget.types.page_detail = {
 	prepare: function() {
 		var _this = this;
 		this.protector = new UnsavedChanges(this._element);
-		this.page_type = null;
-		this.template = null;
 		this.template_and_pagetype = Widget.parseHTML("{{includeTemplate=edit_template_and_pagetype}}");
 
 		this.accordion = this._element.find('div.accordion');
@@ -28,7 +26,9 @@ Widget.types.page_detail = {
 				modal: true,
 				buttons: {
 					'{{writeString=wns.save}}': function() {
-
+						_this.save();
+						_this.template_and_pagetype.dialog('close');
+						_this.fill_data();
 					}
 				}
 			});
@@ -194,7 +194,7 @@ Widget.types.page_detail = {
 		// empty container, so when page type is changed, ie from default to journal then filled modules are not displayed anymore
 		container.empty();
 
-		var new_type = this.page_type;
+		var new_type = this.page_type_select.val();
 
 		container[0].className = container[0].className.replace(/\bpage-type-[^\s$]+/g, '')+' page-type-'+new_type;
 
@@ -226,8 +226,6 @@ Widget.types.page_detail = {
 		this._element.find(".page_href").text(page_data.PageLink).attr('href', page_data.PageHref);
 
 		this.canonical_id_dropdown.val(page_data.CanonicalId === null ? "" : page_data.CanonicalId);
-		this.page_type = page_data.PageType === null ? "" : page_data.PageType;
-		this.template_name = page_data.TemplateName === null ? "" : page_data.TemplateName;
 		this.template_select.val(page_data.TemplateName === null ? "" : page_data.TemplateName);
 		this.page_type_select.val(page_data.PageType === null ? "" : page_data.PageType);
 
@@ -291,11 +289,11 @@ Widget.types.page_detail = {
 	},
 
 	update_template_info: function() {
-		this._element.find("span.template_info").text(this.template_name);
+		this._element.find("span.template_info").text(this.template_select.find(":selected").text());
 	},
 
 	update_pagetype_info: function() {
-		this._element.find("span.pagetype_info").text(this.page_type);
+		this._element.find("span.pagetype_info").text(this.page_type_select.find(":selected").text());
 	},
 
 	update_properties_info: function(count_properties) {
@@ -324,6 +322,9 @@ Widget.types.page_detail = {
 		var data = this._element.serializeArrayKV();
 		delete data.page_property;
 		data.page_properties = {};
+		data.template_name = this.template_select.val();
+		data.page_type = this.page_type_select.val();
+
 		this._element.find("div.page_properties .page_property_container").each(function() {
 			var page_property_container = jQuery(this);
 			var property_name = page_property_container.data('propertyName');
