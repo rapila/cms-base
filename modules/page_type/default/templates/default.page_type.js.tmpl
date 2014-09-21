@@ -95,19 +95,22 @@
 
 			var container_html = this.containers.html;
 			if(container_html) {
-				Widget.parseHTML(container_html).appendTo(filled_modules);
+				jQuery().add(Widget.parseHTML(container_html)).add(Widget.parseHTML("{{includeTemplate=unused_objects}}")).appendTo(filled_modules);
 			}
 			if(this.containers.css_parsed) {
 				filled_modules.addClass('css_parsed');
 			} else {
 				filled_modules.removeClass('css_parsed');
 			}
-
 			var filled_modules_containers = filled_modules.find('ol[data-container-name]');
 			jQuery.each(this.filled_frontend_modules, function(container_name, container_params) {
+				// Move unused object to unused container
+				var is_unused = container_params.unused_objects !== undefined;
+				if(is_unused) {
+					container_name = 'unused_objects';
+				}
 				var target = filled_modules_containers.filter('[data-container-name='+container_name+']');
 				jQuery.each(container_params.contents, function(i, content_params) {
-					var content = content_params.language_objects[language_id];
 					var li = _this.filled_module_li.clone().appendTo(target);
 					li.attr({'data-object-type': content_params.object_type, 'data-container': container_name, 'data-object-id': content_params.id, 'data-language-id': language_id});
 					_this.update_content_properties(li, {content: content_params});

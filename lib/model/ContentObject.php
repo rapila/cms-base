@@ -50,7 +50,8 @@ class ContentObject extends BaseContentObject {
 		if($sNewContainer !== null && $iNewPosition !== null) {
 			$this->prepareContainerForReSort($sNewContainer, PHP_INT_MAX, $iNewPosition);
 		}
-		$this->setContainerName($sNewContainer);
+		//Set container name to NULL if the Object is created or moved again to
+		$this->setContainerName($sNewContainer !== 'unused_objects' ? $sNewContainer : NULL);
 		$this->setSort($iNewPosition);
 	}
 

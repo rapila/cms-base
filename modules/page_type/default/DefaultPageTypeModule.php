@@ -205,15 +205,36 @@ class DefaultPageTypeModule extends PageTypeModule {
 		asort($aContainers);
 		$aResult = array();
 
+		// All containers that are referenced in content objects
+		$aUnusedContainers = $this->containersWithObjects();
 		foreach($aContainers as $oContainer) {
 			$sContainerName = $oContainer->getValue();
+
+			// Remove container from unused list
+			$sFoundKey = array_search($sContainerName, $aUnusedContainers);
+			if($sFoundKey !== false) {
+				unset($aUnusedContainers[$sFoundKey]);
+			}
 			$aObjects = $this->oPage->getObjectsForContainer($sContainerName);
 			$aResult[$sContainerName]['contents'] = array();
 			foreach($aObjects as $oObject) {
 				$aResult[$sContainerName]['contents'][] = $this->paramsForObject($oObject);
 			}
 		}
+		// Add objects that are not used in template containers
+		foreach($aUnusedContainers as $sContainerName) {
+			$aObjects = $this->oPage->getObjectsForContainer($sContainerName);
+			$aResult[$sContainerName]['unused_objects'] = true;
+			$aResult[$sContainerName]['contents'] = array();
+			foreach($aObjects as $oObject) {
+				$aResult[$sContainerName]['contents'][] = $this->paramsForObject($oObject);
+			}
+		}
 		return $aResult;
+	}
+
+	private function containersWithObjects() {
+		return ContentObjectQuery::create()->filterByPage($this->oPage)->select(array('container_name'))->distinct()->find()->toArray();
 	}
 
 	private function paramsForObject($oObject) {
