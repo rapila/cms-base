@@ -73,12 +73,13 @@ div.container {
 	background: url("{{writeDirectInclude=admin/button_gradient_dark.png;template=location_only}}") repeat-x 0 bottom;
 }
 
-h3 span.edit_template_and_page_type {
+h3 span.edit_template_and_page_type.ui-icon-pencil {
 	width: 26px;
 	padding-left: 14px;
 	padding-right: 14px;
 	margin-left: 3px;
 	visibility: hidden;
+	background-position: center center;
 }
 
 h3 span.edit_template_and_page_type:before,
@@ -86,7 +87,8 @@ h3 span.edit_template_and_page_type:after {
 	content: '';
 }
 
-h3.ui-state-active span.edit_template_and_page_type {
+h3.ui-state-active span.edit_template_and_page_type,
+h3 span.edit_template_and_page_type.has_no_content_objects {
 	visibility: visible;
 }
 

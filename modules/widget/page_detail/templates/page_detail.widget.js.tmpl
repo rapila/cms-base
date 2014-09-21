@@ -227,6 +227,9 @@ Widget.types.page_detail = {
 		Widget.callStatic('detail', 'clear_validation', this._element);
 		var page_data = this.getPageData();
 		this.current_page_id = page_data.Id;
+		if(!page_data['HasContentObjects']) {
+			this._element.find('span.edit_template_and_page_type').addClass('has_no_content_objects');
+		}
 		this._element.find("input[name='name']").val(page_data.Name);
 		this._element.find("input[name='global_is_active']").prop('checked', !page_data.IsInactive);
 		this._element.find("input[name='is_folder']").prop('checked', page_data.IsFolder);

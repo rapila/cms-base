@@ -56,6 +56,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		if($mReferences !== null) {
 			$aResult['page_references'] = $mReferences;
 		}
+		$aResult['HasContentObjects'] = $oPage->countContentObjects() > 0;
 		return $aResult;
 	}
 
