@@ -268,9 +268,9 @@ class DefaultPageTypeModule extends PageTypeModule {
 
 	public function adminAddObjectToContainer($sContainerName, $sObjectType, $iSort=0) {
 		$oContentObject = new ContentObject();
+		$oContentObject->setPageId($this->oPage->getId());
 		$oContentObject->sortIntoNew($sContainerName, $iSort);
 		$oContentObject->setObjectType($sObjectType);
-		$oContentObject->setPageId($this->oPage->getId());
 		$oContentObject->save();
 		return $this->paramsForObject($oContentObject);
 	}
