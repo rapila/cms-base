@@ -75,15 +75,17 @@ var Dashboard = (function($) {
 					return false;
 				}).appendTo(head);
 				$('<div class="dashboard-edit-box" />')
-					.append('<ul><li class="item"><label>'+AdminInterface.translations.dashboardChangeTitle+'</label><input value="' + $('h3',this).text() + '"/></li>')
-					.append((function(){
-						var colorList = '<li class="item"><label>'+AdminInterface.translations.dashboardAvailableColors+':</label><ul class="colors">';
-						$(thisWidgetSettings.colors).each(function () {
-							colorList += '<li style="background-color: ' + this + ';"/>';
-						});
-						return colorList + '</ul>';
-					})())
-					.append('</ul>')
+					.append('<ul/>')
+					.children('ul')
+						.append('<li class="item"><label>'+AdminInterface.translations.dashboardChangeTitle+'</label><input value="' + $('h3',this).text() + '"/></li>')
+						.append((function(){
+							var colorList = '<li class="item"><label>'+AdminInterface.translations.dashboardAvailableColors+':</label><ul class="colors">';
+							$(thisWidgetSettings.colors).each(function () {
+								colorList += '<li style="background-color: ' + this + ';"/>';
+							});
+							return colorList + '</ul>';
+						})())
+					.end()
 					.insertAfter(head);
 			}
 
@@ -126,31 +128,19 @@ var Dashboard = (function($) {
 			$ = this.jQuery,
 			settings = this.settings,
 			$sortableItems = $('> li'+settings.widgetSelector, settings.columns);
-			
-		$(settings.widgetSelector,$(settings.columns)).each(function (i) {
+
+		var columns = $(settings.columns);
+
+		$(settings.widgetSelector, columns).each(function (i) {
 			if (!_this.getWidgetSettings(this.id).movable) {
 				$sortableItems = $sortableItems.not(this);
 			}
 		});
-		
-		$sortableItems.find(settings.handleSelector).css({
-			cursor: 'move'
-		}).mousedown(function (e) {
-			$sortableItems.css({width:''});
-			$(this).parent().css({
-				width: $(this).parent().width() + 'px'
-			});
-		}).mouseup(function () {
-			if(!$(this).parent().hasClass('dragging')) {
-				$(this).parent().css({width:''});
-			} else {
-				$(settings.columns).sortable('disable');
-			}
-		});
 
-		$(settings.columns).sortable({
+		columns.sortable({
 			items: $sortableItems,
-			connectWith: $(settings.columns),
+			cancel: '.editing',
+			connectWith: columns,
 			update: function(event, ui) {
 				if(ui.sender) {
 					return;
@@ -159,7 +149,7 @@ var Dashboard = (function($) {
 				var target = item.parent();
 				var position = target.children().index(item);
 				item.triggerHandler('db-moved', {
-					to: target.attr('id'), 
+					to: target.attr('id'),
 					pos: position
 				});
 			},
@@ -172,11 +162,12 @@ var Dashboard = (function($) {
 			tolerance: 'pointer',
 			opacity: 0.8,
 			start: function (e,ui) {
-				$(ui.helper).addClass('dragging');
+				var item = $(ui.item);
+				item.css('width', item.width()+'px').addClass('dragging');
 			},
 			stop: function (e,ui) {
-				$(ui.item).css({width:''}).removeClass('dragging');
-				$(settings.columns).sortable('enable');
+				var item = $(ui.item);
+				item.css({width:''}).removeClass('dragging');
 			}
 		});
 	}
