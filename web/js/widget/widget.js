@@ -531,6 +531,9 @@ String.prototype.escapeSelector = function() {
 				if(button.rapilaIcon) {
 					button.element.text(button.rapilaIcon).addClass('rapila-icon').removeClass('ui-icon');
 				}
+				if(button.title) {
+					button.element.prop('title', button.title);
+				}
 				button.element.click(button.click);
 				display.find('> div').prepend(button.element);
 			});
