@@ -10,9 +10,9 @@ admin_menu:
     - module.dashboard
   right:
     - activity
-    - domain_name
-    - tag
     - logo
+    - documentation
+    - tag
     - user
     - logout
 
