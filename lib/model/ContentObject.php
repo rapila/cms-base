@@ -41,15 +41,15 @@ class ContentObject extends BaseContentObject {
 		PagePeer::ignoreRights(false);
 	}
 
-	public function sortIntoNew($sNewContainer = null, $iNewPosition = null) {
+	public function sortIntoNew($sNewContainer = false, $iNewPosition = false) {
 		$sOldContainer = $this->getContainerName();
 		$iOldPosition = $this->getSort();
-		//Phase 1: Resort existing
-		if($sOldContainer !== null && $iOldPosition !== null) {
+		//Phase 1: Resort old container
+		if(!$this->isNew()) {
 			$this->prepareContainerForReSort($sOldContainer, $iOldPosition, PHP_INT_MAX);
 		}
 		//Phase 2: Prepare list of new container for insertion
-		if($sNewContainer !== null && $iNewPosition !== null) {
+		if($sNewContainer !== false && $iNewPosition !== false) {
 			$this->prepareContainerForReSort($sNewContainer, PHP_INT_MAX, $iNewPosition);
 		}
 		//Set container name to NULL if the Object is created or moved again to
@@ -69,6 +69,7 @@ class ContentObject extends BaseContentObject {
 	}
 
 	private function prepareContainerForReSort($sNewContainer, $iOldPosition, $iNewPosition) {
+		$sNewContainer = self::normalizeContainerName($sNewContainer);
 		$iDelta = $iNewPosition > $iOldPosition ? -1 : 1;
 		$iMinPos = min($iOldPosition, $iNewPosition);
 		$iMaxPos = max($iOldPosition, $iNewPosition);

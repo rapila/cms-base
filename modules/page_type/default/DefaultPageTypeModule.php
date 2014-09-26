@@ -201,40 +201,32 @@ class DefaultPageTypeModule extends PageTypeModule {
 		if($this->sLanguageId === null) {
 			$this->sLanguageId = AdminManager::getContentLanguage();
 		}
+
+		// Create a list of all containers (including unused)
 		$aContainers = $this->oPage->getTemplate()->identifiersMatching("container", Template::$ANY_VALUE);
+		$aContainers = array_map(function($oContainer) {
+			return $oContainer->getValue();
+		}, $aContainers);
+		$aContainers[] = ContentObject::UNUSED_OBJECTS_KEY;
 		asort($aContainers);
+
+		// Create the result (an object whose key is the name of the container [or “unused_objects”] and whose value is an object with the “contents” property for all objects)
 		$aResult = array();
-
-		// All containers that are referenced in content objects
-		$aUnusedContainers = $this->containersWithObjects();
-		foreach($aContainers as $oContainer) {
-			$sContainerName = $oContainer->getValue();
-
-			// Remove container from unused list
-			$sFoundKey = array_search($sContainerName, $aUnusedContainers);
-			if($sFoundKey !== false) {
-				unset($aUnusedContainers[$sFoundKey]);
-			}
-			$aObjects = $this->oPage->getObjectsForContainer($sContainerName);
-			$aResult[$sContainerName]['contents'] = array();
-			foreach($aObjects as $oObject) {
-				$aResult[$sContainerName]['contents'][] = $this->paramsForObject($oObject);
-			}
+		foreach($aContainers as $sContainerName) {
+			$aResult[$sContainerName] = new StdClass();
+			$aResult[$sContainerName]->contents = array();
 		}
-		// Add objects that are not used in template containers
-		foreach($aUnusedContainers as $sContainerName) {
-			$aObjects = $this->oPage->getObjectsForContainer($sContainerName);
-			$aResult[$sContainerName]['unused_objects'] = true;
-			$aResult[$sContainerName]['contents'] = array();
-			foreach($aObjects as $oObject) {
-				$aResult[$sContainerName]['contents'][] = $this->paramsForObject($oObject);
+
+		// Add all objects to their respective containers
+		$aObjects = ContentObjectQuery::create()->filterByPage($this->oPage)->orderByContainerName()->orderBySort()->find();
+		foreach($aObjects as $oObject) {
+			$sContainerName = $oObject->getContainerName();
+			if(!isset($aResult[$sContainerName])) {
+				$sContainerName = ContentObject::UNUSED_OBJECTS_KEY;
 			}
+			$aResult[$sContainerName]->contents[] = $this->paramsForObject($oObject);
 		}
 		return $aResult;
-	}
-
-	private function containersWithObjects() {
-		return ContentObjectQuery::create()->filterByPage($this->oPage)->select(array('container_name'))->distinct()->find()->toArray();
 	}
 
 	private function paramsForObject($oObject) {
