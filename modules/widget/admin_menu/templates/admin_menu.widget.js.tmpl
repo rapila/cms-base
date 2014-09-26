@@ -245,9 +245,12 @@ Widget.types.admin_menu = {
 						hideIcon: true,
 						isHTML: true,
 						buttons: {
-							link: {click: function(event) {
-								jQuery.openLink(data.url, event);
-							}}
+							link: {
+								click: function(event) {
+									jQuery.openLink(data.url, event);
+								},
+								rapilaIcon: 'externallink'
+							}
 						}
 					});
 				});
