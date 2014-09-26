@@ -9,14 +9,12 @@ Widget.types.static_text = {
 	
 	dashboard_config_form: function() {
 		var form = Widget.parseHTML('{{includeTemplate=config_form}}');
-		form.find('textarea').val(this.settings.dashboard.text);
-		form.attr('data-widget-type', 'rich_text').prepareWidget(function(widget) {
-			widget.settings.height = 230;
-			widget.settings.autoUpdateElement = true;
-			form.bind('db-configured', function() {
-				widget.data_to_textarea();
-			});
-		}, jQuery.noop);
+		var textarea = form.find('textarea');
+		textarea.val(this.settings.dashboard.text);
+		var editor = CKEDITOR.replace(textarea[0]);
+		form.on('db-configured', function() {
+			textarea.val(editor.getData());
+		});
 		return form;
 	},
 	
