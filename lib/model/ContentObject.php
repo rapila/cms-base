@@ -6,6 +6,8 @@ require_once 'model/om/BaseContentObject.php';
  * @package model
  */
 class ContentObject extends BaseContentObject {
+	
+	const UNUSED_OBJECTS_KEY = '_unused_objects';
 
 	public function getLanguageObject($sLanguageId = null) {
 		if($sLanguageId === null) {
@@ -51,8 +53,12 @@ class ContentObject extends BaseContentObject {
 			$this->prepareContainerForReSort($sNewContainer, PHP_INT_MAX, $iNewPosition);
 		}
 		//Set container name to NULL if the Object is created or moved again to
-		$this->setContainerName($sNewContainer !== 'unused_objects' ? $sNewContainer : NULL);
+		$this->setContainerName($sNewContainer);
 		$this->setSort($iNewPosition);
+	}
+	
+	public function setContainerName($sValue) {
+		return parent::setContainerName(self::normalizeContainerName($sValue));
 	}
 
 	public function sortInsideExisting($iNewPosition) {
@@ -71,5 +77,12 @@ class ContentObject extends BaseContentObject {
 			$oObject->setSort($oObject->getSort()+$iDelta);
 			$oObject->save();
 		}
+	}
+
+	/**
+	* Normalizes the container name
+	*/
+	public function normalizeContainerName($sContainerName) {
+		return $sContainerName !== self::UNUSED_OBJECTS_KEY ? $sContainerName : null;
 	}
 }
