@@ -33,7 +33,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 
 	public function fillAutofill($oTemplateIdentifier, $iFlags) {
 		$oModule = FrontendModule::getModuleInstance($oTemplateIdentifier->getValue(), $oTemplateIdentifier->getParameter('data'));
-		$mResult = $oModule->cachedFrontend();
+		$mResult = $oModule->cachedFrontend($this->bIsPreview);
 		if(($sCss = $oModule->getCssForFrontend()) !== null) {
 			ResourceIncluder::defaultIncluder()->addCustomCss($sCss);
 		}
@@ -152,7 +152,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 	}
 
 	protected function getModuleContents($oModule, $bAllowTemplate = true) {
-		$mResult = $oModule->cachedFrontend();
+		$mResult = $oModule->cachedFrontend($this->bIsPreview);
 		if(!$bAllowTemplate && $mResult instanceof Template) {
 			$mResult = $mResult->render();
 		}
