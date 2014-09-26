@@ -528,6 +528,9 @@ String.prototype.escapeSelector = function() {
 				if(button.hidden) {
 					button.element.hide();
 				}
+				if(button.rapilaIcon) {
+					button.element.text(button.rapilaIcon).addClass('rapila-icon').removeClass('ui-icon');
+				}
 				button.element.click(button.click);
 				display.find('> div').prepend(button.element);
 			});
