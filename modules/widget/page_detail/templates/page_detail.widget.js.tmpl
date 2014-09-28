@@ -24,13 +24,18 @@ Widget.types.page_detail = {
 		this.edit_template_and_page_type = this._element.find('.edit_template_and_page_type').on('click', function(event) {
 			// create modal window
 			_this.template_and_pagetype.dialog({
+				title: "{{writeString=wns.page.template_or_pagetype_change}}",
 				modal: true,
 				buttons: {
 					'{{writeString=wns.save}}': function() {
-						_this.save();
+						var configuration_container = _this._element.find('div.accordion .configuration_container').empty();
 						_this.template_and_pagetype.dialog('close');
-						_this.load_page(_this.current_page_id);
+						_this.edit_template_and_page_type.parent().blur();
+						_this.load_configuration(configuration_container);
 					}
+				},
+				close: function() {
+					// reset any changes if form is not submitted
 				}
 			});
 		});
@@ -66,7 +71,7 @@ Widget.types.page_detail = {
 		var option = jQuery('<option/>');
 		this.template_select = this.template_and_pagetype.find("select[name='template_name']");
 		this.template_select.change(function() {
-			_this.save();
+			_this.configuration_has_been_loaded = false;
 			_this.update_template_info();
 		});
 		jQuery.each(this._staticMethods.getFrontendTemplates(), function(i, template) {
@@ -196,6 +201,7 @@ Widget.types.page_detail = {
 	},
 
 	load_configuration: function(container) {
+
 		var _this = this;
 		if(this.current_page_id === null || this.configuration_has_been_loaded === true) {
 			return;
@@ -227,9 +233,6 @@ Widget.types.page_detail = {
 		Widget.callStatic('detail', 'clear_validation', this._element);
 		var page_data = this.getPageData();
 		this.current_page_id = page_data.Id;
-		if(!page_data['HasContentObjects']) {
-			this._element.find('span.edit_template_and_page_type').addClass('has_no_content_objects');
-		}
 		this._element.find("input[name='name']").val(page_data.Name);
 		this._element.find("input[name='global_is_active']").prop('checked', !page_data.IsInactive);
 		this._element.find("input[name='is_folder']").prop('checked', page_data.IsFolder);
