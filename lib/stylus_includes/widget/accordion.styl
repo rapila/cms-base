@@ -55,10 +55,12 @@
 h3
 	a
 		background-image none
-	span.info
-		font-weight normal
-		&::before
-			content ' ('
-		&::after
-			content ') '
+		span
+			&.info,
+			&.number
+				font-weight normal
+				&::before
+					content ' ('
+				&::after
+					content ') '
 
