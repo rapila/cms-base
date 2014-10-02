@@ -35,7 +35,7 @@ class TaggableBehaviour extends Behavior
 
 	public function peerFilter(&$sScript) {
 		$sScript = str_replace(array(
-			'public static function doDelete(', 
+			'public static function doDelete(',
 			'public static function doDeleteWithTaggable('
 		), array(
 			'private static function doDeleteBeforeTaggable(',

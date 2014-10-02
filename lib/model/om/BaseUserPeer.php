@@ -593,6 +593,12 @@ abstract class BaseUserPeer
         // Invalidate objects in ReferencePeer instance pool,
         // since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
         ReferencePeer::clearInstancePool();
+        // Invalidate objects in ScheduledActionPeer instance pool,
+        // since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
+        ScheduledActionPeer::clearInstancePool();
+        // Invalidate objects in ScheduledActionPeer instance pool,
+        // since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
+        ScheduledActionPeer::clearInstancePool();
     }
 
     /**
@@ -1571,6 +1577,22 @@ abstract class BaseUserPeer
             $updateValues = new Criteria(UserPeer::DATABASE_NAME);
             $selectCriteria->add(ReferencePeer::UPDATED_BY, $obj->getId());
             $updateValues->add(ReferencePeer::UPDATED_BY, null);
+
+            BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+
+            // set fkey col in related ScheduledAction rows to null
+            $selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
+            $updateValues = new Criteria(UserPeer::DATABASE_NAME);
+            $selectCriteria->add(ScheduledActionPeer::CREATED_BY, $obj->getId());
+            $updateValues->add(ScheduledActionPeer::CREATED_BY, null);
+
+            BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+
+            // set fkey col in related ScheduledAction rows to null
+            $selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
+            $updateValues = new Criteria(UserPeer::DATABASE_NAME);
+            $selectCriteria->add(ScheduledActionPeer::UPDATED_BY, $obj->getId());
+            $updateValues->add(ScheduledActionPeer::UPDATED_BY, null);
 
             BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
