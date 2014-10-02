@@ -82,9 +82,7 @@ class DenyableBehaviour extends Behavior {
 		$sPeerClassname = $oBuilder->getStubPeerBuilder()->getClassname();
 		$sModelName = $oBuilder->getStubObjectBuilder()->getClassname();
 		return 'public function mayOperate($sOperation, $oUser = false) {
-	if($oUser === false) {
-		$oUser = Session::getSession()->getUser();
-	}
+	$oUser = '.$sPeerClassname.'::getRightsUser($oUser);
 	$bIsAllowed = false;
 	if($oUser && ($this->isNew() || $this->getCreatedBy() === $oUser->getId()) && '.$sPeerClassname.'::mayOperateOnOwn($oUser, $this, $sOperation)) {
 		$bIsAllowed = true;
@@ -121,17 +119,26 @@ class DenyableBehaviour extends Behavior {
 	public function staticAttributes($oBuilder) {
 		$sAttrs = '';
 		$sAttrs .= $this->addIgnoreProp();
+		$sAttrs .= $this->addUserProp();
 		return $sAttrs;
 	}
 
 	private function addIgnoreProp() {
-		return 'private static $IGNORE_RIGHTS = false;';
+		return 'private static $IGNORE_RIGHTS = false;
+';
+	}
+
+	private function addUserProp() {
+		return 'private static $RIGHTS_USER = false;
+';
 	}
 
 	public function staticMethods($oBuilder) {
 		$sMethods = '';
 		$sMethods .= $this->addIgnoreMethod();
 		$sMethods .= $this->addIsIgnoringMethod();
+		$sMethods .= $this->addSetUserMethod();
+		$sMethods .= $this->addGetUserMethod();
 		$sMethods .= $this->addMayMethod();
 		$sMethods .= $this->addMayOwnMethod();
 		return $sMethods;
@@ -147,6 +154,26 @@ class DenyableBehaviour extends Behavior {
 	private function addIsIgnoringMethod() {
 		return 'public static function isIgnoringRights() {
 	return self::$IGNORE_RIGHTS || PHP_SAPI === "cli";
+}
+';
+	}
+
+	private function addSetUserMethod() {
+		return 'public static function setRightsUser($oUser = false) {
+	self::$RIGHTS_USER = $oUser;
+}
+';
+	}
+	
+	private function addGetUserMethod() {
+		return 'public static function getRightsUser($oUser = false) {
+	if($oUser === false) {
+		$oUser = self::$RIGHTS_USER;
+	}
+	if($oUser === false) {
+		$oUser = Session::getSession()->getUser();
+	}
+	return $oUser;
 }
 ';
 	}
