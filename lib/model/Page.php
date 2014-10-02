@@ -375,7 +375,7 @@ class Page extends BasePage {
 		$this->delete();
 	}
 
-	///Override moveSubtreeTo to store the old parent
+	// Override moveSubtreeTo to store the old parent
 	protected function moveSubtreeTo($destLeft, $levelDelta, PropelPDO $con = null) {
 		$oOldParent = $this->getParent($con);
 		$oNewParent = PageQuery::create()->filterByTreeLeft($destLeft, Criteria::LESS_THAN)->filterByTreeRight($destLeft, Criteria::GREATER_EQUAL)->filterByTreeLevel($this->getLevel()+$levelDelta-1)->findOne();
@@ -401,5 +401,10 @@ class Page extends BasePage {
 
 	public function getOldParent() {
 		return $this->oOldParent;
+	}
+	
+	public function executeScheduledActivate() {
+		$this->setIsInactive(false);
+		$this->save();
 	}
 }
