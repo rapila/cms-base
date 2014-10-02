@@ -1774,9 +1774,7 @@ abstract class BaseScheduledAction extends BaseObject implements Persistent
 
     // denyable behavior
     public function mayOperate($sOperation, $oUser = false) {
-        if($oUser === false) {
-            $oUser = Session::getSession()->getUser();
-        }
+        $oUser = ScheduledActionPeer::getRightsUser($oUser);
         $bIsAllowed = false;
         if($oUser && ($this->isNew() || $this->getCreatedBy() === $oUser->getId()) && ScheduledActionPeer::mayOperateOnOwn($oUser, $this, $sOperation)) {
             $bIsAllowed = true;
