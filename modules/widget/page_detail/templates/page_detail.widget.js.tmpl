@@ -23,6 +23,7 @@ Widget.types.page_detail = {
 
 		this.edit_template_and_page_type = this._element.find('.edit_template_and_page_type').on('click', function(event) {
 			// create modal window
+			event.stopPropagation();
 			_this.template_and_pagetype.dialog({
 				title: "{{writeString=wns.page.template_or_pagetype_change}}",
 				modal: true,
