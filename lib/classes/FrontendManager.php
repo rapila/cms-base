@@ -6,7 +6,7 @@
 class FrontendManager extends Manager {
 	public static $CURRENT_PAGE = null;
 	public static $CURRENT_NAVIGATION_ITEM = null;
-	
+
 	protected $oTemplate;
 	private $aPathRequestParams;
 	protected $bIsNotFound;
@@ -119,7 +119,7 @@ class FrontendManager extends Manager {
 
 		FilterModule::getFilters()->handlePageHasBeenSet(self::$CURRENT_PAGE, $this->bIsNotFound, self::$CURRENT_NAVIGATION_ITEM);
 	}
-	
+
 	protected function initLanguage() {
 		$bIsMultilingual = Settings::getSetting('general', 'multilingual', true);
 		if($bIsMultilingual && self::hasNextPathItem() && LanguageQuery::languageIsActive(self::peekNextPathItem(), true)) {
@@ -158,14 +158,14 @@ class FrontendManager extends Manager {
 			LinkUtil::redirectToManager(array('languages'), "AdminManager");
 		}
 	}
-	
+
 	/**
 	 * render()
 	 */
 	public function render() {
 		FilterModule::getFilters()->handleRequestStarted();
 		$bIsDynamic = false;
-		
+
 		$bIsAjaxRequest = Manager::isPost() && Manager::isXMLHttpRequest();
 		$aAjaxSections = array('container' => array(), 'navigation' => array());
 		///@todo remove legacy support when the need fades
@@ -253,15 +253,15 @@ class FrontendManager extends Manager {
 		}
 		FilterModule::getFilters()->handleRequestFinished(array(self::$CURRENT_PAGE, $bIsDynamic, $bIsAjaxRequest));
 	}
-	
+
 	protected function getXHTMLOutput() {
 		return new XHTMLOutput();
 	}
-	
+
 	protected function renderTemplate() {
 		$this->oTemplate->render();
 	}
-	
+
 	protected function addCanonicalLink() {
 		$oCanonical = self::$CURRENT_NAVIGATION_ITEM->getCanonical(Session::language());
 		if($oCanonical) {
@@ -278,8 +278,8 @@ class FrontendManager extends Manager {
 			}
 		}
 	}
-	
-	protected function fillContent() { 
+
+	protected function fillContent() {
 		$this->oPageType->display($this->oTemplate, false);
 	}
 
@@ -305,6 +305,7 @@ class FrontendManager extends Manager {
 		foreach(self::$CURRENT_PAGE->getPageProperties() as $oPageProperty) {
 			$this->oTemplate->replaceIdentifier('pageProperty', $oPageProperty->getValue(), $oPageProperty->getName());
 		}
+		$this->oTemplate->replaceIdentifier("page_type", self::$CURRENT_PAGE->getPageType());
 		$this->oTemplate->replaceIdentifier("page_id", self::$CURRENT_PAGE->getId());
 		$this->oTemplate->replaceIdentifier("page_identifier", self::$CURRENT_NAVIGATION_ITEM->getIdentifier());
 		$this->oTemplate->replaceIdentifierCallback("page_link", 'FrontendManager', 'replacePageLinkIdentifier');
@@ -356,7 +357,7 @@ class FrontendManager extends Manager {
 		}
 		return TagWriter::quickTag('a', array('class' => "meta_navigation {$oPage->getName()}", 'href' => LinkUtil::link($oPage->getLink()), 'title' => $oPage->getPageTitle()), $oPage->getLinkText());
 	}
-	
+
 	public static function shouldIncludeLanguageInLink() {
 		return Settings::getSetting('general', 'multilingual', true);
 	}
