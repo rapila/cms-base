@@ -220,6 +220,20 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		$oFlash->finishReporting();
 	}
 
+	public function saveTemplateAndPageType($sTemplate, $sPageType) {
+		$this->oPage = PageQuery::create()->findPk($this->iPageId);
+		if(!Session::getSession()->getUser()->mayEditPageDetails($this->oPage)) {
+			throw new NotPermittedException('may_edit_page_details');
+		}
+		if($sTemplate === "") {
+			$this->oPage->setTemplateName(null);
+		} else {
+			$this->oPage->setTemplateName($sTemplate);
+		}
+		$this->oPage->setPageType($sPageType);
+		return $this->oPage->save();
+	}
+
 	public function saveData($aPageData) {
 		$this->oPage = PageQuery::create()->findPk($this->iPageId);
 		if(!Session::getSession()->getUser()->mayEditPageDetails($this->oPage)) {

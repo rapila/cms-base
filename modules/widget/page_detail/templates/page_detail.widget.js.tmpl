@@ -29,13 +29,19 @@ Widget.types.page_detail = {
 				buttons: {
 					'{{writeString=wns.save}}': function() {
 						var configuration_container = _this._element.find('div.accordion .configuration_container').empty();
-						_this.template_and_pagetype.dialog('close');
-						_this.edit_template_and_page_type.parent().blur();
-						_this.load_configuration(configuration_container);
+						_this.configuration_has_been_loaded = false;
+						var template = _this.template_select.val();
+						var page_type = _this.page_type_select.val();
+						_this.saveTemplateAndPageType(template, page_type, function() {
+							_this.set_template_and_page_type(template, page_type);
+							_this.load_configuration(configuration_container);
+							_this.template_and_pagetype.dialog('close');
+						});
 					}
 				},
 				close: function() {
-					// reset any changes if form is not submitted
+					_this.template_and_pagetype[0].reset();
+					_this.edit_template_and_page_type.blur();
 				}
 			});
 		});
@@ -70,20 +76,12 @@ Widget.types.page_detail = {
 		//Templates
 		var option = jQuery('<option/>');
 		this.template_select = this.template_and_pagetype.find("select[name='template_name']");
-		this.template_select.change(function() {
-			_this.configuration_has_been_loaded = false;
-			_this.update_template_info();
-		});
 		jQuery.each(this._staticMethods.getFrontendTemplates(), function(i, template) {
 			option.clone().text(template.name).attr('value', template.value).addClass(template.is_default ? 'default' : '').appendTo(this.template_select);
 		}.bind(this));
 
 		//Page types
 		this.page_type_select = this.template_and_pagetype.find("select[name='page_type']");
-		this.page_type_select.change(function() {
-			_this.update_pagetype_info();
-			_this.configuration_has_been_loaded = false;
-		});
 		jQuery.each(this.getPageTypes(), function(i, page_type) {
 			option.clone().text(page_type.name).attr('value', page_type.value).appendTo(this.page_type_select);
 		}.bind(this));
@@ -201,7 +199,6 @@ Widget.types.page_detail = {
 	},
 
 	load_configuration: function(container) {
-
 		var _this = this;
 		if(this.current_page_id === null || this.configuration_has_been_loaded === true) {
 			return;
@@ -229,6 +226,16 @@ Widget.types.page_detail = {
 		});
 	},
 
+	set_template_and_page_type: function(template_name, page_type) {
+		this.template_select.find('option').attr('selected', false).end().find('option[value="'+template_name+'"]').attr('selected', 'selected');
+		this.template_select.val(template_name === null ? "" : template_name);
+		this._element.find("span.template_info").text(this.template_select.find(":selected").text());
+
+		this.page_type_select.find('option').attr('selected', false).end().find('option[value="'+page_type+'"]').attr('selected', 'selected');
+		this.page_type_select.val(page_type === null ? "" : page_type);
+		this._element.find("span.pagetype_info").text(this.page_type_select.find(":selected").text());
+	},
+
 	fill_data: function() {
 		Widget.callStatic('detail', 'clear_validation', this._element);
 		var page_data = this.getPageData();
@@ -241,8 +248,7 @@ Widget.types.page_detail = {
 		this._element.find(".page_href").text(page_data.PageLink).attr('href', page_data.PageHref);
 
 		this.canonical_id_dropdown.val(page_data.CanonicalId === null ? "" : page_data.CanonicalId);
-		this.template_select.val(page_data.TemplateName === null ? "" : page_data.TemplateName);
-		this.page_type_select.val(page_data.PageType === null ? "" : page_data.PageType);
+		this.set_template_and_page_type(page_data.TemplateName, page_data.PageType);
 
 		this.delete_button.prop({title: page_data.DeleteNotPermitted});
 
@@ -298,17 +304,7 @@ Widget.types.page_detail = {
 		this.tag_area.reload_tags();
 
 		// Update info in accordion headings
-		this.update_template_info();
-		this.update_pagetype_info();
 		this.update_properties_info(count_properties);
-	},
-
-	update_template_info: function() {
-		this._element.find("span.template_info").text(this.template_select.find(":selected").text());
-	},
-
-	update_pagetype_info: function() {
-		this._element.find("span.pagetype_info").text(this.page_type_select.find(":selected").text());
 	},
 
 	update_properties_info: function(count_properties) {
