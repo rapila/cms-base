@@ -19,8 +19,16 @@ class ScheduledActionQuery extends BaseScheduledActionQuery {
 	*/
 	public function filterByOverdue() {
 		$oCurrentDate = new DateTime(null, new DateTimeZone('UTC'));
-		$this->filterByExecutionDate(null, Criteria::ISNULL)->filterByScheduleDate(array('max' => $oCurrentDate))->orderByScheduleDate(Criteria::ASC);
+		$this->scheduled()->filterByScheduleDate(array('max' => $oCurrentDate))->orderByScheduleDate(Criteria::ASC);
 		return $this;
+	}
+	
+	public function scheduled() {
+		return $this->filterByExecutionDate(null, Criteria::ISNULL);
+	}
+	
+	public function done() {
+		return $this->filterByExecutionDate(null, Criteria::ISNOTNULL);
 	}
 	
 	/**
