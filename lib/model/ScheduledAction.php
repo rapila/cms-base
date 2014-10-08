@@ -84,15 +84,19 @@ class ScheduledAction extends BaseScheduledAction {
 			// Do nothing
 			return;
 		}
+		ScheduledActionPeer::setRightsUser($this->getExecutionUser());
+		$aResult = true;
 		try {
 			$this->execute();
-			$this->setExecutionDate(time());
+			$oCurrentDate = new DateTime(null, new DateTimeZone('UTC'));
+			$this->setExecutionDate($oCurrentDate);
 			$this->save();
-			return true;
 		} catch(Exception $ex) {
 			ErrorHandler::handleException($ex, true);
 			$this->delete();
-			return false;
+			$aResult = false;
 		}
+		ScheduledActionPeer::setRightsUser(null);
+		return $aResult;
 	}
 }
