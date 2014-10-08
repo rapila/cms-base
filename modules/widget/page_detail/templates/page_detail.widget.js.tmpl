@@ -69,6 +69,12 @@ Widget.types.page_detail = {
 			});
 			return false;
 		});
+		Widget.createWithElement('scheduler', function(scheduler) {
+			_this.scheduler = scheduler;
+			scheduler.setModelName('Page');
+		}, function(scheduler) {
+			buttons.append(scheduler._element);
+		});
 
 		this.description_has_been_loaded = false;
 		this.configuration_has_been_loaded = false;
@@ -298,6 +304,12 @@ Widget.types.page_detail = {
 			}
 		} else {
 			page_properties_header.hide();
+		}
+
+		// Scheduler
+		if(this.scheduler) {
+			this.scheduler.setModelId(this.current_page_id)
+			this.scheduler.refresh();
 		}
 
 		// Tag panel
