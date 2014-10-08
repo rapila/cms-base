@@ -59,6 +59,21 @@ button.ui-button.ui-state-default
 div.ui-dialog.file_upload_error
 	z-index 20000 !important
 
+.ui-badge
+	&[data-badge-count]:after
+		display inline-block
+		position absolute
+		content attr(data-badge-count)
+		border-radius 1.1em
+		padding 0.1em
+		line-height 1em
+		margin-top -0.5em
+		color #E3EEA4
+		background-color black
+		text-align center
+	&[data-badge-count="0"]:after
+		content none
+
 // Widget-Notifications
 #widget-notifications
 	position fixed
