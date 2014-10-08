@@ -237,8 +237,8 @@ write_file(:php, "#{class_name}.php") do
 		$oListWidget->setDelegate($this->oCriteriaListWidgetDelegate);
 		return $oListWidget;", [], 'protected')
 			php_methods.push php_method('getColumnIdentifiers', 'return array();')
-			php_methods.push php_method('getMetadataForColumn', '', ['aColumnIdentifier'])
-			php_methods.push php_method('getDatabaseColumnForColumn', '', ['aColumnIdentifier'])
+			php_methods.push php_method('getMetadataForColumn', '', ['sColumnIdentifier'])
+			php_methods.push php_method('getDatabaseColumnForColumn', '', ['sColumnIdentifier'])
 			php_methods.push php_method('getCriteria', "return #{model_name}Query::create();")
 		end
 		if $aspects.include? 'detail' then
