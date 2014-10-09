@@ -75,7 +75,7 @@ class LocaleUtil {
 		}
 	}
 
-	public static function localizeDate($iTimestamp = null, $sLanguageId = null, $sFormat="x") {
+	public static function localizeDate($iTimestamp = null, $sLanguageId = null, $sFormat = "x", $sTimeZone = null) {
 		if($iTimestamp === null) {
 			$iTimestamp = time();
 		}
@@ -83,18 +83,36 @@ class LocaleUtil {
 			$sLanguageId = Session::language();
 		}
 		self::setLocaleToLanguageId($sLanguageId, LC_TIME);
-		
+
 		if($iTimestamp instanceof DateTime) {
 			$iTimestamp	= $iTimestamp->format('U');
 		} else if(is_string($iTimestamp)) {
 			$iTimestamp = strtotime($iTimestamp);
+		}
+		$sPrevTimeZone = date_default_timezone_get();
+		if($sTimeZone !== false) {
+			if($sTimeZone === null) {
+				$sTimeZone = Session::getSession()->getUser();
+			}
+			if($sTimeZone instanceof User) {
+				$sTimeZone = $sTimeZone->getTimezone();
+			}
+			if($sTimeZone instanceof DateTimeZone) {
+				$sTimeZone = $sTimeZone->getName();
+			}
+			if($sTimeZone === null) {
+				$sTimeZone = Settings::getSetting('general', 'timezone', 'Europe/Zurich');
+			}
+			date_default_timezone_set($sTimeZone);
 		}
 		// add % only if not already set, double % are displayed differently on different server environment
 		$sPrefix = '';
 		if(strlen($sFormat) === 1) {
 			$sPrefix = '%';
 		}
-		return strftime("$sPrefix$sFormat", $iTimestamp);
+		$sResult = strftime("$sPrefix$sFormat", $iTimestamp);
+		date_default_timezone_set($sPrevTimeZone);
+		return $sResult;
 	}
 	
 	public static function parseLocalizedDate($sDate, $sLanguageId, $sFormat="x") {
@@ -137,12 +155,12 @@ class LocaleUtil {
 		$sTime = substr($iTime, 0, 5);
 		return str_replace (':', $sSeparator, $sTime);
 	}
-																			
+
 	public static function getMonthNameByMonthId($iMonthId, $sLanguageId=null, $bIsLong=true) {
 		$iTimestamp = mktime(0, 0, 0, $iMonthId, 02, 1973);
 		return self::localizeDate($iTimestamp, $sLanguageId, $bIsLong ? 'B' : 'b');
 	}
-																
+
 	public static function getDayNameByWeekday($iWeekday, $sLanguageId=null, $bIsLong=true) {
 		//1973 started with a monday
 		$iTimestamp = mktime(0, 0, 0, 01, $iWeekday, 1973);

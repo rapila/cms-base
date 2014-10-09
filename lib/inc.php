@@ -69,10 +69,7 @@ if(StringUtil::startsWith($_REQUEST['path'], '/')) {
 
 mb_internal_encoding(Settings::getSetting('encoding', 'browser', 'utf-8'));
 mb_regex_encoding(mb_internal_encoding());
-
-if(function_exists("date_default_timezone_set")) {
-	date_default_timezone_set(Settings::getSetting('general', 'timezone', 'Europe/Zurich'));
-}
+date_default_timezone_set('UTC');
 
 if(get_magic_quotes_gpc()) {
 	ArrayUtil::runFunctionOnArrayValues($_REQUEST, 'stripslashes');
