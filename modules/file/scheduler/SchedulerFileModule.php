@@ -5,6 +5,11 @@ class SchedulerFileModule extends FileModule {
 	}
 
 	public function renderFile() {
+		header('Content-Type: text/plain');
+		$this->processScheduledActions();
+	}
+
+	public function processScheduledActions() {
 		$iFailures = 0;
 		$iSuccesses = 0;
 		$iTotal = 0;
@@ -17,7 +22,6 @@ class SchedulerFileModule extends FileModule {
 			}
 			$iTotal++;
 		}
-		header('Content-Type: text/plain');
 		print "Processed $iTotal actions, $iSuccesses sucessfully, $iFailures failed.";
 	}
 }
