@@ -14,6 +14,7 @@
  * @method UserQuery orderByLastName($order = Criteria::ASC) Order by the last_name column
  * @method UserQuery orderByEmail($order = Criteria::ASC) Order by the email column
  * @method UserQuery orderByLanguageId($order = Criteria::ASC) Order by the language_id column
+ * @method UserQuery orderByTimezone($order = Criteria::ASC) Order by the timezone column
  * @method UserQuery orderByIsAdmin($order = Criteria::ASC) Order by the is_admin column
  * @method UserQuery orderByIsBackendLoginEnabled($order = Criteria::ASC) Order by the is_backend_login_enabled column
  * @method UserQuery orderByIsAdminLoginEnabled($order = Criteria::ASC) Order by the is_admin_login_enabled column
@@ -33,6 +34,7 @@
  * @method UserQuery groupByLastName() Group by the last_name column
  * @method UserQuery groupByEmail() Group by the email column
  * @method UserQuery groupByLanguageId() Group by the language_id column
+ * @method UserQuery groupByTimezone() Group by the timezone column
  * @method UserQuery groupByIsAdmin() Group by the is_admin column
  * @method UserQuery groupByIsBackendLoginEnabled() Group by the is_backend_login_enabled column
  * @method UserQuery groupByIsAdminLoginEnabled() Group by the is_admin_login_enabled column
@@ -262,6 +264,7 @@
  * @method User findOneByLastName(string $last_name) Return the first User filtered by the last_name column
  * @method User findOneByEmail(string $email) Return the first User filtered by the email column
  * @method User findOneByLanguageId(string $language_id) Return the first User filtered by the language_id column
+ * @method User findOneByTimezone(string $timezone) Return the first User filtered by the timezone column
  * @method User findOneByIsAdmin(boolean $is_admin) Return the first User filtered by the is_admin column
  * @method User findOneByIsBackendLoginEnabled(boolean $is_backend_login_enabled) Return the first User filtered by the is_backend_login_enabled column
  * @method User findOneByIsAdminLoginEnabled(boolean $is_admin_login_enabled) Return the first User filtered by the is_admin_login_enabled column
@@ -281,6 +284,7 @@
  * @method array findByLastName(string $last_name) Return User objects filtered by the last_name column
  * @method array findByEmail(string $email) Return User objects filtered by the email column
  * @method array findByLanguageId(string $language_id) Return User objects filtered by the language_id column
+ * @method array findByTimezone(string $timezone) Return User objects filtered by the timezone column
  * @method array findByIsAdmin(boolean $is_admin) Return User objects filtered by the is_admin column
  * @method array findByIsBackendLoginEnabled(boolean $is_backend_login_enabled) Return User objects filtered by the is_backend_login_enabled column
  * @method array findByIsAdminLoginEnabled(boolean $is_admin_login_enabled) Return User objects filtered by the is_admin_login_enabled column
@@ -398,7 +402,7 @@ abstract class BaseUserQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `id`, `username`, `password`, `digest_ha1`, `first_name`, `last_name`, `email`, `language_id`, `is_admin`, `is_backend_login_enabled`, `is_admin_login_enabled`, `is_inactive`, `password_recover_hint`, `backend_settings`, `created_at`, `updated_at`, `created_by`, `updated_by` FROM `users` WHERE `id` = :p0';
+        $sql = 'SELECT `id`, `username`, `password`, `digest_ha1`, `first_name`, `last_name`, `email`, `language_id`, `timezone`, `is_admin`, `is_backend_login_enabled`, `is_admin_login_enabled`, `is_inactive`, `password_recover_hint`, `backend_settings`, `created_at`, `updated_at`, `created_by`, `updated_by` FROM `users` WHERE `id` = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -730,6 +734,35 @@ abstract class BaseUserQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(UserPeer::LANGUAGE_ID, $languageId, $comparison);
+    }
+
+    /**
+     * Filter the query on the timezone column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByTimezone('fooValue');   // WHERE timezone = 'fooValue'
+     * $query->filterByTimezone('%fooValue%'); // WHERE timezone LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $timezone The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return UserQuery The current query, for fluid interface
+     */
+    public function filterByTimezone($timezone = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($timezone)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $timezone)) {
+                $timezone = str_replace('*', '%', $timezone);
+                $comparison = Criteria::LIKE;
+            }
+        }
+
+        return $this->addUsingAlias(UserPeer::TIMEZONE, $timezone, $comparison);
     }
 
     /**

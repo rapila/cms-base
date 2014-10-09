@@ -24,13 +24,13 @@ abstract class BaseUserPeer
     const TM_CLASS = 'UserTableMap';
 
     /** The total number of columns. */
-    const NUM_COLUMNS = 18;
+    const NUM_COLUMNS = 19;
 
     /** The number of lazy-loaded columns. */
     const NUM_LAZY_LOAD_COLUMNS = 0;
 
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
-    const NUM_HYDRATE_COLUMNS = 18;
+    const NUM_HYDRATE_COLUMNS = 19;
 
     /** the column name for the id field */
     const ID = 'users.id';
@@ -55,6 +55,9 @@ abstract class BaseUserPeer
 
     /** the column name for the language_id field */
     const LANGUAGE_ID = 'users.language_id';
+
+    /** the column name for the timezone field */
+    const TIMEZONE = 'users.timezone';
 
     /** the column name for the is_admin field */
     const IS_ADMIN = 'users.is_admin';
@@ -107,12 +110,12 @@ abstract class BaseUserPeer
      * e.g. UserPeer::$fieldNames[UserPeer::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        BasePeer::TYPE_PHPNAME => array ('Id', 'Username', 'Password', 'DigestHA1', 'FirstName', 'LastName', 'Email', 'LanguageId', 'IsAdmin', 'IsBackendLoginEnabled', 'IsAdminLoginEnabled', 'IsInactive', 'PasswordRecoverHint', 'BackendSettings', 'CreatedAt', 'UpdatedAt', 'CreatedBy', 'UpdatedBy', ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'username', 'password', 'digestHA1', 'firstName', 'lastName', 'email', 'languageId', 'isAdmin', 'isBackendLoginEnabled', 'isAdminLoginEnabled', 'isInactive', 'passwordRecoverHint', 'backendSettings', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy', ),
-        BasePeer::TYPE_COLNAME => array (UserPeer::ID, UserPeer::USERNAME, UserPeer::PASSWORD, UserPeer::DIGEST_HA1, UserPeer::FIRST_NAME, UserPeer::LAST_NAME, UserPeer::EMAIL, UserPeer::LANGUAGE_ID, UserPeer::IS_ADMIN, UserPeer::IS_BACKEND_LOGIN_ENABLED, UserPeer::IS_ADMIN_LOGIN_ENABLED, UserPeer::IS_INACTIVE, UserPeer::PASSWORD_RECOVER_HINT, UserPeer::BACKEND_SETTINGS, UserPeer::CREATED_AT, UserPeer::UPDATED_AT, UserPeer::CREATED_BY, UserPeer::UPDATED_BY, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('ID', 'USERNAME', 'PASSWORD', 'DIGEST_HA1', 'FIRST_NAME', 'LAST_NAME', 'EMAIL', 'LANGUAGE_ID', 'IS_ADMIN', 'IS_BACKEND_LOGIN_ENABLED', 'IS_ADMIN_LOGIN_ENABLED', 'IS_INACTIVE', 'PASSWORD_RECOVER_HINT', 'BACKEND_SETTINGS', 'CREATED_AT', 'UPDATED_AT', 'CREATED_BY', 'UPDATED_BY', ),
-        BasePeer::TYPE_FIELDNAME => array ('id', 'username', 'password', 'digest_ha1', 'first_name', 'last_name', 'email', 'language_id', 'is_admin', 'is_backend_login_enabled', 'is_admin_login_enabled', 'is_inactive', 'password_recover_hint', 'backend_settings', 'created_at', 'updated_at', 'created_by', 'updated_by', ),
-        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, )
+        BasePeer::TYPE_PHPNAME => array ('Id', 'Username', 'Password', 'DigestHA1', 'FirstName', 'LastName', 'Email', 'LanguageId', 'Timezone', 'IsAdmin', 'IsBackendLoginEnabled', 'IsAdminLoginEnabled', 'IsInactive', 'PasswordRecoverHint', 'BackendSettings', 'CreatedAt', 'UpdatedAt', 'CreatedBy', 'UpdatedBy', ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'username', 'password', 'digestHA1', 'firstName', 'lastName', 'email', 'languageId', 'timezone', 'isAdmin', 'isBackendLoginEnabled', 'isAdminLoginEnabled', 'isInactive', 'passwordRecoverHint', 'backendSettings', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy', ),
+        BasePeer::TYPE_COLNAME => array (UserPeer::ID, UserPeer::USERNAME, UserPeer::PASSWORD, UserPeer::DIGEST_HA1, UserPeer::FIRST_NAME, UserPeer::LAST_NAME, UserPeer::EMAIL, UserPeer::LANGUAGE_ID, UserPeer::TIMEZONE, UserPeer::IS_ADMIN, UserPeer::IS_BACKEND_LOGIN_ENABLED, UserPeer::IS_ADMIN_LOGIN_ENABLED, UserPeer::IS_INACTIVE, UserPeer::PASSWORD_RECOVER_HINT, UserPeer::BACKEND_SETTINGS, UserPeer::CREATED_AT, UserPeer::UPDATED_AT, UserPeer::CREATED_BY, UserPeer::UPDATED_BY, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('ID', 'USERNAME', 'PASSWORD', 'DIGEST_HA1', 'FIRST_NAME', 'LAST_NAME', 'EMAIL', 'LANGUAGE_ID', 'TIMEZONE', 'IS_ADMIN', 'IS_BACKEND_LOGIN_ENABLED', 'IS_ADMIN_LOGIN_ENABLED', 'IS_INACTIVE', 'PASSWORD_RECOVER_HINT', 'BACKEND_SETTINGS', 'CREATED_AT', 'UPDATED_AT', 'CREATED_BY', 'UPDATED_BY', ),
+        BasePeer::TYPE_FIELDNAME => array ('id', 'username', 'password', 'digest_ha1', 'first_name', 'last_name', 'email', 'language_id', 'timezone', 'is_admin', 'is_backend_login_enabled', 'is_admin_login_enabled', 'is_inactive', 'password_recover_hint', 'backend_settings', 'created_at', 'updated_at', 'created_by', 'updated_by', ),
+        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, )
     );
 
     /**
@@ -122,12 +125,12 @@ abstract class BaseUserPeer
      * e.g. UserPeer::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Username' => 1, 'Password' => 2, 'DigestHA1' => 3, 'FirstName' => 4, 'LastName' => 5, 'Email' => 6, 'LanguageId' => 7, 'IsAdmin' => 8, 'IsBackendLoginEnabled' => 9, 'IsAdminLoginEnabled' => 10, 'IsInactive' => 11, 'PasswordRecoverHint' => 12, 'BackendSettings' => 13, 'CreatedAt' => 14, 'UpdatedAt' => 15, 'CreatedBy' => 16, 'UpdatedBy' => 17, ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'username' => 1, 'password' => 2, 'digestHA1' => 3, 'firstName' => 4, 'lastName' => 5, 'email' => 6, 'languageId' => 7, 'isAdmin' => 8, 'isBackendLoginEnabled' => 9, 'isAdminLoginEnabled' => 10, 'isInactive' => 11, 'passwordRecoverHint' => 12, 'backendSettings' => 13, 'createdAt' => 14, 'updatedAt' => 15, 'createdBy' => 16, 'updatedBy' => 17, ),
-        BasePeer::TYPE_COLNAME => array (UserPeer::ID => 0, UserPeer::USERNAME => 1, UserPeer::PASSWORD => 2, UserPeer::DIGEST_HA1 => 3, UserPeer::FIRST_NAME => 4, UserPeer::LAST_NAME => 5, UserPeer::EMAIL => 6, UserPeer::LANGUAGE_ID => 7, UserPeer::IS_ADMIN => 8, UserPeer::IS_BACKEND_LOGIN_ENABLED => 9, UserPeer::IS_ADMIN_LOGIN_ENABLED => 10, UserPeer::IS_INACTIVE => 11, UserPeer::PASSWORD_RECOVER_HINT => 12, UserPeer::BACKEND_SETTINGS => 13, UserPeer::CREATED_AT => 14, UserPeer::UPDATED_AT => 15, UserPeer::CREATED_BY => 16, UserPeer::UPDATED_BY => 17, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'USERNAME' => 1, 'PASSWORD' => 2, 'DIGEST_HA1' => 3, 'FIRST_NAME' => 4, 'LAST_NAME' => 5, 'EMAIL' => 6, 'LANGUAGE_ID' => 7, 'IS_ADMIN' => 8, 'IS_BACKEND_LOGIN_ENABLED' => 9, 'IS_ADMIN_LOGIN_ENABLED' => 10, 'IS_INACTIVE' => 11, 'PASSWORD_RECOVER_HINT' => 12, 'BACKEND_SETTINGS' => 13, 'CREATED_AT' => 14, 'UPDATED_AT' => 15, 'CREATED_BY' => 16, 'UPDATED_BY' => 17, ),
-        BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'username' => 1, 'password' => 2, 'digest_ha1' => 3, 'first_name' => 4, 'last_name' => 5, 'email' => 6, 'language_id' => 7, 'is_admin' => 8, 'is_backend_login_enabled' => 9, 'is_admin_login_enabled' => 10, 'is_inactive' => 11, 'password_recover_hint' => 12, 'backend_settings' => 13, 'created_at' => 14, 'updated_at' => 15, 'created_by' => 16, 'updated_by' => 17, ),
-        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, )
+        BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Username' => 1, 'Password' => 2, 'DigestHA1' => 3, 'FirstName' => 4, 'LastName' => 5, 'Email' => 6, 'LanguageId' => 7, 'Timezone' => 8, 'IsAdmin' => 9, 'IsBackendLoginEnabled' => 10, 'IsAdminLoginEnabled' => 11, 'IsInactive' => 12, 'PasswordRecoverHint' => 13, 'BackendSettings' => 14, 'CreatedAt' => 15, 'UpdatedAt' => 16, 'CreatedBy' => 17, 'UpdatedBy' => 18, ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'username' => 1, 'password' => 2, 'digestHA1' => 3, 'firstName' => 4, 'lastName' => 5, 'email' => 6, 'languageId' => 7, 'timezone' => 8, 'isAdmin' => 9, 'isBackendLoginEnabled' => 10, 'isAdminLoginEnabled' => 11, 'isInactive' => 12, 'passwordRecoverHint' => 13, 'backendSettings' => 14, 'createdAt' => 15, 'updatedAt' => 16, 'createdBy' => 17, 'updatedBy' => 18, ),
+        BasePeer::TYPE_COLNAME => array (UserPeer::ID => 0, UserPeer::USERNAME => 1, UserPeer::PASSWORD => 2, UserPeer::DIGEST_HA1 => 3, UserPeer::FIRST_NAME => 4, UserPeer::LAST_NAME => 5, UserPeer::EMAIL => 6, UserPeer::LANGUAGE_ID => 7, UserPeer::TIMEZONE => 8, UserPeer::IS_ADMIN => 9, UserPeer::IS_BACKEND_LOGIN_ENABLED => 10, UserPeer::IS_ADMIN_LOGIN_ENABLED => 11, UserPeer::IS_INACTIVE => 12, UserPeer::PASSWORD_RECOVER_HINT => 13, UserPeer::BACKEND_SETTINGS => 14, UserPeer::CREATED_AT => 15, UserPeer::UPDATED_AT => 16, UserPeer::CREATED_BY => 17, UserPeer::UPDATED_BY => 18, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'USERNAME' => 1, 'PASSWORD' => 2, 'DIGEST_HA1' => 3, 'FIRST_NAME' => 4, 'LAST_NAME' => 5, 'EMAIL' => 6, 'LANGUAGE_ID' => 7, 'TIMEZONE' => 8, 'IS_ADMIN' => 9, 'IS_BACKEND_LOGIN_ENABLED' => 10, 'IS_ADMIN_LOGIN_ENABLED' => 11, 'IS_INACTIVE' => 12, 'PASSWORD_RECOVER_HINT' => 13, 'BACKEND_SETTINGS' => 14, 'CREATED_AT' => 15, 'UPDATED_AT' => 16, 'CREATED_BY' => 17, 'UPDATED_BY' => 18, ),
+        BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'username' => 1, 'password' => 2, 'digest_ha1' => 3, 'first_name' => 4, 'last_name' => 5, 'email' => 6, 'language_id' => 7, 'timezone' => 8, 'is_admin' => 9, 'is_backend_login_enabled' => 10, 'is_admin_login_enabled' => 11, 'is_inactive' => 12, 'password_recover_hint' => 13, 'backend_settings' => 14, 'created_at' => 15, 'updated_at' => 16, 'created_by' => 17, 'updated_by' => 18, ),
+        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, )
     );
 
     /**
@@ -209,6 +212,7 @@ abstract class BaseUserPeer
             $criteria->addSelectColumn(UserPeer::LAST_NAME);
             $criteria->addSelectColumn(UserPeer::EMAIL);
             $criteria->addSelectColumn(UserPeer::LANGUAGE_ID);
+            $criteria->addSelectColumn(UserPeer::TIMEZONE);
             $criteria->addSelectColumn(UserPeer::IS_ADMIN);
             $criteria->addSelectColumn(UserPeer::IS_BACKEND_LOGIN_ENABLED);
             $criteria->addSelectColumn(UserPeer::IS_ADMIN_LOGIN_ENABLED);
@@ -228,6 +232,7 @@ abstract class BaseUserPeer
             $criteria->addSelectColumn($alias . '.last_name');
             $criteria->addSelectColumn($alias . '.email');
             $criteria->addSelectColumn($alias . '.language_id');
+            $criteria->addSelectColumn($alias . '.timezone');
             $criteria->addSelectColumn($alias . '.is_admin');
             $criteria->addSelectColumn($alias . '.is_backend_login_enabled');
             $criteria->addSelectColumn($alias . '.is_admin_login_enabled');

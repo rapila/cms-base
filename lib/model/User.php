@@ -194,6 +194,23 @@ class User extends BaseUser {
 		}
 		return unserialize($mSettings);
 	}
+	
+	public function getTimezone($bAsObject = false) {
+		$sTimezone = parent::getTimezone();
+		if($sTimezone === null) {
+			$sTimezone = Settings::getSetting('general', 'timezone', 'Europe/Zurich');
+		}
+		if($bAsObject) {
+			return new DateTimeZone($sTimezone);
+		}
+		return $sTimezone;
+	}
+	
+	public function dateInUserTimezone(DateTime $oDate) {
+		$oResult = clone $oDate;
+		$oDate->setTimezone($this->getTimezone(true));
+		return $oDate;
+	}
 
 	public function getGroups($bReturnNamesOnly = false) {
 		$aResult = array();

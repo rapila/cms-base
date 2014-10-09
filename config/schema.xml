@@ -150,6 +150,7 @@
 	<column name="last_name" type="varchar" size="60" />
 	<column name="email" type="varchar" size="80" />
 	<column name="language_id" type="varchar" size="3" />
+	<column name="timezone" type="varchar" size="32" />
 	<foreign-key foreignTable="languages">
 		<reference local="language_id" foreign="id" />
 	</foreign-key>

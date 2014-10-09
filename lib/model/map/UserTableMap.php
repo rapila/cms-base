@@ -46,6 +46,7 @@ class UserTableMap extends TableMap
         $this->addColumn('last_name', 'LastName', 'VARCHAR', false, 60, null);
         $this->addColumn('email', 'Email', 'VARCHAR', false, 80, null);
         $this->addForeignKey('language_id', 'LanguageId', 'VARCHAR', 'languages', 'id', false, 3, null);
+        $this->addColumn('timezone', 'Timezone', 'VARCHAR', false, 32, null);
         $this->addColumn('is_admin', 'IsAdmin', 'BOOLEAN', false, 1, false);
         $this->addColumn('is_backend_login_enabled', 'IsBackendLoginEnabled', 'BOOLEAN', false, 1, true);
         $this->addColumn('is_admin_login_enabled', 'IsAdminLoginEnabled', 'BOOLEAN', false, 1, true);

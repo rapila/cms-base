@@ -209,6 +209,7 @@ CREATE TABLE `users`
     `last_name` VARCHAR(60),
     `email` VARCHAR(80),
     `language_id` VARCHAR(3),
+    `timezone` VARCHAR(32),
     `is_admin` TINYINT(1) DEFAULT 0,
     `is_backend_login_enabled` TINYINT(1) DEFAULT 1,
     `is_admin_login_enabled` TINYINT(1) DEFAULT 1,
