@@ -37,17 +37,6 @@ class SchedulerWidgetModule extends PersistentWidgetModule {
 		return ScheduledActionQuery::create()->scheduled()->filterByModelName($this->sModelName)->filterByModelId($this->sModelId)->count();
 	}
 	
-	public function timeZones() {
-		$aZones = DateTimeZone::listIdentifiers();
-		$oResult = new stdClass();
-		$oResult->zones = $aZones;
-		$oResult->currentZone = Session::getSession()->getAttribute('user-time-zone');
-		if($oResult->currentZone === null) {
-			$oResult->currentZone = date_default_timezone_get();
-		}
-		return $oResult;
-	}
-	
 	public function addSchedule($aData) {
 		$oSchedule = new ScheduledAction();
 		$oDate = DateTime::createFromFormat('Y-m-d H:i:s', $aData['date'].' '.$aData['time'], new DateTimeZone($aData['timezone']));
@@ -67,7 +56,7 @@ class SchedulerWidgetModule extends PersistentWidgetModule {
 		$oResult->time = $oDate->format('H:i:s');
 		return $oResult;
 	}
-	
+
 	public function initDate($sTZ) {
 		$oDate = new DateTime('now', new DateTimeZone($sTZ));
 		$oResult = new stdClass();
@@ -75,8 +64,13 @@ class SchedulerWidgetModule extends PersistentWidgetModule {
 		$oResult->time = $oDate->format('H:i:s');
 		return $oResult;
 	}
-	
+
+	public function timeZone() {
+		return Session::getSession()->getUser()->getTimezone();
+	}
+
 	public function updateTimeZone($sTZ) {
-		Session::getSession()->setAttribute('user-time-zone', $sTZ);
+		Session::getSession()->getUser()->setTimezone($sTZ);
+		Session::getSession()->getUser()->save();
 	}
 }

@@ -3,30 +3,40 @@ Widget.types['scheduler'] = {
 	initialize: function() {
 		var _this = this;
 		this.dialog = Widget.parseHTML("{{includeTemplate=dialog}}");
+
+		// Time zone input
+		var current_time_zone, time_zone_select, time_zone_widget;
+
+		time_zone_select = this.dialog.find('select[name="timezone"]');
+		time_zone_select.prepareWidget(function(widget) {
+			time_zone_widget = widget;
+			time_zone_widget.handle('value-changed', function(event, tz) {
+				var prev_time_zone = current_time_zone;
+				current_time_zone = tz;
+				_this.recalcDate(_this.dialog.serializeArrayKV(), prev_time_zone, function(newDate) {
+					this.dialog.unserialize(newDate);
+				});
+				_this.updateTimeZone(current_time_zone, function() {
+					_this.refresh(true);
+				});
+			});
+		});
 		this.dialog.find('button').button();
 		this.dialog.submit(function(event) {
 			event.preventDefault();
 			_this.addSchedule(_this.dialog.serializeArrayKV(), function() {
-				_this.refresh();
+				_this.refresh(true);
 			});
 		});
 
-		var time_zone_select = this.dialog.find('select[name="timezone"]');
-		var current_time_zone;
-		this.timeZones(function(tz) {
-			time_zone_select.populate(tz.zones, tz.currentZone);
-			current_time_zone = time_zone_select.val();
-			_this.initDate(current_time_zone, function(newDate) {
+		this.timeZone(function(tz) {
+			current_time_zone = tz;
+			time_zone_select.ensureWidget(function(time_zone_widget) {
+				time_zone_widget.val(tz);
+			});
+			_this.initDate(tz, function(newDate) {
 				this.dialog.unserialize(newDate);
 			});
-		});
-		time_zone_select.change(function() {
-			var prev_time_zone = current_time_zone;
-			current_time_zone = time_zone_select.val();
-			_this.recalcDate(_this.dialog.serializeArrayKV(), prev_time_zone, function(newDate) {
-				this.dialog.unserialize(newDate);
-			});
-			_this.updateTimeZone(current_time_zone);
 		});
 
 		var list = _this.dialog.find('.list');
@@ -52,7 +62,7 @@ Widget.types['scheduler'] = {
 		this.countScheduled(function(count) {
 			this._element[0].dataset.badgeCount = count;
 		});
-		if(this.list && !timezone_only) {
+		if(this.list) {
 			this.list.reload();
 		}
 		if(!timezone_only) {
