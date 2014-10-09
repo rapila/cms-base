@@ -75,8 +75,11 @@ class LocaleUtil {
 		}
 	}
 
-	public static function localizeDate($iTimestamp = null, $sLanguageId = null, $sFormat = "x", $sTimeZone = null) {
+	public static function localizeDate($iTimestamp = false, $sLanguageId = null, $sFormat = "x", $sTimeZone = null) {
 		if($iTimestamp === null) {
+			return null;
+		}
+		if($iTimestamp === false) {
 			$iTimestamp = time();
 		}
 		if($sLanguageId === null) {
