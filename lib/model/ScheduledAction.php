@@ -74,6 +74,18 @@ class ScheduledAction extends BaseScheduledAction {
 		$sPeerClass::setRightsUser();
 	}
 	
+	public function getExecutionDateFormatted($sLanguageId = null, $sFormatString = '%x %H:%M') {
+		return LocaleUtil::localizeDate($this->getExecutionDate(null), $sLanguageId, $sFormatString);
+	}
+	
+	public function getScheduleDateFormatted($sLanguageId = null, $sFormatString = '%x %H:%M') {
+		return LocaleUtil::localizeDate($this->getScheduleDate(null), $sLanguageId, $sFormatString);
+	}
+	
+	public function getCreatedUserName() {
+		return $this->getUserRelatedByCreatedBy()->getFullName();
+	}
+	
 	/**
 	* Processes this action. Checks for prior execution (but not if the date matches).
 	* Does not throw exceptions but prints them.

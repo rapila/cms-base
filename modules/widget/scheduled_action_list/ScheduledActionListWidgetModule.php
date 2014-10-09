@@ -42,13 +42,13 @@ class ScheduledActionListWidgetModule extends SpecializedListWidgetModule {
 		$aResult = array();
 		switch($sColumnIdentifier) {
 			case "schedule_date":
-				$aResult['model_name'] = 'schedule_date_in_user_timezone';
+				$aResult['field_name'] = 'schedule_date_formatted';
 				break;
 			case "execution_date":
-				$aResult['model_name'] = 'execution_date_in_user_timezone';
+				$aResult['field_name'] = 'execution_date_formatted';
 				break;
 			case "created_by":
-				$aResult['model_name'] = 'created_user_name';
+				$aResult['field_name'] = 'created_user_name';
 				break;
 			case "delete":
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_ICON;

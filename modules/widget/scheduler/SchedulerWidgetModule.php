@@ -40,8 +40,7 @@ class SchedulerWidgetModule extends PersistentWidgetModule {
 	public function addSchedule($aData) {
 		$oSchedule = new ScheduledAction();
 		$oDate = DateTime::createFromFormat('Y-m-d H:i:s', $aData['date'].' '.$aData['time'], new DateTimeZone($aData['timezone']));
-		$oDate->setTimezone(new DateTimeZone('UTC'));
-		$oSchedule->setScheduleDate($oDate);
+		$oSchedule->setScheduleDate($oDate->format('U'));
 		$oSchedule->setAction($aData['action']);
 		$oSchedule->setModelName($this->sModelName);
 		$oSchedule->setModelId($this->sModelId);
