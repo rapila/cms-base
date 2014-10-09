@@ -1,0 +1,29 @@
+Widget.types['timezone_input'] = {
+	initialize: function() {
+		//called before this._element is available
+		
+	},
+
+	prepare: function() {
+		//called when this._element is available
+		this.timeZones(function(timeZones) {
+			this._element.populate(timeZones, this.settings.default_value);
+		});
+
+		//Add change handler
+		this._element.change(function() {
+			this.fire('value-changed', this._element.val());
+		}.bind(this));
+	},
+
+	val: function(value) {
+		if(arguments.length) {
+			this._element.val(value);
+			this.settings.default_value = value;
+			return;
+		}
+		return this._element.val();
+	},
+	
+	settings: {}
+};

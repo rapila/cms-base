@@ -87,6 +87,7 @@ class UserDetailWidgetModule extends PersistentWidgetModule {
 		$oUser->setLastName($aUserData['last_name']);
 		$oUser->setEmail($aUserData['email']);
 		$oUser->setLanguageId($aUserData['language_id']); 
+		$oUser->setTimezone($aUserData['timezone']); 
 
 		//Password
 		if($aUserData['password'] !== '') {

@@ -32,6 +32,7 @@ Widget.types.user_detail = {
 			widget.settings.display_in_original_language = true;
 			widget.settings.use_admin_languages = true;
 		}, jQuery.noop);
+		this._element.find("select[name='timezone']").prepareWidget();
 		this.rights_section.find("div.user_groups_section").prepareWidget(function(widget) {
 			this.user_groups = widget;
 		}.bind(this));
@@ -90,6 +91,9 @@ Widget.types.user_detail = {
 			
 			this._element.find("select[name='language_id']").ensureWidget(function(language_input) {
 				language_input.val(user_data.LanguageId || '');
+			});
+			this._element.find("select[name='timezone']").ensureWidget(function(timezone_input) {
+				timezone_input.val(user_data.Timezone || '');
 			});
 
 			this.backend_login_enabled.prop('checked', user_data.IsBackendLoginEnabled);
