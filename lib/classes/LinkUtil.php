@@ -76,7 +76,7 @@ class LinkUtil {
 	* You can call this method twice if you created a new cache file and don’t have any other timestamp. It will only output the headers once.
 	* @param $iTimestamp deprecated: to use this method without a cache file, call LinkUtil::sendCacheControlHeaders directly
 	*/
-	public function sendCacheControlHeaders($iTimestamp) {
+	public static function sendCacheControlHeaders($iTimestamp) {
 		if(Settings::getSetting('general', 'send_not_modified_headers', null) === false) {
 			return;
 		}
