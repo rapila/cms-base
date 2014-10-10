@@ -899,6 +899,19 @@ abstract class BaseScheduledActionQuery extends ModelCriteria
     {
         return $this->addAscendingOrderByColumn(ScheduledActionPeer::CREATED_AT);
     }
+    public function findMostRecentUpdate($bAsTimestamp = false) {
+        $oQuery = clone $this;
+        $sDate = $oQuery->lastUpdatedFirst()->select("UpdatedAt")->findOne();
+        if($sDate === null) {
+            return null;
+        }
+        $oDate = new DateTime($sDate);
+        if($bAsTimestamp) {
+            return $oDate->getTimestamp();
+        }
+        return $oDate;
+    }
+
     // extended_keyable behavior
 
     public function filterByPKArray($pkArray) {
