@@ -1,48 +1,66 @@
 <?php
 require_once('behavior/TimestampableBehavior.php');
 class ExtendedTimestampableBehaviour extends TimestampableBehavior {
-		public function objectMethods($builder)
-	{
+	public function objectMethods($builder) {
 		$sMethods = parent::objectMethods($builder);
-		return "$sMethods
+		$sMethods .= "
 /**
  * @return created_at as int (timestamp)
  */
-public function getCreatedAtTimestamp()
+public function get".$this->getColumnForParameter('create_column')->getPhpName()."Timestamp()
 {
-	return (int)\$this->getCreatedAt('U');
+	return (int)\$this->get".$this->getColumnForParameter('create_column')->getPhpName()."('U');
 }
 
 /**
  * @return created_at formatted to the current locale
  */
-public function getCreatedAtFormatted(\$sLanguageId = null, \$sFormatString = 'x')
+public function get".$this->getColumnForParameter('create_column')->getPhpName()."Formatted(\$sLanguageId = null, \$sFormatString = 'x')
 {
-	if(\$this->created_at === null) {
+	if(\$this->".$this->getColumnForParameter('create_column')->getName()." === null) {
 		return null;
 	}
-	return LocaleUtil::localizeDate(\$this->created_at, \$sLanguageId, \$sFormatString);
+	return LocaleUtil::localizeDate(\$this->".$this->getColumnForParameter('create_column')->getName().", \$sLanguageId, \$sFormatString);
 }
-
+";
+		if($this->withUpdatedAt()) {
+			$sMethods .= "
 /**
  * @return updated_at as int (timestamp)
  */
-public function getUpdatedAtTimestamp()
+public function get".$this->getColumnForParameter('update_column')->getPhpName()."Timestamp()
 {
-	return (int)\$this->getUpdatedAt('U');
+	return (int)\$this->get".$this->getColumnForParameter('update_column')->getPhpName()."('U');
 }
 
 /**
  * @return updated_at formatted to the current locale
  */
-public function getUpdatedAtFormatted(\$sLanguageId = null, \$sFormatString = 'x')
+public function get".$this->getColumnForParameter('update_column')->getPhpName()."Formatted(\$sLanguageId = null, \$sFormatString = 'x')
 {
-	if(\$this->updated_at === null) {
+	if(\$this->".$this->getColumnForParameter('update_column')->getName()." === null) {
 		return null;
 	}
-	return LocaleUtil::localizeDate(\$this->updated_at, \$sLanguageId, \$sFormatString);
+	return LocaleUtil::localizeDate(\$this->".$this->getColumnForParameter('update_column')->getName().", \$sLanguageId, \$sFormatString);
 }
 ";
+		}
+
+		return $sMethods;
 	}
+	
+  public function queryMethods($builder) {
+		$sMethods = parent::queryMethods($builder);
+		if($this->withUpdatedAt()) {
+			$sMethods .= '
+public function findMostRecentUpdate() {
+	$oQuery = clone $this;
+	$sDate = $oQuery->lastUpdatedFirst()->select("'.$this->getColumnForParameter('update_column')->getPhpName().'")->findOne();
+	return new DateTime($sDate);
+}
+';
+		}
+		return $sMethods;
+  }
 
 }

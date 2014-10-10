@@ -833,4 +833,10 @@ abstract class BaseStringQuery extends ModelCriteria
     {
         return $this->addAscendingOrderByColumn(StringPeer::CREATED_AT);
     }
+    public function findMostRecentUpdate() {
+        $oQuery = clone $this;
+        $sDate = $oQuery->lastUpdatedFirst()->select("UpdatedAt")->findOne();
+        return new DateTime($sDate);
+    }
+
 }

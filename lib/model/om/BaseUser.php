@@ -17814,7 +17814,7 @@ abstract class BaseUser extends BaseObject implements Persistent
         if($this->created_at === null) {
             return null;
         }
-        return LocaleUtil::localizeDate($this->getCreatedAt(null), $sLanguageId, $sFormatString);
+        return LocaleUtil::localizeDate($this->created_at, $sLanguageId, $sFormatString);
     }
 
     /**
@@ -17833,7 +17833,7 @@ abstract class BaseUser extends BaseObject implements Persistent
         if($this->updated_at === null) {
             return null;
         }
-        return LocaleUtil::localizeDate($this->getUpdatedAt(null), $sLanguageId, $sFormatString);
+        return LocaleUtil::localizeDate($this->updated_at, $sLanguageId, $sFormatString);
     }
 
     // attributable behavior

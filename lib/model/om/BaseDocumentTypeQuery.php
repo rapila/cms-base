@@ -863,6 +863,12 @@ abstract class BaseDocumentTypeQuery extends ModelCriteria
     {
         return $this->addAscendingOrderByColumn(DocumentTypePeer::CREATED_AT);
     }
+    public function findMostRecentUpdate() {
+        $oQuery = clone $this;
+        $sDate = $oQuery->lastUpdatedFirst()->select("UpdatedAt")->findOne();
+        return new DateTime($sDate);
+    }
+
     // extended_keyable behavior
 
     public function filterByPKArray($pkArray) {
