@@ -1648,9 +1648,7 @@ abstract class BaseLanguageObjectHistory extends BaseObject implements Persisten
 
     // denyable behavior
     public function mayOperate($sOperation, $oUser = false) {
-        if($oUser === false) {
-            $oUser = Session::getSession()->getUser();
-        }
+        $oUser = LanguageObjectHistoryPeer::getRightsUser($oUser);
         $bIsAllowed = false;
         if($oUser && ($this->isNew() || $this->getCreatedBy() === $oUser->getId()) && LanguageObjectHistoryPeer::mayOperateOnOwn($oUser, $this, $sOperation)) {
             $bIsAllowed = true;

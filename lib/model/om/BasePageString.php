@@ -1837,9 +1837,7 @@ abstract class BasePageString extends BaseObject implements Persistent
 
     // denyable behavior
     public function mayOperate($sOperation, $oUser = false) {
-        if($oUser === false) {
-            $oUser = Session::getSession()->getUser();
-        }
+        $oUser = PageStringPeer::getRightsUser($oUser);
         $bIsAllowed = false;
         if($oUser && ($this->isNew() || $this->getCreatedBy() === $oUser->getId()) && PageStringPeer::mayOperateOnOwn($oUser, $this, $sOperation)) {
             $bIsAllowed = true;

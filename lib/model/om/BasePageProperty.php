@@ -1547,9 +1547,7 @@ abstract class BasePageProperty extends BaseObject implements Persistent
 
     // denyable behavior
     public function mayOperate($sOperation, $oUser = false) {
-        if($oUser === false) {
-            $oUser = Session::getSession()->getUser();
-        }
+        $oUser = PagePropertyPeer::getRightsUser($oUser);
         $bIsAllowed = false;
         if($oUser && ($this->isNew() || $this->getCreatedBy() === $oUser->getId()) && PagePropertyPeer::mayOperateOnOwn($oUser, $this, $sOperation)) {
             $bIsAllowed = true;

@@ -1516,9 +1516,7 @@ abstract class BaseUserRole extends BaseObject implements Persistent
 
     // denyable behavior
     public function mayOperate($sOperation, $oUser = false) {
-        if($oUser === false) {
-            $oUser = Session::getSession()->getUser();
-        }
+        $oUser = UserRolePeer::getRightsUser($oUser);
         $bIsAllowed = false;
         if($oUser && ($this->isNew() || $this->getCreatedBy() === $oUser->getId()) && UserRolePeer::mayOperateOnOwn($oUser, $this, $sOperation)) {
             $bIsAllowed = true;

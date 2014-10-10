@@ -2605,9 +2605,7 @@ abstract class BaseDocument extends BaseObject implements Persistent
     }
     // denyable behavior
     public function mayOperate($sOperation, $oUser = false) {
-        if($oUser === false) {
-            $oUser = Session::getSession()->getUser();
-        }
+        $oUser = DocumentPeer::getRightsUser($oUser);
         $bIsAllowed = false;
         if($oUser && ($this->isNew() || $this->getCreatedBy() === $oUser->getId()) && DocumentPeer::mayOperateOnOwn($oUser, $this, $sOperation)) {
             $bIsAllowed = true;
