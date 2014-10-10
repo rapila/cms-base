@@ -88,7 +88,7 @@ class LocaleUtil {
 		self::setLocaleToLanguageId($sLanguageId, LC_TIME);
 
 		if($iTimestamp instanceof DateTime) {
-			$iTimestamp	= $iTimestamp->format('U');
+			$iTimestamp	= $iTimestamp->getTimestamp();
 		} else if(is_string($iTimestamp)) {
 			$iTimestamp = strtotime($iTimestamp);
 		}

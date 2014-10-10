@@ -5,6 +5,10 @@
 
 class LinkUtil {
 
+	private static $CACHE_CONTROL_HEADERS_SENT;
+	
+	const DATE_RFC2616 = 'D, d M Y H:i:s \G\M\T';
+
 	public static function redirectToManager($mPath="", $mManager=null, $aParameters=array(), $bIncludeLanguage=null) {
 		self::redirect(LinkUtil::link($mPath, $mManager, $aParameters, $bIncludeLanguage));
 	}
@@ -64,7 +68,53 @@ class LinkUtil {
 		$sProtocol = isset($_SERVER["SERVER_PROTOCOL"]) ? $_SERVER["SERVER_PROTOCOL"] : 'HTTP/1.1';
 		header("$sProtocol $iCode $sName", true, $iCode);
 	}
-	
+
+	/**
+	* Sends the cache control headers Last-Modified and ETag
+	* Uses the given timestamp as base for calculation. If it is an object or a query, the updated-at field of the object (or the newest item that matches the query) is used.
+	* Additionally, this method exits if the client sent a matching If-None-Match or If-Modified-Since header
+	* You can call this method twice if you created a new cache file and don’t have any other timestamp. It will only output the headers once.
+	* @param $iTimestamp deprecated: to use this method without a cache file, call LinkUtil::sendCacheControlHeaders directly
+	*/
+	public function sendCacheControlHeaders($iTimestamp) {
+		if(Settings::getSetting('general', 'send_not_modified_headers', null) === false) {
+			return;
+		}
+		if(self::$CACHE_CONTROL_HEADERS_SENT) {
+			return;
+		}
+
+		if($iTimestamp === null) {
+			return;
+		}
+		if($iTimestamp instanceof BaseObject) {
+			$iTimestamp = $iTimestamp->getUpdatedAtTimestamp();
+		}
+		if($iTimestamp instanceof ModelCriteria) {
+			$iTimestamp = $iTimestamp->findMostRecentUpdate();
+		}
+		if(is_string($iTimestamp)) {
+			$iTimestamp = strtotime($iTimestamp);
+		}
+		if($iTimestamp instanceof DateTime) {
+			$oModifyDate = $iTimestamp;
+		} else {
+			$oModifyDate = new DateTime("@$iTimestamp");
+		}
+
+		header("Last-Modified: " . $oModifyDate->format(self::DATE_RFC2616));
+		self::$CACHE_CONTROL_HEADERS_SENT = true;
+
+		if(isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
+			$oSinceDate = DateTime::createFromFormat(self::DATE_RFC2616, $_SERVER['HTTP_IF_MODIFIED_SINCE'], new DateTimeZone('UTC'));
+			if($oSinceDate->getTimestamp() >= $oModifyDate->getTimestamp()) {
+				LinkUtil::sendHTTPStatusCode(304, 'Not Modified');
+				header('Content-Length: 0');
+				exit;
+			}
+		}
+	}
+
 	/**
 	* Constructs an absolute link given a host-absolute location (starts with a slash)
 	* @param string $sLocation the host-absolute location

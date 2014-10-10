@@ -11,14 +11,13 @@ class Cache {
 	private $bCacheIsNeverOff;
 	private $sFileName;
 	private $sFilePath;
-	private $bCacheControlHeaderSent;
 	
 	public function __construct($sKey, $mPath=null, $iFlags = 0) {
 		if($sKey instanceof CacheKey) {
 			$sKey = $sKey->render();
 		}
 		$this->bCacheIsNeverOff = $mPath === DIRNAME_CONFIG || $mPath === 'resource_finder';
-		
+
 		$mPath = ResourceFinder::parsePathArguments(DIRNAME_GENERATED, DIRNAME_CACHES, $mPath);
 		$sPath = MAIN_DIR.'/'.implode('/', $mPath);
 		if(!is_dir($sPath)) {
@@ -26,14 +25,12 @@ class Cache {
 				throw new Exception("Error in Cache->__construct(): Cache folder $sPath does not exist and we do not have rights to create it");
 			}
 		}
-		
+
 		$this->sFileName = $sKey;
 		if(($iFlags&self::FLAG_FILE_DIRECT) !== self::FLAG_FILE_DIRECT) {
 			$this->sFileName = md5($this->sFileName);
 		}
 		$this->sFilePath = $sPath.'/'.$this->sFileName.self::CACHE_EXTENSION;
-		
-		$this->bCacheControlHeaderSent = false;
 	}
 	
 	/**
@@ -178,47 +175,19 @@ class Cache {
 	
 	/**
 	* Sends the cache control headers Last-Modified and ETag
-	* Uses the given timestamp as base for calculation. If it is omitted, the timestamp of the cache file is used;
+	* Uses the timestamp of the cache file as base for calculation.
 	* Additionally, this method exits if the client sent a matching If-None-Match or If-Modified-Since header
 	* You can call this method twice if you created a new cache file and don’t have any other timestamp. It will only output the headers once.
+	* @param $iTimestamp deprecated: to use this method without a cache file, call LinkUtil::sendCacheControlHeaders directly
 	*/
-	public function sendCacheControlHeaders($iTimestamp=null) {
-		if(Settings::getSetting('general', 'send_not_modified_headers', null) === false) {
-			return;
-		}		 
-		if($this->bCacheControlHeaderSent) {
-			return;
-		}
-		
+	public function sendCacheControlHeaders($iTimestamp = null) {
 		if($iTimestamp === null) {
 			if(!$this->cacheFileExists(false)) {
 				return;
 			}
 			$iTimestamp = $this->getModificationDate();
 		}
-		if(is_string($iTimestamp)) {
-			$iTimestamp = strtotime($iTimestamp);
-		}
-		
-		//FIXME: This is not really correct according to specs: ETag should change, when the content changes, not the date…
-		$sToken = md5($iTimestamp);
-		$sModifyDate = gmdate("D, d M Y H:i:s", $iTimestamp)." GMT";
-		header("ETag: $sToken");
-		header("Last-Modified: $sModifyDate");
-		$this->bCacheControlHeaderSent = true;
-		
-		if(isset($_SERVER['HTTP_IF_NONE_MATCH']) && $_SERVER['HTTP_IF_NONE_MATCH'] === $sToken) {
-			LinkUtil::sendHTTPStatusCode(304, 'Not Modified');
-			header('Content-Length: 0');
-			exit;
-		}
-		
-		//FIXME: should check if sent value is less than or equal to the stored value
-		if(isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && $_SERVER['HTTP_IF_MODIFIED_SINCE'] === $sModifyDate) {
-			LinkUtil::sendHTTPStatusCode(304, 'Not Modified');
-			header('Content-Length: 0');
-			exit;
-		}
+		LinkUtil::sendCacheControlHeaders($iTimestamp);
 	}
 	
 	/**
