@@ -942,10 +942,17 @@ abstract class BaseRoleQuery extends ModelCriteria
     {
         return $this->addAscendingOrderByColumn(RolePeer::CREATED_AT);
     }
-    public function findMostRecentUpdate() {
+    public function findMostRecentUpdate($bAsTimestamp = false) {
         $oQuery = clone $this;
         $sDate = $oQuery->lastUpdatedFirst()->select("UpdatedAt")->findOne();
-        return new DateTime($sDate);
+        if($sDate === null) {
+            return null;
+        }
+        $oDate = new DateTime($sDate);
+        if($bAsTimestamp) {
+            return $oDate->getTimestamp();
+        }
+        return $oDate;
     }
 
     // extended_keyable behavior

@@ -53,10 +53,17 @@ public function get".$this->getColumnForParameter('update_column')->getPhpName()
 		$sMethods = parent::queryMethods($builder);
 		if($this->withUpdatedAt()) {
 			$sMethods .= '
-public function findMostRecentUpdate() {
+public function findMostRecentUpdate($bAsTimestamp = false) {
 	$oQuery = clone $this;
 	$sDate = $oQuery->lastUpdatedFirst()->select("'.$this->getColumnForParameter('update_column')->getPhpName().'")->findOne();
-	return new DateTime($sDate);
+	if($sDate === null) {
+		return null;
+	}
+	$oDate = new DateTime($sDate);
+	if($bAsTimestamp) {
+		return $oDate->getTimestamp();
+	}
+	return $oDate;
 }
 ';
 		}
