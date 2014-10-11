@@ -70,7 +70,7 @@ class LinkUtil {
 	}
 
 	/**
-	* Sends the cache control headers Last-Modified and ETag
+	* Sends the cache control header Last-Modified and checks If-Modified-Since for a match (if so, terminates and sends a 304 Not Modified status code)
 	* Uses the given timestamp as base for calculation. If it is an object or a query, the updated-at field of the object (or the newest item that matches the query) is used.
 	* Additionally, this method exits if the client sent a matching If-None-Match or If-Modified-Since header
 	* You can call this method twice if you created a new cache file and don’t have any other timestamp. It will only output the headers once.
@@ -97,7 +97,8 @@ class LinkUtil {
 			$iTimestamp = strtotime($iTimestamp);
 		}
 		if($iTimestamp instanceof DateTime) {
-			$oModifyDate = $iTimestamp;
+			$oModifyDate = clone $iTimestamp;
+			$oModifyDate->setTimezone(new DateTimeZone('UTC'));
 		} else {
 			$oModifyDate = new DateTime("@$iTimestamp");
 		}
@@ -108,7 +109,7 @@ class LinkUtil {
 		if(isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
 			$oSinceDate = DateTime::createFromFormat(self::DATE_RFC2616, $_SERVER['HTTP_IF_MODIFIED_SINCE'], new DateTimeZone('UTC'));
 			if($oSinceDate->getTimestamp() >= $oModifyDate->getTimestamp()) {
-				LinkUtil::sendHTTPStatusCode(304, 'Not Modified');
+				self::sendHTTPStatusCode(304, 'Not Modified');
 				header('Content-Length: 0');
 				exit;
 			}
