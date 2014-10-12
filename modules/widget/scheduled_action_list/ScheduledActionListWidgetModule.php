@@ -52,6 +52,7 @@ class ScheduledActionListWidgetModule extends SpecializedListWidgetModule {
 				break;
 			case "delete":
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_ICON;
+				$aResult['field_name'] = 'trash';
 				break;
 		}
 		return $aResult;

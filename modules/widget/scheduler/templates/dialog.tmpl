@@ -1,7 +1,13 @@
 <form>
 	<label for="timezone">{{writeString=wns.timezone}}</label><select name="timezone" class="ui-widget-content input_short" data-widget-type="timezone_input"></select><br />
 	<div class="list"></div>
-	<label for="action">{{writeString=wns.scheduler.action}}</label><select name="action"></select>
-	<label for="date">{{writeString=wns.scheduler.date}}</label><input name="date" /><input name="time" />
-	<button type="submit" class="rapila-icons">+</button>
+	<div class="group_fields">
+		<label for="action">{{writeString=wns.scheduler.action}}</label>
+		<select class="ui-widget-content" name="action"></select>
+	</div>
+	<div class="group_fields">
+		<label for="date">{{writeString=wns.scheduler.date}}</label>
+		<input name="date" class="ui-widget-content autowidth" size="10" /><input name="time" class="ui-widget-content autowidth" size="10" />
+		<button type="submit" class="add_action rapila-icons">+</button>
+	</div>
 </form>
