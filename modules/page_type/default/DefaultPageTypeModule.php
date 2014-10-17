@@ -27,20 +27,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 		}
 		$this->oFrontendTemplate = $oTemplate;
 		$this->iModuleId = 1;
-		$this->oFrontendTemplate->replaceIdentifierCallback("autofill", $this, "fillAutofill", Template::NO_HTML_ESCAPE);
 		$this->oFrontendTemplate->replaceIdentifierCallback("container", $this, "fillContainer", Template::NO_HTML_ESCAPE);
-	}
-
-	public function fillAutofill($oTemplateIdentifier, $iFlags) {
-		$oModule = FrontendModule::getModuleInstance($oTemplateIdentifier->getValue(), $oTemplateIdentifier->getParameter('data'));
-		$mResult = $oModule->cachedFrontend($this->bIsPreview);
-		if(($sCss = $oModule->getCssForFrontend()) !== null) {
-			ResourceIncluder::defaultIncluder()->addCustomCss($sCss);
-		}
-		if(($sJs = $oModule->getJsForFrontend()) !== null) {
-			ResourceIncluder::defaultIncluder()->addCustomJs($sJs);
-		}
-		return $mResult;
 	}
 
 	public function getWords() {

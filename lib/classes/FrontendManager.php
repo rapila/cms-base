@@ -243,6 +243,7 @@ class FrontendManager extends Manager {
 		if(!$bIsLegacyAjaxRequest) {
 			$this->fillAttributes();
 			$this->fillNavigation();
+			$this->fillAutofill();
 		}
 		$this->fillContent();
 
@@ -280,7 +281,11 @@ class FrontendManager extends Manager {
 	}
 
 	protected function fillContent() {
-		$this->oPageType->display($this->oTemplate, false);
+		$this->oPageType->display($this->oTemplate, $this->isPreview());
+	}
+
+	public function isPreview() {
+		return false;
 	}
 
 	protected function fillAttributes() {
@@ -313,6 +318,21 @@ class FrontendManager extends Manager {
 			$this->oTemplate->replaceIdentifier("language_chooser", Navigation::getLanguageChooser($this->oTemplate), null, Template::NO_HTML_ESCAPE);
 		}
 		FilterModule::getFilters()->handleFillAttributesFinished(self::$CURRENT_PAGE, $this->oTemplate);
+	}
+
+	public function fillAutofill() {
+		$bIsPreview = $this->isPreview();
+		$this->oTemplate->replaceIdentifierCallback("autofill", function($oTemplateIdentifier, $iFlags) use ($bIsPreview) {
+			$oModule = FrontendModule::getModuleInstance($oTemplateIdentifier->getValue(), $oTemplateIdentifier->getParameter('data'));
+			$mResult = $oModule->cachedFrontend($bIsPreview);
+			if(($sCss = $oModule->getCssForFrontend()) !== null) {
+				ResourceIncluder::defaultIncluder()->addCustomCss($sCss);
+			}
+			if(($sJs = $oModule->getJsForFrontend()) !== null) {
+				ResourceIncluder::defaultIncluder()->addCustomJs($sJs);
+			}
+			return $mResult;
+		}, null, Template::NO_HTML_ESCAPE);
 	}
 
 	/**
