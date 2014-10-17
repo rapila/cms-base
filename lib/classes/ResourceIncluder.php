@@ -4,19 +4,19 @@ class ResourceIncluder {
 	const DEFAULT_INSTANCE_NAME = 'ResourceIncluder_default';
 	/// The Resource includer for meta tags like keywords, description and link tags (excluding stylesheet links). This ({{writeResourceIncludes=meta}}) is not required to have in your template but highly recommended.
 	const META_INSTANCE_NAME = 'meta';
-	
+
 	const RESOURCE_TYPE_CSS = 'css';
 	const RESOURCE_TYPE_JS = 'js';
 	const RESOURCE_TYPE_IMAGE = 'images';
 	const RESOURCE_TYPE_ICON = 'icons';
 	const RESOURCE_TYPE_INTERNAL_LINK = 'internal_link';
-	
+
 	const PRIORITY_FIRST = -1;
 	const PRIORITY_NORMAL = 0;
 	const PRIORITY_LAST = 1;
-	
+
 	const LIBRARY_VERSION_NEWEST = 'newest';
-	
+
 	const RESOURCE_PREFIX_LIBRARY = 'lib_';
 	const RESOURCE_PREFIX_CUSTOM = 'cust_';
 	const RESOURCE_PREFIX_INTERNAL = 'int_';
@@ -24,9 +24,9 @@ class ResourceIncluder {
 	const IE_CONDITIONAL = '<!--[if {{condition}}]>{{content}}<![endif]-->';
 
 	private static $INSTANCES = array();
-	
+
 	private static $IE_CONDITIONAL = null;
-	
+
 	private $aIncludedResources;
 	private $aReverseDependencies;
 	private $aCurrentDependencyStack;
@@ -50,7 +50,7 @@ class ResourceIncluder {
 	public static function defaultIncluder() {
 		return self::namedIncluder(self::DEFAULT_INSTANCE_NAME);
 	}
-	
+
 	/**
 	 * @static Get the includer used for meta tags. Same as calling ResourceIncluder::namedIncluder(ResourceIncluder::META_INSTANCE_NAME).
 	 * @return ResourceIncluder the meta includer
@@ -58,13 +58,13 @@ class ResourceIncluder {
 	public static function metaIncluder() {
 		return self::namedIncluder(self::META_INSTANCE_NAME);
 	}
-	
+
 	public function __construct() {
 		$this->clearIncludedResources();
 		$this->aCurrentDependencyStack = array();
 		$this->aReverseDependencies = array();
 	}
-	
+
 	/**
 	* Use this to start a new dependency stack. This means that all dependencies added between this call and a resource added with addResourceEndingDependency will have the latter added as dependees. This means: the resource added using addResourceEndingDependency will always come after all the resources added between the two calls. Whenever one of the dependencies is added again later, the dependee will be moved down.
 	*/
@@ -73,11 +73,11 @@ class ResourceIncluder {
 		return $this;
 	}
 
-	public function addResourceEndingDependency($mLocation, $sTemplateName = null, $sIdentifier = null, $aExtraInfo = array(), $iPriority = self::PRIORITY_NORMAL, $sIeCondition = null, $bIncludeAll = false) {
-		$this->addResource($mLocation, $sTemplateName, $sIdentifier, $aExtraInfo, $iPriority, $sIeCondition, $bIncludeAll, true);
+	public function addResourceEndingDependency($mLocation, $sResourceType = null, $sIdentifier = null, $aExtraInfo = array(), $iPriority = self::PRIORITY_NORMAL, $sIeCondition = null, $bIncludeAll = false) {
+		$this->addResource($mLocation, $sResourceType, $sIdentifier, $aExtraInfo, $iPriority, $sIeCondition, $bIncludeAll, true);
 	}
-	
-	public function addResource($mLocation, $sTemplateName = null, $sIdentifier = null, $aExtraInfo = null, $iPriority = self::PRIORITY_NORMAL, $sIeCondition = null, $bIncludeAll = false, $bEndsDependencyList = false) {
+
+	public function addResource($mLocation, $sResourceType = null, $sIdentifier = null, $aExtraInfo = null, $iPriority = self::PRIORITY_NORMAL, $sIeCondition = null, $bIncludeAll = false, $bEndsDependencyList = false) {
 		//Not allowed
 		if($bIncludeAll && $sIdentifier !== null) {
 			$sIdentifier = null;
@@ -98,8 +98,8 @@ class ResourceIncluder {
 		} else if($mLocation instanceof NavigationItem) {
 			$sFinalLocation = LinkUtil::link($mLocation->getLink(), 'FrontendManager');
 			$sResourcePrefix = self::RESOURCE_PREFIX_INTERNAL;
-			if($sTemplateName === null) {
-				$sTemplateName = 'link';
+			if($sResourceType === null) {
+				$sResourceType = 'link';
 			}
 		} else if(!is_string($mLocation)) {
 			//Unknown input type given -> throw Exception
@@ -119,10 +119,10 @@ class ResourceIncluder {
 		} else {
 			//Relative location can be given with resource type, and without resource type (which will then be determined by extension)
 			$aLocation = explode('/', $mLocation);
-			if($sTemplateName === null) {
-				$sTemplateName = $this->findTemplateNameForLocation($aLocation[count($aLocation)-1]);
+			if($sResourceType === null) {
+				$sResourceType = $this->findResourceTypeForLocation($aLocation[count($aLocation)-1]);
 			}
-			array_unshift($aLocation, DIRNAME_WEB, $sTemplateName);
+			array_unshift($aLocation, DIRNAME_WEB, $sResourceType);
 			if($bIncludeAll) {
 				$mFileResource = ResourceFinder::findAllResourceObjects($aLocation);
 			} else {
@@ -136,7 +136,7 @@ class ResourceIncluder {
 			}
 			throw new Exception("Error in ResourceIncluder->addResource(): Specified internal file $mLocation could not be found.");
 		}
-		
+
 		if(!is_array($mFileResource)) {
 			$mFileResource = array($mFileResource);
 		}
@@ -151,8 +151,8 @@ class ResourceIncluder {
 				$sResourcePrefix = self::RESOURCE_PREFIX_INTERNAL;
 			}
 
-			if($sTemplateName === null) {
-				$sTemplateName = $this->findTemplateNameForLocation($sFinalLocation);
+			if($sResourceType === null) {
+				$sResourceType = $this->findResourceTypeForLocation($sFinalLocation);
 			}
 
 			if($sIdentifier === null) {
@@ -167,10 +167,10 @@ class ResourceIncluder {
 
 			$aExtraInfoForResource['location'] = $sFinalLocation;
 			if(!isset($aExtraInfoForResource['resource_type'])) {
-				$aExtraInfoForResource['resource_type'] = $sTemplateName;
+				$aExtraInfoForResource['resource_type'] = $sResourceType;
 			}
 			if(!isset($aExtraInfoForResource['template'])) {
-				$aExtraInfoForResource['template'] = $sTemplateName;
+				$aExtraInfoForResource['template'] = $sResourceType;
 			}
 			if($sIeCondition !== null && !isset($aExtraInfoForResource['ie_condition'])) {
 				$aExtraInfoForResource['ie_condition'] = $sIeCondition;
@@ -190,23 +190,23 @@ class ResourceIncluder {
 				$aExtraInfoForResource['dependees'] = array_merge($this->aIncludedResources[$iPrevResoucePriority][$sIdentifier]['dependees'], $aExtraInfoForResource['dependees']);
 				unset($this->aIncludedResources[$iPrevResoucePriority][$sIdentifier]);
 			}
-			
+
 			//Include resource
 			$this->aIncludedResources[$iPriority][$sIdentifier] = $aExtraInfoForResource;
-			
+
 			//move down all dependent resources that already exist
 			if(isset($aExtraInfoForResource['dependees'])) {
 				$this->moveDependees($aExtraInfoForResource['dependees'], $sIdentifier);
 			}
-			
+
 			//Add dependency
 			$this->registerAsDependency($sIdentifier);
-			
+
 			$sFinalLocation = null;
 			$sIdentifier = null;
 		}
 	}
-	
+
 	private function moveDependees($aDependees, $sDependeeIdentifier) {
 		foreach($aDependees as $sDependeeIdentifier => $bTrue) {
 			if(($iDependeePriority = $this->containsResource($sDependeeIdentifier)) !== false) {
@@ -219,7 +219,7 @@ class ResourceIncluder {
 			}
 		}
 	}
-	
+
 	/**
 	* Add a JavaScript Library to this ResourceIncluder instance.
 	* @param string $sLibraryName The library’s name as configured in the config files
@@ -257,7 +257,7 @@ class ResourceIncluder {
 			$bUseCompression = true;
 		}
 		$sLibraryUrl = $aLibraryOptions[$bUseCompression ? 'url' : 'url_uncompressed'];
-		
+
 		//Handle duplicate includes
 		if(($iPrevResoucePriority = $this->containsResource($sResourceIdentifier)) !== false) {
 			$aResourceInfo = $this->aIncludedResources[$iPrevResoucePriority][$sResourceIdentifier];
@@ -311,7 +311,7 @@ class ResourceIncluder {
 
 		$this->addResource(str_replace('${library_name}', $sLibraryName, $sLibraryUrl), self::RESOURCE_TYPE_JS, $sResourceIdentifier, array('version' => $sLibraryVersion, 'use_compression' => $bUseCompression), $iPriority, $sIeCondition, false, is_array($aLibraryDependencies));
 	}
-	
+
 	public function addCustomResource($aResourceInfo, $iPriority = self::PRIORITY_NORMAL, $bEndsDependencyList = false) {
 		if(!isset($aResourceInfo['resource_type'])) {
 			$aResourceInfo['resource_type'] = $aResourceInfo['template'];
@@ -329,15 +329,15 @@ class ResourceIncluder {
 		}
 		$this->aIncludedResources[$iPriority][$sIdentifier] = $aResourceInfo;
 	}
-	
+
 	public function addCustomJs($mCustomJs, $iPriority = self::PRIORITY_NORMAL, $bEndsDependencyList = false) {
 		$this->addCustomResource(array('template' => 'inline_js', 'content' => $mCustomJs), $iPriority, $bEndsDependencyList);
 	}
-	
+
 	public function addCustomCss($mCustomCss, $iPriority = self::PRIORITY_NORMAL, $bEndsDependencyList = false) {
 		$this->addCustomResource(array('template' => 'inline_css', 'content' => $mCustomCss), $iPriority, $bEndsDependencyList);
 	}
-	
+
 	/**
 	* Add a meta tag. This adds a custom resource with the “meta” template.
 	* Note: This will not add anything if the content is empty.
@@ -353,7 +353,7 @@ class ResourceIncluder {
 		$aResourceInfo[$bIsHttpEquiv ? 'http-equiv' : 'name'] = $sName;
 		$this->addCustomResource($aResourceInfo);
 	}
-	
+
 	public function addReverseDependency($sIdentifier, $bIsBefore = false) {
 		$aArgs = func_get_args();
 		array_shift($aArgs);array_shift($aArgs);
@@ -370,7 +370,7 @@ class ResourceIncluder {
 	public function getAllIncludedResources() {
 		return array_merge($this->aIncludedResources[self::PRIORITY_LAST], $this->aIncludedResources[self::PRIORITY_NORMAL], $this->aIncludedResources[self::PRIORITY_FIRST]);
 	}
-	
+
 	public function getResourceInfosForIncludedResourcesOfPriority($iPriority = self::PRIORITY_NORMAL) {
 		$aResult = array();
 		foreach($this->aIncludedResources[$iPriority] as $aResourceInfo) {
@@ -378,7 +378,7 @@ class ResourceIncluder {
 		}
 		return $aResult;
 	}
-	
+
 	public function getLocationsForIncludedResourcesOfPriority($iPriority = self::PRIORITY_NORMAL) {
 		$aResult = array();
 		foreach($this->aIncludedResources[$iPriority] as $aResourceInfo) {
@@ -386,7 +386,7 @@ class ResourceIncluder {
 		}
 		return $aResult;
 	}
-	
+
 	/**
 	* Returns a Template containing all of the necessary HTML code for the browser to load the included resources.
 	* @param $bPrintNewlines Whether to put each include on a new line. Turn this off for “location_only”-type includes.
@@ -440,7 +440,7 @@ class ResourceIncluder {
 		}
 		return $oTemplate;
 	}
-	
+
 	private function replaceContentsWithConsolidated($bExcludeExternal = false) {
 		$aCssConsolidator = null;
 		$aJsConsolidator = null;
@@ -456,7 +456,7 @@ class ResourceIncluder {
 		$this->cleanupConsolidator($aCssConsolidator);
 		$this->cleanupConsolidator($aJsConsolidator);
 	}
-	
+
 	private function consolidationStepForResourceType($sType, $bExcludeExternal, $iPriority, $sKey, &$aConsolidatorInfo, &$resource_type, &$file_resource, &$location, &$content, &$template, &$media = null) {
 		$sSSLMode = Settings::getSetting('linking', 'ssl_in_absolute_links', null) === null ? LinkUtil::isSSL() : 'default';
 		if($resource_type !== $sType && $resource_type !== "inline_$sType") {
@@ -538,7 +538,7 @@ class ResourceIncluder {
 			$aConsolidatorInfo['contents'][$sKey] = $oCache;
 		}
 	}
-	
+
 	private function initConsolidator($sType, $iPriority, $sKey, &$aConsolidatorInfo) {
 		if($aConsolidatorInfo === null) {
 			$aConsolidatorInfo = array('type' => $sType, 'contents' => array());
@@ -549,7 +549,7 @@ class ResourceIncluder {
 		$aConsolidatorInfo['priority'] = $iPriority;
 		$aConsolidatorInfo['key'] = $sKey;
 	}
-	
+
 	private function cleanupConsolidator(&$aConsolidatorInfo) {
 		if($aConsolidatorInfo === null) {
 			return;
@@ -563,7 +563,7 @@ class ResourceIncluder {
 		$this->aIncludedResources[$aConsolidatorInfo['priority']][$aConsolidatorInfo['key']] = $aConsolidatorLink;
 		$aConsolidatorInfo = null;
 	}
-	
+
 	public function addResourceFromTemplateIdentifier($oIdentifier) {
 		$mLocation = $oIdentifier->getValue();
 		$iPriority = $oIdentifier->hasParameter('priority') ? constant("ResourceIncluder::PRIORITY_".strtoupper($oIdentifier->getParameter('priority'))) : ResourceIncluder::PRIORITY_NORMAL;
@@ -600,15 +600,15 @@ class ResourceIncluder {
 			$sResourceType = $oIdentifier->getParameter('resource_type');
 		}
 		$bIncludeAll = $oIdentifier->hasParameter('include_all');
-		
+
 		$this->addResource($mLocation, $sResourceType, null, $aParams, $iPriority, $sIeCondition, $bIncludeAll);
 	}
-	
+
 	public function clearIncludedResources() {
 		$this->aIncludedResources = array(self::PRIORITY_FIRST => array(), self::PRIORITY_NORMAL => array(), self::PRIORITY_LAST => array());
 	}
-	
-	private function findTemplateNameForLocation($sLocation) {
+
+	private function findResourceTypeForLocation($sLocation) {
 		if(strrpos($sLocation, '#') !== false) {
 			$sLocation = substr($sLocation, 0, strrpos($sLocation, '#'));
 		}
@@ -616,7 +616,7 @@ class ResourceIncluder {
 			$sLocation = substr($sLocation, 0, strrpos($sLocation, '?'));
 		}
 		if(strrpos($sLocation, '.') === false) {
-			throw new Exception("Error in ResourceIncluder->findTemplateNameForLocation(): no resource type given for indecisive $sLocation");
+			throw new Exception("Error in ResourceIncluder->findResourceTypeForLocation(): no resource type given for indecisive $sLocation");
 		}
 		$sExtension = strtolower(substr($sLocation, strrpos($sLocation, '.')+1));
 		if($sExtension === 'png' || $sExtension === 'gif' || $sExtension === 'jpg' || $sExtension === 'jpeg' || $sExtension === 'svg') {
@@ -628,7 +628,7 @@ class ResourceIncluder {
 		} else if ($sExtension === 'js') {
 			return self::RESOURCE_TYPE_JS;
 		} else {
-			throw new Exception("Error in ResourceIncluder->findTemplateNameForLocation(): no resource type found for $sLocation");
+			throw new Exception("Error in ResourceIncluder->findResourceTypeForLocation(): no resource type found for $sLocation");
 		}
 	}
 
@@ -637,14 +637,14 @@ class ResourceIncluder {
 			$this->aCurrentDependencyStack[0][$sResourceIdentifier] = true;
 		}
 	}
-	
+
 	private function ieConditionalTemplate() {
 		if(self::$IE_CONDITIONAL === null) {
 			self::$IE_CONDITIONAL = new Template(self::IE_CONDITIONAL, null, true);
 		}
 		return clone self::$IE_CONDITIONAL;
 	}
-	
+
 	private function containsResource($sIdentifier) {
 		foreach($this->aIncludedResources as $iPriority => $aResources) {
 			if(isset($aResources[$sIdentifier])) {
@@ -653,7 +653,7 @@ class ResourceIncluder {
 		}
 		return false;
 	}
-	
+
 	private function endDependencyList($sIdentifier) {
 		$aDependencyList = array_shift($this->aCurrentDependencyStack);
 		if($aDependencyList === null) {
@@ -665,7 +665,7 @@ class ResourceIncluder {
 			}
 		}
 	}
-	
+
 	private function cleanupReverseDependencies() {
 		foreach($this->aReverseDependencies as $sDependee => $aDependencies) {
 			$iPriority = $this->containsResource($sDependee);
