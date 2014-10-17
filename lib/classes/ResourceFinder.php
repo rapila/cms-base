@@ -15,6 +15,10 @@ class ResourceFinder {
 	const SEARCH_SITE_FIRST = 4;
 	const SEARCH_PLUGINS_FIRST = 6;
 	
+	const WILDCARD_ANY = null;
+	const WILDCARD_DIR = false;
+	const WILDCARD_FILE = true;
+	
 	const ANY_NAME_OR_TYPE_PATTERN = '/^[\\w_]+$/';
 	
 	private $aPath;
@@ -197,15 +201,15 @@ class ResourceFinder {
 	}
 
 	public function addAnyPath($bOptional = false) {
-		return $bOptional ? $this->addOptionalPath(null) : $this->addExpression(null);
+		return $bOptional ? $this->addOptionalPath(self::WILDCARD_ANY) : $this->addExpression(null);
 	}
 
 	public function addDirPath($bOptional = false) {
-		return $bOptional ? $this->addOptionalPath(false) : $this->addExpression(false);
+		return $bOptional ? $this->addOptionalPath(self::WILDCARD_DIR) : $this->addExpression(false);
 	}
 
 	public function addFilePath($bOptional = false) {
-		return $bOptional ? $this->addOptionalPath(true) : $this->addExpression(true);
+		return $bOptional ? $this->addOptionalPath(self::WILDCARD_FILE) : $this->addExpression(true);
 	}
 	
 	/**
@@ -471,7 +475,7 @@ class ResourceFinder {
 			}
 		} else {
 			foreach(ResourceFinder::getFolderContents($sPath) as $sFileName => $sFilePath) {
-				if($sPathExpression === null || ($sPathExpression === true && is_file($sFilePath)) || ($sPathExpression === false && is_dir($sFilePath)) || (is_string($sPathExpression) && preg_match($sPathExpression, $sFileName) !== 0)) {
+				if($sPathExpression === self::WILDCARD_ANY || ($sPathExpression === self::WILDCARD_FILE && is_file($sFilePath)) || ($sPathExpression === self::WILDCARD_DIR && is_dir($sFilePath)) || (is_string($sPathExpression) && preg_match($sPathExpression, $sFileName) !== 0)) {
 					$sNextRelativePath = $sFileName;
 					if($sRelativePath !== null) {
 						$sNextRelativePath = "$sRelativePath/$sFileName";
