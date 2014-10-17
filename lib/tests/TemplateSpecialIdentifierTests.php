@@ -61,7 +61,7 @@ EOT;
 		$sTemplateText = <<<EOT
 {{quoteString=\{\{test\;defaultValue=default\}\}}}
 EOT;
-		$oTemplate = new Template($sTemplateText, null, true);		
+		$oTemplate = new Template($sTemplateText, null, true);
 
 		$this->assertSame("“default”", $oTemplate->render());
 	}
@@ -71,7 +71,7 @@ EOT;
 		$sTemplateText = <<<EOT
 {{quoteString=\{\{test\}\};defaultValue=default}}
 EOT;
-		$oTemplate = new Template($sTemplateText, null, true);		
+		$oTemplate = new Template($sTemplateText, null, true);
 
 		$this->assertSame("default", $oTemplate->render());
 	}

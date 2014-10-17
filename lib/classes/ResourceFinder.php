@@ -429,9 +429,9 @@ class ResourceFinder {
 		if(count($aExpressions) === 0) {
 			return;
 		}
-		
+
 		$sPathExpression = array_shift($aExpressions);
-		
+
 		$bAllowPathItemToBeSkipped = is_array($sPathExpression);
 		if($bAllowPathItemToBeSkipped) {
 			if(count($aExpressions) === 0) {
@@ -453,11 +453,15 @@ class ResourceFinder {
 			}
 		}
 
+		if(!is_dir($sPath)) {
+			return;
+		}
+
 		if($sParentName !== null && is_string($sPathExpression)) {
 			$sPathExpression = str_replace('${parent_name}', $sParentName, $sPathExpression);
 			$sPathExpression = str_replace('${parent_name_camelized}', StringUtil::camelize($sParentName, true), $sPathExpression);
 		}
-		
+
 		if(is_string($sPathExpression) && !StringUtil::startsWith($sPathExpression, "/")) {
 			//Take the shortcut when only dealing with a static file name
 			$sFilePath = "$sPath/$sPathExpression";
@@ -514,15 +518,15 @@ class ResourceFinder {
 		} else if(is_string($mPath)) {
 			$mPath = explode("/", $mPath);
 		}
-		
+
 		if($sBaseDirname !== null) {
 			array_unshift($mPath, $sBaseDirname);
 		}
-		
+
 		if($sFileName !== null) {
 			$mPath = array_merge($mPath, explode('/', $sFileName));
 		}
-		
+
 		return $mPath;
 	}
 	
