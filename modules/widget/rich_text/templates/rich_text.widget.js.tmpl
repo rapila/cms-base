@@ -9,9 +9,10 @@ Widget.types.rich_text = {
 		height: 400,
 		inline_css: ''
 	},
-	
+
 	initialize: function() {
 		var _this = this;
+		_this.additionalStyles = jQuery('<style/>');
 		if(this.settings.additional_plugin_paths) {
 			for(var plugin_name in this.settings.additional_plugin_paths) {
 				var plugin_path = this.settings.additional_plugin_paths[plugin_name];
@@ -93,14 +94,14 @@ Widget.types.rich_text = {
 					return function() {
 						orig.apply(this, arguments);
 						var dialog = this.getDialog();
-						
+
 						var internal_link_chooser = dialog.getContentElement('info', 'internal_link_chooser');
 						var internal_link_chooser_element = jQuery(internal_link_chooser.getElement().getParent().getParent().$);
 						var external_link_chooser = dialog.getContentElement('info', 'external_link_chooser');
 						var external_link_chooser_element = jQuery(external_link_chooser.getElement().getParent().getParent().$);
 						var document_link_chooser = dialog.getContentElement('info', 'document_link_chooser');
 						var document_link_chooser_element = jQuery(document_link_chooser.getElement().getParent().getParent().$);
-						
+
 						if(this.getValue() == 'internal') {
 							internal_link_chooser_element.show();
 							external_link_chooser_element.hide();
@@ -118,7 +119,7 @@ Widget.types.rich_text = {
 							external_link_chooser_element.hide();
 							document_link_chooser_element.hide();
 						}
-						
+
 						var editor = dialog.getParentEditor();
 						if(editor.config.linkShowTargetTab && (this.getValue() == 'internal' || this.getValue() == 'external' || this.getValue() == 'document')) {
 							dialog.showPage('target');
@@ -160,11 +161,11 @@ Widget.types.rich_text = {
 						}
 						this.rich_text_widget_additions_done = true;
 						var dialog = this;
-						
+
 						_this.prepare_chooser(dialog, 'internal_link_chooser', 'page_input', 'proxy_url');
 						_this.prepare_chooser(dialog, 'external_link_chooser', 'link_input', 'proxy_url');
 						var document_link_chooser_element = _this.prepare_chooser(dialog, 'document_link_chooser', 'document_input', 'absolute_url');
-						
+
 						var file_uploader = Widget.create('file_upload');
 						file_uploader.allow_drag_to(document_link_chooser_element, null, function() {
 							return {
@@ -172,16 +173,17 @@ Widget.types.rich_text = {
 								error: function() {}
 							};
 						});
-						
+
 						return orig.apply(this, arguments);
 					};
 				});
 			}
 		});
 	},
-	
+
 	prepare: function() {
 		var _this = this;
+		_this._element.append(this.additionalStyles);
 		var textarea = this.textarea = this._element.find('textarea');
 		if(textarea.val() === '') {
 			textarea.val(' ');
@@ -206,11 +208,12 @@ Widget.types.rich_text = {
 			}, 100);
 		}
 	},
-	
+
 	replace: function() {
 		var _this = this;
 		var instance = this.instance = CKEDITOR.replace(this.textarea[0], this.settings);
 		instance.on('instanceReady', function(event) {
+			instance.window.$.document.documentElement.classList.add(_this.settings.bodyClass);
 			instance.dataProcessor.htmlFilter.addRules({
 				elements: {
 					img: function( element ) {
@@ -263,9 +266,12 @@ Widget.types.rich_text = {
 				label: part.tooltip,
 				command: commandName
 			});
+			if(part.icon) {
+				_this.additionalStyles[0].sheet.insertRule('.cke_button_icon.cke_button__'+commandName+'_icon {\n					background: url("'+part.icon+'") no-repeat;\n				}', 0);
+			}
 		});
 	},
-	
+
 	prepare_chooser: function(dialog, name, widget, url_function) {
 		var chooser = dialog.getContentElement('info', name);
 		var chooser_element = jQuery(chooser.getElement().$);
@@ -290,33 +296,33 @@ Widget.types.rich_text = {
 		}, jQuery.noop);
 		return chooser_element;
 	},
-	
+
 	set_inline_css: function(css) {
 		this.settings.inline_css = css;
 		if(this.instance && this.instance.document) {
 			this.instance.document.appendStyleText(css);
 		}
 	},
-	
+
 	data_to_textarea: function() {
 		if(this.instance) {
 			this.instance.updateElement();
 		}
 	},
-	
+
 	data_from_textarea: function() {
 		if(this.instance) {
 			this.instance.setData(this.textarea.val());
 		}
 	},
-	
+
 	get_data: function() {
 		if(!this.instance) {
 			return this.textarea.val();
 		}
 		return this.instance.getData();
 	},
-	
+
 	set_data: function(new_data) {
 		var _this = this;
 		if(!this.instance) {
@@ -327,12 +333,12 @@ Widget.types.rich_text = {
 			});
 		}
 	},
-	
+
 	destroy: function() {
 		this.instance.destroy();
 		delete this.instance;
 	},
-	
+
 	resize_to: function(width, height) {
 		if(!this.editor_contents) {
 			this.editor_contents = this._element.find('.cke_contents');

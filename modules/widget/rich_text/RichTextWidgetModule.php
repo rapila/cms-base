@@ -134,6 +134,11 @@ class RichTextWidgetModule extends PersistentWidgetModule {
 				if(!isset($aPartSpec['template'])) {
 					continue;
 				}
+				if(isset($aPartSpec['icon'])) {
+					$oIncluder = new ResourceIncluder();
+					$oIncluder->addResource($aPartSpec['icon'], null, null, array('template' => 'location_only'));
+					$aPartSpec['icon'] = $oIncluder->getIncludes(false, false)->render();
+				}
 				$oTemplate = new Template($aPartSpec['template']);
 				$aPartSpec['content'] = $oTemplate->render();
 				unset($aPartSpec['template']);
