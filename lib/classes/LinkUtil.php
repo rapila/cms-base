@@ -72,7 +72,6 @@ class LinkUtil {
 	/**
 	* Sends the cache control header Last-Modified and checks If-Modified-Since for a match (if so, terminates and sends a 304 Not Modified status code)
 	* Uses the given timestamp as base for calculation. If it is an object or a query, the updated-at field of the object (or the newest item that matches the query) is used.
-	* Additionally, this method exits if the client sent a matching If-None-Match or If-Modified-Since header
 	* You can call this method twice if you created a new cache file and don’t have any other timestamp. It will only output the headers once.
 	* @param $iTimestamp deprecated: to use this method without a cache file, call LinkUtil::sendCacheControlHeaders directly
 	*/
