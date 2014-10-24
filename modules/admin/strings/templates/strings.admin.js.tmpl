@@ -23,7 +23,6 @@ jQuery(document).ready(function() {
 		// Add new string button, search_input and list count
 		info_bar.add_button('add-new-item', function() {
 			Widget.create('string_detail', function(widget) {
-				console.log('string_widget', widget);
 				widget.open();
 				widget.handle('saved', function(event, result) {
 					if(result.namespaces_changed) {

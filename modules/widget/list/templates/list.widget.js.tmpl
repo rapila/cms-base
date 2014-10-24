@@ -94,7 +94,7 @@ Widget.types.list = {
 			}
 		}
 	},
-	
+
 	/**
 	 * Activate a row (changing the selection). This is being triggered when a row has been clicked. What exactly is done varies depending on the row_click_active_mode and row_click_active_exclusive settings as well as the modifier keys that came with the event.
 	 */
@@ -150,7 +150,7 @@ Widget.types.list = {
 			}
 		}
 	},
-	
+
 	/**
 	 * Returns all rows currently selected.
 	 */
@@ -167,7 +167,7 @@ Widget.types.list = {
 			return _this.collect_row_data(jQuery(this));
 		}).get();
 	},
-	
+
 	/**
 	 * Internal. Adds a new row into the list.
 	 */
@@ -203,7 +203,7 @@ Widget.types.list = {
 
 		return row;
 	},
-	
+
 	/**
 	 * Internal. Adds a cell at the end of a row.
 	 */
@@ -239,7 +239,7 @@ Widget.types.list = {
 		}
 		// add class identifier with optional classname (align_right/align_center/default:text-align:left;)
 		into.addClass(metadata.identifier + (metadata.classname ? ' ' + metadata.classname : ''));
-		
+
 		// add isHeading for adding span for sortable
 		Widget.types.list.types[display_type](into, data, metadata, isHeading);
 		if(isHeading && metadata.heading_filter) {
@@ -247,7 +247,7 @@ Widget.types.list = {
 		}
 		return row === into ? null : into;
 	},
-	
+
 	/**
 	 * Creates a widget in the heading row for a given heading cell.
 	 */
@@ -275,7 +275,7 @@ Widget.types.list = {
 			filter.bind('change', value_changed).appendTo(cell);
 		}
 	},
-	
+
 	/**
 	 * Internal. Updates a heading cell for handling sort state and receiving sort clicks.
 	 */
@@ -291,7 +291,7 @@ Widget.types.list = {
 			_this.reload();
 		});
 	},
-	
+
 	/**
 	 * Internal. Updates heading cells to represente the current sort column.
 	 */
@@ -307,7 +307,7 @@ Widget.types.list = {
 			}
 		});
 	},
-	
+
 	/**
 	 * Internal. Adds or removes reorderable states of reorder cells.
 	 */
@@ -346,7 +346,7 @@ Widget.types.list = {
 		}
 		this.update_reorderable_axis();
 	},
-	
+
 	/**
 	 * Internal. Called when a row has been dragged to a new position. Updates position in the DOM and on the server.
 	 */
@@ -363,7 +363,7 @@ Widget.types.list = {
 		}
 		this.doSort(schema.identifier, this.collect_row_data(row), this.collect_row_data(related), relation);
 	},
-	
+
 	/**
 	 * Internal. Thumbnail view supports reordering by dragging in both axes, list mode only allows dragging vertically.
 	 */
@@ -374,7 +374,7 @@ Widget.types.list = {
 			reorderable.sortable('option', 'axis', axis);
 		}
 	},
-	
+
 	/**
 	 * Removes a row from the list and on the server.
 	 */
@@ -396,7 +396,7 @@ Widget.types.list = {
 			this.fire('row-deleted', result);
 		});
 	},
-	
+
 	/**
 	 * Returns an object of all data fields and their values from a row.
 	 */
@@ -438,7 +438,7 @@ Widget.types.list = {
 			}
 		});
 	},
-	
+
 	/**
 	 * Reloads a specific row from the server and updates the DOM.
 	 */
@@ -461,7 +461,7 @@ Widget.types.list = {
 			this.fire('row-updated', additonalData, row, rowData);
 		});
 	},
-	
+
 	/**
 	 * Loads a row from the server by qerying for the given data fields.
 	 */
@@ -472,7 +472,7 @@ Widget.types.list = {
 			}
 		});
 	},
-	
+
 	/**
 	 * Returns all heading texts.
 	 */
@@ -485,14 +485,14 @@ Widget.types.list = {
 		});
 		return result;
 	},
-	
+
 	/**
 	 * Counts how many rows are currently loaded.
 	 */
 	current_row_count: function() {
 		return this.all_rows().length;
 	},
-	
+
 	/**
 	 * Reloads the list. Must be called with true for load_heading on the first load.
 	 */
@@ -557,7 +557,7 @@ Widget.types.list = {
 			this.fire('reloaded', list.length);
 		});
 	},
-	
+
 	/**
 	 * Internal. Whether or not a schema column is yields a dom element or not.
 	 */
@@ -565,7 +565,7 @@ Widget.types.list = {
 		display_type = col.display_type ? col.display_type : col;
 		return display_type === 'data' || display_type === 'classname';
 	},
-	
+
 	/**
 	 * Looks inside the schema to see what number the cell of the given type is placed and returns that cell’s jQuery-wrapped DOM element
 	 */
@@ -608,21 +608,21 @@ Widget.types.list = {
 		});
 		return col_schema;
 	},
-	
+
 	/**
 	 * Returns a jQuery object of all list rows (tr or li elements)
 	 */
 	all_rows: function() {
 		return this._element.find('.ui-list-row');
 	},
-	
+
 	/**
 	 * Returns a jQuery-wrapped DOM element of the rows matching a given row number or an empty jQuery object if none match.
 	 */
 	row_from_number: function(rowNumber) {
 		return this._element.find('.ui-list-row:eq('+rowNumber+')');
 	},
-	
+
 	/**
 	 * Searches a row whose data fields matches those present in the rowData argument.
 	 */
@@ -650,7 +650,7 @@ Widget.types.list = {
 		});
 		return result;
 	},
-	
+
 	/**
 	 * Searches multple rows whose data fields match those present in the rowData argument.
 	 */
@@ -679,7 +679,7 @@ Widget.types.list = {
 		});
 		return result;
 	},
-	
+
 	/**
 	 * Internal. Returns the (cached) model name of this list.
 	 */
@@ -689,7 +689,7 @@ Widget.types.list = {
 		}
 		return this.settings.row_model_name;
 	},
-	
+
 	/**
 	 * Internal. Shows or hides the loader for this list.
 	 */
@@ -700,14 +700,14 @@ Widget.types.list = {
 			Widget.end_load();
 		}
 	},
-	
+
 	/**
 	 * Generates the URL to the list exporter.
 	 */
 	get_print_link: function() {
 		return '{{writeLink=list_export;manager=FileManager}}/'+this._instanceInformation.session_id;
 	},
-	
+
 	/**
 	 * Switches this list into thumbnail view mode. If the value equals 'toggle', the mode is switched. If no `value` is given, the current mode is returned.
 	 */
@@ -723,12 +723,12 @@ Widget.types.list = {
 			return this._element.hasClass('ui-thumbnail-list');
 		}
 	},
-	
+
 	/**
 	 * Internal. Stores the list schema. Loaded when reload is called with load_heading set to true.
 	 */
 	schema: null,
-	
+
 	/**
 	 * Handler methdo for specific column types. Each of these takes the cell element as well as data and metadata and updates the cell to match the data given.
 	 */
@@ -757,7 +757,7 @@ Widget.types.list = {
 			data = metadata.heading;
 			this.text(column, data);
 		},
-		
+
 		/**
 		 * Outputs icons for true or false.
 		 */
