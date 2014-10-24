@@ -1,7 +1,7 @@
 <?php
 class ErrorHandler {
 	private static $ENVIRONMENT = null;
-	
+
 	public static function handleError($iErrorNumber, $sErrorString, $sErrorFile, $iErrorLine, $aContext = null, $aTrace = null, $bNeverPrint = false, $bIsUserError = false) {
 		if(error_reporting() === 0 || $iErrorNumber === E_STRICT) {
 			return false;
@@ -22,11 +22,11 @@ class ErrorHandler {
 		}
 		self::displayErrorMessage($aError, $bIsUserError);
 	}
-	
+
 	public static function handleException($oException, $bNeverPrint = false) {
 		self::handleError($oException->getCode(), $oException->getMessage(), $oException->getFile(), $oException->getLine(), null, $oException->getTrace(), $bNeverPrint, $oException instanceof UserError);
 	}
-	
+
 	/**
 	* if possible, reads the file php_error.php in the site/lib directory and outputs it as an error message.
 	* This is called from the handleError and handleException methods if the error was not output directly to screen (like in the test environment) and could not be recovered from. If the file does not exist, it will output the text "An Error occured, exiting"
@@ -49,7 +49,7 @@ class ErrorHandler {
 		include($sErrorFileName);
 		exit;
 	}
-	
+
 	public static function getEnvironment() {
 		if(self::$ENVIRONMENT === null) {
 			self::$ENVIRONMENT = getenv('RAPILA_ENVIRONMENT');
@@ -63,7 +63,7 @@ class ErrorHandler {
 		}
 		return self::$ENVIRONMENT;
 	}
-	
+
 	// To avoid leaking error messages, production enivronments MUST always specify RAPILA_ENVIRONMENT explicitly and SHOULD never rely on autodetection.
 	private static function autoEnvironment() {
 		if(php_sapi_name() === 'cli') {
@@ -107,19 +107,19 @@ class ErrorHandler {
 		ErrorHandler::log("WARNING: RAPILA_ENVIRONMENT autodetection found “production”. Please configure manually if really a production environment.");
 		return 'production';
 	}
-	
+
 	public static function shouldPrintErrors() {
 		return Settings::getSetting('error_handling', 'print_errors', false);
 	}
-	
+
 	public static function shouldLogErrors() {
 		return Settings::getSetting('error_handling', 'log_errors', false);
 	}
-	
+
 	public static function shouldMailErrors() {
 		return Settings::getSetting('error_handling', 'mail_errors', false);
 	}
-	
+
 	private static function shouldContinue($iErrorNumber) {
 		if(Settings::getSetting('error_handling', 'should_stop_on_recoverable_errors', false)) {
 			return false;
@@ -133,9 +133,9 @@ class ErrorHandler {
 		}
 		error_log(self::readableDump($mMessage));
 	}
-	
+
 	private static function readableDump($mToDump, $iMaxLevel = 5, $sVariableSeparationString = ', ', $iCurrentLevel = 1, &$aReferenceChain = array()) {
-		if ($iCurrentLevel > $iMaxLevel) { 
+		if ($iCurrentLevel > $iMaxLevel) {
 			return "[...]";
 		}
 		$sResult = '';
@@ -185,7 +185,7 @@ class ErrorHandler {
 		}
 		return $sResult;
 	}
-	
+
 	private static function cleanTrace(&$aTrace) {
 		foreach($aTrace as &$aTraceInfo) {
 			$sFile = '';
@@ -199,7 +199,7 @@ class ErrorHandler {
 			$aTraceInfo = $sFunction;
 		}
 	}
-	
+
 	public static function trace($bClean = true, $aTrace = null) {
 		if($aTrace === null) {
 			$aTrace = debug_backtrace();
@@ -210,7 +210,7 @@ class ErrorHandler {
 		}
 		self::log($aTrace);
 	}
-	
+
 	public static function setEnvironment($sEnvironment) {
 		self::$ENVIRONMENT = $sEnvironment;
 	}
@@ -222,7 +222,7 @@ class ErrorHandler {
 		$aError['path'] = @$_SERVER['REQUEST_URI'];
 		$aError['request'] = @$_REQUEST;
 		$aError['cookies'] = @$_COOKIE;
-		
+
 		FilterModule::getFilters()->handleAnyError(array(&$aError), $bNeverPrint, $bNeverNotifyDeveloper);
 		if(!$bNeverNotifyDeveloper && self::shouldMailErrors()) {
 			$sAddress = Settings::getSetting('developer', 'email', false);
