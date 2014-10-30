@@ -194,7 +194,7 @@ class User extends BaseUser {
 		}
 		return unserialize($mSettings);
 	}
-	
+
 	public function getTimezone($bAsObject = false) {
 		$sTimezone = parent::getTimezone();
 		if($sTimezone === null) {
@@ -205,7 +205,7 @@ class User extends BaseUser {
 		}
 		return $sTimezone;
 	}
-	
+
 	public function dateInUserTimezone(DateTime $oDate) {
 		$oResult = clone $oDate;
 		$oDate->setTimezone($this->getTimezone(true));
