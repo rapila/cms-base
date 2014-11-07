@@ -212,6 +212,7 @@
 	<column name="description" type="varchar" size="255" />
 	<behavior name="denyable">
 		<parameter name="role_key" value="users" />
+		<parameter name="owner_allowed" value="true" />
 	</behavior>
 </table>
 
