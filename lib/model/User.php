@@ -266,10 +266,10 @@ class User extends BaseUser {
 		if(!($mGroup instanceof Group)) {
 			$mGroup = GroupQuery::create()->createOrFindByName($mGroup);
 		}
-		if(!$this->hasGroup($oGroup)) {
+		if(!$this->hasGroup($mGroup)) {
 			$oUserGroup = new UserGroup();
 			$oUserGroup->setUserRelatedByUserId($this);
-			$oUserGroup->setGroup($oGroup);
+			$oUserGroup->setGroup($mGroup);
 		}
 		return $mGroup;
 	}
