@@ -81,7 +81,7 @@ abstract class Module {
 		$aModuleMetadata = self::getModuleMetadataByTypeAndName($sType, $sName);
 		return @$aModuleMetadata['module_info'];
 	}
-	
+
 	public static function isModuleEnabled($sType, $sName) {
 		$aModuleInfo = self::getModuleInfoByTypeAndName($sType, $sName);
 		return @$aModuleInfo['enabled'];
