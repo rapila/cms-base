@@ -53,6 +53,16 @@ class Group extends BaseGroup {
 		return $aResult;
 	}
 	
+	public function addRole($sRoleName) {
+		$aRoles = func_get_args();
+		foreach($aRoles as $mRole) {
+			if(!($mRole instanceof Role)) {
+				$mRole = RoleQuery::create()->createOrFindPk($mRole);
+			}
+			GroupRoleQuery::create()->createOrFind($this, $mRole);
+		}
+	}
+	
 	public function getRolesInfo() {
 		$aRoles = self::getRoles(true);
 		if(count($aRoles) > 0) {
