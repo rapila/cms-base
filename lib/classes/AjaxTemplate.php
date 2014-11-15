@@ -65,11 +65,11 @@ class AjaxTemplate extends Template {
 		}
 		return $aIdentifiers;
 	}
-	
+
 	public function replaceIdentifier($mIdentifier, $mOriginalText, $sValue=null, $iFlags=0, $mFunction=null) {
 		$this->internalReplaceIdentifier($mIdentifier, $mOriginalText, $sValue, $iFlags, $mFunction);
 	}
-	
+
 	public function replaceIdentifierMultiple($mIdentifier, $mOriginalText=null, $sValue=null, $iFlags=0, $mFunction=null) {
 		$this->internalReplaceIdentifier($mIdentifier, $mOriginalText, $sValue, $iFlags, $mFunction, true);
 	}
@@ -87,7 +87,7 @@ class AjaxTemplate extends Template {
 			if($mFunction !== null) {
 				$mText = call_user_func_array($mFunction, array($oIdentifier, &$iFlags));
 			}
-		
+
 			$sText = $this->textForReplaceIdentifier($iFlags, $mText);
 			if($sText === null) {
 				continue;
@@ -127,7 +127,7 @@ class AjaxTemplate extends Template {
 		} else if (is_bool($mText)) {
 			$sResult = $mText ? "true" : "false";
 		}
-		
+
 		return $sResult;
 	}
 }
