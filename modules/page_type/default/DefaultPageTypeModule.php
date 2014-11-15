@@ -387,6 +387,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 
 		$bUseParsedCss = Settings::getSetting('admin', 'use_parsed_css_in_config', true);
 		$oStyle = null;
+
 		if($bUseParsedCss) {
 			$sTemplateName = $this->oPage->getTemplateNameUsed().Template::$SUFFIX;
 			$sCacheKey = 'parsed-css-'.$sTemplateName;

@@ -3,7 +3,7 @@
  */
 abstract class PageTypeModule extends Module {
 	protected static $MODULE_TYPE = 'page_type';
-	
+
 	protected $oPage;
 	protected $oNavigationItem;
 
@@ -11,7 +11,7 @@ abstract class PageTypeModule extends Module {
 		$this->oPage = $oPage;
 		$this->oNavigationItem = $oNavigationItem;
 	}
-	
+
 	public abstract function display(Template $oTemplate, $bIsPreview = false);
 
 	public function getWords() {
@@ -31,7 +31,7 @@ abstract class PageTypeModule extends Module {
 		$this->display($sTemplate, false);
 		return StringUtil::getWords($sTemplate, true);
 	}
-	
+
 	public function acceptedRequestParams($aModulesToCheck = null) {
 		if(method_exists($this, 'setIsDynamicAndAllowedParameterPointers')) {
 			$aResult = array();
@@ -41,7 +41,7 @@ abstract class PageTypeModule extends Module {
 		}
 		return array();
 	}
-	
+
 	//Warning: different than normal
 	public static function getModuleInstance($sModuleName = null) {
 		$aArgs = func_get_args();
