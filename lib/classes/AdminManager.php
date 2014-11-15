@@ -1,7 +1,7 @@
 <?php
 
 class AdminManager extends Manager {
-	
+
 	const JQUERY_VERSION = '1.11.0';
 	const JQUERY_UI_VERSION = '1.10.4';
 
@@ -11,7 +11,7 @@ class AdminManager extends Manager {
 	private $sModuleName;
 	private $oModule;
 	private $oResourceIncluder;
-	
+
 	public function __construct() {
 		parent::__construct();
 		SanityCheck::basicCheck();
@@ -31,11 +31,11 @@ class AdminManager extends Manager {
 			}
 		}
 	}
-	
+
 	public function getModuleName() {
 		return $this->sModuleName;
 	}
-	
+
 	public static function setContentLanguage($sLanguageId) {
 		if(!LanguageQuery::languageExists($sLanguageId)) {
 			if(LanguageQuery::languageExists(Session::language())) {
@@ -54,14 +54,14 @@ class AdminManager extends Manager {
 		self::createLanguageIfNoneExist($sLanguageId);
 		Session::getSession()->setAttribute(self::CONTENT_LANGUAGE_SESSION_KEY, $sLanguageId);
 	}
-	
+
 	/**
 	* @param string $sLanguageId
 	* use cases:
 	* 1. at first users' creation
 	* 2. fallback method, creates language if it does not exist, but not at first users' login time, i.e. when languages have been truncated
 	* @return void
-	*/	
+	*/
 	public static function createLanguageIfNoneExist($sLanguage, $oUser = null) {
 		if(LanguageQuery::create()->count() > 0) {
 			return;
@@ -100,7 +100,7 @@ class AdminManager extends Manager {
     AdminManager::setContentLanguage(Session::language());
 		return true;
 	}
-	
+
 	public static function getContentLanguage() {
 		$sLanguageId = Session::getSession()->getAttribute(self::CONTENT_LANGUAGE_SESSION_KEY);
 		if($sLanguageId === null) {
@@ -115,7 +115,7 @@ class AdminManager extends Manager {
 
 	public function render() {
 		$this->preRender();
-		
+
 		$oTemplate = null;
 		if(!Session::getSession()->isAuthenticated() || !Session::getSession()->getUser()->getIsBackendLoginEnabled()) {
 			if(Session::getSession()->isAuthenticated() && !Session::getSession()->getUser()->getIsBackendLoginEnabled()) {
@@ -144,7 +144,7 @@ class AdminManager extends Manager {
 
 		$oTemplate->render();
 	}
-	
+
 	private function preRender() {
 		$oConstants = new Template('constants.js', array(DIRNAME_TEMPLATES, 'admin'));
 		$oConstants->replaceIdentifier('current_admin_module', $this->sModuleName);
@@ -169,14 +169,14 @@ class AdminManager extends Manager {
 		$oOutput = new XHTMLOutput('html5');
 		$oOutput->render();
 	}
-	
+
 	/**
 	* @param string $sPostfix string of template 'list item' identifier
 	* retrieve all templates from site template dir that follow a naming convention
 	* list template name: examplename.tmpl
 	* list_item template name: examplename_item.tmpl
 	* @return array assoc of path to examplename in key and value
-	*/	
+	*/
 	public static function getSiteTemplatesForListOutput($sPostfix = '_item') {
 		$aTemplateList = ArrayUtil::arrayWithValuesAsKeys(Template::listTemplates(DIRNAME_TEMPLATES, true));
 		$aListTemplates = array();
@@ -197,9 +197,9 @@ class AdminManager extends Manager {
 	private function doAdmin($oTemplate) {
 		$oAdminMenuWidget = new AdminMenuWidgetModule();
 		AdminMenuWidgetModule::includeResources($this->oResourceIncluder);
-		
+
 		$oTemplate->replaceIdentifierMultiple('main_content', $this->oModule->mainContent());
-		
+
 		$mSidebarContent = $this->oModule->sidebarContent();
 		if($mSidebarContent === null) {
 			$mSidebarContent = '';
@@ -207,9 +207,9 @@ class AdminManager extends Manager {
 			$mSidebarContent = null;
 		}
 		$oTemplate->replaceIdentifierMultiple('sidebar_content', $mSidebarContent);
-		
+
 		$oTemplate->replaceIdentifierMultiple('admin_menu', $oAdminMenuWidget->doWidget());
-		
+
 		foreach($this->oModule->usedWidgets() as $mWidget) {
 			if(!is_string($mWidget)) {
 				$mWidget = get_class($mWidget);
@@ -218,7 +218,7 @@ class AdminManager extends Manager {
 			}
 			call_user_func(array($mWidget, 'includeResources'), $this->oResourceIncluder);
 		}
-		
+
 		$this->oModule->includeCustomResources($this->oResourceIncluder);
 	}
 }
