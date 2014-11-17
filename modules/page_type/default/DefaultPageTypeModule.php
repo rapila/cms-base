@@ -107,6 +107,16 @@ class DefaultPageTypeModule extends PageTypeModule {
 				return false;
 			}
 		}
+		$sObjectType = $oContentObject->getObjectType();
+		if(!Module::moduleExists($sObjectType, FrontendModule::getType()) || !Module::isModuleEnabled(FrontendModule::getType(), $sObjectType)) {
+			$sLink = implode('/', $this->oNavigationItem->getLink());
+			ErrorHandler::handleError(E_WARNING, "Disabled or non-existing frontend module $sObjectType in use on page $sLink ($this->sLanguageId)", __FILE__, __LINE__, null, debug_backtrace(), true);
+			if($this->bIsPreview) {
+				$oTemplate->replaceIdentifierMultiple("container", "<strong>Disabled or non-existing frontend module $sObjectType in use!</strong>", null, Template::NO_HTML_ESCAPE);
+				return true;
+			}
+			return false;
+		}
 		if($this->bIsPreview) {
 			$oModule = FrontendModule::getModuleInstance($oContentObject->getObjectType(), $oPageContents->getDraft(), $iModuleId);
 		} else {
@@ -153,7 +163,9 @@ class DefaultPageTypeModule extends PageTypeModule {
 				continue;
 			}
 			$sModuleName = Module::getClassNameByTypeAndName(FrontendModule::getType(), $oContentObject->getObjectType());
-			$aResult = array_merge($aResult, $sModuleName::acceptedRequestParams());
+			if(class_exists($sModuleName, true)) {
+				$aResult = array_merge($aResult, $sModuleName::acceptedRequestParams());
+			}
 		}
 		return $aResult;
 	}
@@ -232,7 +244,11 @@ class DefaultPageTypeModule extends PageTypeModule {
 			}
 			if($oLanguageObject !== null) {
 				$sFrontendModuleClass = FrontendModule::getClassNameByName($oObject->getObjectType());
-				$mContentInfo = $sFrontendModuleClass::getContentInfo($oLanguageObject);
+				if(class_exists($sFrontendModuleClass, true)) {
+					$mContentInfo = $sFrontendModuleClass::getContentInfo($oLanguageObject);
+				} else {
+					$mContentInfo = null;
+				}
 				$aLanguageInfo['content_info'] = $mContentInfo;
 			} else {
 				$aLanguageInfo['content_info'] = null;
