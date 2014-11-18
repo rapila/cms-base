@@ -5,7 +5,7 @@
  * @package    propel.generator.model
  */
 class PageQuery extends BasePageQuery {
-	
+
 	public function filterByParentAndName($sName, $mParent, $mCurrentToExclude = null) {
 		if(!($mParent instanceof Page)) {
 			$mParent = PageQuery::create()->findPk($mParent);
@@ -19,7 +19,7 @@ class PageQuery extends BasePageQuery {
 		}
 		return $this;
 	}
-	
+
 	public function descendantsOf($oPage) {
 		// Default implementation of childrenOf assumes $oPage is non-null.
 		if($oPage !== null) {
@@ -35,9 +35,13 @@ class PageQuery extends BasePageQuery {
 		}
 		return parent::childrenOf($oPage);
 	}
-	
+
 	public function active($bIsActive = true) {
 		return $this->filterByIsInactive(!$bIsActive);
+	}
+
+	public function filterByFirstLevelNameOrIdentifier($sName) {
+		return $this->filterByName($sName)->_and()->filterByTreeLevel(1)->_or()->filterByIdentifier($sName);
 	}
 }
 
