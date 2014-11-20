@@ -207,7 +207,7 @@ class DocumentListWidgetModule extends SpecializedListWidgetModule {
 	}
 
 	public function getDocumentCategoryName() {
-		$oDocumentCategory = LinkCategoryQuery::create()->findPk($this->oDelegateProxy->getDocumentCategoryId());
+		$oDocumentCategory = DocumentCategoryQuery::create()->findPk($this->oDelegateProxy->getDocumentCategoryId());
 		if($oDocumentCategory) {
 			return $oDocumentCategory->getName();
 		}
@@ -215,6 +215,13 @@ class DocumentListWidgetModule extends SpecializedListWidgetModule {
 			return StringPeer::getString('wns.documents.without_category');
 		}
 		return $this->oDelegateProxy->getDocumentCategoryId();
+	}
+
+	public function getTagName() {
+		if($iTagId = $this->oDelegateProxy->getListSettings()->getFilterColumnValue('has_tags')) {
+			return TagQuery::create()->filterById($iTagId)->select('Name')->findOne();
+		}
+		return null;
 	}
 
 	public function getCriteria() {
