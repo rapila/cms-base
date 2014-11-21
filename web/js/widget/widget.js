@@ -641,6 +641,27 @@ String.prototype.escapeSelector = function() {
 			if(options.callback_handles_error === null && callback) {
 				options.callback_handles_error = !!callback.resolveWith || callback.length>=2;
 			}
+			function handleResponse(error, result) {
+				if(error) {
+					var exception_handler = Widget.exception_type_handlers[error.exception_type] || Widget.exception_type_handlers.fallback;
+					action.shift();
+					var call_callback = options.callback_handles_error || exception_handler(error, widgetType, widgetOrId, action, callback, options, attributes);
+					if(options.call_callback === null) {
+						options.call_callback = call_callback;
+					}
+				}
+				if(options.call_callback === null || options.call_callback) {
+					if(callback.resolveWith) {
+						if(error) {
+							callback.rejectWith(this, [error]);
+						} else if(result !== undefined) {
+							callback.resolveWith(this, [result]);
+						}
+					} else {
+						callback.call(this, result, error);
+					}
+				}
+			}
 			var ajaxOpts = {
 				url: url,
 				data: attr_str,
@@ -668,47 +689,21 @@ String.prototype.escapeSelector = function() {
 				},
 				success: function(result) {
 					callback = (callback || Widget.defaultJSONHandler);
-					var error = null;
+					var error = undefined;
 					if(result && result.exception) {
 						error = result.exception;
-						var exception_handler = Widget.exception_type_handlers[error.exception_type] || Widget.exception_type_handlers.fallback;
-						action.shift();
-						var call_callback = options.callback_handles_error || exception_handler(error, widgetType, widgetOrId, action, callback, options, attributes);
-						if(options.call_callback === null) {
-							options.call_callback = call_callback;
-						}
 					}
-					if(options.call_callback === null || options.call_callback) {
-						if(callback.resolveWith) {
-							if(error) {
-								callback.rejectWith(this, [error]);
-							} else {
-								callback.resolveWith(this, [result]);
-							}
-						} else {
-							callback.call(this, result, error);
-						}
-					}
+					handleResponse(error, result);
 				},
 				error: function(request, statusCode, error) {
-					var error_object = {message: error, exception_type: statusCode};
-					if(statusCode === 'parsererror') {
+					var error = {message: error, exception_type: statusCode};
+					if(request.responseJSON && request.responseJSON.exception) {
+						error = request.responseJSON.exception;
+					} else if(statusCode === 'parsererror') {
 						var text = jQuery.trim(request.responseText);
 						error_object.message = Widget.parseHTML(text);
 					}
-					var exception_handler = Widget.exception_type_handlers[error_object.exception_type] || Widget.exception_type_handlers.fallback;
-					action.shift();
-					var call_callback = options.callback_handles_error || exception_handler(error_object, widgetType, widgetOrId, action, callback, options, attributes);
-					if(options.call_callback === null) {
-						options.call_callback = call_callback;
-					}
-					if(options.call_callback) {
-						if(callback.resolveWith) {
-							callback.rejectWith(this, [error_object]);
-						} else {
-							callback.call(this, {}, error_object);
-						}
-					}
+					handleResponse(error, undefined);
 				},
 				complete: function() {
 					Widget.end_activity();
