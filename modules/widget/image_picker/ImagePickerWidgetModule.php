@@ -23,7 +23,7 @@ class ImagePickerWidgetModule extends PersistentWidgetModule {
 		}
 		$oCriteria->filterByDocumentKind('image');
 		// always exclude externally managed images
-		$oCriteria->excludeExternallyManaged();
+		$oCriteria->excludeExternallyManaged()->orderByUpdatedAt('desc');
 		return WidgetJsonFileModule::jsonBaseObjects($oCriteria->find(), array('name', 'description', 'id', 'language_id'));
 	}
 
