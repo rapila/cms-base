@@ -134,14 +134,18 @@ th.ui-list-heading
 // Editable-items lists
 ol.ui-editable-items-list
 	list-style-type none
-	margin 3em 0 .5em 0
+	margin 2em -12px 0 -12px
 	padding 0
 	select
 		margin-bottom 0.3em
 	li
 		list-style none
 		padding 0.2em 0
+		padding-left 1em
 		cursor pointer
+		background-color #F6F6F6
+		&:nth-child(2n+2)
+			background-color #E9E9E9
 		&::before
 			content " "
 			background-image url(../admin/theme/images/ui-icons_727272_256x240.png)
@@ -149,7 +153,7 @@ ol.ui-editable-items-list
 			text-indent -99999px
 			overflow hidden
 			background-repeat no-repeat
-			background-position -64px -112px
+			background-position -64px -111px
 			padding-right 0.3em
 			height 16px
 			width 16px
@@ -158,4 +162,5 @@ ol.ui-editable-items-list
 			content none
 			width 0
 			background-image none
+
 
