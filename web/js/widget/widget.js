@@ -460,7 +460,7 @@ String.prototype.escapeSelector = function() {
 			} else {
 				display = Widget.parseHTML('<div class="ui-widget ui-notify search_info"><div class="ui-state-'+highlight+' ui-corner-all"><div class="ui-badge">1</div><div><span class="ui-icon ui-icon-'+severity+'"></span><span class="message"></span></div></div></div>');
 			}
-			display.hide().appendTo(notification_area).data('identifier', options.identifier);
+			display.hide().appendTo(notification_area).data('identifier', options.identifier).addClass(severity);
 
 			var badge = display.find('.ui-badge').hide();
 			var close_button = display.find('.close-handle').hide();
