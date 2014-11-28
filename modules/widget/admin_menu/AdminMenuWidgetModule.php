@@ -117,6 +117,20 @@ class AdminMenuWidgetModule extends PersistentWidgetModule {
 	public function documentationData($sDocumentationName) {
 		return DocumentationProviderTypeModule::dataForPart($sDocumentationName, Session::language());
 	}
+	
+	public function clearCaches() {
+		Cache::clearAllCaches();
+	}
+
+	public function resetUserSettings() {
+		$oUser = Session::user();
+		if($oUser) {
+			$oUser->resetBackendSettings();
+			$oUser->save();
+			return true;
+		}
+		return false;
+	}
 
 	private static function getPageFullPathArray() {
 		$oPage = PageQuery::create()->findPk(Session::getSession()->getAttribute('persistent_page_id'));
