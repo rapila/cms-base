@@ -3,14 +3,14 @@
 class Settings {
 	private $aSettings;
 	private static $INSTANCES = array();
-	
+
 	/**
 	 * __construct()
 	 */
 	private function __construct($oFinder) {
 		require_once("spyc/Spyc.php");
 		$oSpyc = new Spyc();
-		$oSpyc->setting_use_syck_is_possible = true;
+		$oSpyc->setting_use_syck_is_possible = false;
 		$aConfigPaths = $oFinder->find();
 		$this->aSettings = array();
 		foreach($aConfigPaths as $sConfigPath) {
@@ -24,7 +24,7 @@ class Settings {
 			}
 		}
 	}
-		
+
 	/**
 	 * @param string $sSection config.yml section name
 	 * @param string $sKey section var key
@@ -47,15 +47,15 @@ class Settings {
 		}
 		return $aSettingsPart[$sKey];
 	}
-	
+
 	public function &getSettingsArray($sSection = null) {
 		return $this->aSettings;
 	}
-	
+
 	public static function getSetting($sSection, $sKey, $mDefaultValue, $sPath = null) {
 		return self::getInstance($sPath)->_getSetting($sSection, $sKey, $mDefaultValue);
 	}
-	
+
 	public function _getSettingIf($mCondition, $sSection, $sKey, $mDefaultValue) {
 		if($mCondition !== null) {
 			return $mCondition;
@@ -66,7 +66,7 @@ class Settings {
 	public static function getSettingIf($mCondition, $sSection, $sKey, $mDefaultValue, $sPath = null) {
 		return self::getInstance($sPath)->_getSettingIf($mCondition, $sSection, $sKey, $mDefaultValue);
 	}
-	
+
 	public static function createCacheKey($sFileName) {
 		return "$sFileName.yml-".ErrorHandler::getEnvironment();
 	}
@@ -89,7 +89,7 @@ class Settings {
 		}
 		return self::$INSTANCES[$sCacheKey];
 	}
-	
+
 	private static function replaceEnvVars($sInput) {
 		$aSearch = array();
 		$aReplace = array();
@@ -102,5 +102,5 @@ class Settings {
 		}
 		return str_replace($aSearch, $aReplace, $sInput);
 	}
-	
+
 }
