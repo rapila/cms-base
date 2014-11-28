@@ -701,7 +701,7 @@ String.prototype.escapeSelector = function() {
 						error = request.responseJSON.exception;
 					} else if(statusCode === 'parsererror') {
 						var text = jQuery.trim(request.responseText);
-						error_object.message = Widget.parseHTML(text);
+						error.message = Widget.parseHTML(text);
 					}
 					handleResponse(error, undefined);
 				},
