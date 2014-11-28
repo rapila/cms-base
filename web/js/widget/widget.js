@@ -658,7 +658,7 @@ String.prototype.escapeSelector = function() {
 							callback.resolveWith(this, [result]);
 						}
 					} else {
-						callback.call(this, result, error);
+						callback.call(this, result || {}, error);
 					}
 				}
 			}
