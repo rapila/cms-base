@@ -103,7 +103,7 @@ Widget.types.admin_menu = {
 			return {element: this.activity_indicator};
 		},
 
-		menu: function(items) {
+		select: function(items) {
 			var _this = this;
 			var result = {};
 			result.element = jQuery('<select/>');
@@ -215,11 +215,44 @@ Widget.types.admin_menu = {
 			}};
 		},
 
-		action: function() {
-			var element = jQuery('<button/>').addClass('open-action rapila-icon').text('action');
+
+		menu: function(items, icon) {
+			var _this = this;
+			var menu = jQuery('<ul/>');
+			jQuery.each(items, function(i, item) {
+				if(item.type === 'spacer') {
+					return;
+				}
+				var item_contents = _this.predefined_elements[item.type].apply(_this, item.args);
+				if(!item_contents) {
+					return;
+				}
+				menu.append(jQuery('<li/>').text(item_contents.text).data('callback', item_contents.callback));
+			});
+			menu.appendTo(document.body).css({
+				zIndex: 101,
+				position: 'absolute',
+				display: 'table'
+			}).menu({
+				select: function(event, ui) {
+					menu.hide();
+					ui.item.data('callback')(event);
+				}
+			}).hide();
+			var element = jQuery('<button/>').addClass('open-action rapila-icon').text(icon);
 			element.button();
 			return {element: element, callback: function(event) {
-				// do what
+				if(menu.is(':visible')) {
+					menu.hide();
+				} else {
+					menu.css({
+						display: 'table'
+					}).position({
+						my: "right top",
+						at: "center bottom",
+						of: element
+					});
+				}
 			}};
 		},
 
