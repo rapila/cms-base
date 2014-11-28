@@ -13,7 +13,12 @@ admin_menu:
     - logo
     - documentation
     - tag
-    - user
+    -
+      - type.menu # Configure the kind of menu
+      - icon.action # The menu’s icon
+      - user
+      - clear_caches
+      - reset_user_settings
     - logout
 
 rich_text:
