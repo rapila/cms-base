@@ -167,6 +167,10 @@ class DashboardControlWidgetModule extends WidgetModule {
 		return array();
 	}
 
+	public function documentationData($sDocumentationName) {
+		return DocumentationProviderTypeModule::dataForPart($sDocumentationName, Session::language());
+	}
+
 	private static function saveModuleSettings($sUid, $aSettings) {
 		$oUser = Session::getSession()->getUser();
 		$aDashboardConfig = self::dashboardConfig();

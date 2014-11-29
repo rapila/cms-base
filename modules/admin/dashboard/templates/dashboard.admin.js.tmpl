@@ -108,7 +108,18 @@ jQuery(document).ready(function() {
 					skeleton.content.append(element);
 				});
 
-				//Config area
+				// Add help button if a documentation-key is set
+				var header = skeleton.container.find('.dashboard-widget-head');
+				console.log('skeleton', skeleton);
+				if(widget.settings.documentation_key) {
+					dashboard_control.documentationData(widget.settings.documentation_key, function(data) {
+						if(data) {
+							header.append(jQuery('<a/>').addClass('rapila-icon').text('info').attr({href: data.url, title: data.title}));
+						}
+					});
+				}
+
+				// Config area
 				var form = (widget.dashboard_config_form ? widget.dashboard_config_form() : jQuery('<form/>')).unserialize(widget.settings.dashboard);
 				Widget.callStatic('detail', 'clickable_labels_for', form);
 				skeleton.config_form = form;

@@ -51,7 +51,7 @@ var Dashboard = (function($) {
 
 			var thisWidgetSettings = _this.getWidgetSettings(this.id);
 			if (thisWidgetSettings.removable) {
-				$('<a class="remove">✘</a>').mousedown(function (e) {
+				$('<a class="remove rapila-icon">✘</a>').mousedown(function (e) {
 					e.stopPropagation();
 				}).click(function () {
 					var widget = $(this).parents(settings.widgetSelector);
@@ -61,7 +61,7 @@ var Dashboard = (function($) {
 			}
 
 			if (thisWidgetSettings.editable) {
-				var widget_edit = $('<a class="edit">Edit</a>').mousedown(function (e) {
+				var widget_edit = $('<a class="edit rapila-icon">edit</a>').mousedown(function (e) {
 					e.stopPropagation();
 				}).on('click', function toggle() {
 					if(toggle.toggled = !toggle.toggled) {
