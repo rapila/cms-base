@@ -110,11 +110,11 @@ jQuery(document).ready(function() {
 
 				// Add help button if a documentation-key is set
 				var header = skeleton.container.find('.dashboard-widget-head');
-				console.log('skeleton', skeleton);
 				if(widget.settings.documentation_key) {
 					dashboard_control.documentationData(widget.settings.documentation_key, function(data) {
 						if(data) {
-							header.append(jQuery('<a/>').addClass('rapila-icon').text('info').attr({href: data.url, title: data.title}));
+							var button_title = "{{writeParameterizedString=documentation_icon.button_title;title=$\{title\}}}".replace('${title}', data.title);
+							header.append(jQuery('<a/>').addClass('rapila-icon').text('info').attr({href: data.url, title: button_title}));
 						}
 					});
 				}
