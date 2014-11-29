@@ -217,7 +217,7 @@ Widget.types.admin_menu = {
 
 		user: function(user_info) {
 			var _this = this;
-			return {text: user_info.FullName, callback: function() {
+			return {text: user_info.FullName+"{{writeString=wns.admin_menu.my_profile_postfix}}", callback: function() {
 				var _element = this;
 				Widget.create('user_detail', function(widget) {
 					widget.setUserId(user_info.Id);
