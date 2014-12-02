@@ -15,7 +15,7 @@ Widget.types.link_category_detail = {
 			this._element.find(".created_info").text(category_data.CreatedInfo);
 			this._element.find("span[class='detail_id']").text(category_data.Id);
 			this._element.find('div.hide_if_not_saved').show();
-			
+
 			this.detail_widget.set_title(this.detail_widget.settings.title = category_data.Name);
 			this.detail_widget.enable();
 		});
@@ -24,11 +24,11 @@ Widget.types.link_category_detail = {
 	save_callback: function(info) {
 		Widget.fire('rapila-link_category_changed', info);
 	},
-	
+
 	settings: {
 		detail_widget: {
 			title: "{{writeString=wns.link_category.create}}",
-			width: 530
+			width: 550
 		}
 	}
 };

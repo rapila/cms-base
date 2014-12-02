@@ -22,7 +22,7 @@ Widget.types.link_input = {
 			}
 		});
 	},
-	
+
 	value: function(set) {
 		if(arguments.length) {
 			this.settings.initial_value = set;
@@ -30,12 +30,12 @@ Widget.types.link_input = {
 		}
 		return this._element.val();
 	},
-	
+
 	proxy_url: function() {
 		var value = this.value();
 		return "{{writeLink=external_link_proxy;manager=FileManager}}/"+value;
 	},
-	
+
 	settings: {
 		default_value_label: null,
 		initial_value: null

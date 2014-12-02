@@ -10,6 +10,9 @@ class Link extends BaseLink {
 		if($this->getLinkCategory()) {
 			return $this->getLinkCategory()->getName();
 		}
+		if($this->getLinkCategoryId()) {
+			return $this->getLinkCategoryId().' [db error!]';
+		}
 		return null;
 	}
 
