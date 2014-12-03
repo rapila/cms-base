@@ -6,7 +6,7 @@
 class LinkUtil {
 
 	private static $CACHE_CONTROL_HEADERS_SENT;
-	
+
 	const DATE_RFC2616 = 'D, d M Y H:i:s \G\M\T';
 
 	public static function redirectToManager($mPath="", $mManager=null, $aParameters=array(), $bIncludeLanguage=null) {
@@ -63,7 +63,7 @@ class LinkUtil {
 		$sRedirectString = "Location: $sLocation";
 		header($sRedirectString);exit;
 	}
-	
+
 	public static function sendHTTPStatusCode($iCode, $sName) {
 		$sProtocol = isset($_SERVER["SERVER_PROTOCOL"]) ? $_SERVER["SERVER_PROTOCOL"] : 'HTTP/1.1';
 		header("$sProtocol $iCode $sName", true, $iCode);
@@ -119,7 +119,7 @@ class LinkUtil {
 	* Constructs an absolute link given a host-absolute location (starts with a slash)
 	* @param string $sLocation the host-absolute location
 	* @param string $sHost the host name to link to. will be inferred from the HTTP Host or the host name configured in domain_holder/domain. Precedence is given to the former unless the linking/prefer_configured_domain setting is true
-	* @param string $sProtocol whether or not to link to the HTTPS version. 'default' reads the linking/ssl_in_absolute_links setting. 'auto' will use whatever is currently being used to access the site. 
+	* @param string $sProtocol whether or not to link to the HTTPS version. 'default' reads the linking/ssl_in_absolute_links setting. 'auto' will use whatever is currently being used to access the site.
 	*/
 	public static function absoluteLink($sLocation, $sHost = null, $sProtocol = 'default', $bAbsoluteLinkMayBeOmitted = false) {
 		if($sProtocol === 'default') {
@@ -146,7 +146,7 @@ class LinkUtil {
 		}
 		return "$sProtocol$sHost$sLocation";
 	}
-	
+
 	public static function isSSL() {
 		// http://stackoverflow.com/questions/7304182/detecting-ssl-with-php
 		if(isset($_SERVER['HTTPS'])) {
@@ -180,7 +180,7 @@ class LinkUtil {
 		}
 		return self::link($aPath, null, $aParameters, false);
 	}
-	
+
 	public static function getRequestedParameters($aOverrideParameters = array()) {
 		foreach(array_diff_assoc($_REQUEST, $_COOKIE) as $sName => $sValue) {
 			if($sName === 'path') {
@@ -200,7 +200,7 @@ class LinkUtil {
 
 		$mManager = Manager::getManagerClassNormalized($mManager);
 		$sPrefix = Manager::getPrefixForManager($mManager);
-		
+
 		if($mLanguage === true || $mLanguage === false) {
 			$bIncludeLanguage = $mLanguage;
 			$mLanguage = null;
@@ -227,16 +227,16 @@ class LinkUtil {
 				$mPath[$iKey] = rawurlencode($sValue);
 			}
 		}
-		
+
 		if($sPrefix !== null && $sPrefix !== "") {
 			$sPrefix .= "/";
 		} else {
 			$sPrefix = '';
 		}
-		
+
 		return MAIN_DIR_FE_PHP.$sPrefix.implode('/', $mPath).self::prepareLinkParameters($aParameters);
 	}
-	
+
 	/**
 	* @todo: check use of http_build_query()
 	*/
@@ -272,7 +272,7 @@ class LinkUtil {
 	public static function getDomainHolderEmail($sDefaultSender = 'info') {
 		return Settings::getSetting('domain_holder', 'email', $sDefaultSender.'@'.self::getHostName());
 	}
-	
+
 	public static function getUrlWithProtocolIfNotSet($sUrl) {
 		if($sUrl != '') {
 			return self::getPrefixIfNotSet($sUrl);
@@ -290,5 +290,5 @@ class LinkUtil {
 		}
 		return $sDefaultPrefix.$sString;
 	}
-	
+
 }
