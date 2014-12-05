@@ -244,7 +244,6 @@ class SpecialTemplateIdentifierActions {
 
 	public function addResourceInclude($oIdentifier) {
 		$oResourceIncluder = $oIdentifier->hasParameter('name') ? ResourceIncluder::namedIncluder($oIdentifier->getParameter('name')) : ResourceIncluder::defaultIncluder();
-		ErrorHandler::log('addResourceInclude', $oIdentifier);
 		$oResourceIncluder->addResourceFromTemplateIdentifier($oIdentifier);
 		return null;
 	}
