@@ -57,6 +57,7 @@ class DocumentPeer extends BaseDocumentPeer {
 	public static function addSearchToCriteria($sSearch, $oCriteria) {
 		$oSearchCriterion = $oCriteria->getNewCriterion(self::NAME, "%$sSearch%", Criteria::LIKE);
 		$oSearchCriterion->addOr($oCriteria->getNewCriterion(self::DESCRIPTION, "%$sSearch%", Criteria::LIKE));
+		$oSearchCriterion->addOr($oCriteria->getNewCriterion(self::ID, $sSearch, Criteria::EQUAL));
 		$oCriteria->add($oSearchCriterion);
 	}
 

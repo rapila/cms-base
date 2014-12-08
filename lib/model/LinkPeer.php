@@ -2,24 +2,25 @@
 
 	// include base peer class
 	require_once 'model/om/BaseLinkPeer.php';
-	
+
 	// include object class
 	include_once 'model/Link.php';
 
 
 /**
  * @package model
- */ 
+ */
 class LinkPeer extends BaseLinkPeer {
-		
+
 	public static function addSearchToCriteria($sSearch, $oCriteria) {
 		$oSearchCriterion = $oCriteria->getNewCriterion(self::NAME, "%$sSearch%", Criteria::LIKE);
 		$oSearchCriterion->addOr($oCriteria->getNewCriterion(self::DESCRIPTION, "%$sSearch%", Criteria::LIKE));
 		$oSearchCriterion->addOr($oCriteria->getNewCriterion(self::URL, "%$sSearch%", Criteria::LIKE));
+		$oSearchCriterion->addOr($oCriteria->getNewCriterion(self::ID, $sSearch, Criteria::EQUAL));
 		$oCriteria->add($oSearchCriterion);
 	}
 
-	/** 
+	/**
 	 * getLinksByTagName()
 	 * @param string|array $mTagName The name(s) of the tag(s) for which links are to be found $mTagName
 	 * @param boolean $bOrderByLinkName optional sortorder
@@ -39,7 +40,7 @@ class LinkPeer extends BaseLinkPeer {
 		}
 		return self::doSelect($oCriteria);
 	}
-		
+
 	public static function mayOperateOnOwn($oUser, $mObject, $sOperation) {
 		$bResult = parent::mayOperateOnOwn($oUser, $mObject, $sOperation);
 		///When changing the sort or the category, I have to have the rights to said category as well
