@@ -14,6 +14,7 @@ class DocumentListFrontendModule extends DynamicFrontendModule {
 		try {
 			$oListTemplate = new Template($aOptions['list_template']);
 			$oItemPrototype = new Template($aOptions['list_template'].self::LIST_ITEM_POSTFIX);
+
 			foreach(self::listQuery($aOptions)->find() as $i => $oDocument) {
 				$oItemTemplate = clone $oItemPrototype;
 				$oDocument->renderListItem($oItemTemplate);
@@ -40,7 +41,7 @@ class DocumentListFrontendModule extends DynamicFrontendModule {
 
 		// Tags
 		$aTags = isset($aOptions['tags']) ? (is_array($aOptions['tags']) ? $aOptions['tags'] : array($aOptions['tags'])) : array();
-		$bHasTags = count($aTags) > 0;
+		$bHasTags = count($aTags) > 0 && $aTags[0] !== null;
 		if($bHasTags) {
 			$oQuery->filterByTagId($aTags);
 		}
