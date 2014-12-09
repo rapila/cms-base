@@ -267,7 +267,7 @@ class Template {
 
 	/**
 	* @return array[string]
-	*/ 
+	*/
 	public function listValuesByIdentifier($sType) {
 		$aIdentifiers = $this->identifiersMatching($sType, self::$ANY_VALUE);
 		$aResult = array();
@@ -316,7 +316,7 @@ class Template {
 		}
 		return $this->aAllIdentifiers;
 	}
-	
+
 	private function invalidateIdentifierList() {
 		$this->aAllIdentifiers = null;
 	}
@@ -447,7 +447,7 @@ class Template {
 		} else if (is_bool($mText)) {
 			$aText[] = $mText ? "true" : "false";
 		}
-		foreach($aText as $iKey => $sText) {			
+		foreach($aText as $iKey => $sText) {
 			if($aText[$iKey] instanceof TemplateIdentifier) {
 				continue;
 			}
@@ -506,7 +506,7 @@ class Template {
 		}
 		$this->renderDirectOutput();
 	}
-	
+
 	private function replaceIdentifierImpl($mIdentifier, $mText, $sValue, $iFlags, $mFunction, $bMultiple=false) {
 		$aText = null;
 		if($this->replaceIdentifierRecursive($mIdentifier, $mText, $sValue, $iFlags, $mFunction)) {
@@ -529,7 +529,7 @@ class Template {
 			$this->replaceConditionals(true);
 		}
 	}
-	
+
 	private function replaceIdentifierRecursive($sIdentifier, $oContent, $sIdentifierValue, $iFlags, $mFunction) {
 		if($sIdentifier instanceof TemplateIdentifier) {
 			return false;
@@ -546,7 +546,7 @@ class Template {
 		}
 		return true;
 	}
-	
+
 	private function replaceOneIdentifier(TemplateIdentifier $oIdentifier, $mText, $iFlags, $mFunction) {
 		$iIdentifierFlags = $oIdentifier->iFlags | $iFlags;
 		$aText = array();
@@ -559,7 +559,7 @@ class Template {
 		$aText = $this->getTextForReplaceIdentifier($mText, $iIdentifierFlags);
 		$this->replaceAt($oIdentifier, $aText);
 	}
-	
+
 	private function doIdentifierValueReplacement($mIdentifier, $sIdentifierValue, $mText, $iFlags, $mFunction, $bMultiple=false) {
 		if(($iFlags&self::NO_IDENTIFIER_VALUE_REPLACEMENT) === self::NO_IDENTIFIER_VALUE_REPLACEMENT) {
 			return false;
@@ -599,7 +599,7 @@ class Template {
 		}
 		return $bHasDoneIdentifierValueReplacement;
 	}
-	
+
 	/**
 	* Replaces one or more identifiers in the template with the specified value (or the value from the specified callback) if the name and the value of the identifier matches the arguments.
 	* In contrast to a simple replaceIdentifier call, calling this will preserve the identifiers at their locations for future replacement (after the current replacement).
@@ -904,7 +904,7 @@ class Template {
 	/**
 	* Calls $this->replaceSpecialIdentifiers(false);
 	* @return void
-	*/	 
+	*/
 	private function replaceSpecialIdentifiersOnStart() {
 		$this->replaceSpecialIdentifiers(false);
 	}
@@ -912,7 +912,7 @@ class Template {
 	/**
 	* Calls $this->replaceSpecialIdentifiers(true);
 	* @return void
-	*/	 
+	*/
 	private function replaceSpecialIdentifiersOnEnd() {
 		$this->replaceSpecialIdentifiers(true);
 	}
