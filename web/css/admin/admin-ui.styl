@@ -394,19 +394,25 @@ td span.remove_entry
 	border-radius 4px
 	box-shadow 0px 0px 7px 3px rgba(black, 0.3)
 	background-image linear-gradient(top, rgba(black, 0.15), rgba(black, 0.05))
-	.ui-menu-item
-		border none
-		padding 0 2px
-		line-height 1.5
+	li.ui-menu-item
+		padding 0
+		margin 0
 		&:not(:last-child)
 			border-bottom 1px dotted #999
-		&.ui-state-focus
+		a.ui-menu-item
+			padding 2px 5px
+			margin 0
+			box-sizing border-box
 			border none
-			color white
-			background-color transparent
-			background-image linear-gradient(top, rgba(black, 0.5), rgba(black, 0.3))
-			&:not(:last-child)
-				border-bottom 1px dotted white
+			line-height 1.5
+			border-radius 0
+			&.ui-state-focus
+				border none
+				color white
+				background-color transparent
+				background-image linear-gradient(top, rgba(black, 0.5), rgba(black, 0.3))
+				&:not(:last-child)
+					border-bottom 1px dotted white
 
 .ui-progressbar
 	margin-top 0.3em
