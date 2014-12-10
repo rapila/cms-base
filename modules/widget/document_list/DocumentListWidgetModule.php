@@ -25,7 +25,7 @@ class DocumentListWidgetModule extends SpecializedListWidgetModule {
 	}
 
 	public function getColumnIdentifiers() {
-		$aResult = array('id', 'name_truncated', 'document_kind', 'extension', 'file_size');
+		$aResult = array('id', 'name_truncated', 'extension', 'file_size');
 		if($this->oLanguageFilter !== null) {
 			$aResult[] = 'language_id';
 		}
