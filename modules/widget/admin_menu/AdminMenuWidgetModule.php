@@ -110,8 +110,7 @@ class AdminMenuWidgetModule extends PersistentWidgetModule {
 	}
 
 	public function documentationExists($sDocumentationName) {
-		$aMetadata = DocumentationProviderTypeModule::dataForPart($sDocumentationName, Session::language());
-		return $aMetadata !== null;
+		return DocumentationProviderTypeModule::dataForPart($sDocumentationName, Session::language()) !== null;
 	}
 
 	public function documentationData($sDocumentationName) {
