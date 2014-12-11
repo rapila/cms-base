@@ -101,9 +101,9 @@ class Document extends BaseDocument {
 
 	public function getPreviewForAdminList($iSize = 190) {
 		if($this->isImage()) {
-			return $this->getPreview($iSize = 190);
+			return $this->getPreview($iSize);
 		}
-		return '<div><image src="'.LinkUtil::link(array('document_type_preview', $this->getDocumentTypeId()), 'FileManager', array('size' => $iSize)).'"/></div>';
+		return '<div><img src="'.LinkUtil::link(array('document_type_preview', $this->getDocumentTypeId()), 'FileManager', array('size' => $iSize)).'"/></div>';
 	}
 
 	public function getPreview($iSize = 190, $bRefresh = true, $bMayReturnTemplate = false) {
