@@ -103,7 +103,7 @@ class Document extends BaseDocument {
 		if($this->isImage()) {
 			return $this->getPreview($iSize = 190);
 		}
-		return '<div class="ui-icon ui-icon-'.$this->getDocumentType()->getDocumentKind().'"> </div>';
+		return '<div><image src="'.LinkUtil::link(array('document_type_preview', $this->getDocumentTypeId()), 'FileManager', array('size' => $iSize)).'"/></div>';
 	}
 
 	public function getPreview($iSize = 190, $bRefresh = true, $bMayReturnTemplate = false) {
