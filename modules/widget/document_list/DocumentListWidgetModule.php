@@ -56,7 +56,7 @@ class DocumentListWidgetModule extends SpecializedListWidgetModule {
 				$aResult['heading'] = '';
 				$aResult['heading_filter'] = array('document_kind_input', $this->oDocumentKindFilter->getSessionKey());
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_HTML;
-				$aResult['field_name'] = 'preview';
+				$aResult['field_name'] = 'preview_for_admin_list';
 				$aResult['is_sortable'] = false;
 				break;
 			case 'language_id':

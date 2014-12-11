@@ -99,6 +99,13 @@ class Document extends BaseDocument {
 		return null;
 	}
 
+	public function getPreviewForAdminList($iSize = 190) {
+		if($this->isImage()) {
+			return $this->getPreview($iSize = 190);
+		}
+		return '<div class="ui-icon ui-icon-'.$this->getDocumentType()->getDocumentKind().'"> </div>';
+	}
+
 	public function getPreview($iSize = 190, $bRefresh = true, $bMayReturnTemplate = false) {
 		$aOptions = array();
 		$aOptions['document_id'] = $this->getId();
