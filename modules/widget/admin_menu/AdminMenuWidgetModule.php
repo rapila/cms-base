@@ -117,7 +117,7 @@ class AdminMenuWidgetModule extends PersistentWidgetModule {
 	public function documentationData($sDocumentationName) {
 		return DocumentationProviderTypeModule::dataForPart($sDocumentationName, Session::language());
 	}
-	
+
 	public function clearCaches() {
 		Cache::clearAllCaches();
 	}
