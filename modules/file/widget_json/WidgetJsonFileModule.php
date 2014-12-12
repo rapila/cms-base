@@ -118,8 +118,10 @@ class WidgetJsonFileModule extends FileModule {
 			return;
 		}
 		$oUser = Session::getSession()->getUser();
-		if(Module::isModuleAllowed('widget', $this->sWidgetType, $oUser)) {
-			return;
+		if($oUser !== null) {
+			if(Module::isModuleAllowed('widget', $this->sWidgetType, $oUser)) {
+				return;
+			}
 		}
 		throw new LocalizedException('wns.file.widget_json.needs_login', null, 'needs_login');
 	}
