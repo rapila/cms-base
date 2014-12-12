@@ -10,7 +10,7 @@ class AdminManager extends Manager {
 
 	private $sModuleName;
 	private $oModule;
-	private $oResourceIncluder;
+	protected $oResourceIncluder;
 
 	public function __construct() {
 		parent::__construct();
