@@ -4,15 +4,18 @@ class WidgetTestManager extends AdminManager {
 	public function renderAdmin(Template $oTemplate = null) {
 		$oTemplate->replaceIdentifier("title", "Widget Test" . ($this->getModuleName() ? ': ' . WidgetModule::getDisplayNameByName($this->getModuleName()) : ''));
 		$this->listInSidebar($oTemplate);
-		$this->content($oTemplate);
-		$this->oResourceIncluder->addCustomJs(new Template('
-jQuery(function() {
-	var widget_element = jQuery("#admin_main > *[data-widget-type]");
-	widget_element.ensureWidget(function(widget) {
-		window.TestWidget = widget;
+		$sWidgetName = $this->getModuleName();
+		if($sWidgetName) {
+			$this->content($oTemplate, $sWidgetName);
+			$this->oResourceIncluder->addCustomJs(new Template('
+	jQuery(function() {
+		var widget_element = jQuery("#admin_main > *[data-widget-type]");
+		widget_element.ensureWidget(function(widget) {
+			window.TestWidget = widget;
+		});
 	});
-});
-', null, true));
+	', null, true));
+		}
 	}
 
 	private function listInSidebar(Template $oTemplate) {
@@ -27,8 +30,7 @@ jQuery(function() {
 		$oTemplate->replaceIdentifierMultiple('sidebar_content', $oLinks);
 	}
 	
-	private function content(Template $oTemplate) {
-		$sWidgetName = $this->getModuleName();
+	private function content(Template $oTemplate, $sWidgetName) {
 		$sWidgetClass = WidgetModule::getClassNameByName($sWidgetName);
 		if(is_callable(array($sWidgetClass, 'testWidget'))) {
 			$oWidget = $sWidgetClass::testWidget();
