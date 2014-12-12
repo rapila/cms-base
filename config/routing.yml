@@ -1,0 +1,11 @@
+routes:
+  content:      'FrontendManager'
+  get_file:     'FileManager'
+  get_ajax:     'FileManager'
+  cms_login:    'LoginManager'
+  goto:         'GotoManager'
+  admin:        'AdminManager'
+  preview:      'PreviewManager'
+
+defaults:
+  empty_route: 'FrontendManager'

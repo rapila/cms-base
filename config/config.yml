@@ -21,17 +21,6 @@ linking:
   # Whether to always print absolute links (true) or only when really necessary (false)
   always_link_absolutely: false
 
-routing:
-  routes:
-    content:      'FrontendManager'
-    get_file:     'FileManager'
-    get_ajax:     'FileManager'
-    cms_login:    'LoginManager'
-    goto:         'GotoManager'
-    admin:        'AdminManager'
-    preview:      'PreviewManager'
-  default: 'content'
-
 # give the page name as value here (be sure not to have allocated the name to more than one page)
 error_pages:
   not_found: "error-404"

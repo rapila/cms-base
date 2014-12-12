@@ -9,6 +9,7 @@ abstract class Manager {
 
 	private static $USED_PATH = array();
 	private static $ORIGINAL_PATH = null;
+	private static $ROUTE_CONFIG = null;
 
 	protected function __construct() {
 		if(StringUtil::endsWith(self::getRequestedPath(), "/")) {
@@ -59,30 +60,45 @@ abstract class Manager {
 	public static function getOriginalPath() {
 		return self::$ORIGINAL_PATH;
 	}
+	
+	public static function routeConfig() {
+		if(self::$ROUTE_CONFIG === null) {
+			self::$ROUTE_CONFIG = new stdClass();
+			self::$ROUTE_CONFIG->default = Settings::getSetting('defaults', 'empty_route', 'content', 'routing');
+			self::$ROUTE_CONFIG->routes = array();
+			$aRoutes = Settings::getSetting('routes', null, array(), 'routing');
+			foreach($aRoutes as $sRouteName => $sClassName) {
+				// Allow overrides to remove routes
+				if($sClassName === null) {
+					continue;
+				}
+				self::$ROUTE_CONFIG->routes[$sRouteName] = $sClassName;
+			}
+		}
+		return self::$ROUTE_CONFIG;
+	}
 
 	public static function getPrefixForManager($sManagerName) {
 		if($sManagerName instanceof Manager) {
 			$sManagerName = get_class($sManagerName);
 		}
-		$sDefaultRoute = Settings::getSetting('routing', "default", "content");
-		$aRoutes = Settings::getSetting('routing', "routes", array());
-		foreach($aRoutes as $sRouteName => $sClassName) {
+		$oRouteConfig = self::routeConfig();
+		if($oRouteConfig->default === $sManagerName) {
+			return null;
+		}
+		foreach($oRouteConfig->routes as $sRouteName => $sClassName) {
 			if($sClassName == $sManagerName) {
-				if($sDefaultRoute === $sRouteName) {
-					return null;
-				}
 				return $sRouteName;
 			}
 		}
-		return null;
+		throw new LocalizedException("wns.route_missing", array('class' => $sManagerName));
 	}
 
 	public static function getManager() {
 		self::$ORIGINAL_PATH = self::getRequestedPath();
 
-		$sDefaultRoute = Settings::getSetting('routing', "default", "content");
-		$aRoutes = Settings::getSetting('routing', "routes", array());
-		foreach($aRoutes as $sRouteName => $sClassName) {
+		$oRouteConfig = self::routeConfig();
+		foreach($oRouteConfig->routes as $sRouteName => $sClassName) {
 			if(StringUtil::startsWith(self::getRequestedPath(), $sRouteName.'/') || (StringUtil::endsWith(self::getRequestedPath(), $sRouteName) && StringUtil::startsWith(self::getRequestedPath(), $sRouteName))) {
 				self::setRequestedPath(substr(self::getRequestedPath(), strlen($sRouteName.'/')));
 				if(self::getRequestedPath() === false) {
@@ -92,7 +108,7 @@ abstract class Manager {
 				return self::$CURRENT_MANAGER;
 			}
 		}
-		$sClassName = $aRoutes[$sDefaultRoute];
+		$sClassName = $oRouteConfig->default;
 		new $sClassName();
 		return self::$CURRENT_MANAGER;
 	}
