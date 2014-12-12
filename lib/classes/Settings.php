@@ -14,12 +14,16 @@ class Settings {
 		$aConfigPaths = $oFinder->find();
 		$this->aSettings = array();
 		foreach($aConfigPaths as $sConfigPath) {
+			// Consolidate sections from all files
 			foreach($oSpyc->load(self::replaceEnvVars(file_get_contents($sConfigPath))) as $sSection => $aSection) {
-				// note: empty sections in config.yml are no arrays and throw an exception
+				// Ignore empty sections or non-array sections
+				if(!is_array($aSection)) {
+					continue;
+				}
+				if(!isset($this->aSettings[$sSection])) {
+					$this->aSettings[$sSection] = array();
+				}
 				foreach($aSection as $sKey => $mValue) {
-					if(!isset($this->aSettings[$sSection])) {
-						$this->aSettings[$sSection] = array();
-					}
 					$this->aSettings[$sSection][$sKey] = $mValue;
 				}
 			}
