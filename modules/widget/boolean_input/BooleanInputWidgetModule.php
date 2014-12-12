@@ -7,7 +7,7 @@ class BooleanInputWidgetModule extends PersistentWidgetModule {
 	
 	private $bIsTrue;
 	
-	public function __construct($sSessionKey, $sDefaultSelection = true) {
+	public function __construct($sSessionKey = null, $sDefaultSelection = true) {
 		parent::__construct($sSessionKey);
 		$this->bIsTrue = $sDefaultSelection;
 	}
