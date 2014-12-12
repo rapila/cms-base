@@ -15,6 +15,7 @@ class Settings {
 		$this->aSettings = array();
 		foreach($aConfigPaths as $sConfigPath) {
 			foreach($oSpyc->load(self::replaceEnvVars(file_get_contents($sConfigPath))) as $sSection => $aSection) {
+				// note: empty sections in config.yml are no arrays and throw an exception
 				foreach($aSection as $sKey => $mValue) {
 					if(!isset($this->aSettings[$sSection])) {
 						$this->aSettings[$sSection] = array();
