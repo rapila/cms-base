@@ -16,9 +16,6 @@ class AdminManager extends Manager {
 		parent::__construct();
 		SanityCheck::basicCheck();
 		$this->sModuleName = Manager::usePath();
-		if($this->sModuleName === null) {
-			$this->sModuleName = self::DEFAULT_MODULE;
-		}
 		$this->oResourceIncluder = ResourceIncluder::defaultIncluder();
 		if(isset($_REQUEST[self::CONTENT_LANGUAGE_SESSION_KEY])) {
 			self::setContentLanguage($_REQUEST[self::CONTENT_LANGUAGE_SESSION_KEY]);
@@ -128,12 +125,15 @@ class AdminManager extends Manager {
 			LoginWindowWidgetModule::includeResources();
 		} else {
 			try {
+				if($this->sModuleName === null) {
+					$this->sModuleName = self::DEFAULT_MODULE;
+				}
 				$this->oModule = AdminModule::getModuleInstance($this->sModuleName);
 			} catch (Exception $e) {
-				LinkUtil::redirect(LinkUtil::link(array('dashboard', 'module_not_found', $this->sModuleName)));
+				LinkUtil::redirect(LinkUtil::link(array(self::DEFAULT_MODULE, 'module_not_found', $this->sModuleName)));
 			}
 			if(!Module::isModuleAllowed('admin', $this->sModuleName, Session::getSession()->getUser())) {
-				LinkUtil::redirect(LinkUtil::link(array('dashboard', 'module_denied', $this->sModuleName)));
+				LinkUtil::redirect(LinkUtil::link(array(self::DEFAULT_MODULE, 'module_denied', $this->sModuleName)));
 			}
 			$oTemplate = new Template('main', array(DIRNAME_TEMPLATES, 'admin'), false, true);
 			$this->doAdmin($oTemplate);
@@ -145,7 +145,7 @@ class AdminManager extends Manager {
 		$oTemplate->render();
 	}
 
-	private function preRender() {
+	protected function preRender() {
 		$oConstants = new Template('constants.js', array(DIRNAME_TEMPLATES, 'admin'));
 		$oConstants->replaceIdentifier('current_admin_module', $this->sModuleName);
 		$this->oResourceIncluder->addJavaScriptLibrary('jquery', self::JQUERY_VERSION);
