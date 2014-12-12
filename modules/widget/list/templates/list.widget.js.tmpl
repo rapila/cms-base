@@ -492,7 +492,14 @@ Widget.types.list = {
 	 * Counts how many rows are currently loaded.
 	 */
 	current_row_count: function() {
-		return this.all_rows().length;
+		return this.number_of_rows;
+	},
+
+	/**
+	 * Counts how many rows are in the list in total.
+	 */
+	row_count: function() {
+		return this.total_number_of_rows;
 	},
 
 	/**
@@ -533,6 +540,7 @@ Widget.types.list = {
 		// List uses paging
 		if(this.settings.page_size) {
 			this.numberOfRows(function(rows) {
+				this.total_number_of_rows = rows;
 				this.number_of_pages = Math.ceil(rows/this.settings.page_size);
 				this.current_page = Math.max(0, Math.min(this.number_of_pages-1, this.current_page));
 				var start = this.current_page * this.settings.page_size;
@@ -541,10 +549,15 @@ Widget.types.list = {
 			});
 		} else {
 			// Load the full list
+			this.number_of_pages = 1;
 			this.completeList(loaded);
 		}
 
 		function loaded(list) {
+			this.number_of_rows = list.length;
+			if(!this.settings.page_size) {
+				this.total_number_of_rows = list.length;
+			}
 			if(list.length > 0) {
 				jQuery.each(list, function(i, row) {
 					this.insert_row(row);
@@ -589,19 +602,29 @@ Widget.types.list = {
 		return true;
 	},
 	
-	goto_page: function(page) {
-		if(this.settings.page_size) {
-			this.current_page = page;
-			this.reload();
+	page: function(page) {
+		if(arguments.length) {
+			// Setter
+			if(this.settings.page_size) {
+				this.current_page = page;
+				this.reload();
+			}
+		} else {
+			// Getter
+			return this.current_page;
 		}
 	},
 	
+	page_count: function() {
+		return this.number_of_pages;
+	},
+	
 	previous_page: function() {
-		this.goto_page(this.current_page - 1);
+		this.page(this.current_page - 1);
 	},
 	
 	next_page: function() {
-		this.goto_page(this.current_page + 1);
+		this.page(this.current_page + 1);
 	},
 	
 	set_page_size: function(size) {
@@ -784,8 +807,11 @@ Widget.types.list = {
   /**
 	* Internal stores for paging state
 	*/
-	number_of_pages: null,
+	number_of_pages: 1,
 	current_page: 0,
+	
+	number_of_rows: 0,
+	total_number_of_rows: 0,
 
 	/**
 	 * Handler methdo for specific column types. Each of these takes the cell element as well as data and metadata and updates the cell to match the data given.
