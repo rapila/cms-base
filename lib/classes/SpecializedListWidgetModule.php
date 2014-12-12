@@ -14,6 +14,10 @@ abstract class SpecializedListWidgetModule extends WidgetModule {
 	public function getListWidget() {
 		return $this->oListWidget;
 	}
+	
+	public function addPaging($iPageSize = 20) {
+		$this->oListWidget->setSetting('page_size', $iPageSize);
+	}
 
 	public function getSessionKey() {
 		return $this->oListWidget->getSessionKey();
