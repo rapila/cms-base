@@ -48,7 +48,7 @@ jQuery(document).ready(function() {
 			if(content_list.setSearch(search)) {
 				content_list.reload();
 			}
-		}).add_row_count_info_for_list(content_list).add_button('toggle-thumbnail-view rapila-icon', function(event, item) {
+		}).add_row_count_info_for_list(content_list).add_pager_for_list(content_list).add_button('toggle-thumbnail-view rapila-icon', function(event, item) {
 			if(item.text() === 'thumbnails') {
 				// Switch to thumbnail view
 				item.text('list');
