@@ -78,6 +78,8 @@ Widget.types.list = {
 		}
 
 		this.reload(true);
+
+		// Specialized list widget handling
 		if(this._element.data('listWidgetType')) {
 			var type = this._element.data('listWidgetType');
 			var info = Widget.loadInfo(type);
@@ -527,7 +529,22 @@ Widget.types.list = {
 		} else {
 			this.update_sort();
 		}
-		this.completeList(function(list) {
+
+		// List uses paging
+		if(this.settings.page_size) {
+			this.numberOfRows(function(rows) {
+				this.number_of_pages = Math.ceil(rows/this.settings.page_size);
+				this.current_page = Math.max(0, Math.min(this.number_of_pages-1, this.current_page));
+				var start = this.current_page * this.settings.page_size;
+				// Load the list between start and start + page_size
+				this.partialList(start, this.settings.page_size, loaded);
+			});
+		} else {
+			// Load the full list
+			this.completeList(loaded);
+		}
+
+		function loaded(list) {
 			if(list.length > 0) {
 				jQuery.each(list, function(i, row) {
 					this.insert_row(row);
@@ -555,7 +572,42 @@ Widget.types.list = {
 				this.fire('loaded', list.length);
 			}
 			this.fire('reloaded', list.length);
-		});
+		}
+	},
+	
+	is_first_page: function() {
+		if(this.settings.page_size) {
+			return this.current_page === 0;
+		}
+		return true;
+	},
+	
+	is_last_page: function() {
+		if(this.settings.page_size) {
+			return this.current_page === this.number_of_pages - 1;
+		}
+		return true;
+	},
+	
+	goto_page: function(page) {
+		if(this.settings.page_size) {
+			this.current_page = page;
+			this.reload();
+		}
+	},
+	
+	previous_page: function() {
+		this.goto_page(this.current_page - 1);
+	},
+	
+	next_page: function() {
+		this.goto_page(this.current_page + 1);
+	},
+	
+	set_page_size: function(size) {
+		this.settings.page_size = size;
+		this.current_page = 0;
+		this.reload();
 	},
 
 	/**
@@ -729,6 +781,12 @@ Widget.types.list = {
 	 */
 	schema: null,
 
+  /**
+	* Internal stores for paging state
+	*/
+	number_of_pages: null,
+	current_page: 0,
+
 	/**
 	 * Handler methdo for specific column types. Each of these takes the cell element as well as data and metadata and updates the cell to match the data given.
 	 */
@@ -832,6 +890,7 @@ Widget.types.list = {
 
 	settings: {
 		row_hover: true,
+		page_size: null,
 		handle_removed_tags: true,
 		persist_active_rows: true,
 		// false (do not allow row activation on click), "toggle", "activate"
