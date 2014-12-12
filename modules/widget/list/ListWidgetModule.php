@@ -147,6 +147,11 @@ class ListWidgetModule extends PersistentWidgetModule {
 	public function getNumberOfRows() {
 		return $this->oDelegate->numberOfRows();
 	}
+
+	// Async version of getNumberOfRows
+	public function numberOfRows() {
+		return $this->oDelegate->numberOfRows();
+	}
 	
 	public function getOrderColumnSort() {
 		if(method_exists($this->oDelegate, 'getOrderColumnSort')) {
