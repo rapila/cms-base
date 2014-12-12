@@ -5,6 +5,14 @@ class WidgetTestManager extends AdminManager {
 		$oTemplate->replaceIdentifier("title", "Widget Test" . ($this->getModuleName() ? ': ' . WidgetModule::getDisplayNameByName($this->getModuleName()) : ''));
 		$this->listInSidebar($oTemplate);
 		$this->content($oTemplate);
+		$this->oResourceIncluder->addCustomJs(new Template('
+jQuery(function() {
+	var widget_element = jQuery("#admin_main > *[data-widget-type]");
+	widget_element.ensureWidget(function(widget) {
+		window.TestWidget = widget;
+	});
+});
+', null, true));
 	}
 
 	private function listInSidebar(Template $oTemplate) {
