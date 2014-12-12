@@ -124,25 +124,29 @@ class AdminManager extends Manager {
 			$oLoginWindowWidget = new LoginWindowWidgetModule();
 			LoginWindowWidgetModule::includeResources();
 		} else {
-			try {
-				if($this->sModuleName === null) {
-					$this->sModuleName = self::DEFAULT_MODULE;
-				}
-				$this->oModule = AdminModule::getModuleInstance($this->sModuleName);
-			} catch (Exception $e) {
-				LinkUtil::redirect(LinkUtil::link(array(self::DEFAULT_MODULE, 'module_not_found', $this->sModuleName)));
-			}
-			if(!Module::isModuleAllowed('admin', $this->sModuleName, Session::getSession()->getUser())) {
-				LinkUtil::redirect(LinkUtil::link(array(self::DEFAULT_MODULE, 'module_denied', $this->sModuleName)));
-			}
 			$oTemplate = new Template('main', array(DIRNAME_TEMPLATES, 'admin'), false, true);
-			$this->doAdmin($oTemplate);
+			$this->renderAdmin($oTemplate);
 		}
 		$oTemplate->replaceIdentifier("title", Settings::getSetting('admin', 'title', 'no title set in config/config.yml for admin'), null, Template::LEAVE_IDENTIFIERS);
 		$oTemplate->replaceIdentifier('module_name', $this->sModuleName);
 		$oTemplate->replaceIdentifier('module_display_name', AdminModule::getDisplayNameByName($this->sModuleName));
 
 		$oTemplate->render();
+	}
+	
+	public function renderAdmin(Template $oTemplate = null) {
+		if($this->sModuleName === null) {
+			$this->sModuleName = self::DEFAULT_MODULE;
+		}
+		try {
+			$this->oModule = AdminModule::getModuleInstance($this->sModuleName);
+		} catch (Exception $e) {
+			LinkUtil::redirect(LinkUtil::link(array(self::DEFAULT_MODULE, 'module_not_found', $this->sModuleName)));
+		}
+		if(!Module::isModuleAllowed('admin', $this->sModuleName, Session::getSession()->getUser())) {
+			LinkUtil::redirect(LinkUtil::link(array(self::DEFAULT_MODULE, 'module_denied', $this->sModuleName)));
+		}
+		$this->doAdmin($oTemplate);
 	}
 
 	protected function preRender() {
