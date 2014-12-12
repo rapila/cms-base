@@ -1,16 +1,10 @@
 <?php
 
 class WidgetTestManager extends AdminManager {
-	public function render() {
-		$this->preRender();
-
-		$oTemplate = new Template('main', array(DIRNAME_TEMPLATES, 'admin'), false, true);
-
+	public function renderAdmin(Template $oTemplate = null) {
 		$oTemplate->replaceIdentifier("title", "Widget Test" . ($this->getModuleName() ? ': ' . WidgetModule::getDisplayNameByName($this->getModuleName()) : ''));
 		$this->listInSidebar($oTemplate);
 		$this->content($oTemplate);
-
-		$oTemplate->render();
 	}
 
 	private function listInSidebar(Template $oTemplate) {
