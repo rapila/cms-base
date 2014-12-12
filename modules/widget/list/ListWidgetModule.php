@@ -224,6 +224,12 @@ class ListWidgetModule extends PersistentWidgetModule {
 	public function getSearch() {
 		return $this->oDelegate->getSearch();
 	}
+	
+	public static function testWidget() {
+		$oResult = new ListWidgetModule(null, new TestListWidgetDelegate(4, 300));
+		$oResult->setSetting('page_size', 12);
+		return $oResult;
+	}
 }
 
 interface ListWidgetDelegate {
