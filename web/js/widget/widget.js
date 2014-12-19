@@ -26,6 +26,29 @@ String.prototype.escapeSelector = function() {
 	return this.replace(/([#;&,\.+\*~':"!\^\$\[\]\(\)=>|\/])/g, "\\$1");
 };
 
+// Override jQuery UI dialog to support CKEDITOR Pop-Ups
+jQuery.widget("ui.dialog", jQuery.ui.dialog, {
+	// Take implementation from jQuery UI 1.11.2. FIXME: Remove when upgrading jQuery UI to that or a later version
+	_moveToTop: function( event, silent ) {
+		var moved = false,
+			zIndicies = this.uiDialog.siblings( ".ui-front:visible" ).map(function() {
+				return +$( this ).css( "z-index" );
+			}).get(),
+			zIndexMax = Math.max.apply( null, zIndicies );
+
+		if ( zIndexMax >= +this.uiDialog.css( "z-index" ) ) {
+			this.uiDialog.css( "z-index", zIndexMax + 1 );
+			moved = true;
+		}
+
+		if ( moved && !silent ) {
+			this._trigger( "focus", event );
+		}
+		return moved;
+	}
+});
+
+
 (function() {
 	//Widget class
 	var Widget = function() {
