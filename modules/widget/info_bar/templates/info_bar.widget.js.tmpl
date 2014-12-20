@@ -175,14 +175,14 @@ Widget.types.info_bar = {
 			},
 
 			add_pager_for_list: function(list, options) {
-				var pager = jQuery('<div/>');
-				var prev = jQuery('<span/>').addClass('rapila-icon').text('previous');
+				var pager = jQuery('<div/>').addClass('pager');
+				var prev = jQuery('<span/>').addClass('rapila-icon').text('previous').attr('title', "{{writeString=pager.show_previous_entries}}");
 				prev.click(function() {
 					if(!prev.is('.disabled')) {
 						list.previous_page();
 					}
 				});
-				var next = jQuery('<span/>').addClass('rapila-icon').text('next');
+				var next = jQuery('<span/>').addClass('rapila-icon').text('next').attr('title', "{{writeString=pager.show_next_entries}}");
 				next.click(function() {
 					if(!next.is('.disabled')) {
 						list.next_page();
