@@ -2,19 +2,19 @@
 
 abstract class SpecializedListWidgetModule extends WidgetModule {
 	protected $oListWidget = null;
-	
+
 	public function __construct() {
 		$this->oListWidget = $this->createListWidget();
 		$this->oListWidget->specialize($this);
 		parent::setSetting('list_widget_session', $this->oListWidget->getSessionKey());
 	}
-	
+
 	protected abstract function createListWidget();
 
 	public function getListWidget() {
 		return $this->oListWidget;
 	}
-	
+
 	public function addPaging($iPageSize = 20) {
 		$this->oListWidget->setSetting('page_size', $iPageSize);
 	}
@@ -22,7 +22,7 @@ abstract class SpecializedListWidgetModule extends WidgetModule {
 	public function getSessionKey() {
 		return $this->oListWidget->getSessionKey();
 	}
-	
+
 	public function doWidget() {
 		return $this->oListWidget->doWidget();
 	}
