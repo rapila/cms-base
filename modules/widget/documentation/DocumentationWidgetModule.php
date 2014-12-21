@@ -13,17 +13,15 @@ class DocumentationWidgetModule extends PersistentWidgetModule {
 		$aMetaData = DocumentationProviderTypeModule::completeMetaData();
 		$aPreferredDocumentationLanguages = array('de', 'en');
 		$sUserLanguage = Session::getSession()->getUser()->getLanguageId();
-		// remove the language if it is a preferred documentation language, so it's ignored in the fallback
+		// Remove the language if it is a preferred documentation language, so it's ignored in the fallback
 		$iIndex = array_search($sUserLanguage, $aPreferredDocumentationLanguages);
 		if($iIndex !== false) {
 			unset($aPreferredDocumentationLanguages[$iIndex]);
 		}
 
-		// is main documentation, not part
+		// Is documentation, not part
 		$bIsMain = false;
-		// insert special part if there is a documentation with only a youtube tutorial and no parts
-		$bInsertPart = false;
-		// main key dummy for checking static documentation code
+		// Documentation key variable to check loose parts (static documentations)
 		$sMainKey = null;
 		foreach($aMetaData as $sKey => $aLanguageData) {
 			// Insert special part if there is no documentation part after a main documentation entry
@@ -34,7 +32,7 @@ class DocumentationWidgetModule extends PersistentWidgetModule {
 				}
 				$sMainKey = $sKey;
 			}
-			// Only display documentations from databases / not local static ones
+			// Remove loose documentation parts
 			if(!StringUtil::startsWith($sKey, $sMainKey)) {
 				continue;
 			}
@@ -45,6 +43,7 @@ class DocumentationWidgetModule extends PersistentWidgetModule {
 				self::format($sKey, $aLanguageData[$sUserLanguage]);
 				continue;
 			}
+
 			// Fallback if documentation doesn't exist in preferred user language
 			foreach($aPreferredDocumentationLanguages as $sLanguage) {
 				if(isset($aLanguageData[$sLanguage])) {
@@ -94,7 +93,10 @@ class DocumentationWidgetModule extends PersistentWidgetModule {
 		} else {
 			return;
 		}
+		self::register($sKey, $oData);
+	}
 
+	private function register($sKey, $oData) {
 		if($oData->is_main) {
 			self::$PARENT_KEY = $sKey;
 			self::$COUNT_PARTS[self::$PARENT_KEY] = 0;
