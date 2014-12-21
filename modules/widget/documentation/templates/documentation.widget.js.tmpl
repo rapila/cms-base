@@ -46,7 +46,7 @@ Widget.types.documentation = {
 					_this.container.append(heading);
 				}
 				if(support.link) {
-					var parts_panel = panel_prototype.clone();
+					var parts_panel = _this.panel_prototype.clone();
 					_this.container.append(parts_panel);
 					// add link to overview with video tutorial info
 					var link = _this.link_prototype.clone().text(support.link_text).attr('href', support.link);
