@@ -40,6 +40,7 @@ class DocumentListWidgetModule extends SpecializedListWidgetModule {
 		switch($sColumnIdentifier) {
 			case 'name_truncated':
 				$aResult['heading'] = StringPeer::getString('wns.name');
+				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_TEXT;
 				break;
 			case 'sort':
 				$aResult['heading'] = StringPeer::getString('wns.sort');
