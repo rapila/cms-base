@@ -3,13 +3,13 @@ Widget.types.documentation = {
 	prepare: function() {
 		var _this = this;
 
-		var container =jQuery('<div/>').addClass('accordion').hide();
-		this._element.append(container);
+		this.container =jQuery('<div/>').addClass('accordion').hide();
+		this._element.append(this.container);
 
+		this.panel_prototype = jQuery('<div/>').addClass('panel');
+		this.link_prototype = jQuery('<a/>');
+		this.video_tutorial = " {{writeString=wns.documentation.video_tutorial}}";
 		var heading_prototype = jQuery('<h4/>').append(jQuery('<a/>').attr('href', '#'));
-		var panel_prototype = jQuery('<div/>').addClass('panel');
-		var link_prototype = jQuery('<a/>');
-		var video_tutorial = " {{writeString=wns.documentation.video_tutorial}}";
 
 		this.loadDocumentations(function(documentations) {
 			var count = 0;
@@ -21,21 +21,18 @@ Widget.types.documentation = {
 					main_url = documentation.url;
 					var heading = heading_prototype.clone();
 					heading.find('a').text(documentation.title);
-					container.append(heading);
+					_this.container.append(heading);
+					if(documentation.tutorial_only) {
+						_this.add_panel_with_link(main_url);
+					}
 				} else {
-					console.log('is_not_main', count);
 					if(count === 0) {
-						var parts_panel = panel_prototype.clone();
-						container.append(parts_panel);
-						// add link to overview with video tutorial info
-						var intro_link = link_prototype.clone().text(video_tutorial).attr('href', main_url);
-						_this.append_to_element(container, intro_link);
-
+						_this.add_panel_with_link(main_url);
 					}
 					count++;
 					if(documentation.url) {
-						var link = link_prototype.clone().text(documentation.title).attr('href', documentation.url);
-						_this.append_to_element(container, link);
+						var link = _this.link_prototype.clone().text(documentation.title).attr('href', documentation.url);
+						_this.append_to_panel(link);
 					}
 				}
 			});
@@ -46,26 +43,29 @@ Widget.types.documentation = {
 					loaded = false;
 					var heading = heading_prototype.clone();
 					heading.find('a').text(support.heading);
-					container.append(heading);
+					_this.container.append(heading);
 				}
 				if(support.link) {
 					var parts_panel = panel_prototype.clone();
-					container.append(parts_panel);
+					_this.container.append(parts_panel);
 					// add link to overview with video tutorial info
-					var link = link_prototype.clone().text(support.link_text).attr('href', support.link);
-					_this.append_to_element(container, link);
+					var link = _this.link_prototype.clone().text(support.link_text).attr('href', support.link);
+					_this.append_to_panel(link);
 				}
-				container.accordion({active: 0, heightStyle: 'content', collapsible:false});
-				container.show();
+				_this.container.accordion({active: 0, heightStyle: 'content', collapsible:false});
+				_this.container.show();
 			});
 		});
 	},
 
-	append_to_element: function(container, link) {
-		container.find('div.panel').last().append(link);
+	append_to_panel: function(link) {
+		this.container.find('div.panel').last().append(link);
 	},
 
-	load_support_tab: function() {
-
+	add_panel_with_link: function(url) {
+		var parts_panel = this.panel_prototype.clone();
+		var link = this.link_prototype.clone().text(this.video_tutorial).attr('href', url);
+		parts_panel.append(link);
+		this.container.append(parts_panel);
 	}
 };

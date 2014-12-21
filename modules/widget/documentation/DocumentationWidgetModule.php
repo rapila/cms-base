@@ -26,17 +26,14 @@ class DocumentationWidgetModule extends PersistentWidgetModule {
 		foreach($aMetaData as $sKey => $aLanguageData) {
 			// Insert special part if there is no documentation part after a main documentation entry
 			// implying that the documentation has a tutorial video
+			$bIsMain = false;
 			if(strpos($sKey, '/') === false) {
-				if($bIsMain) {
-					self::format($sKey.'youtube_video', null);
-				}
 				$sMainKey = $sKey;
 			}
 			// Remove loose documentation parts
 			if(!StringUtil::startsWith($sKey, $sMainKey)) {
 				continue;
 			}
-			$bIsMain = strpos($sKey, '/') === false;
 
 			// Get preferred user language documentation(_part)
 			if(isset($aLanguageData[$sUserLanguage])) {
@@ -72,14 +69,7 @@ class DocumentationWidgetModule extends PersistentWidgetModule {
 	 * @return object
 	 */
 	public function loadSupportTab() {
-		$aSupportInfo = Settings::getSetting('documentation', 'support_info', null);
-		$oSupport = new StdClass();
-		if($aSupportInfo) {
-			$oSupport->heading = $aSupportInfo['heading'];
-			$oSupport->link_text = $aSupportInfo['link_text'];
-			$oSupport->link = $aSupportInfo['link'];
-		}
-		return $oSupport;
+		return Settings::getSetting('documentation', 'support_info', array());
 	}
 
 	private function format($sKey, $aLanguageData) {
@@ -89,6 +79,7 @@ class DocumentationWidgetModule extends PersistentWidgetModule {
 		} else if($aLanguageData['url'] !== null && $aLanguageData['title'] !== null)  {
 			$oData->title = $aLanguageData['title'];
 			$oData->url = $aLanguageData['url'];
+			$oData->tutorial_only = $aLanguageData['tutorial_only'];
 			$oData->is_main = strpos($sKey, '/') === false;
 		} else {
 			return;

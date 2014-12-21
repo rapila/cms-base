@@ -52,7 +52,8 @@ abstract class DocumentationProviderTypeModule extends Module {
 					$aResult[$sPart] = array();
 				}
 				foreach($aData as $sLanguageId => $sLanguageData) {
-					$aResult[$sPart][$sLanguageId] = array('title' => $sLanguageData['title'], 'url' => $sLanguageData['url'], 'provider' => $oProvider->getConfigKey());
+					$bTutorialOnly = isset($sLanguageData['tutorial_only']) ? $sLanguageData['tutorial_only'] : false;
+					$aResult[$sPart][$sLanguageId] = array('title' => $sLanguageData['title'], 'url' => $sLanguageData['url'], 'tutorial_only' => $bTutorialOnly, 'provider' => $oProvider->getConfigKey());
 				}
 			}
 		}
