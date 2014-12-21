@@ -21,7 +21,7 @@ abstract class DocumentationProviderTypeModule extends Module {
 	}
 
 	// Helper methods
-	public static function completeMetadata() {
+	public static function completeMetaData() {
 		$aSettings = array_keys(Settings::getInstance('documentation')->getSettingsArray());
 		$oCache = new Cache('documentation_provider_type_metadata', DIRNAME_CONFIG);
 		$oSettingsCache = new Cache(Settings::createCacheKey('documentation'), DIRNAME_CONFIG);
@@ -66,7 +66,7 @@ abstract class DocumentationProviderTypeModule extends Module {
 		if($oCache->cacheFileExists() && !$oCache->isOlderThan($oSettingsCache->getModificationDate())) {
 			return $oCache->getContentsAsVariable();
 		}
-		$aMetadata = self::completeMetadata();
+		$aMetadata = self::completeMetaData();
 		if(!isset($aMetadata[$sDocumentationPart]) || !isset($aMetadata[$sDocumentationPart][$sLanguageId])) {
 			$aMetadata = null;
 		} else {

@@ -9,8 +9,7 @@ Widget.types.documentation = {
 		var heading_prototype = jQuery('<h4/>').append(jQuery('<a/>').attr('href', '#'));
 		var panel_prototype = jQuery('<div/>').addClass('panel');
 		var link_prototype = jQuery('<a/>');
-		var intro_link_text = " {{writeString=wns.documentation.intro_link_text}}";
-		var has_video_tutorial = " {{writeString=wns.documentation.with_video_tutorial}}";
+		var video_tutorial = " {{writeString=wns.documentation.video_tutorial}}";
 
 		this.loadDocumentations(function(documentations) {
 			var count = 0;
@@ -24,17 +23,20 @@ Widget.types.documentation = {
 					heading.find('a').text(documentation.title);
 					container.append(heading);
 				} else {
+					console.log('is_not_main', count);
 					if(count === 0) {
 						var parts_panel = panel_prototype.clone();
 						container.append(parts_panel);
 						// add link to overview with video tutorial info
-						var intro_link = link_prototype.clone().text(intro_link_text+(has_video_tutorial)).attr('href', main_url);
+						var intro_link = link_prototype.clone().text(video_tutorial).attr('href', main_url);
 						_this.append_to_element(container, intro_link);
 
 					}
 					count++;
-					var link = link_prototype.clone().text(documentation.title).attr('href', documentation.url);
-					_this.append_to_element(container, link);
+					if(documentation.url) {
+						var link = link_prototype.clone().text(documentation.title).attr('href', documentation.url);
+						_this.append_to_element(container, link);
+					}
 				}
 			});
 
