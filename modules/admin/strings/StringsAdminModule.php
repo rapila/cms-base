@@ -2,11 +2,11 @@
 /**
  * @package modules.admin
  */
-class StringsAdminModule extends AdminModule {
+class StringsAdminModule extends AdminModule implements ListWidgetDelegate {
 
 	private $oListWidget;
 	private $oSidebarWidget;
-	
+
 	public function __construct() {
 		$this->oListWidget = new StringListWidgetModule();
 		$this->oSidebarWidget = new ListWidgetModule();
@@ -14,19 +14,19 @@ class StringsAdminModule extends AdminModule {
 		$this->oSidebarWidget->setDelegate($this);
     $this->oSidebarWidget->setSetting('initial_selection', array('name_space' => $this->oListWidget->oDelegateProxy->getNameSpace()));
 	}
-	
+
 	public function mainContent() {
 		return $this->oListWidget->doWidget();
 	}
-	
+
 	public function sidebarContent() {
 		return $this->oSidebarWidget->doWidget();
 	}
-	
+
 	public function getColumnIdentifiers() {
 		return array('title', 'name_space', 'magic_column');
 	}
-	
+
 	public function getMetadataForColumn($sColumnIdentifier) {
 		$aResult = array();
 		switch($sColumnIdentifier) {
@@ -43,7 +43,7 @@ class StringsAdminModule extends AdminModule {
 		}
 		return $aResult;
 	}
-	
+
 	public static function getCustomListElements() {
 		if(count(StringPeer::getNamespaces()) > 0) {
 		 	$aElements = array(
@@ -63,18 +63,20 @@ class StringsAdminModule extends AdminModule {
 		}
 		return array();
 	}
-	
-	public static function getListContents($iRowStart = 0, $iRowCount = null) {
+
+	public function getListContents($iRowStart = 0, $iRowCount = null) {
 		$aResult = array();
 		foreach(StringPeer::getNamespaces() as $sNameSpace) {
 			$aResult[] = array('title' => $sNameSpace, 'name_space' => "$sNameSpace.");
 		}
-		if($iRowCount === null) {
-			$iRowCount = count($aResult);
-		}
 		$aResult = array_merge(self::getCustomListElements(), $aResult);
 		return $aResult;
 	}
+
+	public function numberOfRows() {
+		return count($this->getListContents());
+	}
+
 
 	public function usedWidgets() {
 		return array($this->oSidebarWidget, $this->oListWidget);
