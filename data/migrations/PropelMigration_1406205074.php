@@ -43,7 +43,7 @@ class PropelMigration_1406205074
 SET FOREIGN_KEY_CHECKS = 0;
 
 ALTER TABLE `document_data`
-    ADD `data_size` INTEGER AFTER `data`;
+    ADD IF NOT EXISTS `data_size` INTEGER AFTER `data`;
 
 UPDATE `document_data` SET `data_size` = OCTET_LENGTH(`data`);
 
