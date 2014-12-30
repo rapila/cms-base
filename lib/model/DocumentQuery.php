@@ -30,6 +30,12 @@ class DocumentQuery extends BaseDocumentQuery {
 		return $this->filterById($aTaggedIds, Criteria::IN);
 	}
 
+	public function filterByTagName($sTagName) {
+		$aTaggedItems = TagInstanceQuery::create()->filterByTagName($sTagName)->filterByModelName('Document')->select('TaggedItemId')->find();
+		$this->filterById($aTaggedItems, Criteria::IN);
+		return $this;
+	}
+
 	public function filterByDocumentCategoryName($sName) {
 		return $this->useDocumentCategoryQuery(null, Criteria::INNER_JOIN)->filterByName($sName)->endUse();
 	}
