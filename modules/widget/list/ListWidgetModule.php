@@ -3,20 +3,20 @@
  * @package modules.widget
  */
 class ListWidgetModule extends PersistentWidgetModule {
-	
+
 	const DISPLAY_TYPE_DEFAULT = null;
-	
+
 	const DISPLAY_TYPE_TEXT = 'text';
 	const DISPLAY_TYPE_NUMERIC = 'numeric';
 	const DISPLAY_TYPE_HTML = 'html';
-	
+
 	// url can process string or array of params [href, linktext]
 	const DISPLAY_TYPE_STATIC = 'static';
 	const DISPLAY_TYPE_ICON = 'icon';
 	const DISPLAY_TYPE_BOOLEAN = 'boolean';
 	const DISPLAY_TYPE_DOCUMENT = 'document';
 	const DISPLAY_TYPE_URL = 'url';
-	
+
 	const DISPLAY_TYPE_CLASSNAME = 'classname';
 	const DISPLAY_TYPE_DATA = 'data';
 	const DISPLAY_TYPE_REORDERABLE = 'reorderable';
@@ -24,7 +24,7 @@ class ListWidgetModule extends PersistentWidgetModule {
 	private $oDelegate;
 	private $oListTag;
 	private $aSchema = null;
-	
+
 	private $oSpecializedListWidgetModule;
 
 	public $sStringPrefix = 'column';
@@ -33,19 +33,19 @@ class ListWidgetModule extends PersistentWidgetModule {
 		parent::__construct($sSessionKey);
 		$this->oDelegate = $oDelegate;
 	}
-	
+
 	public function specialize($oSpecializedListWidgetModule) {
 		$this->oSpecializedListWidgetModule = $oSpecializedListWidgetModule;
 	}
-	
+
 	public function setDelegate(ListWidgetDelegate $oDelegate) {
 		$this->oDelegate = $oDelegate;
 	}
-	
+
 	public function getDelegate() {
 		return $this->oDelegate;
 	}
-	
+
 	public function getModelName() {
 		if(method_exists($this->oDelegate, 'getModelName')) {
 			return $this->oDelegate->getModelName();
@@ -56,7 +56,7 @@ class ListWidgetModule extends PersistentWidgetModule {
 	public function setListTag($oListTag) {
 		$this->oListTag = $oListTag;
 	}
-	
+
 	private static function displayTypeVisible($sDisplayType) {
 		return !in_array($sDisplayType, array(self::DISPLAY_TYPE_DATA, self::DISPLAY_TYPE_CLASSNAME));
 	}
@@ -114,26 +114,26 @@ class ListWidgetModule extends PersistentWidgetModule {
 			if(!isset($aMetadata['is_sortable'])) {
 				$aMetadata['is_sortable'] = $aMetadata['display_type'] === self::DISPLAY_TYPE_REORDERABLE;
 			}
-			
+
 			$this->aSchema[] = $aMetadata;
 		}
 		return $this->aSchema;
 	}
-	
+
 	public function allowSort($sColumnIdentifier) {
 		if(method_exists($this->oDelegate, 'allowSort')) {
 			return $this->oDelegate->allowSort($sColumnIdentifier);
 		}
 		return false;
 	}
-	
+
 	public function doSort($sColumnIdentifier, $aRowData, $aRelatedRowData, $sPosition) {
 		$this->oDelegate->doSort($sColumnIdentifier, $aRowData, $aRelatedRowData, $sPosition);
 	}
 
 	public function deleteRow($aRowData) {
 		return $this->oDelegate->deleteRow($aRowData);
-	}	
+	}
 
 	public function toggleBoolean($aRowData, $sBooleanName='is_inactive') {
 		$sMethodName = 'toggle'.StringUtil::camelize($sBooleanName, true);
@@ -152,20 +152,20 @@ class ListWidgetModule extends PersistentWidgetModule {
 	public function numberOfRows() {
 		return $this->oDelegate->numberOfRows();
 	}
-	
+
 	public function getOrderColumnSort() {
 		if(method_exists($this->oDelegate, 'getOrderColumnSort')) {
 			return $this->oDelegate->getOrderColumnSort();
 		}
 		return array(null, null);
 	}
-	
+
 	public function setOrderColumnSort($sOrderColumn, $sSortOrder) {
 		if(method_exists($this->oDelegate, 'setOrderColumnSort')) {
 			return $this->oDelegate->setOrderColumnSort($sOrderColumn, $sSortOrder);
 		}
 	}
-	
+
 	public function completeList() {
 		return $this->partialList(0, null);
 	}
@@ -177,7 +177,7 @@ class ListWidgetModule extends PersistentWidgetModule {
 		}
 		return WidgetJsonFileModule::jsonBaseObjects($aResult, $this->columnsForJson());
 	}
-	
+
 	private function columnsForJson() {
 		$aColumns = array();
 		foreach($this->getSchema() as $aColumn) {
@@ -197,7 +197,7 @@ class ListWidgetModule extends PersistentWidgetModule {
 		$aRow = WidgetJsonFileModule::jsonBaseObjects($aRow, $this->columnsForJson());
 		return $aRow[0];
 	}
-	
+
 	public function setOption($sName, $mValue = null) {
 		$sName = 'set'.StringUtil::camelize($sName, true);
 		$aArgs = func_get_args();
@@ -224,7 +224,7 @@ class ListWidgetModule extends PersistentWidgetModule {
 	public function getSearch() {
 		return $this->oDelegate->getSearch();
 	}
-	
+
 	public static function testWidget() {
 		$oResult = new ListWidgetModule(null, new TestListWidgetDelegate(4, 300));
 		$oResult->setSetting('page_size', 12);
@@ -246,12 +246,12 @@ interface ListWidgetDelegate {
 class TestListWidgetDelegate implements ListWidgetDelegate {
 	private $iColumns;
 	private $iRows;
-	
+
 	public function __construct($iColumns, $iRows) {
 		$this->iColumns = $iColumns;
 		$this->iRows = $iRows;
 	}
-	
+
 	public function getColumnIdentifiers() {
 		$aResult = array();
 		for($i=0;$i<$this->iColumns;$i++) {
@@ -259,17 +259,17 @@ class TestListWidgetDelegate implements ListWidgetDelegate {
 		}
 		return $aResult;
 	}
-	
+
 	public function getMetadataForColumn($sColumnIdentifier) {
 		return array(
 			'heading' => 'Column ' . (1+substr($sColumnIdentifier, 4))
 		);
 	}
-	
+
 	public function numberOfRows() {
 		return $this->iRows;
 	}
-	
+
 	public function getListContents($iRowStart = 0, $iRowCount = null) {
 		$aResult = array();
 		$iMax = $this->iRows;
