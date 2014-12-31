@@ -25,7 +25,7 @@ class DocumentListWidgetModule extends SpecializedListWidgetModule {
 	}
 
 	public function getColumnIdentifiers() {
-		$aResult = array('id', 'name_truncated', 'document_kind', 'extension', 'file_size');
+		$aResult = array('id', 'name_truncated', 'has_description', 'document_kind', 'extension', 'file_size');
 		if($this->oLanguageFilter !== null) {
 			$aResult[] = 'language_id';
 		}
@@ -41,6 +41,10 @@ class DocumentListWidgetModule extends SpecializedListWidgetModule {
 			case 'name_truncated':
 				$aResult['heading'] = StringPeer::getString('wns.name');
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_TEXT;
+				break;
+			case 'has_description':
+				$aResult['heading'] = StringPeer::getString('wns.document.has_description');
+				$aResult['is_sortable'] = false;
 				break;
 			case 'sort':
 				$aResult['heading'] = StringPeer::getString('wns.sort');

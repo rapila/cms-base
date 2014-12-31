@@ -286,6 +286,10 @@ class Document extends BaseDocument {
 		return TagQuery::create()->filterByTagged($this)->count() > 0;
 	}
 
+	public function getHasDescription() {
+		return $this->getDescription() !== null;
+	}
+
 	public function hasReferees() {
 		return count($this->getReferees()) > 0;
 	}
