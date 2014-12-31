@@ -151,6 +151,10 @@ EOT;
 			copy($oAddition->getFullPath(), $sNewPath);
 		}
 	}
+	
+	public static function getDBAdapter() {
+		return Settings::getSetting('database', 'adapter', 'mysql', 'db_config');
+	}
 
 	/**
 	* Moves the model files of modules to that module’s directory. Called by the generate-model.sh script

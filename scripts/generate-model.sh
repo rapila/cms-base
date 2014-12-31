@@ -42,5 +42,7 @@ fi
 cp base/build.properties generated/
 
 sudo -u $owner -E "$PHP_PATH" -r "require_once('base/lib/inc.php');BuildHelper::preBuild($is_dev);"
-sudo -u $owner -E "$PHP_PATH" ./base/lib/vendor/phing/bin/phing -f "$path_to_buildfile" -Dproject.dir=generated/ sql om
+adapter=$(sudo -u $owner -E "$PHP_PATH" -r "require_once('base/lib/inc.php');print BuildHelper::getDBAdapter();")
+echo "Using adapter $adapter"
+sudo -u $owner -E "$PHP_PATH" ./base/lib/vendor/phing/bin/phing -f "$path_to_buildfile" -Dproject.dir=generated/ -Dpropel.database="$adapter" sql om
 sudo -u $owner -E "$PHP_PATH" -r "require_once('base/lib/inc.php');BuildHelper::postBuild($is_dev);"
