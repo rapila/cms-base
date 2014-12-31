@@ -482,8 +482,8 @@ class ResourceIncluder {
 						// The path is a protocol-relative URL. Leave as-is or absolutize, depending on linking/ssl_in_absolute_links config
 						$location = LinkUtil::getProtocol().substr($location, strlen('//'));
 					} else if(StringUtil::startsWith($location, '/')) {
-						// The path is a domain-relative-URL. Leave it or make it absolute depending on linking/prefer_configured_domain
-						$location = LinkUtil::absoluteLink($location, null, $sSSLMode, true);
+						// The path is a domain-relative-URL. Leave it or make it absolute so we can use file_get_contents
+						$location = LinkUtil::absoluteLink($location, null, $sSSLMode);
 					}
 					$sRelativeLocationRoot = $location;
 					$sContents = file_get_contents($location);
@@ -500,10 +500,14 @@ class ResourceIncluder {
 
 				// Fix relative locations in CSS
 				if($sType === self::RESOURCE_TYPE_CSS && $sRelativeLocationRoot !== null) {
+					// Find the last slash
 					$iSlashPosition = strrpos($sRelativeLocationRoot, '/');
 					if($iSlashPosition !== false) {
+						// Cut off what’s beyond the last slash
 						$sRelativeLocationRoot = substr($sRelativeLocationRoot, 0, $iSlashPosition+1);
+						// FIXME: See if the last slash wasn’t part of the protocol or the start of a relative-y kind of URL
 						$iSlashPosition = strpos($sRelativeLocationRoot, '/', strlen('http://'));
+						// Contains everything up to the first slash
 						$sAbsoluteLocationRoot = substr($sRelativeLocationRoot, 0, $iSlashPosition);
 					} else {
 						$sAbsoluteLocationRoot = $sRelativeLocationRoot;
