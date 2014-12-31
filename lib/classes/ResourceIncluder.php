@@ -473,13 +473,17 @@ class ResourceIncluder {
 				$sRelativeLocationRoot = null;
 				$sContents = '';
 				if($file_resource !== null) {
+					// We have a file resource
 					$sContents = file_get_contents($file_resource->getFullPath());
 					$sRelativeLocationRoot = LinkUtil::absoluteLink($file_resource->getFrontendPath(), null, $sSSLMode);
 				} else if($location !== null) {
+					// No file resource given, we only have a URL to go on
 					if(StringUtil::startsWith($location, '//')) {
-						$location = (LinkUtil::isSSL() ? 'https:' : 'http:').$location;
+						// The path is a protocol-relative URL. Leave as-is or absolutize, depending on linking/ssl_in_absolute_links config
+						$location = LinkUtil::getProtocol().substr($location, strlen('//'));
 					} else if(StringUtil::startsWith($location, '/')) {
-						$location = LinkUtil::absoluteLink($location, null, $sSSLMode);
+						// The path is a domain-relative-URL. Leave it or make it absolute depending on linking/prefer_configured_domain
+						$location = LinkUtil::absoluteLink($location, null, $sSSLMode, true);
 					}
 					$sRelativeLocationRoot = $location;
 					$sContents = file_get_contents($location);

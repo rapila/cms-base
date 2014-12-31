@@ -121,30 +121,37 @@ class LinkUtil {
 	* @param string $sHost the host name to link to. will be inferred from the HTTP Host or the host name configured in domain_holder/domain. Precedence is given to the former unless the linking/prefer_configured_domain setting is true
 	* @param string $sProtocol whether or not to link to the HTTPS version. 'default' reads the linking/ssl_in_absolute_links setting. 'auto' will use whatever is currently being used to access the site.
 	*/
-	public static function absoluteLink($sLocation, $sHost = null, $sProtocol = 'default', $bAbsoluteLinkMayBeOmitted = false) {
+	public static function absoluteLink($sLocation, $sHost = null, $mProtocolSetting = 'default', $bAbsoluteLinkMayBeOmitted = false) {
+		$sProtocol = self::getProtocol($mProtocolSetting);
 		if($sProtocol === 'default') {
 			$sProtocol = Settings::getSetting('linking', 'ssl_in_absolute_links', null);
 		}
 		if($bAbsoluteLinkMayBeOmitted && Settings::getSetting('linking', 'always_link_absolutely', false) === false) {
 			// If the current protocol differs from a clear preference given (explicit true or false), we still need to use an absolute link
-			if(($sProtocol !== true && $sProtocol !== false) || $sProtocol === self::isSSL()) {
+			if($sProtocol === '//' || $mProtocolSetting === self::isSSL()) {
 				return $sLocation;
 			}
-		}
-		if($sProtocol === 'auto') {
-			$sProtocol = self::isSSL();
-		}
-		if($sProtocol === null) {
-			$sProtocol = '//';
-		} else if($sProtocol === true) {
-			$sProtocol = 'https://';
-		} else if($sProtocol === false) {
-			$sProtocol = 'http://';
 		}
 		if($sHost === null) {
 			$sHost = self::getHostName();
 		}
 		return "$sProtocol$sHost$sLocation";
+	}
+	
+	public static function getProtocol(&$mProtocolSetting = 'default') {
+		if($mProtocolSetting === 'default') {
+			$mProtocolSetting = Settings::getSetting('linking', 'ssl_in_absolute_links', null);
+		}
+		if($mProtocolSetting === 'auto') {
+			$mProtocolSetting = self::isSSL();
+		}
+		if($mProtocolSetting === null) {
+			return '//';
+		} else if($mProtocolSetting === true) {
+			return 'https://';
+		} else if($mProtocolSetting === false) {
+			return 'http://';
+		}
 	}
 
 	public static function isSSL() {
