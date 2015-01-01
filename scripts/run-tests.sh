@@ -47,5 +47,8 @@ sqlite3 ./test-db.sqlite < ./generated/*schema.sql
 mkdir -p plugins/test_only
 
 "$PHPUNIT_PATH" $filter --bootstrap "base/lib/tests/RapilaTestLoader.php" "./base/lib/tests/Test$test_module"
+retval=$?
 
 rm -Rf plugins/test_only
+
+exit $retval
