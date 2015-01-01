@@ -458,7 +458,7 @@ class ResourceIncluder {
 	}
 
 	private function consolidationStepForResourceType($sType, $bExcludeExternal, $iPriority, $sKey, &$aConsolidatorInfo, &$resource_type, &$file_resource, &$location, &$content, &$template, &$media = null) {
-		$sSSLMode = Settings::getSetting('linking', 'ssl_in_absolute_links', null) === null ? LinkUtil::isSSL() : 'default';
+		$sSSLMode = 'default';
 		if($resource_type !== $sType && $resource_type !== "inline_$sType") {
 			return;
 		}
@@ -475,17 +475,22 @@ class ResourceIncluder {
 				if($file_resource !== null) {
 					// We have a file resource
 					$sContents = file_get_contents($file_resource->getFullPath());
-					$sRelativeLocationRoot = LinkUtil::absoluteLink($file_resource->getFrontendPath(), null, $sSSLMode);
+					$sRelativeLocationRoot = LinkUtil::absoluteLink($file_resource->getFrontendPath(), null, $sSSLMode, true);
 				} else if($location !== null) {
 					// No file resource given, we only have a URL to go on
 					if(StringUtil::startsWith($location, '//')) {
-						// The path is a protocol-relative URL. Leave as-is or absolutize, depending on linking/ssl_in_absolute_links config
-						$location = LinkUtil::getProtocol().substr($location, strlen('//'));
+						$location = substr($location, strlen('//'));
+						// The path is a protocol-relative URL. Absolutize for file_get_contents and relativize for linking (according to linking/always_link_absolutely)
+						$sRelativeLocationRoot = LinkUtil::getProtocol().$location;
+						$mProtocolSetting = 'auto';
+						$location = LinkUtil::getProtocol($mProtocolSetting).$location;
 					} else if(StringUtil::startsWith($location, '/')) {
-						// The path is a domain-relative-URL. Leave it or make it absolute so we can use file_get_contents
-						$location = LinkUtil::absoluteLink($location, null, $sSSLMode);
+						// The path is a domain-relative-URL. Absolutize for file_get_contents and relativize for linking (according to linking/always_link_absolutely)
+						$sRelativeLocationRoot = LinkUtil::absoluteLink($location, null, $sSSLMode, true);
+						$location = LinkUtil::absoluteLink($location, null, LinkUtil::isSSL());
+					} else {
+						$sRelativeLocationRoot = $location;
 					}
-					$sRelativeLocationRoot = $location;
 					$sContents = file_get_contents($location);
 				} else if($content !== null) {
 					if($content instanceof Template) {
@@ -500,18 +505,32 @@ class ResourceIncluder {
 
 				// Fix relative locations in CSS
 				if($sType === self::RESOURCE_TYPE_CSS && $sRelativeLocationRoot !== null) {
-					// Find the last slash
-					$iSlashPosition = strrpos($sRelativeLocationRoot, '/');
-					if($iSlashPosition !== false) {
-						// Cut off what’s beyond the last slash
-						$sRelativeLocationRoot = substr($sRelativeLocationRoot, 0, $iSlashPosition+1);
-						// FIXME: See if the last slash wasn’t part of the protocol or the start of a relative-y kind of URL
-						$iSlashPosition = strpos($sRelativeLocationRoot, '/', strlen('http://'));
-						// Contains everything up to the first slash
-						$sAbsoluteLocationRoot = substr($sRelativeLocationRoot, 0, $iSlashPosition);
+					//Remove the protocol so our slash-detection logic works correctly (because the protocol may also contain slashes)
+					if(preg_match(',^([a-z][a-z.\\-+]*:)?//,', $sRelativeLocationRoot, $sProtocol) === 1) {
+						$sProtocol = $sProtocol[0];
 					} else {
-						$sAbsoluteLocationRoot = $sRelativeLocationRoot;
+						$sProtocol = '';
 					}
+					$sRelativeLocationRoot = substr($sRelativeLocationRoot, strlen($sProtocol));
+
+					$sAbsoluteLocationRoot = $sRelativeLocationRoot;
+
+					$bHasTruncatedTail = false;
+					$iSlashPosition;
+					// Calculate the absolute location root (will be "" most of the time unless the CSS was loaded from an external domain or linking/always_link_absolutely is true)
+					while(($iSlashPosition = strrpos($sAbsoluteLocationRoot, '/')) !== false) {
+						$sAbsoluteLocationRoot = substr($sAbsoluteLocationRoot, 0, $iSlashPosition);
+						if(!$bHasTruncatedTail) {
+							// Remove the last part from the relative location as it’s the resource itself
+							$sRelativeLocationRoot = "$sAbsoluteLocationRoot/";
+							$bHasTruncatedTail = true;
+						}
+					}
+
+					// Re-add the protocol part
+					$sRelativeLocationRoot = $sProtocol.$sRelativeLocationRoot;
+					$sAbsoluteLocationRoot = $sProtocol.$sAbsoluteLocationRoot;
+
 					// Find url() tokens
 					$sContents = preg_replace_callback(',url\\s*\\(\\s*(\'[^\']+\'|\"[^\"]+\"|[^(\'\"]+?)\\s*\\),', function($aMatches) use($sRelativeLocationRoot, $sAbsoluteLocationRoot) {
 						// Convert /something/../ to /
@@ -523,15 +542,19 @@ class ResourceIncluder {
 							$sUrl = substr($sUrl, 1, -1);
 						}
 						if(StringUtil::startsWith($sUrl, '//')) {
-							$sUrl = (LinkUtil::isSSL() ? 'https:' : 'http:').$sUrl;
+							// URL is protocol-relative. Do nothing.
+							// If this were pointing to the local host, we’d need to respect linking/ssl_in_absolute_links
+							// but if it did come from a file resource, we’d already have that
 						} else if(StringUtil::startsWith($sUrl, '/')) {
-							$sUrl =  $sAbsoluteLocationRoot.$sUrl;
+							// URL absolute. That means relative to $sAbsoluteLocationRoot
+							$sUrl = $sAbsoluteLocationRoot.$sUrl;
 						} else if(!preg_match(',^[a-z][a-z.\\-+]*:,', $sUrl)) {
+							// URL is relative to the resource being changed. That means relative to $sRelativeLocationRoot
 							// Absolutize only relative URLs (the ones not starting with a protocol)
-	 						// Fix explicit relative URLs (./)
-							$sUrl = preg_replace(',^\\./+,', '', $sUrl);
 							// Prepend the coomon root for the relative location
 							$sUrl = $sRelativeLocationRoot.$sUrl;
+	 						// Fix explicit relative URLs (./)
+							$sUrl = preg_replace(',/\\./,', '/', $sUrl);
 							// Resolve Uplinks (/some-place/../)
 							$sParentPattern = ',/[^/]+/\\.\\./,';
 							while(preg_match($sParentPattern, $sUrl) === 1) {
