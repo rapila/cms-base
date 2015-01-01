@@ -225,7 +225,7 @@ class ResourceFinder {
 	 */
 	public function find() {
 		if($this->mResult === false) {
-			if(!$this->bNoCache && ErrorHandler::getEnvironment() !== 'development') {
+			if(!$this->bNoCache && ErrorHandler::isProduction()) {
 				$oCache = new Cache(serialize($this), 'resource_finder');
 				if($oCache->cacheFileExists()) {
 					$this->mResult = $oCache->getContentsAsVariable();
