@@ -2,12 +2,17 @@
 ///Reads and consolidates .yml files from the config dirs for the current environment.
 class Settings {
 	private $aSettings;
+	private $sFile;
 	private static $INSTANCES = array();
+	
+	// This contains manual overrides for unit tests.
+	// Will be reset for every test case.
+	private static $OVERRIDES = null;
 
 	/**
 	 * __construct()
 	 */
-	private function __construct($oFinder) {
+	private function __construct($oFinder, $sFile) {
 		require_once("spyc/Spyc.php");
 		$oSpyc = new Spyc();
 		$oSpyc->setting_use_syck_is_possible = false;
@@ -28,6 +33,7 @@ class Settings {
 				}
 			}
 		}
+		$this->sFile = $sFile;
 	}
 
 	/**
@@ -37,6 +43,12 @@ class Settings {
 	 * @return string|int|float|array The setting value
 	 */
 	public function _getSetting($sSection, $sKey, $mDefaultValue) {
+		if(self::$OVERRIDES !== null) {
+			// self::$OVERRIDES will be null unless environment is “test”
+			if($sKey !== null && isset(self::$OVERRIDES[$this->sFile][$sSection][$sKey])) {
+				return self::$OVERRIDES[$this->sFile][$sSection][$sKey];
+			}
+		}
 		$aSettingsPart = $this->aSettings;
 		if($sSection !== null) {
 			if(!isset($aSettingsPart[$sSection])) {
@@ -76,19 +88,19 @@ class Settings {
 		return "$sFileName.yml-".ErrorHandler::getEnvironment();
 	}
 
-	public static function getInstance($sFileName=null) {
-		if($sFileName === null) {
-			$sFileName = "config";
+	public static function getInstance($sFile=null) {
+		if($sFile === null) {
+			$sFile = "config";
 		}
-		$sCacheKey = self::createCacheKey($sFileName);
-		$sFileName = "$sFileName.yml";
+		$sCacheKey = self::createCacheKey($sFile);
+		$sFileName = "$sFile.yml";
 		if(!isset(self::$INSTANCES[$sCacheKey])) {
 			$oCache = new Cache($sCacheKey, DIRNAME_CONFIG);
 			$oFinder = ResourceFinder::create(array(DIRNAME_CONFIG))->addOptionalPath(ErrorHandler::getEnvironment())->addPath($sFileName)->byExpressions()->searchBaseFirst()->all();
 			if($oCache->cacheFileExists() && !$oCache->isOutdated($oFinder)) {
 				self::$INSTANCES[$sCacheKey] = $oCache->getContentsAsVariable();
 			} else {
-				self::$INSTANCES[$sCacheKey] = new Settings($oFinder);
+				self::$INSTANCES[$sCacheKey] = new Settings($oFinder, $sFile);
 				$oCache->setContents(self::$INSTANCES[$sCacheKey]);
 			}
 		}
@@ -106,6 +118,24 @@ class Settings {
 			$aReplace[] = $sEnvVarValue;
 		}
 		return str_replace($aSearch, $aReplace, $sInput);
+	}
+	
+	public static function addOverride($sSection, $sKey, $mValue, $sPath = null) {
+		if(self::$OVERRIDES === null) {
+			return;
+		}
+		if($sPath === null) {
+			$sPath = "config";
+		}
+		self::$OVERRIDES[$sPath][$sSection][$sKey] = $mValue;
+	}
+	
+	public static function clearOverrides() {
+		if(ErrorHandler::getEnvironment() === 'test') {
+			self::$OVERRIDES = array();
+		} else {
+			self::$OVERRIDES = null;
+		}
 	}
 
 }
