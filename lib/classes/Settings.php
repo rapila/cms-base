@@ -5,8 +5,8 @@ class Settings {
 	private $sFile;
 	private static $INSTANCES = array();
 	
-	// This contains manual overrides for unit tests.
-	// Will be reset for every test case.
+	/// This contains manual overrides for unit tests.
+	/// Will be reset for every test case.
 	private static $OVERRIDES = null;
 
 	/**
@@ -120,6 +120,9 @@ class Settings {
 		return str_replace($aSearch, $aReplace, $sInput);
 	}
 	
+	/**
+	* Adds test case override
+	*/
 	public static function addOverride($sSection, $sKey, $mValue, $sPath = null) {
 		if(self::$OVERRIDES === null) {
 			return;
@@ -130,6 +133,9 @@ class Settings {
 		self::$OVERRIDES[$sPath][$sSection][$sKey] = $mValue;
 	}
 	
+	/**
+	* Removes test case overrides
+	*/
 	public static function clearOverrides() {
 		if(ErrorHandler::getEnvironment() === 'test') {
 			self::$OVERRIDES = array();
