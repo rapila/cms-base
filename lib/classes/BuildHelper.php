@@ -65,10 +65,21 @@ class BuildHelper {
 		self::copyPropelAdditions();
 	}
 	
+	public static function preOM($bIsDevVersion = false) {
+		self::init();
+		Cache::clearAllCaches();
+		// Nothing to do here… yet
+	}
+	
 	public static function postBuild($bIsDevVersion = false) {
 		self::init();
-		$aModelInfo = self::moveModel($bIsDevVersion);
-		self::deleteUnusedFiles($aModelInfo);
+		self::deleteUnusedFiles();
+		Cache::clearAllCaches();
+	}
+	
+	public static function postOM($bIsDevVersion = false) {
+		self::init();
+		self::moveModel($bIsDevVersion);
 		Cache::clearAllCaches();
 	}
 	
@@ -187,6 +198,18 @@ EOT;
 				self::moveModelForSchemaPath($oSchemaFile->getFullPath(), $bShouldMoveFiles); //Always rid `generated` of stuff belonging to `site`
 			}
 		}
+		// Copy generated SQL files to base
+		$aSQL = ResourceFinder::findResourceObjectsByExpressions(array(DIRNAME_GENERATED, str_replace('.xml', '.sql', self::SCHEMA_FILE_PATTERN)), ResourceFinder::SEARCH_MAIN_ONLY);
+		foreach($aSQL as $oSQLFile) {
+			$sSchemaName = self::schemaNameFromFileBasename($oSQLFile->getFileName('.sql'));
+			if(isset($aModelInfo[$sSchemaName]) && $aModelInfo[$sSchemaName]->didMoveBase) {
+				$sPath = BASE_DIR.'/'.DIRNAME_DATA.'/sql/'.self::getDBAdapter();
+				if(!file_exists($sPath)) {
+					mkdir($sPath, 0777, true);
+				}
+				copy($oSQLFile->getFullPath(), "$sPath/{$oSQLFile->getFileName()}");
+			}
+		}
 		return $aModelInfo;
 	}
 	
@@ -276,7 +299,7 @@ EOT;
 	/**
 	* Delete temp files only used while running generate-model
 	*/
-	private static function deleteUnusedFiles($aModelInfo = array()) {
+	private static function deleteUnusedFiles() {
 		if(file_exists(MAIN_DIR.'/'.DIRNAME_GENERATED.'/buildtime-conf.xml')) {
 			unlink(MAIN_DIR.'/'.DIRNAME_GENERATED.'/buildtime-conf.xml');
 		}
@@ -291,14 +314,6 @@ EOT;
 		$aAdditions = ResourceFinder::findResourceObjectsByExpressions(array(DIRNAME_GENERATED, 'propel_additions', '/^[\\w_]+\.php$/'), ResourceFinder::SEARCH_MAIN_ONLY);
 		foreach($aAdditions as $oAddition) {
 			$oAddition->unlink();
-		}
-		// Move SQL files (to base only; we could have some tricky logic to figure out what to do with plugin-only schemas but that’s too complicated for now)
-		$aSQL = ResourceFinder::findResourceObjectsByExpressions(array(DIRNAME_GENERATED, str_replace('.xml', '.sql', self::SCHEMA_FILE_PATTERN)), ResourceFinder::SEARCH_MAIN_ONLY);
-		foreach($aSQL as $oSQLFile) {
-			$sSchemaName = self::schemaNameFromFileBasename($oSQLFile->getFileName('.sql'));
-			if(isset($aModelInfo[$sSchemaName]) && $aModelInfo[$sSchemaName]->didMoveBase) {
-				rename($oSQLFile->getFullPath(), BASE_DIR.'/'.DIRNAME_DATA.'/sql/'.$oSQLFile->getFileName());
-			}
 		}
 	}
 	
