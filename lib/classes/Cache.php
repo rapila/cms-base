@@ -77,7 +77,7 @@ class Cache {
 	 * @param string|array|ResourceFinder $mOriginalFilePath
 	 */
 	public function isOutdated($mOriginalFilePath) {
-		if(ErrorHandler::getEnvironment() === 'production') {
+		if(ErrorHandler::isProduction()) {
 			//Files are never out of date in production (clear the cache manually when deploying)… no need to check
 			return false;
 		}

@@ -63,6 +63,10 @@ class ErrorHandler {
 		}
 		return self::$ENVIRONMENT;
 	}
+	
+	public static function isProduction() {
+		return self::getEnvironment() === 'production';
+	}
 
 	// To avoid leaking error messages, production enivronments MUST always specify RAPILA_ENVIRONMENT explicitly and SHOULD never rely on autodetection.
 	private static function autoEnvironment() {
