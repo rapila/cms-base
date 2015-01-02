@@ -46,19 +46,23 @@ if [ ! -r "$path_to_buildfile" ]; then
 	exit 1
 fi
 
+if [ "b$MIGRATION_SUDO" = "b" ]; then
+	MIGRATION_SUDO="sudo -u $owner -E"
+fi
+
 cp base/build.properties generated/
 
-adapter=$(sudo -u $owner -E "$PHP_PATH" -r "require_once('base/lib/inc.php');print BuildHelper::getDBAdapter();")
+adapter=$($MIGRATION_SUDO "$PHP_PATH" -r "require_once('base/lib/inc.php');print BuildHelper::getDBAdapter();")
 echo "Using adapter $adapter"
 
-sudo -u $owner -E "$PHP_PATH" -r "require_once('base/lib/inc.php');BuildHelper::preBuild($is_dev);"
+$MIGRATION_SUDO "$PHP_PATH" -r "require_once('base/lib/inc.php');BuildHelper::preBuild($is_dev);"
 if [[ " $profiles " == *" om "* ]]; then
-	sudo -u $owner -E "$PHP_PATH" -r "require_once('base/lib/inc.php');BuildHelper::preOM($is_dev);"
+	$MIGRATION_SUDO "$PHP_PATH" -r "require_once('base/lib/inc.php');BuildHelper::preOM($is_dev);"
 fi
 
-sudo -u $owner -E "$PHP_PATH" ./base/lib/vendor/phing/bin/phing -f "$path_to_buildfile" -Dproject.dir=generated/ -Dpropel.database="$adapter" $profiles
+$MIGRATION_SUDO "$PHP_PATH" ./base/lib/vendor/phing/bin/phing -f "$path_to_buildfile" -Dproject.dir=generated/ -Dpropel.database="$adapter" $profiles
 
 if [[ " $profiles " == *" om "* ]]; then
-	sudo -u $owner -E "$PHP_PATH" -r "require_once('base/lib/inc.php');BuildHelper::postOM($is_dev);"
+	$MIGRATION_SUDO "$PHP_PATH" -r "require_once('base/lib/inc.php');BuildHelper::postOM($is_dev);"
 fi
-sudo -u $owner -E "$PHP_PATH" -r "require_once('base/lib/inc.php');BuildHelper::postBuild($is_dev);"
+$MIGRATION_SUDO "$PHP_PATH" -r "require_once('base/lib/inc.php');BuildHelper::postBuild($is_dev);"
