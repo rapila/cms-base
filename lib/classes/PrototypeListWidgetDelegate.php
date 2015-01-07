@@ -2,7 +2,7 @@
 /**
  * @package modules.widget
  */
-class TestListWidgetDelegate implements ListWidgetDelegate {
+class PrototypeListWidgetDelegate implements ListWidgetDelegate {
 	private $iColumns;
 	private $iRows;
 
