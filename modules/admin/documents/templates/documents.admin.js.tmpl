@@ -84,7 +84,7 @@ jQuery(document).ready(function() {
 					sidebar.delete_row(row);
 					Widget.fire('rapila-document_category_changed', {removed: true, id: rowData.document_category_id});
 				}
-				content_list.categoryHasDocuments(rowData.document_category_id, function(has_documents) {
+				content_list.getOption('categoryHasDocuments', rowData.document_category_id, function(has_documents) {
 					if(has_documents) {
 						Widget.confirm("{{writeString=wns.rapila_alert.information}}", "{{writeString=wns.document_category.delete_information}}", function(confirmed) {
 							if(confirmed) {
