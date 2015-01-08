@@ -22,7 +22,11 @@ Widget.types.role_input = {
 		var _this = this;
 		var checkbox = this.checkbox_prototype.clone();
 		checkbox.attr('name', 'role_keys[]').attr('value', role.role_key).appendTo(this.roles_container);
-		jQuery('<label/>').attr('for', 'role_keys[]').text(role.description+" ("+role.role_key+")").appendTo(this.roles_container);
+		var description = role.role_key;
+		if(role.description) {
+			description += " ("+role.description+")";
+		}
+		jQuery('<label/>').attr('for', 'role_keys[]').text(description).appendTo(this.roles_container);
 		jQuery('<span> </span>').attr('title', "{{writeString=wns.role.edit}}").addClass('ui-icon-pencil ui-icon').click(function() {
 			_this.edit_role(role.role_key);
 		}).appendTo(this.roles_container);
