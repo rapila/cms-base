@@ -229,6 +229,10 @@ class DocumentListWidgetModule extends SpecializedListWidgetModule {
 		return null;
 	}
 
+	public function getCategoryHasDocuments($iDocumentCategoryId) {
+		return DocumentQuery::create()->filterByDocumentCategoryId($iDocumentCategoryId)->count() > 0;
+	}
+
 	public function getCriteria() {
 		$oQuery = DocumentQuery::create()->joinDocumentType(null, Criteria::LEFT_JOIN)->joinDocumentData();
 		if(!Session::getSession()->getUser()->getIsAdmin() || Settings::getSetting('admin', 'hide_externally_managed_document_categories', true)) {
