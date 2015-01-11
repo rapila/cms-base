@@ -48,7 +48,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 				$aResult['page_properties'] = $mAvailableProperties;
 			}
 		} catch(Exception $e) {
-			ErrorHandler::handleException($e);
+			ErrorHandler::handleException($e, true);
 		}
 		// page references are displayed if exist
 		$mReferences = AdminModule::getReferences(ReferencePeer::getReferences($oPage));
