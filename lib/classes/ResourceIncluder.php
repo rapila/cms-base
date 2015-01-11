@@ -9,6 +9,7 @@ class ResourceIncluder {
 	const RESOURCE_TYPE_JS = 'js';
 	const RESOURCE_TYPE_IMAGE = 'images';
 	const RESOURCE_TYPE_ICON = 'icons';
+	const RESOURCE_TYPE_LINK = 'link';
 	const RESOURCE_TYPE_INTERNAL_LINK = 'internal_link';
 
 	const PRIORITY_FIRST = -1;
@@ -99,7 +100,7 @@ class ResourceIncluder {
 			$sFinalLocation = LinkUtil::link($mLocation->getLink(), 'FrontendManager');
 			$sResourcePrefix = self::RESOURCE_PREFIX_INTERNAL;
 			if($sResourceType === null) {
-				$sResourceType = 'link';
+				$sResourceType = self::RESOURCE_TYPE_LINK;
 			}
 		} else if(!is_string($mLocation)) {
 			//Unknown input type given -> throw Exception
