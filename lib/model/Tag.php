@@ -32,7 +32,7 @@ class Tag extends BaseTag {
 	}
 
 	public function getReadableName() {
-		return StringUtil::makeReadableName($this->getName());
+		return StringPeer::getString('tag.'.$this->getName(), null, StringUtil::makeReadableName($this->getName()));
 	}
 
 	public function reloadInstances() {
