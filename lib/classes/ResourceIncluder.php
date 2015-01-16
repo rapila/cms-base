@@ -450,22 +450,27 @@ class ResourceIncluder {
 			foreach($aIncludedResourcesOfType as $sKey => &$aResourceInfo) {
 				list($resource_type, $file_resource, $location, $content, $template, $media) = null;
 				extract($aResourceInfo, EXTR_IF_EXISTS);
-				$this->consolidationStepForResourceType('css', $bExcludeExternal, $iPriority, $sKey, $aCssConsolidator, $resource_type, $file_resource, $location, $content, $template, $media);
-				$this->consolidationStepForResourceType('js', $bExcludeExternal, $iPriority, $sKey, $aJsConsolidator, $resource_type, $file_resource, $location, $content, $template);
+				$this->consolidationStepForResourceType('css', $bExcludeExternal, $iPriority, $sKey, $aCssConsolidator, $resource_type, $file_resource, $location, $content, $template, $media, $aResourceInfo);
+				$this->consolidationStepForResourceType('js', $bExcludeExternal, $iPriority, $sKey, $aJsConsolidator, $resource_type, $file_resource, $location, $content, $template, $media, $aResourceInfo);
 			}
 		}
 		$this->cleanupConsolidator($aCssConsolidator);
 		$this->cleanupConsolidator($aJsConsolidator);
 	}
 
-	private function consolidationStepForResourceType($sType, $bExcludeExternal, $iPriority, $sKey, &$aConsolidatorInfo, &$resource_type, &$file_resource, &$location, &$content, &$template, &$media = null) {
+	private function consolidationStepForResourceType($sType, $bExcludeExternal, $iPriority, $sKey, &$aConsolidatorInfo, &$resource_type, &$file_resource, &$location, &$content, &$template, &$media, $aResourceInfo) {
 		$sSSLMode = 'default';
 		if($resource_type !== $sType && $resource_type !== "inline_$sType") {
 			return;
 		}
 		//External location (no file_resource given) or location not determinable
 		$bIsExternal = $file_resource === null && $content === null;
-		if($bIsExternal && ($bExcludeExternal || $location === null)) {
+
+		// Files with external references should only be consolidated if explicitly requested (resource_includer.yml/general/consolidate_resources == 'internal' disables this)
+		$bShouldNotBeConsolidated = $bIsExternal && ($bExcludeExternal || $location === null);
+		// Files with an IE condition can’t be consolidated because the condition (unlike CSS media queries) can only be set in HTML
+		$bShouldNotBeConsolidated = $bShouldNotBeConsolidated || isset($aResourceInfo['ie_condition']);
+		if($bShouldNotBeConsolidated) {
 			$this->cleanupConsolidator($aConsolidatorInfo);
 		} else {
 			$this->initConsolidator($sType, $iPriority, $sKey, $aConsolidatorInfo);
@@ -582,6 +587,10 @@ class ResourceIncluder {
 		$aConsolidatorInfo['key'] = $sKey;
 	}
 
+	/**
+	* Closes the consolidator and adds the consolidation link.
+	* Sometimes consolidatable resources are interrupted by ones that can’t be consolidated (if they were added with a flag prohibiting consolidation or if they have an IE condition or if they are from an external source)
+	*/
 	private function cleanupConsolidator(&$aConsolidatorInfo) {
 		if($aConsolidatorInfo === null) {
 			return;

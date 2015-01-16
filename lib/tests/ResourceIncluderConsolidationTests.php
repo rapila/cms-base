@@ -49,6 +49,21 @@ EOT
 
 	public function testConsolidatedIncludes() {
 		$this->oIncluder->addResource(array('web', 'js', 'widget', 'ckeditor', 'skins', 'moono', 'editor.css'));
+		$this->oIncluder->addResource('admin/admin-ui.css', null, null, null, ResourceIncluder::PRIORITY_FIRST, 'IE');
+		$this->oIncluder->addResource('widget/ckeditor/ckeditor.js', null, null, array('ie_condition' => 'IE lt 6'));
+		$this->oIncluder->addJavaScriptLibrary('jqueryui', 1, true, true, null);
+		$this->assertSame(<<<EOT
+<!--[if IE]><link rel="stylesheet" media="all" href="/base/web/css/admin/admin-ui.css" /><![endif]-->
+<link rel="stylesheet" media="all" href="/get_file/consolidated_resource/css/6dcd670087f2d32c23330116c8fc63d5" />
+<!--[if IE lt 6]><script type="text/javascript" src="/base/web/js/widget/ckeditor/ckeditor.js"></script><![endif]-->
+<script type="text/javascript" src="/get_file/consolidated_resource/js/b60745877cf6f631c3f8f3d63b2546c1/6b71198caa246549b55c85ac758dbac8"></script>
+
+EOT
+, $this->oIncluder->getIncludes(true, true)->render());
+	}
+
+	public function testConsolidatedIncludesIE() {
+		$this->oIncluder->addResource(array('web', 'js', 'widget', 'ckeditor', 'skins', 'moono', 'editor.css'));
 		$this->oIncluder->addResource('admin/admin-ui.css', null, null, null, ResourceIncluder::PRIORITY_FIRST);
 		$this->oIncluder->addResource('widget/ckeditor/ckeditor.js');
 		$this->oIncluder->addJavaScriptLibrary('jqueryui', 1, true, true, null);
