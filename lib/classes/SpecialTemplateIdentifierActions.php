@@ -186,7 +186,7 @@ class SpecialTemplateIdentifierActions {
 	}
 
 	public function writeDate($oTemplateIdentifier) {
-		$iTimestamp = null;
+		$iTimestamp = false;
 		if($oTemplateIdentifier->hasParameter('timestamp')) {
 			$iTimestamp = (int)$oTemplateIdentifier->getParameter('timestamp');
 		} else if($oTemplateIdentifier->hasParameter('format')) {
