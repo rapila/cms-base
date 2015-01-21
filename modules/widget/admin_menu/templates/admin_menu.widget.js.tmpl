@@ -321,7 +321,7 @@ Widget.types.admin_menu = {
 			var _this = this;
 			var result = {};
 			result.is_active = !!window.PreviewInterface;
-			result.text = 'eye';
+			result.text = 'preview';
 			result.element = this.button_prototype.clone().addClass('preview rapila-icon').attr('title', '{{writeString=wns.page.preview_linktext}}');
 			result.callback = function(event) {
 				jQuery.openLink(_this.getPreviewLink(), event);
