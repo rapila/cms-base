@@ -61,7 +61,14 @@ button.rapila-icon
 	font-family 'Rapila-Icons', Arial
 	line-height 24px
 	cursor pointer
+	-ms-font-feature-settings "liga" 1, "dlig" 1
+	-moz-font-feature-settings "liga=1", "dlig=1"
+	-moz-font-feature-settings "liga" 1, "dlig" 1
+	font-feature-settings "liga" 1, "dlig" 1
 	font-variant-ligatures common-ligatures
+	-webkit-font-smoothing antialiased
+	-moz-osx-font-smoothing grayscale
+
 	.ui-button-text
 		vertical-align middle
 	&.disabled
