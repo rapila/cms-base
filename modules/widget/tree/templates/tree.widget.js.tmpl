@@ -2,7 +2,7 @@ Widget.types.tree = {
 	prepare: function() {
 		var _this = this;
 		this.settings.tag_name = this.settings.tag_name || (this._element.is('ul') ? 'ul' : 'ol');
-		
+
 		// Model drag & drop
 		if(this.settings.init_dnd) {
 			this.settings.model_name = this.getModelName();
@@ -10,7 +10,7 @@ Widget.types.tree = {
 				this.dnd = Widget.create('model_drag_and_drop');
 			}
 		}
-		
+
 		// Item click handler
 		this._element.bind('select_node.jstree', function(event) {
 			// Get the selected item
@@ -22,7 +22,7 @@ Widget.types.tree = {
 			// Select it
 			_this.activate(element);
 		});
-		
+
 		//Open initially opened items
 		this._element.one('loaded.jstree', function(event, result) {
 			var open_initial_nodes = function(event, data) {
@@ -41,7 +41,7 @@ Widget.types.tree = {
 			};
 			open_initial_nodes(null, {rslt: {obj: _this._element}});
 		});
-		
+
 		this._element.jstree({
 			plugins: ["ui", "tree_widget", "crrm", "dnd", "themeroller"],
 			tree_widget: {widget: _this},
@@ -67,13 +67,13 @@ Widget.types.tree = {
 					}
 				}
 			},
-			
+
 			dnd: {
 				//TODO: fill in function callbacks for sort, move and deny
 				drag_target: false,
 				drop_target: false
 			},
-			
+
 			ui: {
 				select_limit: 1,
 				selected_parent_close: false,
@@ -96,11 +96,11 @@ Widget.types.tree = {
 		});
 		// this.reload();
 	},
-	
+
 	reload: function() {
 		this._tree.refresh();
 	},
-	
+
 	load_item: function(item, success) {
 		var _this = this;
 		var id = item == -1 ? null : this.identifier_from_element(item);
@@ -123,18 +123,18 @@ Widget.types.tree = {
 			success(result);
 		});
 	},
-	
+
 	activate: function(element) {
 		var new_identifier = this.identifier_from_element(element);
 		var has_changed = this.current_element_identifier !== new_identifier;
 		this.current_element_identifier = new_identifier;
 		this.fire('tree_item-activated', element, this.current_element_identifier, has_changed);
 	},
-	
+
 	parent_of: function(element) {
 		return this._tree._get_parent(element);
 	},
-	
+
 	remove_element_with_identifier: function(data) {
 		var element = this.element_with_identifier(data);
 		var parent = this.parent_of(element);
@@ -144,15 +144,15 @@ Widget.types.tree = {
 		// 	this.activate(parent);
 		// }
 	},
-	
+
 	current_element: function() {
 		return this._element.find('li.ui-state-active');
 	},
-	
+
 	all_pages: function() {
 		return jQuery('#admin_sidebar').find('li');
 	},
-	
+
 	element_with_identifier: function(data) {
 		var result = null;
 		var widget = this;
@@ -164,7 +164,7 @@ Widget.types.tree = {
 		});
 		return result;
 	},
-	
+
 	update_element: function(element) {
 		var data = arguments[1] || this.identifier_from_element(element);
 		this.loadItem(data, function(item) {
@@ -178,11 +178,11 @@ Widget.types.tree = {
 			this.fire('updated', element, item);
 		});
 	},
-	
+
 	identifier_from_element: function(element) {
 		return this.settings.identifier_from_data(element.data('jstree'));
 	},
-	
+
 	/**
 	* Reloads the children of a given element (li) as well as its properties.
 	* The item retains its open/closed state (except if true is passed for the `open` argument, in which case it is opened)
@@ -196,16 +196,16 @@ Widget.types.tree = {
 			}.bind(this));
 		}
 	},
-	
+
 	update_elements: function() {
 		var tree = this;
 		tree._element.find('li').each(function() {
 			tree.update_element(jQuery(this));
 		});
 	},
-	
+
 	current_element_identifier: null,
-	
+
 	settings: {
 		description_from_item: jQuery.noop,
 		has_children: jQuery.noop,
