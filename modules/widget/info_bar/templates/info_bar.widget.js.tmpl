@@ -191,7 +191,7 @@ Widget.types.info_bar = {
 				var status = jQuery('<span>');
 				pager.append(prev).append(status).append(next);
 				list.handle('reloaded', function() {
-					status.text("{{writeParameterizedString=wns.list_pager;total=$\\{total\\};current=$\\{current\\}}}".replace(/\$\{total\}/, this.page_count()).replace('${current}', this.page()+1));
+					status.text("{{writeParameterizedString=wns.list_pager;total=$\\{total\\};current=$\\{current\\}}}".replace(/\$\{total\}/, (this.page_count() > 0 ? this.page_count() : 1)).replace('${current}', this.page()+1));
 					prev[this.is_first_page() ? 'addClass' : 'removeClass']('disabled');
 					next[this.is_last_page() ? 'addClass' : 'removeClass']('disabled');
 				}, false, true);
