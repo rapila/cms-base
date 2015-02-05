@@ -587,21 +587,24 @@ Widget.types.list = {
 			this.fire('reloaded', list.length);
 		}
 	},
-	
+
 	is_first_page: function() {
 		if(this.settings.page_size) {
 			return this.current_page === 0;
 		}
 		return true;
 	},
-	
+
 	is_last_page: function() {
 		if(this.settings.page_size) {
+			if(this.number_of_pages === 0) {
+				return true;
+			}
 			return this.current_page === this.number_of_pages - 1;
 		}
 		return true;
 	},
-	
+
 	page: function(page) {
 		if(arguments.length) {
 			// Setter
@@ -614,19 +617,19 @@ Widget.types.list = {
 			return this.current_page;
 		}
 	},
-	
+
 	page_count: function() {
 		return this.number_of_pages;
 	},
-	
+
 	previous_page: function() {
 		this.page(this.current_page - 1);
 	},
-	
+
 	next_page: function() {
 		this.page(this.current_page + 1);
 	},
-	
+
 	set_page_size: function(size) {
 		this.settings.page_size = size;
 		this.current_page = 0;
@@ -809,7 +812,7 @@ Widget.types.list = {
 	*/
 	number_of_pages: 1,
 	current_page: 0,
-	
+
 	number_of_rows: 0,
 	total_number_of_rows: 0,
 
