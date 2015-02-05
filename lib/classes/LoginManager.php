@@ -3,12 +3,12 @@
  * @package manager
 */
 class LoginManager extends PreviewManager {
-	
+
 	const USER_NAME = 'user_name';
 	const LOGIN_PASSWORD = 'password';
 	private $sAction;
 	public $oTemplate;
-	
+
 	public function __construct() {
 		parent::__construct(false);
 
@@ -50,7 +50,7 @@ class LoginManager extends PreviewManager {
 		$oOutput->render();
 		$this->oTemplate = new Template('login', array(DIRNAME_TEMPLATES, 'login'), false, true);
 	}
-	
+
 	public function render() {
 		$sAction = $this->sAction;
 		$this->oTemplate->replaceIdentifierCallback('renderLoginModule', function($oTemplateIdentifier) use ($sAction) {
@@ -84,7 +84,7 @@ class LoginManager extends PreviewManager {
 			return;
 		}
 		$iAdminTest = Session::getSession()->login($sUserName, $sPassword);
-		
+
 		//User is valid
 		if(($iAdminTest & Session::USER_IS_VALID) === Session::USER_IS_VALID) {
 			if(isset($_REQUEST['origin'])) {
@@ -95,7 +95,7 @@ class LoginManager extends PreviewManager {
 			} else if(!$sReferrer) {
 				$sReferrer = LinkUtil::link(array(), 'AdminManager');
 			}
-			if(($iAdminTest & Session::USER_IS_DEFAULT_USER) === Session::USER_IS_DEFAULT_USER) { 
+			if(($iAdminTest & Session::USER_IS_DEFAULT_USER) === Session::USER_IS_DEFAULT_USER) {
 				Session::getSession()->setAttribute('change_password', 1);
 				$sReferrer = LinkUtil::link(array('users', Session::getSession()->getUserId()), 'AdminManager');
 			}
@@ -116,7 +116,7 @@ class LoginManager extends PreviewManager {
 			$oFlash->addMessage('login_welcome2', array( 'username' => $sUsernameDefault, 'password' => $sPasswordDefault));
 		}
 	}
-	
+
 	public static function processPasswordReset($sLinkBase = null) {
 		$oFlash = Flash::getFlash();
 		if($_POST['password_reset_user_name'] === '') {
@@ -131,12 +131,12 @@ class LoginManager extends PreviewManager {
 		self::sendResetMail($oUser, false, $sLinkBase);
 		return 'login';
 	}
-	
+
 	public static function sendResetMail($oUser, $bShowUserName = false, $sLinkBase = null) {
 		UserPeer::ignoreRights(true);
 		$oUser->setPasswordRecoverHint(PasswordHash::generateHint());
 		$oUser->save();
-		
+
 		$oEmailTemplate = new Template('e_mail_pw_recover', array(DIRNAME_TEMPLATES, 'login'));
 		$oEmailTemplate->replaceIdentifier('first_name', $oUser->getFirstName());
 		$oEmailTemplate->replaceIdentifier('last_name', $oUser->getLastName());
@@ -165,7 +165,7 @@ class LoginManager extends PreviewManager {
 		$oEmail->addRecipient($oUser->getEmail());
 		$oEmail->send();
 	}
-	
+
 	public static function passwordReset() {
 		$oFlash = Flash::getFlash();
 		$oUser = UserQuery::create()->filterByUsername(trim($_REQUEST['recover_username']))->isActive()->findOne();
@@ -178,7 +178,7 @@ class LoginManager extends PreviewManager {
 		}
 		return 'password_reset';
 	}
-	
+
 	public static function loginNewPassword($sReferrer = '') {
 		$oFlash = Flash::getFlash();
 		$oUser = UserQuery::create()->filterByUsername(trim($_REQUEST['recover_username']))->isActive()->findOne();
@@ -186,7 +186,7 @@ class LoginManager extends PreviewManager {
 			$oFlash->addMessage('login.recovery.invalid');
 			return 'login';
 		}
-		
+
 		if($_POST['new_password'] === '') {
 			$oFlash->addMessage('login.empty_fields');
 		}
@@ -195,18 +195,18 @@ class LoginManager extends PreviewManager {
 			$oFlash->addMessage('password_confirm');
 		}
 		$oFlash->finishReporting();
-		
+
 		if(!Flash::noErrors()) {
 			return 'password_reset';
 		}
-		
+
 		//No errors – set new password, login and redirect
 		UserPeer::ignoreRights(true);
 		$oUser->setPassword($_POST['new_password']);
 		$oUser->setPasswordRecoverHint(null);
 		$oUser->save();
 		self::login($_POST['recover_username'], $_POST['new_password'], $sReferrer);
-		
+
 		return 'login';
 	}
 }
