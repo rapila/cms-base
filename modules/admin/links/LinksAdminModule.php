@@ -10,7 +10,7 @@ class LinksAdminModule extends AdminModule {
 
 	public function __construct() {
 		$this->oListWidget = new LinkListWidgetModule();
-		$this->oListWidget->addPaging();
+		$this->oListWidget->addPaging(null, Module::getNameByClassName(get_class()));
 		if(isset($_REQUEST['link_category_id'])) {
 			$this->oListWidget->oDelegateProxy->setLinkCategoryId($_REQUEST['link_category_id']);
 		}

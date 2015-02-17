@@ -9,6 +9,7 @@ class UsersAdminModule extends AdminModule {
 
 	public function __construct() {
 		$this->oListWidget	= new UserListWidgetModule();
+		$this->oListWidget->addPaging(null, Module::getNameByClassName(get_class()));
 		$this->oSidebarWidget = new ListWidgetModule();
 		$this->oSidebarWidget->setListTag(new TagWriter('ul'));
 		$this->oSidebarWidget->setDelegate(new CriteriaListWidgetDelegate($this, 'Group', 'name'));
@@ -17,19 +18,19 @@ class UsersAdminModule extends AdminModule {
 		}
 		$this->oSidebarWidget->setSetting('initial_selection', array('id' => $this->oListWidget->oDelegateProxy->getGroupId()));
 	}
-	
+
 	public function mainContent() {
 		return $this->oListWidget->doWidget();
 	}
-	
+
 	public function sidebarContent() {
 		return $this->oSidebarWidget->doWidget();
 	}
-	
+
 	public function getColumnIdentifiers() {
 		return array('id', 'name', 'magic_column');
 	}
-	
+
 	public function getMetadataForColumn($sColumnIdentifier) {
 		$aResult = array();
 		switch($sColumnIdentifier) {

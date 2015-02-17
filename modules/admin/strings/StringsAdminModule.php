@@ -9,6 +9,7 @@ class StringsAdminModule extends AdminModule implements ListWidgetDelegate {
 
 	public function __construct() {
 		$this->oListWidget = new StringListWidgetModule();
+		$this->oListWidget->addPaging(null, Module::getNameByClassName(get_class()));
 		$this->oSidebarWidget = new ListWidgetModule();
 		$this->oSidebarWidget->setListTag(new TagWriter('ul'));
 		$this->oSidebarWidget->setDelegate($this);

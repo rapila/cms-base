@@ -15,9 +15,15 @@ abstract class SpecializedListWidgetModule extends WidgetModule {
 		return $this->oListWidget;
 	}
 
-	public function addPaging($iPageSize = null) {
-		$iPageSize = $iPageSize ? $iPageSize : Settings::getSetting('admin', 'page_size', 20);
-		$this->oListWidget->setSetting('page_size', $iPageSize);
+	public function addPaging($iPageSize = null, $sModule = null) {
+		$sConfigKey = 'page_size';
+		if($sModule) {
+			$iPageSize = Settings::getSetting('admin', "$sModule-$sConfigKey", null);
+		}
+		$iPageSize = $iPageSize ? $iPageSize : Settings::getSetting('admin', $sConfigKey, 20);
+		if(is_numeric($iPageSize)) {
+			$this->oListWidget->setSetting('page_size', $iPageSize);
+		}
 	}
 
 	public function getSessionKey() {
