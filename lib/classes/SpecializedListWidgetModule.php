@@ -15,7 +15,8 @@ abstract class SpecializedListWidgetModule extends WidgetModule {
 		return $this->oListWidget;
 	}
 
-	public function addPaging($iPageSize = 20) {
+	public function addPaging($iPageSize = null) {
+		$iPageSize = $iPageSize ? $iPageSize : Settings::getSetting('admin', 'page_size', 20);
 		$this->oListWidget->setSetting('page_size', $iPageSize);
 	}
 
