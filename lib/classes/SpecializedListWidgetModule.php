@@ -15,6 +15,13 @@ abstract class SpecializedListWidgetModule extends WidgetModule {
 		return $this->oListWidget;
 	}
 
+	/**
+	 * @param optional int / string $iPageSize
+	 * @param optional string $sModule ExampleNameModule > example_name
+	 * configure page_size per site or module
+	 * – globally by configuring section admin: page_size
+	 * – overwrite page_size locally configuring admin: example_name-page_size
+	 */
 	public function addPaging($iPageSize = null, $sModule = null) {
 		$sConfigKey = 'page_size';
 		if($sModule) {
