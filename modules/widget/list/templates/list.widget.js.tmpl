@@ -619,7 +619,10 @@ Widget.types.list = {
 	},
 
 	page_count: function() {
-		return this.number_of_pages;
+		if(this.number_of_pages > 0) {
+			return this.number_of_pages;
+		}
+		return 1;
 	},
 
 	previous_page: function() {
