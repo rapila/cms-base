@@ -17,18 +17,20 @@ abstract class SpecializedListWidgetModule extends WidgetModule {
 
 	/**
 	 * @param optional int / string $iPageSize
-	 * @param optional string $sModule ExampleNameModule > example_name
-	 * configure page_size per site or module
-	 * – globally by configuring section admin: page_size
-	 * – overwrite page_size locally configuring admin: example_name-page_size
+	 * configure page_size per site or list-widget
+	 * – by configuring global value or local overwrite value in config.yml
+	 * admin:
+	 *   page_size: number [0, none]
+	 *   example-list-widget-page_size:  number [0, none]
 	 */
-	public function addPaging($iPageSize = null, $sModule = null) {
+	public function addPaging($iPageSize = 'default') {
 		$sConfigKey = 'page_size';
-		if($sModule) {
-			$iPageSize = Settings::getSetting('admin', "$sModule-$sConfigKey", null);
+		$sClassName = Module::getNameByClassName(get_class($this));
+		$iPageSize = Settings::getSetting('admin', "$sClassName-$sConfigKey", $iPageSize);
+		if($iPageSize === 'default') {
+			$iPageSize = Settings::getSetting('admin', $sConfigKey, 20);
 		}
-		$iPageSize = $iPageSize ? $iPageSize : Settings::getSetting('admin', $sConfigKey, 20);
-		if(is_numeric($iPageSize)) {
+		if(is_numeric($iPageSize) && $iPageSize > 0) {
 			$this->oListWidget->setSetting('page_size', $iPageSize);
 		}
 	}

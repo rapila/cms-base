@@ -9,7 +9,7 @@ class UsersAdminModule extends AdminModule {
 
 	public function __construct() {
 		$this->oListWidget	= new UserListWidgetModule();
-		$this->oListWidget->addPaging(null, Module::getNameByClassName(get_class()));
+		$this->oListWidget->addPaging();
 		$this->oSidebarWidget = new ListWidgetModule();
 		$this->oSidebarWidget->setListTag(new TagWriter('ul'));
 		$this->oSidebarWidget->setDelegate(new CriteriaListWidgetDelegate($this, 'Group', 'name'));
