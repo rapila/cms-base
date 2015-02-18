@@ -26,10 +26,10 @@ abstract class SpecializedListWidgetModule extends WidgetModule {
 	public function addPaging($iPageSize = 'default') {
 		$sConfigKey = 'page_size';
 		if($iPageSize === 'default') {
-			$iPageSize = Settings::getSetting('admin', $this->getModuleName()."-$sConfigKey", $iPageSize);
+			$iPageSize = Settings::getSetting('admin', $this->getModuleName()."-$sConfigKey", 'default');
 		}
 		if($iPageSize === 'default') {
-			$iPageSize = Settings::getSetting('admin', $sConfigKey, 20);
+			$iPageSize = Settings::getSetting('admin', $sConfigKey, 25);
 		}
 		if(is_numeric($iPageSize) && $iPageSize > 0) {
 			$this->oListWidget->setSetting('page_size', $iPageSize);
