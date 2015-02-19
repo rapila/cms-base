@@ -21,12 +21,12 @@ abstract class SpecializedListWidgetModule extends WidgetModule {
 	 * – by configuring global value or local overwrite value in config.yml
 	 * admin:
 	 *   page_size: number [0, none]
-	 *   example-list-page_size:  number [0, none]
+	 *   example_list_page_size:  number [0, none]
 	 */
 	public function addPaging($iPageSize = 'default') {
 		$sConfigKey = 'page_size';
 		if($iPageSize === 'default') {
-			$iPageSize = Settings::getSetting('admin', $this->getModuleName()."-$sConfigKey", 'default');
+			$iPageSize = Settings::getSetting('admin', $this->getModuleName()."_$sConfigKey", 'default');
 		}
 		if($iPageSize === 'default') {
 			$iPageSize = Settings::getSetting('admin', $sConfigKey, 25);
