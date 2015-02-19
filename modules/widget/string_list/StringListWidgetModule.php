@@ -2,28 +2,21 @@
 /**
  * @package modules.widget
  */
-class StringListWidgetModule extends WidgetModule {
-	private $oListWidget;
-	private $sNameSpace;
+class StringListWidgetModule extends SpecializedListWidgetModule {
+
 	public $oDelegateProxy;
-	
-	public function __construct() {
-		$this->oListWidget = new ListWidgetModule();
+
+	protected function createListWidget() {
+		$oListWidget = new ListWidgetModule();
 		$this->oDelegateProxy = new CriteriaListWidgetDelegate($this, "String", 'string_key');
-		$this->oListWidget->setDelegate($this->oDelegateProxy);
+		$oListWidget->setDelegate($this->oDelegateProxy);
+		return $oListWidget;
 	}
-	
-	public function doWidget() {
-		$aTagAttributes = array('class' => 'string_list');
-		$oListTag = new TagWriter('table', $aTagAttributes);
-		$this->oListWidget->setListTag($oListTag);
-		return $this->oListWidget->doWidget();
-	}
-	
+
 	public function getColumnIdentifiers() {
 		return array('id', 'string_key', 'text_truncated_current', 'languages_available', 'delete');
 	}
-	
+
 	public function getMetadataForColumn($sColumnIdentifier) {
 		$aResult = array('is_sortable' => true);
 		switch($sColumnIdentifier) {
@@ -51,7 +44,7 @@ class StringListWidgetModule extends WidgetModule {
 		}
 		return $aResult;
 	}
-	
+
 	public function deleteRow($aRowData, $oCriteria) {
 		$bResult = false;
 		$sNameSpace = StringPeer::getNameSpaceFromStringKey($aRowData['id']);
@@ -60,7 +53,7 @@ class StringListWidgetModule extends WidgetModule {
 		}
 		return array(StringDetailWidgetModule::SIDEBAR_CHANGED => $bResult);
 	}
-	
+
 	public function getDatabaseColumnForColumn($sColumnIdentifier) {
 		if($sColumnIdentifier === 'name_space') {
 			return StringPeer::STRING_KEY;
@@ -70,7 +63,7 @@ class StringListWidgetModule extends WidgetModule {
 		}
 		return null;
 	}
-	
+
 	public function getFilterTypeForColumn($sColumnIdentifier) {
 		if($sColumnIdentifier === 'name_space') {
 			return CriteriaListWidgetDelegate::FILTER_TYPE_MANUAL;

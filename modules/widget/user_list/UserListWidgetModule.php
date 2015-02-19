@@ -2,31 +2,25 @@
 /**
  * @package modules.widget
  */
-class UserListWidgetModule extends PersistentWidgetModule {
-	private $oListWidget;
-	private $oUserKindFilter;
+class UserListWidgetModule extends SpecializedListWidgetModule {
+
+	protected $oUserKindFilter;
 	public $oDelegateProxy;
-	
-	public function __construct() {
-		$this->oListWidget = new ListWidgetModule();
+
+	protected function createListWidget() {
+		$oListWidget = new ListWidgetModule();
 		$this->oDelegateProxy = new CriteriaListWidgetDelegate($this, "User", 'full_name');
-		$this->oListWidget->setDelegate($this->oDelegateProxy);
-		$this->oListWidget->setSetting('row_model_drag_and_drop_identifier', 'id');
+		$oListWidget->setDelegate($this->oDelegateProxy);
+		$oListWidget->setSetting('row_model_drag_and_drop_identifier', 'id');
 		$this->oDelegateProxy->setUserKind(CriteriaListWidgetDelegate::SELECT_ALL);
 		$this->oUserKindFilter = WidgetModule::getWidget('user_kind_input', null, $this->oDelegateProxy->getUserKind());
+		return $oListWidget;
 	}
-	
-	public function doWidget() {
-		$aTagAttributes = array('class' => 'user_list');
-		$oListTag = new TagWriter('table', $aTagAttributes);
-		$this->oListWidget->setListTag($oListTag);
-		return $this->oListWidget->doWidget();
-	}
-	
+
 	public function getColumnIdentifiers() {
 		return array('id', 'full_name', 'username', 'email', 'user_kind', 'language_name', 'updated_at_formatted', 'delete');
 	}
-	
+
 	public function getMetadataForColumn($sColumnIdentifier) {
 		$aResult = array('is_sortable' => true);
 		switch($sColumnIdentifier) {
@@ -61,7 +55,7 @@ class UserListWidgetModule extends PersistentWidgetModule {
 		}
 		return $aResult;
 	}
-	
+
 	public function getDatabaseColumnForColumn($sColumnIdentifier) {
 		if($sColumnIdentifier === 'full_name') {
 			return UserPeer::FIRST_NAME;
@@ -77,7 +71,7 @@ class UserListWidgetModule extends PersistentWidgetModule {
 		}
 		return null;
 	}
-	
+
 	public function getUserKindName() {
 		$aUserKinds = UserKindInputWidgetModule::allUserKinds();
 		if(isset($aUserKinds[$this->oDelegateProxy->getUserKind()])) {
@@ -85,7 +79,7 @@ class UserListWidgetModule extends PersistentWidgetModule {
 		}
 		return $this->oDelegateProxy->getUserKind();
 	}
-	
+
 	public function getGroupName() {
 		$oGroup = GroupQuery::create()->findPk($this->oDelegateProxy->getGroupId());
 		if($oGroup) {
@@ -96,7 +90,7 @@ class UserListWidgetModule extends PersistentWidgetModule {
 		}
 		return $this->oDelegateProxy->getGroupId();
 	}
-	
+
 	public function getFilterTypeForColumn($sColumnIdentifier) {
 		if($sColumnIdentifier === 'user_kind') {
 			return CriteriaListWidgetDelegate::FILTER_TYPE_MANUAL;
@@ -106,7 +100,7 @@ class UserListWidgetModule extends PersistentWidgetModule {
 		}
 		return null;
 	}
-	
+
 	public function getCriteria() {
 		$oQuery = UserQuery::create()->distinct();
 		$sUserKind = $this->oDelegateProxy->getUserKind();

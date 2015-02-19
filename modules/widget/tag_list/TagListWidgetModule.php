@@ -2,24 +2,15 @@
 /**
  * @package modules.widget
  */
-class TagListWidgetModule extends WidgetModule {
+class TagListWidgetModule extends SpecializedListWidgetModule {
 
-	private $oListWidget;
 	public $oDelegateProxy;
 
-	public $sTagModelName = CriteriaListWidgetDelegate::SELECT_ALL;
-
-	public function __construct() {
-		$this->oListWidget = new ListWidgetModule();
+	protected function createListWidget() {
+		$oListWidget = new ListWidgetModule();
 		$this->oDelegateProxy = new CriteriaListWidgetDelegate($this, "Tag", 'name');
-		$this->oListWidget->setDelegate($this->oDelegateProxy);
-	}
-
-	public function doWidget() {
-		$aTagAttributes = array('class' => 'tag_list');
-		$oListTag = new TagWriter('table', $aTagAttributes);
-		$this->oListWidget->setListTag($oListTag);
-		return $this->oListWidget->doWidget();
+		$oListWidget->setDelegate($this->oDelegateProxy);
+		return $oListWidget;
 	}
 
 	public function getColumnIdentifiers() {
