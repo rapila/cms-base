@@ -151,7 +151,7 @@ class AdminManager extends Manager {
 
 	protected function preRender() {
 		$oConstants = new Template('constants.js', array(DIRNAME_TEMPLATES, 'admin'));
-		$oConstants->replaceIdentifier('current_admin_module', $this->sModuleName ? $this->sModuleName : 'dashboard');
+		$oConstants->replaceIdentifier('current_admin_module', $this->sModuleName ? $this->sModuleName : self::DEFAULT_MODULE);
 		$this->oResourceIncluder->addJavaScriptLibrary('jquery', self::JQUERY_VERSION);
 		$this->oResourceIncluder->addCustomJs($oConstants);
 		$this->oResourceIncluder->addJavaScriptLibrary('jqueryui', AdminManager::JQUERY_UI_VERSION);
