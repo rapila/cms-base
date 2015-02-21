@@ -42,16 +42,23 @@ abstract class DocumentationProviderTypeModule extends Module {
 			}
 			return $oProvider1->getPriority() < $oProvider2->getPriority() ? -1 : 1;
 		});
+		// Result ordered by MainKey "Documentation"
 		$aResult = array();
+
 		// Consolidate all
 		foreach($aProviders as $oProvider) {
 			foreach($oProvider->metadataForAllParts() as $sPart => $aData) {
+				$aKey = explode('/', $sPart);
+				$sMainKey = $aKey[0];
+				if(!isset($aResult[$sMainKey])) {
+					$aResult[$sMainKey] = array();
+				}
 				$sPart = strtolower($sPart);
-				if(!isset($aResult[$sPart])) {
-					$aResult[$sPart] = array();
+				if(!isset($aResult[$sMainKey][$sPart])) {
+					$aResult[$sMainKey][$sPart] = array();
 				}
 				foreach($aData as $sLanguageId => $sLanguageData) {
-					$aResult[$sPart][$sLanguageId] = array(
+					$aResult[$sMainKey][$sPart][$sLanguageId] = array(
 						'title' => $sLanguageData['title'],
 						'url' => $sLanguageData['url'],
 						'count_parts' => @$sLanguageData['count_parts'],
@@ -61,8 +68,12 @@ abstract class DocumentationProviderTypeModule extends Module {
 				}
 			}
 		}
-		$oCache->setContents($aResult);
-		return $aResult;
+		$aCombinedResult = array();
+		foreach($aResult as $sMainKey => $aDocumentations) {
+			$aCombinedResult = array_merge($aCombinedResult, $aDocumentations);
+		}
+		$oCache->setContents($aCombinedResult);
+		return $aCombinedResult;
 	}
 
 	public static function dataForPart($sDocumentationPart, $sLanguageId) {
