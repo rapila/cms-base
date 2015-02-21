@@ -7,42 +7,42 @@ Widget.types.documentation = {
 		this._element.append(this.container);
 
 		this.panel_prototype = jQuery('<div/>').addClass('panel');
-		this.link_prototype = jQuery('<a/>');
+		this.part_prototype = jQuery('<a/>');
 		this.heading_prototype = jQuery('<h4/>').append(jQuery('<a/>').attr('href', '#'));
 
 		this.loadDocumentations(function(documentations) {
-			var count = 0;
 			var main_key = null;
 			var video_tutorial = " {{writeString=wns.documentation.video_tutorial}}";
-
+			var parts_panel;
 			jQuery.each(documentations, function(key, documentation) {
 				if(documentation.is_main) {
-					count = 0;
 					main_key = key;
 					main_url = documentation.url;
+					// append heading
 					_this.append_heading(documentation.title);
-					// Add panel with link to tutorial if there are not parts
-					if(documentation.tutorial_only) {
-						_this.append_panel_with_link(main_url, video_tutorial);
+
+					// make and append panel
+					parts_panel = _this.panel_prototype.clone();
+					_this.container.append(parts_panel);
+					if(documentation.has_tutorial) {
+						parts_panel.append(_this.part_prototype.clone().text(video_tutorial).attr('href', documentation.url));
+					}
+					if(documentation.count_parts < 1) {
+						parts_panel.append(_this.part_prototype.clone().text('Info').attr('href', documentation.url));
 					}
 				} else {
-					// Add panel and link to overview page of documentation with parts
-					if(count === 0) {
-						_this.append_panel_with_link(main_url, video_tutorial);
-					}
-					count++;
-					if(documentation.url) {
-						var link = _this.link_prototype.clone().text(documentation.title).attr('href', documentation.url);
-						_this.append_to_panel(link);
-					}
+				// add additional
+					parts_panel.append(_this.part_prototype.clone().text(documentation.title).attr('href', documentation.url));
 				}
 			});
 
-			// Append support tab and content
+			// Append optional support tab and content
 			this.loadSupportTab(function(support) {
 				if(support.heading && support.link) {
 					_this.append_heading(support.heading);
-					_this.append_panel_with_link(support.link, support.link_text)
+					var parts_panel = this.panel_prototype.clone();
+					parts_panel.append(this.part_prototype.clone().text(support.heading).attr('href', support.link));
+					this.container.append(parts_panel);
 				}
 				_this.container.accordion({active: 0, heightStyle: 'content', collapsible:false});
 				_this.container.show();
@@ -54,16 +54,5 @@ Widget.types.documentation = {
 		var heading = this.heading_prototype.clone();
 		heading.find('a').text(title);
 		this.container.append(heading);
-	},
-
-	append_to_panel: function(link) {
-		this.container.find('div.panel').last().append(link);
-	},
-
-	append_panel_with_link: function(url, link_text) {
-		var parts_panel = this.panel_prototype.clone();
-		var link = this.link_prototype.clone().text(link_text).attr('href', url);
-		parts_panel.append(link);
-		this.container.append(parts_panel);
 	}
 };

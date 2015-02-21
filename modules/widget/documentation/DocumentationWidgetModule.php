@@ -79,7 +79,8 @@ class DocumentationWidgetModule extends PersistentWidgetModule {
 		} else if($aLanguageData['url'] !== null && $aLanguageData['title'] !== null)  {
 			$oData->title = $aLanguageData['title'];
 			$oData->url = $aLanguageData['url'];
-			$oData->tutorial_only = $aLanguageData['tutorial_only'];
+			$oData->has_tutorial = $aLanguageData['has_tutorial'];
+			$oData->count_parts = @$aLanguageData['count_parts'];
 			$oData->is_main = strpos($sKey, '/') === false;
 		} else {
 			return;
