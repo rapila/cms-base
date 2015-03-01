@@ -12,7 +12,8 @@ Widget.types.documentation = {
 
 		this.loadDocumentations(function(documentations) {
 			var main_key = null;
-			var video_tutorial = " {{writeString=wns.documentation.video_tutorial}}";
+			var video_tutorial = "{{writeString=wns.documentation.video_tutorial}}";
+			var info_link_text = "{{writeString=wns.documentation.intro_link_text}}";
 			var parts_panel;
 			jQuery.each(documentations, function(key, documentation) {
 				if(documentation.is_main) {
@@ -28,7 +29,7 @@ Widget.types.documentation = {
 						parts_panel.append(_this.part_prototype.clone().text(video_tutorial).attr('href', documentation.url));
 					}
 					if(documentation.count_parts < 1) {
-						parts_panel.append(_this.part_prototype.clone().text('Info').attr('href', documentation.url));
+						parts_panel.append(_this.part_prototype.clone().text(info_link_text).attr('href', documentation.url));
 					}
 				} else {
 				// add additional
