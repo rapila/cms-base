@@ -1,61 +1,87 @@
 <?php
 class DocumentationWidgetModule extends PersistentWidgetModule {
 
-	private static $METADATA = array();
-	private static $PARENT_KEY;
-	private static $COUNT_PARTS = array();
+	private $aDocumentations = array();
+	
+	const UNBOUND = '_unbound';
 
 	public function __construct($sSessionKey = null) {
 		parent::__construct($sSessionKey);
 	}
-
-	public function loadDocumentations() {
+	
+	private function getDocumentations($sPreferredLanguageId) {
 		$aMetaData = DocumentationProviderTypeModule::completeMetaData();
-		$aPreferredDocumentationLanguages = array('de', 'en');
-		$sUserLanguage = Session::getSession()->getUser()->getLanguageId();
-		// Remove the language if it is a preferred documentation language, so it's ignored in the fallback
-		$iIndex = array_search($sUserLanguage, $aPreferredDocumentationLanguages);
-		if($iIndex !== false) {
-			unset($aPreferredDocumentationLanguages[$iIndex]);
-		}
+		$aPreferredDocumentationLanguages = array_unique(array($sPreferredLanguageId, 'de', 'en'));
 
-		// Is documentation, not part
-		$bIsMain = false;
-		// Documentation key variable to check loose parts (static documentations)
-		$sMainKey = null;
-		foreach($aMetaData as $sKey => $aLanguageData) {
-			// Insert special part if there is no documentation part after a main documentation entry
-			// implying that the documentation has a tutorial video
-			$bIsMain = false;
-			if(strpos($sKey, '/') === false) {
-				$sMainKey = $sKey;
-			}
-			// Remove loose documentation parts
-			if(!StringUtil::startsWith($sKey, $sMainKey)) {
-				continue;
-			}
-
-			// Get preferred user language documentation(_part)
-			if(isset($aLanguageData[$sUserLanguage])) {
-				self::format($sKey, $aLanguageData[$sUserLanguage]);
-				continue;
-			}
-
-			// Fallback if documentation doesn't exist in preferred user language
-			foreach($aPreferredDocumentationLanguages as $sLanguage) {
-				if(isset($aLanguageData[$sLanguage])) {
-					self::format($sKey, $aLanguageData[$sLanguage]);
-					break;
+		$cFormat = function ($aLanguageData) use ($aPreferredDocumentationLanguages) {
+			$oResult = new stdClass();
+			foreach($aPreferredDocumentationLanguages as $sLanguageId) {
+				if(isset($aLanguageData[$sLanguageId])) {
+					$oResult->title = $aLanguageData[$sLanguageId]['title'];
+					$oResult->url = $aLanguageData[$sLanguageId]['url'];
 				}
 			}
+			return $oResult;
+		};
+
+		// A list of all documentation heads, by key. Documentation heads are all the documentations whose keys do not contain a slash
+		$aDocumentations = array();
+
+		// Try to figure out how many documentations (and which ones) there are
+		foreach($aMetaData as $sKey => $aLanguageData) {
+			if(strpos($sKey, '/') !== false) {
+				continue;
+			}
+			$aDocumentations[$sKey] = $cFormat($aLanguageData);
+			$aDocumentations[$sKey]->parts = array();
 		}
-		// Remove documentations without parts
-		foreach(self::$COUNT_PARTS as $sName => $iCount) {
-			if($iCount === 0) {
-				unset(self::$COUNT_PARTS[$sName]);
+
+		// Add keys to documentations
+		foreach($aMetaData as $sKey => $aLanguageData) {
+			if(strpos($sKey, '/') === false) {
+				continue;
+			}
+			$sDocumentationKey = explode('/', $sKey);
+			$sPartKey = implode('/', array_slice($sDocumentationKey, 1));
+			$sDocumentationKey = $sDocumentationKey[0];
+			if(isset($aDocumentations[$sDocumentationKey])) {
+				$aDocumentations[$sDocumentationKey]->parts[$sPartKey] = $cFormat($aLanguageData);
+			} else {
+				// If there are no documentations with this key, just pretend it’s a documentation in itself
+				$aDocumentations[$sKey] = $cFormat($aLanguageData);
+				$aDocumentations[$sKey]->parts = array();
 			}
 		}
-		return self::$METADATA;
+
+		$aEmptyDocumentations = array();
+		foreach($aDocumentations as $sKey => $oDocumentation) {
+			if(count($oDocumentation->parts) === 0) {
+				$aEmptyDocumentations[$sKey] = $oDocumentation;
+				unset($aDocumentations[$sKey]);
+			}
+		}
+
+		usort($aDocumentations, function($a, $b) {
+			return strnatcasecmp($a->title, $b->title);
+		});
+
+		if(count($aEmptyDocumentations) > 0) {
+			$oOthers = new stdClass();
+			$oOthers->title = StringPeer::getString('wns.others', $sPreferredLanguageId, 'Weiteres');
+			$oOthers->url = null;
+			$oOthers->parts = $aEmptyDocumentations;
+			$aDocumentations[] = $oOthers;
+		}
+
+		return $aDocumentations;
+	}
+
+	public function loadDocumentations() {
+		$sUserLanguage = Session::getSession()->getUser()->getLanguageId();
+		if(!isset($this->aDocumentations[$sUserLanguage])) {
+			$this->aDocumentations[$sUserLanguage] = $this->getDocumentations($sUserLanguage);
+		}
+		return $this->aDocumentations[$sUserLanguage];
 	}
 
   /**
@@ -70,33 +96,5 @@ class DocumentationWidgetModule extends PersistentWidgetModule {
 	 */
 	public function loadSupportTab() {
 		return Settings::getSetting('documentation', 'support_info', array());
-	}
-
-	private function format($sKey, $aLanguageData) {
-		$oData = new StdClass();
-		if($aLanguageData === null) {
-			$oData->is_main = false;
-		} else if($aLanguageData['url'] !== null && $aLanguageData['title'] !== null)  {
-			$oData->title = $aLanguageData['title'];
-			$oData->url = $aLanguageData['url'];
-			$oData->has_tutorial = $aLanguageData['has_tutorial'];
-			$oData->count_parts = @$aLanguageData['count_parts'];
-			$oData->is_main = strpos($sKey, '/') === false;
-		} else {
-			return;
-		}
-		self::register($sKey, $oData);
-	}
-
-	private function register($sKey, $oData) {
-		if($oData->is_main) {
-			self::$PARENT_KEY = $sKey;
-			self::$COUNT_PARTS[self::$PARENT_KEY] = 0;
-			$oData->parent = null;
-		} else {
-			self::$COUNT_PARTS[self::$PARENT_KEY]++;
-			$oData->parent = self::$PARENT_KEY;
-		}
-		self::$METADATA[$sKey] = $oData;
 	}
 }
