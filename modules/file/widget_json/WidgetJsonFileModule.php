@@ -134,7 +134,10 @@ class WidgetJsonFileModule extends FileModule {
 				return;
 			}
 		}
-		throw new LocalizedException('wns.file.widget_json.needs_login', null, 'needs_login');
+		if(!Session::getSession()->isAuthenticated()) {
+			throw new LocalizedException('wns.file.widget_json.needs_login', null, 'needs_login');
+		}
+		throw new LocalizedException("wns.file.widget_json.check_permissions", array('widget' => $this->sWidgetType));
 	}
 
 	public static function jsonOrderedObject($aObject) {
