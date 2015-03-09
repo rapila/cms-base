@@ -45,8 +45,8 @@ Widget.types.document_list_frontend_config = {
 			options.tags = [];
 		}
 		this.allDocuments(options, function(files) {
-			jQuery.each(files, function(id, name) {
-				_this.result_list.append(jQuery('<li/>').text(name).attr('title', "{{writeString=wns.edit_entry}}").data('id', id));
+			jQuery.each(files, function(i, data) {
+				_this.result_list.append(jQuery('<li/>').text(data.value).attr('title', "{{writeString=wns.edit_entry}}").data('id', data.key));
 			});
 		});
 	},

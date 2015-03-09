@@ -2,7 +2,7 @@
 class DocumentListFrontendConfigWidgetModule extends FrontendConfigWidgetModule {
 
 	public function allDocuments($aOptions = array()) {
-		return DocumentListFrontendModule::listQuery($aOptions)->select(array('Id', 'Name'))->find()->toKeyValue('Id', 'Name');
+		return WidgetJsonFileModule::jsonOrderedObject(DocumentListFrontendModule::listQuery($aOptions)->select(array('Id', 'Name'))->find()->toKeyValue('Id', 'Name'));
 	}
 
 	public function getConfigurationModes() {
@@ -14,6 +14,7 @@ class DocumentListFrontendConfigWidgetModule extends FrontendConfigWidgetModule 
 		$aResult['list_template'] = array_keys(DocumentListFrontendModule::getTemplateOptions());
 		if(count($aDocumentCategories) > 0) {
 			$aResult['sort_by'] = DocumentListFrontendModule::getSortOptions();
+			$aResult['sort_order'] = DocumentListFrontendModule::getSortOrders();
 		}
 		return $aResult;
 	}
