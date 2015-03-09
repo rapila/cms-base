@@ -251,7 +251,7 @@ class User extends BaseUser {
 		}
 		return self::$ALL_ROLES;
 	}
-	
+
 	public function addRole($sRoleName) {
 		$aRoles = func_get_args();
 		foreach($aRoles as $mRole) {
@@ -261,7 +261,7 @@ class User extends BaseUser {
 			UserRoleQuery::create()->createOrFind($this, $mRole);
 		}
 	}
-	
+
 	public function addGroup($mGroup) {
 		if(!($mGroup instanceof Group)) {
 			$mGroup = GroupQuery::create()->createOrFindByName($mGroup);
