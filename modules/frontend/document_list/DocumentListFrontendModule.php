@@ -86,6 +86,9 @@ class DocumentListFrontendModule extends DynamicFrontendModule {
 		if(count($aResult) > 0 && !Settings::getSetting('admin', 'list_allows_multiple_categories', true)) {
 			$aResult = array('' => ' ---- ')+$aResult;
 		}
+		if(count($aResult) === 0) {
+			$aResult = array('' => StringPeer::getString('wns.document_list.no_tags_available'));
+		}
 		return $aResult;
 	}
 
