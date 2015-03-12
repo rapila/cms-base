@@ -52,7 +52,7 @@ class LinkListFrontendModule extends DynamicFrontendModule {
 
 		// Tags
 		$aTags = isset($aOptions['tags']) ? (is_array($aOptions['tags']) ? $aOptions['tags'] : array($aOptions['tags'])) : array();
-		$bHasTags = count($aTags) > 0;
+		$bHasTags = count($aTags) > 0 && $aTags[0] !== null;
 		if($bHasTags) {
 			$oQuery->filterByTagId($aTags);
 		}
@@ -90,6 +90,9 @@ class LinkListFrontendModule extends DynamicFrontendModule {
 		$aResult = TagQuery::create()->filterByTagged('Link')->select(array('Id', 'Name'))->find()->toKeyValue('Id', 'Name');
 		if(count($aResult) > 0 && !Settings::getSetting('admin', 'list_allows_multiple_categories', true)) {
 			$aResult = array('' => ' ---- ')+$aResult;
+		}
+		if(count($aResult) === 0) {
+			$aResult = array('' => StringPeer::getString('wns.link_list.no_tags_available'));
 		}
 		return $aResult;
 	}
