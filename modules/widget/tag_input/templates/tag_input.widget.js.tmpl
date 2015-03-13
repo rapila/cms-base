@@ -41,7 +41,7 @@ Widget.types.tag_input = {
 		}
 		this._element.val(current_value);
 	},
-	
+
 	reload: function() {
 		var prev = this.val();
 		this._element.empty();
@@ -52,7 +52,7 @@ Widget.types.tag_input = {
 			this._element.change();
 		}
 	},
-	
+
 	val: function(value) {
 		if(arguments.length > 0) {
 			this._element.val(value);
@@ -60,11 +60,11 @@ Widget.types.tag_input = {
 		}
 		return this._element.val();
 	},
-	
+
 	settings: {
 		model_name: null,
 		store_value: false,
 		default_option_text: "{{writeString=wns.tag_input.default_option_text}}"
 	}
-	
+
 };
