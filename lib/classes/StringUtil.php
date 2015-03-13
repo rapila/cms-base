@@ -75,18 +75,19 @@ class StringUtil {
 		return $sText;
 	}
 
-	// implement preg_replace with		 
-	// $aUmlaut = array('/Ä/', '/ä/', '/Ö/', '/ö/', '/Ü/', '/ü/') 
+	// implement preg_replace with
+	// $aUmlaut = array('/Ä/', '/ä/', '/Ö/', '/ö/', '/Ü/', '/ü/')
 	// $aReplace = array('ae', 'ae', 'oe', 'oe', 'ue', 'ue');
-	public static function normalize($sInput, $sReplaceSpaceWith = '-', $sReplaceNonWordsWith = '') {
+	public static function normalizeToASCII($sInput, $sReplaceSpaceWith = '-', $sReplaceNonWordsWith = '') {
 		if($sInput === null || $sInput === '') {
 			return null;
 		}
 		$sInput = str_replace(array('ä', 'ö', 'ü'), array('ae', 'oe', 'ue'), mb_strtolower($sInput));
 		$sInput = @iconv(Settings::getSetting('encoding', 'browser', 'utf-8'), 'US-ASCII//TRANSLIT', $sInput);
-		$sInput = mb_ereg_replace('-|–|—|_|\.', '-', $sInput);
+		$sInput = mb_ereg_replace('–|—|_', '-', $sInput);
 		$sInput = mb_ereg_replace('\s+', $sReplaceSpaceWith, $sInput);
 		$sNewName = strtolower(preg_replace("/([^\\w\\d\-_]+)/u", $sReplaceNonWordsWith, $sInput));
+		$sInput = preg_replace("/$sReplaceSpaceWith{2,}/", $sReplaceSpaceWith, $sInput);
 		$sNewName = trim($sNewName, $sReplaceSpaceWith);
 		if($sNewName !== "") {
 			return $sNewName;
@@ -94,10 +95,21 @@ class StringUtil {
 			return null;
 		}
 	}
-	
-	public static function normalizePath($sInput, $sReplaceSpaceWith = '-', $sReplaceNonWordsWith = '') {
-		$sPath = self::normalize($sInput, $sReplaceSpaceWith, $sReplaceNonWordsWith);
-		return preg_replace("/$sReplaceSpaceWith{2,}/", $sReplaceSpaceWith, $sPath);
+
+	public static function normalize($sInput, $sReplaceSpaceWith = '-') {
+		return self::normalizeMinimally(mb_strtolower($sInput));
+	}
+
+	public static function normalizeMinimally($sInput, $sReplaceSpaceWith = '-') {
+		$sInput = mb_ereg_replace('–|—', '-', $sInput);
+		$sInput = mb_ereg_replace('\s+', $sReplaceSpaceWith, $sInput);
+		$sInput = preg_replace("/$sReplaceSpaceWith{2,}/", $sReplaceSpaceWith, $sInput);
+		$sInput = trim($sInput, $sReplaceSpaceWith);
+		return $sInput;
+	}
+
+	public static function normalizePath($sInput, $sReplaceSpaceWith = '-') {
+		return self::normalizeMinimally($sInput, $sReplaceSpaceWith);
 	}
 
 	public static function getWords($sString, $bFromHtml=false, $sReplaceNonWordsWith = '') {
