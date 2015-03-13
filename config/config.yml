@@ -51,6 +51,8 @@ admin:
 
   registered_user_languages: ['de', 'en']
 
+  tag_models: ['Tag']
+
 error_handling:
   should_stop_on_recoverable_errors: false
   print_errors: false

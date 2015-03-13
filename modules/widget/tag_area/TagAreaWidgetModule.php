@@ -13,8 +13,23 @@ class TagAreaWidgetModule extends PersistentWidgetModule {
 
 	public function listTags() {
 		$oQuery = TagQuery::create();
-		$oQuery->filterByTagged($this->sModelName, $this->mTaggedItemId);
-		return $oQuery->find()->toArray();
+		$sModelName = $this->sModelName;
+		if($this->sModelName && $this->mTaggedItemId) {
+			return $sModelName::tagsFor($this->mTaggedItemId, 'names');
+		}
+
+		$aTagModels = Settings::getSetting('admin', 'tag_models', 'Tag');
+		if(!is_array($aTagModels)) {
+			$aTagModels = array($aTagModels);
+		}
+		$aResult = array();
+		foreach($aTagModels as $sTagModel) {
+			$sQuery = "${sTagModel}Query";
+			$aResult = array_merge($aResult, $sQuery::create()->select('name')->find()->getArrayCopy());
+		}
+		$aResult = array_unique($aResult);
+		sort($aResult);
+		return $aResult;
 	}
 
 	public function deleteTag($sTagName) {
