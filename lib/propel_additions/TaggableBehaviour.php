@@ -162,7 +162,7 @@ public static function addTagTo(\$s${sClass}Id, \$mTag)
 		return \$oTagInstance;
 	}
 	\$oTagInstance = new $sInstanceClass();
-	\$oTagInstance->setTag(\$oTag);
+	\$oTagInstance->set${sTagClass}(\$oTag);
 	\$oTagInstance->setModelName(\"$sClass\");
 	\$oTagInstance->setTaggedItemId(\$s${sClass}Id);
 	\$oTagInstance->save();
