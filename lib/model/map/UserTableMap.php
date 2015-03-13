@@ -128,6 +128,8 @@ class UserTableMap extends TableMap
     {
         return array(
             'taggable' =>  array (
+  'tag_model' => 'Tag',
+  'tag_instance_model' => '',
 ),
             'denyable' =>  array (
   'mode' => '',

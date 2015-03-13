@@ -17754,11 +17754,124 @@ abstract class BaseUser extends BaseObject implements Persistent
     // taggable behavior
 
     /**
+     * Add a tag to the current User
+     */
+    public function addTag($mTag)
+    {
+        return self::addTagTo($this->getPKString(), $mTag);
+    }
+    /**
+     * Remove tag from the current User
+     */
+    public function removeTag($mTag)
+    {
+        return self::removeTagFrom($this->getPKString(), $mTag);
+    }
+    /**
+     * Remove all tags from the current User
+     */
+    public function removeAllTags()
+    {
+        return self::removeAllTagsFrom($this->getPKString());
+    }
+    /**
+     * @return All tags for the current User
+     */
+    public function tags($sReturn = 'tag')
+    {
+        return self::tagsFor($this->getPKString(), $sReturn);
+    }
+    /**
      * @return A list of TagInstances (not Tags) which reference this User
+     * @deprecated Use ->tags('instances')
      */
     public function getTags()
     {
-        return TagPeer::tagInstancesForObject($this);
+        return $this->tags('instances');
+    }
+    /**
+     * Add a tag to the User given by the id
+     */
+    public static function addTagTo($sUserId, $mTag)
+    {
+        if($mTag instanceof TagInstance) {
+            $mTag = $mTag->getTag();
+        }
+        if($mTag instanceof Tag) {
+            $mTag = $mTag->getName();
+        }
+        $sTagName = StringUtil::normalize($mTag);
+        $oTag = TagQuery::create()->findOneByName($sTagName);
+        if($oTag === null) {
+            $oTag = new Tag();
+            $oTag->setName($sTagName);
+            $oTag->save();
+        }
+        $oTagInstance = TagInstanceQuery::create()->findPk(array($oTag->getId(), $sUserId, "User"));
+        if($oTagInstance !== null) {
+            return $oTagInstance;
+        }
+        $oTagInstance = new TagInstance();
+        $oTagInstance->setTag($oTag);
+        $oTagInstance->setModelName("User");
+        $oTagInstance->setTaggedItemId($sUserId);
+        $oTagInstance->save();
+        return $oTagInstance;
+    }
+    /**
+     * Remove tag from the User given by the id
+     */
+    public static function removeTagFrom($sUserId, $mTag)
+    {
+        if(is_string($mTag)) {
+            $mTag = TagQuery::create()->findOneByName($mTag);
+        }
+        if($mTag instanceof TagInstance) {
+            $mTag = $mTag->getTag();
+        }
+        if(!($mTag instanceof Tag)) {
+            return;
+        }
+        $oQuery = TagInstanceQuery::create();
+        $oQuery->filterByTaggedItemId($sUserId);
+        $oQuery->filterByModelName("User");
+        $oQuery->filterByTag($mTag);
+        $oTagInstance = $oQuery->findOne();
+        if($oTagInstance) {
+            $oTagInstance->delete();
+        }
+    }
+    /**
+     * Remove all tags from the User given by the id
+     */
+    public static function removeAllTagsFrom($sUserId)
+    {
+        $aTagInstances = self::tagsFor($sUserId, 'instances');
+        foreach($aTagInstances as $oTagInstance) {
+            $oTagInstance->delete();
+        }
+        return count($aTagInstances);
+    }
+    /**
+     * @return All tags for the User given by the id
+     */
+    public static function tagsFor($sUserId, $sReturn = 'tag')
+    {
+        $oQuery = TagInstanceQuery::create();
+        $oQuery->filterByTaggedItemId($sUserId);
+        $oQuery->filterByModelName("User");
+        $aTagInstances = $oQuery->find()->getArrayCopy();
+        if($sReturn === 'instances') {
+            return $aTagInstances;
+        }
+        if($sReturn === 'tags') {
+            return array_map(function($oTagInstance) {
+                return $oTagInstance->getTag();
+            }, $aTagInstances);
+        }
+        return array_map(function($oTagInstance) {
+            return $oTagInstance->getTag()->getName();
+        }, $aTagInstances);
     }
     // denyable behavior
     public function mayOperate($sOperation, $oUser = false) {

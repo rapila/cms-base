@@ -2046,11 +2046,124 @@ abstract class BaseLink extends BaseObject implements Persistent
     // taggable behavior
 
     /**
+     * Add a tag to the current Link
+     */
+    public function addTag($mTag)
+    {
+        return self::addTagTo($this->getPKString(), $mTag);
+    }
+    /**
+     * Remove tag from the current Link
+     */
+    public function removeTag($mTag)
+    {
+        return self::removeTagFrom($this->getPKString(), $mTag);
+    }
+    /**
+     * Remove all tags from the current Link
+     */
+    public function removeAllTags()
+    {
+        return self::removeAllTagsFrom($this->getPKString());
+    }
+    /**
+     * @return All tags for the current Link
+     */
+    public function tags($sReturn = 'tag')
+    {
+        return self::tagsFor($this->getPKString(), $sReturn);
+    }
+    /**
      * @return A list of TagInstances (not Tags) which reference this Link
+     * @deprecated Use ->tags('instances')
      */
     public function getTags()
     {
-        return TagPeer::tagInstancesForObject($this);
+        return $this->tags('instances');
+    }
+    /**
+     * Add a tag to the Link given by the id
+     */
+    public static function addTagTo($sLinkId, $mTag)
+    {
+        if($mTag instanceof TagInstance) {
+            $mTag = $mTag->getTag();
+        }
+        if($mTag instanceof Tag) {
+            $mTag = $mTag->getName();
+        }
+        $sTagName = StringUtil::normalize($mTag);
+        $oTag = TagQuery::create()->findOneByName($sTagName);
+        if($oTag === null) {
+            $oTag = new Tag();
+            $oTag->setName($sTagName);
+            $oTag->save();
+        }
+        $oTagInstance = TagInstanceQuery::create()->findPk(array($oTag->getId(), $sLinkId, "Link"));
+        if($oTagInstance !== null) {
+            return $oTagInstance;
+        }
+        $oTagInstance = new TagInstance();
+        $oTagInstance->setTag($oTag);
+        $oTagInstance->setModelName("Link");
+        $oTagInstance->setTaggedItemId($sLinkId);
+        $oTagInstance->save();
+        return $oTagInstance;
+    }
+    /**
+     * Remove tag from the Link given by the id
+     */
+    public static function removeTagFrom($sLinkId, $mTag)
+    {
+        if(is_string($mTag)) {
+            $mTag = TagQuery::create()->findOneByName($mTag);
+        }
+        if($mTag instanceof TagInstance) {
+            $mTag = $mTag->getTag();
+        }
+        if(!($mTag instanceof Tag)) {
+            return;
+        }
+        $oQuery = TagInstanceQuery::create();
+        $oQuery->filterByTaggedItemId($sLinkId);
+        $oQuery->filterByModelName("Link");
+        $oQuery->filterByTag($mTag);
+        $oTagInstance = $oQuery->findOne();
+        if($oTagInstance) {
+            $oTagInstance->delete();
+        }
+    }
+    /**
+     * Remove all tags from the Link given by the id
+     */
+    public static function removeAllTagsFrom($sLinkId)
+    {
+        $aTagInstances = self::tagsFor($sLinkId, 'instances');
+        foreach($aTagInstances as $oTagInstance) {
+            $oTagInstance->delete();
+        }
+        return count($aTagInstances);
+    }
+    /**
+     * @return All tags for the Link given by the id
+     */
+    public static function tagsFor($sLinkId, $sReturn = 'tag')
+    {
+        $oQuery = TagInstanceQuery::create();
+        $oQuery->filterByTaggedItemId($sLinkId);
+        $oQuery->filterByModelName("Link");
+        $aTagInstances = $oQuery->find()->getArrayCopy();
+        if($sReturn === 'instances') {
+            return $aTagInstances;
+        }
+        if($sReturn === 'tags') {
+            return array_map(function($oTagInstance) {
+                return $oTagInstance->getTag();
+            }, $aTagInstances);
+        }
+        return array_map(function($oTagInstance) {
+            return $oTagInstance->getTag()->getName();
+        }, $aTagInstances);
     }
     // denyable behavior
     public function mayOperate($sOperation, $oUser = false) {
