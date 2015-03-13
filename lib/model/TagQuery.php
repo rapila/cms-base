@@ -45,7 +45,5 @@ class TagQuery extends BaseTagQuery {
 		$this->groupById();
 		return $this;
 	}
-
-
 }
 
