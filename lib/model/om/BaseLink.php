@@ -2165,6 +2165,9 @@ abstract class BaseLink extends BaseObject implements Persistent
             return $oTagInstance->getTag()->getName();
         }, $aTagInstances);
     }
+    const TAG_MODEL_NAME = 'Tag';
+    const TAG_INSTANCE_MODEL_NAME = 'TagInstance';
+
     // denyable behavior
     public function mayOperate($sOperation, $oUser = false) {
         $oUser = LinkPeer::getRightsUser($oUser);

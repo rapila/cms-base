@@ -69,6 +69,8 @@ class TaggableBehaviour extends Behavior
 		$sMethods .= $this->addRemoveTagFrom($oBuilder);
 		$sMethods .= $this->addRemoveAllTagsFrom($oBuilder);
 		$sMethods .= $this->addTagsFor($oBuilder);
+		// Constants
+		$sMethods .= $this->addConstants($oBuilder);
 		return $sMethods;
 	}
 
@@ -247,6 +249,15 @@ public static function tagsFor(\$s${sClass}Id, \$sReturn = 'tag')
 		return \$oTagInstance->get$sTagClass()->getName();
 	}, \$aTagInstances);
 }";
+	}
+	
+	public function addConstants($builder) {
+		$sTagClass = $this->getParameter('tag_model');
+		$sInstanceClass = $this->getParameter('tag_instance_model');
+		return "
+const TAG_MODEL_NAME = '$sTagClass';
+const TAG_INSTANCE_MODEL_NAME = '$sInstanceClass';
+";
 	}
 
 	//TODO: filter by tag name (with queryMethods)

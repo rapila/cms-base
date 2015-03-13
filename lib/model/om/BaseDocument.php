@@ -2716,6 +2716,9 @@ abstract class BaseDocument extends BaseObject implements Persistent
             return $oTagInstance->getTag()->getName();
         }, $aTagInstances);
     }
+    const TAG_MODEL_NAME = 'Tag';
+    const TAG_INSTANCE_MODEL_NAME = 'TagInstance';
+
     // denyable behavior
     public function mayOperate($sOperation, $oUser = false) {
         $oUser = DocumentPeer::getRightsUser($oUser);
