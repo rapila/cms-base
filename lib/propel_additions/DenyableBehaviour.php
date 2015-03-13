@@ -7,7 +7,7 @@
 class DenyableBehaviour extends Behavior {
 	///Run denyable as soon as possible so as to not have other behaviors pollute the modified columns
 	protected $tableModificationOrder = 10;
-	
+
 	protected $parameters = array(
 		'mode' => '', //Possible values: ''  (defaults to 'by_role' if 'role_key' given, 'allow' otherwise) 'allow', 'valid_user', 'backend_user', 'admin_user', 'administrator'
 		'role_key' => '', //Defaults to the table name but does not cause 'mode' or 'owner_allowed' to default to 'role_key' if not explicit
@@ -26,20 +26,6 @@ class DenyableBehaviour extends Behavior {
 			$sParam = $this->getTable()->getCommonName();
 		}
 		return $sParam;
-	}
-
-	/**
-	 * This method is automatically called on database behaviors when the database model is finished
-	 * Propagate the behavior to the tables of the database
-	 * Override this method to have a database behavior do something special
-	 */
-	public function modifyDatabase() {
-		foreach ($this->getDatabase()->getTables() as $oTable) {
-			if($oTable->hasBehavior($this->getName())) {
-				continue;
-			}
-			$oTable->addBehavior(clone $this);
-		}
 	}
 
 	public function preInsert($oBuilder) {
@@ -150,7 +136,7 @@ class DenyableBehaviour extends Behavior {
 }
 ';
 	}
-	
+
 	private function addIsIgnoringMethod() {
 		return 'public static function isIgnoringRights() {
 	return self::$IGNORE_RIGHTS || PHP_SAPI === "cli";
@@ -164,7 +150,7 @@ class DenyableBehaviour extends Behavior {
 }
 ';
 	}
-	
+
 	private function addGetUserMethod() {
 		return 'public static function getRightsUser($oUser = false) {
 	if($oUser === false) {
@@ -211,14 +197,14 @@ class DenyableBehaviour extends Behavior {
 }
 ';
 	}
-	
+
 	private function addMayMethodForValidUser() {
 		return 'public static function mayOperateOn($oUser, $mObject, $sOperation) {
 	return $oUser !== null;
 }
 ';
 	}
-	
+
 	private function addMayMethodForBackendUser() {
 		return 'public static function mayOperateOn($oUser, $mObject, $sOperation) {
 	if($oUser === null) {
@@ -231,7 +217,7 @@ class DenyableBehaviour extends Behavior {
 }
 ';
 	}
-	
+
 	private function addMayMethodForAdminUser() {
 		return 'public static function mayOperateOn($oUser, $mObject, $sOperation) {
 	if($oUser === null) {
@@ -244,7 +230,7 @@ class DenyableBehaviour extends Behavior {
 }
 ';
 	}
-	
+
 	private function addMayMethodForAdministrator() {
 		return 'public static function mayOperateOn($oUser, $mObject, $sOperation) {
 	if($oUser === null) {
@@ -254,14 +240,14 @@ class DenyableBehaviour extends Behavior {
 }
 ';
 	}
-	
+
 	private function addMayMethodForAllow() {
 		return 'public static function mayOperateOn($oUser, $mObject, $sOperation) {
 	return true;
 }
 ';
 	}
-	
+
 	private function addMayOwnMethod() {
 		if($this->getParameter('owner_allowed') === 'by_role') {
 			return $this->addMayOwnMethodForRoleKey($this->getParameter('role_key'));
@@ -290,14 +276,14 @@ class DenyableBehaviour extends Behavior {
 }
 ';
 	}
-	
+
 	private function addMayOwnMethodForInsertAndUpdate() {
 		return 'public static function mayOperateOnOwn($oUser, $mObject, $sOperation) {
 	return $sOperation !== "delete";
 }
 ';
 	}
-	
+
 	private function addMayOwnMethodForNone() {
 		return 'public static function mayOperateOnOwn($oUser, $mObject, $sOperation) {
 	return false;
