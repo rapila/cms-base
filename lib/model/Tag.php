@@ -27,7 +27,7 @@ class Tag extends BaseTag {
 	}
 
 	public function setName($sNewName) {
-		$sNewName = StringUtil::normalizePath($sNewName);
+		$sNewName = StringUtil::normalize($sNewName);
 		parent::setName($sNewName);
 	}
 
@@ -44,9 +44,9 @@ class Tag extends BaseTag {
 	}
 
 	public function countTagInstancesByModel($sModelName) {
-	  $oCriteria = new Criteria();
-	  $oCriteria->add(TagInstancePeer::MODEL_NAME, $sModelName);
-	  return $this->countTagInstances($oCriteria);
+		$oCriteria = new Criteria();
+		$oCriteria->add(TagInstancePeer::MODEL_NAME, $sModelName);
+		return $this->countTagInstances($oCriteria);
 	}
 
 	public function getLanguageIdsOfStrings() {
