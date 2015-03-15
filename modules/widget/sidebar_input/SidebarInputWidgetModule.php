@@ -3,7 +3,7 @@
  * @package modules.widget
  */
 class SidebarInputWidgetModule extends WidgetModule {
-	
+
 	public function createEntry($sModelName, $sItemName) {
 		if(!method_exists($sModelName, 'setName')) {
 			return false;
@@ -23,7 +23,7 @@ class SidebarInputWidgetModule extends WidgetModule {
 
 		return $oResult;
 	}
-	
+
 	public static function isSingleton() {
 		return true;
 	}

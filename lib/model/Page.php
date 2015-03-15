@@ -14,6 +14,11 @@ class Page extends BasePage {
 	///Stores the “old” parent (before move operations)
 	private $oOldParent = null;
 
+	// Remove slashes from string StringUtil::normalizeMinimally()
+	public function setName($sName) {
+		parent::setName(str_replace('/', '-', $sName));
+	}
+
 	public function getChildByName($sName) {
 		$oPage = PageQuery::create()->childrenOf($this)->filterByName($sName)->findOne();
 		if($oPage === null) {
