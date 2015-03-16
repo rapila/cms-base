@@ -14,9 +14,8 @@ class Page extends BasePage {
 	///Stores the “old” parent (before move operations)
 	private $oOldParent = null;
 
-	// Remove slashes from string StringUtil::normalizeMinimally()
 	public function setName($sName) {
-		parent::setName(str_replace('/', '-', $sName));
+		parent::setName(StringUtil::normalizePath($sName));
 	}
 
 	public function getChildByName($sName) {

@@ -96,7 +96,7 @@ class StringUtil {
 		}
 	}
 
-	public static function normalize($sInput, $sReplaceSpaceWith = '-') {
+	public static function normalize($sInput) {
 		return self::normalizeMinimally(mb_strtolower($sInput));
 	}
 
@@ -108,8 +108,10 @@ class StringUtil {
 		return $sInput;
 	}
 
-	public static function normalizePath($sInput, $sReplaceSpaceWith = '-') {
-		return self::normalizeMinimally($sInput, $sReplaceSpaceWith);
+	public static function normalizePath($sInput) {
+		$sInput = self::normalizeMinimally($sInput);
+		$sInput = str_replace('/', '-', $sInput);
+		return $sInput;
 	}
 
 	public static function getWords($sString, $bFromHtml=false, $sReplaceNonWordsWith = '') {
