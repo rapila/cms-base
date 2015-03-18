@@ -128,7 +128,7 @@ class StringUtil {
 		$aWords = mb_split("[\s\-–—.@]+", $sString);
 		$aResult = array();
 		foreach($aWords as $sWord) {
-			$sWord = self::normalize($sWord, '-', $sReplaceNonWordsWith);
+			$sWord = self::normalizeToASCII($sWord, '-', $sReplaceNonWordsWith);
 			if($sWord !== null) {
 				$aResult[] = $sWord;
 			}
