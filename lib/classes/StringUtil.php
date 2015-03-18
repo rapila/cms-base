@@ -83,14 +83,20 @@ class StringUtil {
 			return null;
 		}
 		$sInput = str_replace(array('ä', 'ö', 'ü'), array('ae', 'oe', 'ue'), mb_strtolower($sInput));
-		$sInput = @iconv(Settings::getSetting('encoding', 'browser', 'utf-8'), 'US-ASCII//TRANSLIT', $sInput);
 		$sInput = mb_ereg_replace('–|—|_', '-', $sInput);
+		$sEncoded = @iconv(Settings::getSetting('encoding', 'browser', 'utf-8'), 'US-ASCII//TRANSLIT//IGNORE', $sInput);
+		if($sEncoded !== false) {
+			// ICONV error
+			$sInput = $sEncoded;
+		} else {
+			$sInput = strtolower(preg_replace("/([^\\w\\d\-_]+)/", $sReplaceNonWordsWith, $sInput));
+		}
 		$sInput = mb_ereg_replace('\s+', $sReplaceSpaceWith, $sInput);
-		$sNewName = strtolower(preg_replace("/([^\\w\\d\-_]+)/u", $sReplaceNonWordsWith, $sInput));
+		$sInput = strtolower(preg_replace("/([^\\w\\d\-_]+)/u", $sReplaceNonWordsWith, $sInput));
 		$sInput = preg_replace("/$sReplaceSpaceWith{2,}/", $sReplaceSpaceWith, $sInput);
-		$sNewName = trim($sNewName, $sReplaceSpaceWith);
-		if($sNewName !== "") {
-			return $sNewName;
+		$sInput = trim($sInput, $sReplaceSpaceWith);
+		if($sInput !== "") {
+			return $sInput;
 		} else {
 			return null;
 		}

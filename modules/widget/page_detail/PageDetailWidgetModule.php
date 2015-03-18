@@ -178,7 +178,12 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 			$oParentPage = PagePeer::getRootPage();
 		}
 		$sPageTitle = $sPageName;
-		$sPageName = StringUtil::normalize($sPageName);
+		$sPageName = StringUtil::normalizeToASCII($sPageName);
+		if(!$sPageName) {
+			// If all we have are special chars, leave the page name as is and only normalize minimally
+			$sPageName = $sPageTitle;
+		}
+		$sPageName = StringUtil::normalizePath($sPageName);
 		if(PagePeer::pageIsNotUnique($sPageName, $oParentPage)) {
 			$oFlash = Flash::getFlash();
 			$oFlash->addMessage('page.name_unique_required');

@@ -14,7 +14,8 @@ class UtilStringTests extends PHPUnit_Framework_TestCase {
 		$this->assertSame("raemi", StringUtil::normalizeToASCII("rämi"));
 		$this->assertSame("sudo", StringUtil::normalizeToASCII("sudó"));
 		$this->assertSame("remy", StringUtil::normalizeToASCII("rémy"));
-		$this->assertSame("rund-lauf---themen", StringUtil::normalizeToASCII("rund lauf – themen"));
+		$this->assertSame("rund-lauf-themen", StringUtil::normalizeToASCII("rund lauf – themen"));
 		$this->assertSame("rund_lauf_-_themen", StringUtil::normalizeToASCII("rund lauf – themen", '_'));
+		$this->assertSame("ruembaelaosdufoassofaossduf", StringUtil::normalizeToASCII("rümbälaosduføˆå¨ß∂ˆø¨ƒåøßˆduf"));
 	}
 }
