@@ -109,8 +109,10 @@ class StringUtil {
 	}
 
 	public static function normalizePath($sInput) {
-		$sInput = self::normalizeMinimally($sInput);
-		$sInput = str_replace('/', '-', $sInput);
+		$aPathSpecials = array('/', '#', '?');
+		$sFillIn = '-';
+		$sInput = self::normalizeMinimally($sInput, $sFillIn);
+		$sInput = str_replace($aPathSpecials, $sFillIn, $sInput);
 		return $sInput;
 	}
 
