@@ -53,9 +53,12 @@ fi
 
 SUDO="sudo -u $owner -E"
 
+adapter=$($SUDO -u $owner -E "$PHP_PATH" -r "require_once('base/lib/inc.php');print BuildHelper::getDBAdapter();")
+echo "Using adapter $adapter"
+
 cp base/build.properties generated/ && \
 $SUDO "$PHP_PATH" -r "require_once('base/lib/inc.php');BuildHelper::preMigrate();" && \
-$SUDO "$PHP_PATH" ./base/lib/vendor/phing/bin/phing -f "$path_to_buildfile" -Dproject.dir=generated/ "-Dpropel.migration.table=_migration_${context/\//_}" diff && \
+$SUDO "$PHP_PATH" ./base/lib/vendor/phing/bin/phing -f "$path_to_buildfile" -Dproject.dir=generated/ -Dpropel.database="$adapter" "-Dpropel.migration.table=_migration_${context/\//_}" diff && \
 $SUDO "$PHP_PATH" -r "require_once('base/lib/inc.php');BuildHelper::postMigrate();" && \
 
 mkdir -p "$destination_path" && \
