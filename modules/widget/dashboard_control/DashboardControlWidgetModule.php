@@ -49,6 +49,9 @@ class DashboardControlWidgetModule extends WidgetModule {
 		$oUser = Session::getSession()->getUser();
 		$aDashboardConfig = $oUser->getAdminSettings('dashboard');
 		if($sNewLayoutName !== null) {
+			if($aDashboardConfig['layout'] === $sNewLayoutName) {
+				return true;
+			}
 			$aDashboardConfig['layout'] = $sNewLayoutName;
 			$oUser->setAdminSettings('dashboard', $aDashboardConfig);
 			return $oUser->save();
