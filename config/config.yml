@@ -2,8 +2,9 @@ general:
   # for plugins that need to call php via cli
   php_path: 'php'
   multilingual: true
-  # general caching of files like configuration yaml files and language ini files
+  # general caching of files like configuration yaml files and language ini files. Deprecated: use default->strategy:None in caching.yml
   caching: true
+  # caching of template contents. Deprecated: use templates->strategy:None in caching.yml
   template_caching: true
   # @see http://www.php.net/manual/en/timezones.php
   timezone: "Europe/Zurich"
@@ -41,8 +42,6 @@ admin:
   # set this to false if your containers overlap
   use_parsed_css_in_config: true
 
-  # document edit and delete can be restricted to owner only (if is not admin), defaults to false
-  document_delete_allow_from_creator_only: false
   list_allows_multiple_categories: false
 
   # hide externally managed categories
@@ -86,7 +85,7 @@ security:
 frontend:
   title: 'Site Title'
   main_template: general
-#possible values: strict, transitional, html4_strict, html4_transitional, none (which means the content type will always be text/html, the encoding will be default and the doctype has to be hardcoded in the template)
+#possible values: html5, xhtml5, strict, transitional, html4_strict, html4_transitional, none (the content type will always be text/html with a charset and the doctype has to be hardcoded in the template)
   doctype: strict
   protect_email_addresses: false
   display_string_keys: false #override this to see all used string keys directly in frontend
@@ -100,7 +99,7 @@ encoding:
   #possible values: full, xml_only. xml_only is much faster and results in smaller file sizes, however, full encoding may help if you have encoding issues with certain browsers
   entities: xml_only
 
-# for overwriting in site/config both parameters have to be copied, otherwise content_language will defer from language
+# for overwriting in site/config both parameters have to be copied, otherwise content_language will differ from language
 session_default:
   language: en &fe_language
   content_language: *fe_language

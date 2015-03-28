@@ -410,7 +410,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 			$oCssCache = new Cache($sCacheKey, DIRNAME_PRELOAD);
 
 			$sCssContents = "";
-			if(!$oCssCache->cacheFileExists() || $oCssCache->isOutdated(ResourceFinder::create(array(DIRNAME_TEMPLATES, $sTemplateName)))) {
+			if(!$oCssCache->entryExists() || $oCssCache->isOutdated(ResourceFinder::create(array(DIRNAME_TEMPLATES, $sTemplateName)))) {
 				$oIncluder = new ResourceIncluder();
 				foreach($oTemplate->identifiersMatching('addResourceInclude', Template::$ANY_VALUE) as $oIdentifier) {
 					$oIncluder->addResourceFromTemplateIdentifier($oIdentifier);

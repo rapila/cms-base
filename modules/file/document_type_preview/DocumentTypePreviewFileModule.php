@@ -26,9 +26,9 @@ class DocumentTypePreviewFileModule extends FileModule {
 	
 	public function renderFile() {
 		$sCacheString = 'preview_'.$this->oDocumentType->getId().'_'.$this->iSize;
-		$oCache = new Cache($sCacheString, DIRNAME_IMAGES);
+		$oCache = new Cache($sCacheString, DIRNAME_IMAGES, CachingStrategyFile::create());
 		
-		if($oCache->cacheFileExists() && !$oCache->isOlderThan($this->oDocumentType)) {
+		if($oCache->entryExists() && !$oCache->isOlderThan($this->oDocumentType)) {
 			$oCache->sendCacheControlHeaders($this->oDocumentType->getUpdatedAtTimestamp());
 			header("Content-Type: ".self::MIME_TYPE);
 			$oCache->passContents(true);exit;

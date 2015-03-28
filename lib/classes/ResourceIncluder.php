@@ -474,8 +474,8 @@ class ResourceIncluder {
 			$this->cleanupConsolidator($aConsolidatorInfo);
 		} else {
 			$this->initConsolidator($sType, $iPriority, $sKey, $aConsolidatorInfo);
-			$oCache = new Cache('consolidated-'.$sKey, DIRNAME_PRELOAD);
-			if(!$oCache->cacheFileExists()) {
+			$oCache = new Cache('consolidated-'.$sKey, DIRNAME_PRELOAD, CachingStrategy::fromConfig('file'));
+			if(!$oCache->entryExists()) {
 				$sRelativeLocationRoot = null;
 				$sContents = '';
 				if($file_resource !== null) {
@@ -597,7 +597,7 @@ class ResourceIncluder {
 		}
 		$aLocation = array('consolidated_resource', $aConsolidatorInfo['type']);
 		foreach($aConsolidatorInfo['contents'] as $oCache) {
-			$aLocation[] = $oCache->getFileName();
+			$aLocation[] = $oCache->getStrategy()->encodedKey($oCache);
 		}
 		$sLink = LinkUtil::absoluteLink(LinkUtil::link($aLocation, 'FileManager'), null, 'default', true);
 		$aConsolidatorLink = array('location' => $sLink, 'template' => $aConsolidatorInfo['type']);

@@ -2,6 +2,8 @@
 
 require_once(BASE_DIR."/".DIRNAME_LIB."/".DIRNAME_CLASSES."/ResourceFinder.php");
 require_once(BASE_DIR."/".DIRNAME_LIB."/".DIRNAME_CLASSES."/Cache.php");
+require_once(BASE_DIR."/".DIRNAME_LIB."/".DIRNAME_CLASSES."/CachingStrategy.php");
+require_once(BASE_DIR."/".DIRNAME_LIB."/".DIRNAME_CLASSES."/CachingStrategyFile.php");
 
 class Autoloader {
 	const CACHE_KEY = 'AUTOLOAD_CLASS_MAPPING';
@@ -11,9 +13,10 @@ class Autoloader {
 	public static $MAPPING_HAS_BEEN_MODIFIED;
 	
 	public static function loadIncludeCache() {
-		self::$INCLUDE_CACHE = new Cache(self::CACHE_KEY, DIRNAME_PRELOAD);
+		$oStrategy = CachingStrategyFile::create();
+		self::$INCLUDE_CACHE = new Cache(self::CACHE_KEY, DIRNAME_PRELOAD, $oStrategy);
 		self::$MAPPING_HAS_BEEN_MODIFIED = false;
-		if(!self::$INCLUDE_CACHE->cacheFileExists(false)) {
+		if(!self::$INCLUDE_CACHE->entryExists()) {
 			self::$CLASS_MAPPING = array();
 			return;
 		}

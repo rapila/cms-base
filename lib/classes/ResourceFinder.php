@@ -226,8 +226,8 @@ class ResourceFinder {
 	public function find() {
 		if($this->mResult === false) {
 			if(!$this->bNoCache && ErrorHandler::isProduction()) {
-				$oCache = new Cache(serialize($this), 'resource_finder');
-				if($oCache->cacheFileExists()) {
+				$oCache = new Cache(serialize($this), 'resource_finder', CachingStrategyFile::create());
+				if($oCache->entryExists()) {
 					$this->mResult = $oCache->getContentsAsVariable();
 				} else {
 					$this->mResult = $this->doFind();
@@ -511,7 +511,9 @@ class ResourceFinder {
 		return self::$PLUGINS;
 	}
 	
-	///Helper function for classes that are given a filename, base path and path name
+	/**
+	* Helper function for classes that are given a filename, base path and path name.
+	*/
 	public static function parsePathArguments($sBaseDirname = null, $mPath = null, $sFileName = null) {
 		if($mPath === null) {
 			$mPath = array();

@@ -26,7 +26,7 @@ abstract class FrontendModule extends Module {
 			$sPrefix = 'frontend_module_'.$this->getModuleName().'_' . ($this->oLanguageObject ? $this->oLanguageObject->getPKString() : 'data_'.$this->oData);
 			$oCache = new Cache($oCacheKey->render($sPrefix), DIRNAME_FULL_PAGE);
 
-			$bIsCached = $oCache->cacheFileExists();
+			$bIsCached = $oCache->entryExists();
 			$bIsOutdated = false;
 
 			if($bIsCached) {

@@ -12,7 +12,7 @@ class LocalJsLibraryFileModule extends FileModule {
 		$oCache = new Cache($this->aLibraryName.''.serialize($_GET), DIRNAME_TEMPLATES);
 		header("Content-Type: text/javascript");
 		$oCache->sendCacheControlHeaders();
-		if($oCache->cacheFileExists(true)) {
+		if($oCache->entryExists(true)) {
 			$oCache->passContents(); exit;
 		}
 		$oIncluder = new ResourceIncluder();

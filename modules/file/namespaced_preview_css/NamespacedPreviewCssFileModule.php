@@ -25,7 +25,7 @@ class NamespacedPreviewCssFileModule extends FileModule {
 		$oCache = new Cache('preview_css'.$oFile->getInternalPath(), DIRNAME_TEMPLATES);
 		$oCache->sendCacheControlHeaders();
 		header("Content-Type: text/css;charset=".Settings::getSetting('encoding', 'browser', 'utf-8'));
-		if($oCache->cacheFileExists() && !$oCache->isOutdated($oFile->getFullPath())) {
+		if($oCache->entryExists() && !$oCache->isOutdated($oFile->getFullPath())) {
 			$oCache->passContents(); exit;
 		}
 

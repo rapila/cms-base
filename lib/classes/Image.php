@@ -189,8 +189,17 @@ class Image {
 		}
 		
 		if($oCache !== null && !$oCache->cacheIsOffForWriting()) {
-			$sFilePath = $oCache->getFilePath();
-			$this->save($sFilePath);
+			$oStrategy = $oCache->getStrategy();
+			// Take shortcut if cache is a file
+			if($oStrategy instanceof CachingStrategyFile) {
+				$sFilePath = $oCache->prepareFilePath();
+				$this->save($sFilePath);
+			} else {
+				ob_start();
+				$this->outputToScreen();
+				$oCache->setContents(ob_get_contents());
+				ob_end_clean();
+			}
 			//This is only for sending Last-Modified and ETag. You’ll still have to call this explicitly as soon as you know the cache string (as early as possible – a lot earlier than this) to send a Not Modified header
 			$oCache->sendCacheControlHeaders();
 		}

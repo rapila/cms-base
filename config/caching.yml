@@ -1,0 +1,13 @@
+modules:
+  _default: "off"
+  # templates: file
+
+strategies:
+  # This strategy should not be removed. It can be reconfigured but some internals rely on it being there.
+  file:
+    class: CachingStrategyFile
+    options:
+      file_name: "generated/caches/${module}/${key}.cache"
+      key_encode: "md5"
+  off:
+    class: CachingStrategyNone

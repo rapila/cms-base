@@ -2,7 +2,7 @@
 /**
  * @package modules.file
  */
-class DisplayDocumentFileModule extends FileModule {	
+class DisplayDocumentFileModule extends FileModule {
 	protected $oDocument;
 	
 	public function __construct($aRequestPath) {
@@ -36,7 +36,7 @@ class DisplayDocumentFileModule extends FileModule {
 		}
 
 		$sCacheString = 'doc_'.$this->oDocument->getId().'_'.$mMaxWidth.'x'.$mMaxHeight.(isset($_REQUEST['add_text']) ? '_'.$_REQUEST['add_text'] : "");
-		$oCache = new Cache($sCacheString, DIRNAME_IMAGES);
+		$oCache = new Cache($sCacheString, DIRNAME_IMAGES, CachingStrategyFile::create());
 
 		$sDisplay = "inline";
 		if(isset($_REQUEST['download']) && $_REQUEST['download'] == "true") {
@@ -44,7 +44,7 @@ class DisplayDocumentFileModule extends FileModule {
 		}
 		header('Content-Disposition: '.$sDisplay.';filename="'.$this->oDocument->getFullName().'"');
 
-		if($oCache->cacheFileExists() && !$oCache->isOlderThan($this->oDocument)) {
+		if($oCache->entryExists() && !$oCache->isOlderThan($this->oDocument)) {
 			$oCache->sendCacheControlHeaders($this->oDocument->getUpdatedAtTimestamp());
 			header("Content-Type: ".$this->oDocument->getDocumentType()->getMimetype());
 			$oCache->passContents(true);exit;

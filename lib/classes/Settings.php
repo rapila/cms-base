@@ -95,9 +95,9 @@ class Settings {
 		$sCacheKey = self::createCacheKey($sFile);
 		$sFileName = "$sFile.yml";
 		if(!isset(self::$INSTANCES[$sCacheKey])) {
-			$oCache = new Cache($sCacheKey, DIRNAME_CONFIG);
+			$oCache = new Cache($sCacheKey, DIRNAME_CONFIG, CachingStrategyFile::create());
 			$oFinder = ResourceFinder::create(array(DIRNAME_CONFIG))->addOptionalPath(ErrorHandler::getEnvironment())->addPath($sFileName)->byExpressions()->searchBaseFirst()->all();
-			if($oCache->cacheFileExists() && !$oCache->isOutdated($oFinder)) {
+			if($oCache->entryExists() && !$oCache->isOutdated($oFinder)) {
 				self::$INSTANCES[$sCacheKey] = $oCache->getContentsAsVariable();
 			} else {
 				self::$INSTANCES[$sCacheKey] = new Settings($oFinder, $sFile);
@@ -114,7 +114,7 @@ class Settings {
 			if(!is_string($sEnvVarValue)) {
 				continue;
 			}
-			$aSearch[] = "\${{$sEnvVarName}}";
+			$aSearch[] = "#{{$sEnvVarName}}";
 			$aReplace[] = $sEnvVarValue;
 		}
 		return str_replace($aSearch, $aReplace, $sInput);

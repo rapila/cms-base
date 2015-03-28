@@ -120,8 +120,8 @@ abstract class SystemPart {
 	}
 	
 	public static function allParts() {
-		$oCache = new Cache("system_parts", DIRNAME_CONFIG);
-		if($oCache->cacheFileExists()) {
+		$oCache = new Cache("system_parts", DIRNAME_CONFIG, CachingStrategyFile::create());
+		if($oCache->entryExists()) {
 			return $oCache->getContentsAsVariable();
 		}
 		$oBasePart = new BasePart();
