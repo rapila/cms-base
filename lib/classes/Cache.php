@@ -184,14 +184,14 @@ class Cache {
 	* Gets the raw (possibly binary) contents of the cache file
 	*/
 	public function getContentsAsString() {
-		return $this->oStrategy->read($this, true);
+		return $this->oStrategy->read($this);
 	}
 
 	/**
 	* Returns the cached contents if they were not a string when saving
 	*/
 	public function getContentsAsVariable() {
-		return $this->oStrategy->read($this, false);
+		return $this->oStrategy->readData($this);
 	}
 	
 	/**
@@ -201,7 +201,10 @@ class Cache {
 		if($this->cacheIsOffForWriting()) {
 			return;
 		}
-		return $this->oStrategy->write($this, $mContents, !$bForceSerialize && is_string($mContents), $bAppend);
+		if(!$bForceSerialize && is_string($mContents)) {
+			return $this->oStrategy->write($this, $mContents, $bAppend);
+		}
+		return $this->oStrategy->writeData($this, $mContents);
 	}
 	
 	/**

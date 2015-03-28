@@ -56,13 +56,21 @@ abstract class CachingStrategy {
 	// API
 	
 	public abstract function exists(Cache $oCache);
-	public abstract function read(Cache $oCache, $bAsString = true);
+	public abstract function read(Cache $oCache);
+	public function readData(Cache $oCache) {
+		return unserialize($this->read($oCache));
+	}
 	public function pass(Cache $oCache) {
 		print $this->read($oCache, true);
 	}
-	public abstract function write(Cache $oCache, $mEntry, $bAsString = true, $bAppend = false);
+	public abstract function write(Cache $oCache, $sEntry, $bAppend = false);
+	public function writeData(Cache $oCache, $mEntry) {
+		$this->write($oCache, serialize($mEntry), false);
+	}
 	public abstract function date(Cache $oCache);
-	public abstract function size(Cache $oCache);
+	public function size(Cache $oCache) {
+		return null;
+	}
 	
 	public function cacheIsOffForWriting() {
 		return false;

@@ -26,27 +26,31 @@ class CachingStrategyFile extends CachingStrategy {
 		return file_exists($this->getFilePath($oCache));
 	}
 	
-	public function read(Cache $oCache, $bAsString = true) {
+	public function read(Cache $oCache) {
 		$sPath = $this->getFilePath($oCache);
-		if($bAsString) {
-			return file_get_contents($sPath);
-		} else if($this->use_var_export) {
+		return file_get_contents($sPath);
+	}
+	
+	public function readData(Cache $oCache) {
+		$sPath = $this->getFilePath($oCache);
+		if($this->use_var_export) {
 			return include($sPath);
 		} else {
 			return unserialize(file_get_contents($sPath));
 		}
 	}
 
-	public function write(Cache $oCache, $mEntry, $bAsString = true, $bAppend = false) {
+	public function write(Cache $oCache, $sEntry, $bAppend = false) {
 		$sPath = $this->prepareFilePath($oCache);
-		if(!$bAsString) {
-			if($this->use_var_export) {
-				$mEntry = '<?php' . PHP_EOL . 'return ' . var_export($mEntry, true) . ';';
-			} else {
-				$mEntry = serialize($mEntry);
-			}
+		return file_put_contents($this->getFilePath($oCache), $sEntry, $bAppend ? FILE_APPEND : 0);
+	}
+
+	public function writeData(Cache $oCache, $mEntry, $bAppend = false) {
+		if($this->use_var_export) {
+			$mEntry = '<?php' . PHP_EOL . 'return ' . var_export($mEntry, true) . ';';
+		} else {
+			$mEntry = serialize($mEntry);
 		}
-		return file_put_contents($this->getFilePath($oCache), $mEntry, $bAppend ? FILE_APPEND : 0);
 	}
 
 	public function date(Cache $oCache) {

@@ -6,15 +6,12 @@ class CachingStrategyNone extends CachingStrategy {
 	public function exists(Cache $oCache) {
 		return false;
 	}
-	public function read(Cache $oCache, $bAsString = true) {
+	public function read(Cache $oCache) {
 		return null;
 	}
-	public function write(Cache $oCache, $mEntry, $bAsString = true, $bAppend = false) {}
+	public function write(Cache $oCache, $sEntry, $bAppend = false) {}
 	public function date(Cache $oCache) {
 		return time();
-	}
-	public function size(Cache $oCache) {
-		return null;
 	}
 	public function cacheIsOff() {
 		return true;
