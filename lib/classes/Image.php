@@ -192,7 +192,7 @@ class Image {
 			$oStrategy = $oCache->getStrategy();
 			// Take shortcut if cache is a file
 			if($oStrategy instanceof CachingStrategyFile) {
-				$sFilePath = $oCache->prepareFilePath();
+				$sFilePath = $oStrategy->prepareFilePath($oCache);
 				$this->save($sFilePath);
 			} else {
 				ob_start();

@@ -36,7 +36,7 @@ class DisplayDocumentFileModule extends FileModule {
 		}
 
 		$sCacheString = 'doc_'.$this->oDocument->getId().'_'.$mMaxWidth.'x'.$mMaxHeight.(isset($_REQUEST['add_text']) ? '_'.$_REQUEST['add_text'] : "");
-		$oCache = new Cache($sCacheString, DIRNAME_IMAGES, CachingStrategyFile::create());
+		$oCache = new Cache($sCacheString, DIRNAME_IMAGES);
 
 		$sDisplay = "inline";
 		if(isset($_REQUEST['download']) && $_REQUEST['download'] == "true") {

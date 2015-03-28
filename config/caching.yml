@@ -1,6 +1,7 @@
 modules:
-  _default: "off"
-  # templates: file
+  _default: file
+  # Set images cache explicitly so that overriding the default will still store these large files on the file system
+  images: file
 
 strategies:
   # This strategy should not be removed. It can be reconfigured but some internals rely on it being there.
