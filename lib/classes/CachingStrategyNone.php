@@ -1,7 +1,7 @@
 <?php
 /**
- * Represents one file in the cache, identified by the dirname and the key (generated/caches/<dir>/<md5(key)>.cache).
-*/
+ * Does not cache anything. May not be applicable in all scenarios.
+ */
 class CachingStrategyNone extends CachingStrategy {
 	public function exists(Cache $oCache) {
 		return false;
