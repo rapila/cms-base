@@ -1,6 +1,6 @@
 jQuery(document).ready(function() {
 	AdminInterface.content.find('table.document_category_list').prepareWidget(function(document_category_list) {
-		
+
 		// Add info_bar elements
 		AdminInterface.info_bar.prepareWidget(function(info_bar) {
 			info_bar.add_button('add-new-item', function() {
@@ -14,7 +14,7 @@ jQuery(document).ready(function() {
 				if(document_category_list.setSearch(search)) {
 					document_category_list.reload();
 				}
-			}).add_row_count_info_for_list(document_category_list);
+			}).add_row_count_info_for_list(document_category_list).add_pager_for_list(document_category_list);
 		});
 	});
 });

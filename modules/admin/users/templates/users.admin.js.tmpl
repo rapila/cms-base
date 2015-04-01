@@ -51,7 +51,7 @@ jQuery(document).ready(function() {
 				if(user_list.setSearch(search)) {
 					user_list.reload();
 				}
-			}).add_row_count_info_for_list(user_list);
+			}).add_row_count_info_for_list(user_list).add_pager_for_list(user_list);
 		});
 	});
 });
