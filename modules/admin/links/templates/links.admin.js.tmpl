@@ -58,10 +58,10 @@ jQuery(document).ready(function() {
 			var row = sidebar.active_row();
 			var rowData = sidebar.collect_row_data(row);
 			if(rowData.link_category_id) {
-				function remove_active_category() {
+				remove_active_category = function() {
 					sidebar.delete_row(row);
 					Widget.fire('rapila-link_category_changed', {removed: true, id: rowData.link_category_id});
-				}
+				};
 				content_list.getOption('categoryHasLinks', rowData.link_category_id, function(has_links) {
 					if(has_links) {
 						Widget.confirm("{{writeString=wns.rapila_alert.information}}", "{{writeString=wns.link_category.delete_information}}", function(confirmed) {
