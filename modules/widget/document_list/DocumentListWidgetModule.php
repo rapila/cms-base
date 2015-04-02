@@ -168,14 +168,6 @@ class DocumentListWidgetModule extends SpecializedListWidgetModule {
 		}
 	}
 
-	public function toggleIsInactive($aRowData) {
-		$oDocument = DocumentQuery::create()->findPk($aRowData['id']);
-		if($oDocument) {
-			$oDocument->setIsInactive(!$oDocument->getIsInactive());
-			$oDocument->save();
-		}
-	}
-
 	public function toggleIsProtected($aRowData) {
 		$oDocument = DocumentQuery::create()->findPk($aRowData['id']);
 		if($oDocument) {
