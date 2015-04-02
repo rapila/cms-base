@@ -2,35 +2,19 @@
 /**
  * @package modules.widget
  */
-class DocumentCategoryListWidgetModule extends PersistentWidgetModule {
+class DocumentCategoryListWidgetModule extends SpecializedListWidgetModule {
 
-	private $oListWidget;
 	private $oDelegateProxy;
 	private $oExternallyManagedInputFilter;
 	private $bExcludeExternallyManaged;
 
-	public function __construct($sSessionKey = null) {
-		parent::__construct($sSessionKey);
-		$this->oListWidget = new ListWidgetModule();
+	protected function createListWidget() {
+		$oListWidget = new ListWidgetModule();
 		$this->oDelegateProxy = new CriteriaListWidgetDelegate($this, "DocumentCategory", 'name');
-		$this->oListWidget->setDelegate($this->oDelegateProxy);
+		$oListWidget->setDelegate($this->oDelegateProxy);
 		$this->oExternallyManagedInputFilter = WidgetModule::getWidget('externally_managed_input', true);
 		$this->oDelegateProxy->setInternallyManagedOnly(true);
-	}
-
-	public function doWidget() {
-		$aTagAttributes = array('class' => 'document_category_list');
-		$oListTag = new TagWriter('table', $aTagAttributes);
-		$this->oListWidget->setListTag($oListTag);
-		return $this->oListWidget->doWidget();
-	}
-
-	public function toggleIsInactive($aRowData) {
-		$oDocumentCategory = DocumentCategoryQuery::create()->findPk($aRowData['id']);
-		if($oDocumentCategory) {
-			$oDocumentCategory->setIsInactive(!$oDocumentCategory->getIsInactive());
-			$oDocumentCategory->save();
-		}
+		return $oListWidget;
 	}
 
 	public function getColumnIdentifiers() {
