@@ -89,6 +89,10 @@ abstract class CachingStrategy {
 		return false;
 	}
 	
+	public function clearCaches() {
+		// Default implementation: do nothing
+	}
+	
 	public function __clone() {
 		$this->bIsInitialized = false;
 	}
@@ -131,5 +135,17 @@ abstract class CachingStrategy {
 			self::$NAMED_STRATEGIES[$sType] = $sClass::create($aOptions);
 		}
 		return self::$NAMED_STRATEGIES[$sType];
+	}
+	
+	/**
+	* Returns an array of all strategy instances declared in the config.
+	*/
+	static public function configuredStrategies() {
+		$aResult = array();
+		$aStrategies = Settings::getSetting('strategies', null, array(), 'caching');
+		foreach($aStrategies as $sName => $aConfig) {
+			$aResult[] = self::fromConfig($sName);
+		}
+		return $aResult;
 	}
 }

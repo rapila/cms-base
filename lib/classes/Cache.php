@@ -248,9 +248,8 @@ class Cache {
 	* Removes all cache files but not their parent directories.
 	*/
 	public static function clearAllCaches() {
-		$oFinder = ResourceFinder::create()->addPath(DIRNAME_GENERATED, DIRNAME_CACHES)->addDirPath(true)->addPath('/^.*\\.cache$/')->searchMainOnly()->noCache();
-		foreach($oFinder->find() as $sCachesFile) {
-			unlink($sCachesFile);
+		foreach(CachingStrategy::configuredStrategies() as $oStrategy) {
+			$oStrategy->clearCaches();
 		}
-	} //clearAllCaches()
+	}
 }
