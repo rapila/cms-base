@@ -25,14 +25,6 @@ class LinkListWidgetModule extends SpecializedListWidgetModule {
 		return TagInstanceQuery::create()->filterByModelName('Link')->count() > 0;
 	}
 
-	public function toggleIsInactive($aRowData) {
-		$oLink = LinkQuery::create()->findPk($aRowData['id']);
-		if($oLink) {
-			$oLink->setIsInactive(!$oLink->getIsInactive());
-			$oLink->save();
-		}
-	}
-
 	public function getColumnIdentifiers() {
 		$aResult = array('id', 'name_truncated', 'sort', 'url');
 		if(LinkCategoryQuery::create()->count() > 0) {
