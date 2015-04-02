@@ -61,4 +61,18 @@ class CachingStrategyFile extends CachingStrategy {
 		return filesize($this->getFilePath($oCache));
 	}
 	
+	public function clearCaches() {
+		$sPath = str_replace(array('${module}', '${key}'), '*', $this->file_name);
+		$aPath = explode('/', $sPath);
+		foreach($aPath as &$sPathItem) {
+			if(strpos($sPathItem, '*') !== false) {
+				$sPathItem = '/^'.str_replace('\\*', '.+', preg_quote($sPathItem, '/')).'$/';
+			}
+		}
+		$oFinder = ResourceFinder::create($aPath)->byExpressions()->searchMainOnly()->noCache();
+		foreach($oFinder->find() as $sCachesFile) {
+			unlink($sCachesFile);
+		}
+	}
+	
 }
