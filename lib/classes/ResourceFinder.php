@@ -201,15 +201,15 @@ class ResourceFinder {
 	}
 
 	public function addAnyPath($bOptional = false) {
-		return $bOptional ? $this->addOptionalPath(self::WILDCARD_ANY) : $this->addExpression(null);
+		return $bOptional ? $this->addOptionalPath(self::WILDCARD_ANY) : $this->addExpression(self::WILDCARD_ANY);
 	}
 
 	public function addDirPath($bOptional = false) {
-		return $bOptional ? $this->addOptionalPath(self::WILDCARD_DIR) : $this->addExpression(false);
+		return $bOptional ? $this->addOptionalPath(self::WILDCARD_DIR) : $this->addExpression(self::WILDCARD_DIR);
 	}
 
 	public function addFilePath($bOptional = false) {
-		return $bOptional ? $this->addOptionalPath(self::WILDCARD_FILE) : $this->addExpression(true);
+		return $bOptional ? $this->addOptionalPath(self::WILDCARD_FILE) : $this->addExpression(self::WILDCARD_FILE);
 	}
 	
 	/**
