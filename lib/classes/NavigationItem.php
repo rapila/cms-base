@@ -238,10 +238,10 @@ abstract class NavigationItem {
 	}
 
 	public function __sleep() {
-		$aVars = get_class_vars(get_class($this));
-		unset($aVars['oParent']);
-		unset($aVars['aCustomChildren']);
-		unset($aVars['aChildren']);
+		$aVars = (array) $this;
+		unset($aVars["\0*\0oParent"]);
+		unset($aVars["\0*\0aCustomChildren"]);
+		unset($aVars["\0*\0aChildren"]);
 		return array_keys($aVars);
 	}
 }
