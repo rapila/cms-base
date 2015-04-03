@@ -51,6 +51,7 @@ class CachingStrategyFile extends CachingStrategy {
 		} else {
 			$mEntry = serialize($mEntry);
 		}
+		$this->write($oCache, $mEntry, $bAppend);
 	}
 
 	public function date(Cache $oCache) {
