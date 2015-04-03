@@ -25,8 +25,43 @@ abstract class NavigationItem {
 
 	private function prepareChildren() {
 		if($this->aCustomChildren === null) {
+			$sCacheKey = Session::language().'/'.$this->getId();
+			$oCacheInvalidatorCache = new Cache("$sCacheKey/custom-children-invalidators", 'navigation');
+			if($oCacheInvalidatorCache->entryExists()) {
+				$aCacheInvalidators = $oCacheInvalidatorCache->getContentsAsVariable();
+			} else {
+				$aCacheInvalidators = null;
+			}
+			$oCache = new Cache("$sCacheKey/custom-children", 'navigation');
+			if($oCache->entryExists() && $aCacheInvalidators !== null) {
+				// Not setting validators will result in the cache being always up-to-date
+				$bIsOutdated = false;
+				foreach($aCacheInvalidators as $mCacheInvalidator) {
+					if(is_string($mCacheInvalidator)) {
+						$sQuery = "${mCacheInvalidator}Query";
+						$bIsOutdated = $oCache->isOlderThan($sQuery::create());
+					} else if($mCacheInvalidator instanceof FileResource || $mCacheInvalidator instanceof ResourceFinder) {
+						$bIsOutdated = $oCache->isOutdated($mCacheInvalidator);
+					} else {
+						$bIsOutdated = $oCache->isOlderThan($mCacheInvalidator);
+					}
+					if($bIsOutdated) {
+						break;
+					}
+				}
+				if(!$bIsOutdated) {
+					$this->aCustomChildren = $oCache->getContentsAsVariable();
+					foreach($this->aCustomChildren as $oChildNavigationItem) {
+						$oChildNavigationItem->oParent = $this;
+					}
+					return;
+				}
+			}
+			$aCacheInvalidators = array();
 			$this->aCustomChildren = array();
-			FilterModule::getFilters()->handleNavigationItemChildrenRequested($this);
+			FilterModule::getFilters()->handleNavigationItemChildrenRequested($this, array(&$aCacheInvalidators));
+			$oCache->setContents($this->aCustomChildren, true);
+			$oCacheInvalidatorCache->setContents($aCacheInvalidators, true);
 		}
 	}
 
