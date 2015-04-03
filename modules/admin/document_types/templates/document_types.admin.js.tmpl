@@ -1,15 +1,15 @@
 jQuery(document).ready(function() {
 	AdminInterface.content.find('table.document_type_list').prepareWidget(function(document_type_list) {
-		
+
 		// Sidebar
 		AdminInterface.sidebar.find('.ui-list').prepareWidget(function(sidebar) {
 			sidebar.settings.row_click_active_mode = 'activate';
 			sidebar.handle('list-selection_changed', function(event, selection) {
 				document_type_list.setOption('document_kind', selection[0] && selection[0].document_kind);
 				document_type_list.reload();
-			});	
+			});
 		});
-	
+
 		// Add infobar elements
 		AdminInterface.info_bar.prepareWidget(function(info_bar) {
 			info_bar.add_button('add-new-item', function() {

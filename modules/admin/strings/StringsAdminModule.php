@@ -78,7 +78,6 @@ class StringsAdminModule extends AdminModule implements ListWidgetDelegate {
 		return count($this->getListContents());
 	}
 
-
 	public function usedWidgets() {
 		return array($this->oSidebarWidget, $this->oListWidget);
 	}
