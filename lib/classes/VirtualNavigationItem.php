@@ -120,4 +120,12 @@ class VirtualNavigationItem extends NavigationItem {
 	public function isIndexed() {
 		return $this->bIsIndexed;
 	}
+
+	public function __sleep() {
+		$aVars = get_class_vars(get_class($this));
+		unset($aVars['oParent']);
+		unset($aVars['aCustomChildren']);
+		unset($aVars['aChildren']);
+		return array_keys($aVars);
+	}
 }
