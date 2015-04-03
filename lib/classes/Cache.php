@@ -135,6 +135,9 @@ class Cache {
 		if($iTimestamp instanceof BaseObject) {
 			$iTimestamp = $iTimestamp->getUpdatedAtTimestamp();
 		}
+		if($iTimestamp instanceof ModelCriteria) {
+			$iTimestamp = $iTimestamp->findMostRecentUpdate(true);
+		}
 		if(is_string($iTimestamp)) {
 			$iTimestamp = strtotime($iTimestamp);
 		}
