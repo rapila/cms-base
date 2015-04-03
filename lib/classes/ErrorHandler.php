@@ -6,6 +6,9 @@ class ErrorHandler {
 		if(error_reporting() === 0 || $iErrorNumber === E_STRICT) {
 			return false;
 		}
+		if(function_exists('xdebug_break')) {
+			xdebug_break();
+		}
 		if($aTrace === null) {
 			$aTrace = debug_backtrace();
 			array_shift($aTrace); //Remove ErrorHandler::handleError call;
