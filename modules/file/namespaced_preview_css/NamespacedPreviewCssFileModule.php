@@ -5,11 +5,11 @@ class NamespacedPreviewCssFileModule extends FileModule {
 	
 	public function __construct($aRequestPath) {
 		parent::__construct($aRequestPath);
-		
+
 		// if(!Session::getSession()->isAuthenticated() || !Session::getSession()->getUser()->getIsBackendLoginEnabled()) {
 		// 	throw new Exception("Not allowed");
 		// }
-		
+
 		array_unshift($aRequestPath, DIRNAME_WEB, ResourceIncluder::RESOURCE_TYPE_CSS);
 		$this->oFile = ResourceFinder::findResourceObject($aRequestPath);
 	}
@@ -23,9 +23,9 @@ class NamespacedPreviewCssFileModule extends FileModule {
 	
 	public static function processCSSContent($sContent, $oFile) {
 		$oCache = new Cache('preview_css'.$oFile->getInternalPath(), DIRNAME_TEMPLATES);
-		$oCache->sendCacheControlHeaders();
 		header("Content-Type: text/css;charset=".Settings::getSetting('encoding', 'browser', 'utf-8'));
 		if($oCache->entryExists() && !$oCache->isOutdated($oFile->getFullPath())) {
+			$oCache->sendCacheControlHeaders();
 			$oCache->passContents(); exit;
 		}
 
@@ -59,22 +59,22 @@ class NamespacedPreviewCssFileModule extends FileModule {
 			}
 			$oBlock->setSelector($aNewSelector);
 		}
-		
+
 		//Absolutize all URLs
 		foreach($oCssContents->getAllValues() as $oValue) {
 			if($oValue instanceof Sabberworm\CSS\Value\URL) {
 				$sURL = $oValue->getURL()->getString();
-				
+
 				if(!StringUtil::startsWith($sURL, '/') && !preg_match('/^\\w+:/', $sURL)) {
 					$sURL = $oFile->getFrontendDirectoryPath().DIRECTORY_SEPARATOR.$sURL;
 				}
-				
+
 				$oValue->setURL(new Sabberworm\CSS\Value\String($sURL));
 			}
 		}
-		
+
 		$sContents = $oCssContents->render(Sabberworm\CSS\OutputFormat::createCompact());
-		
+
 		$oCache->setContents($sContents);
 		$oCache->sendCacheControlHeaders();
 		print($sContents);

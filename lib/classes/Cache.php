@@ -219,7 +219,7 @@ class Cache {
 	*/
 	public function sendCacheControlHeaders($iTimestamp = null) {
 		if($iTimestamp === null) {
-			if(!$this->entryExists()) {
+			if(!$this->entryExists(false)) {
 				return;
 			}
 			$iTimestamp = $this->getModificationDate();
