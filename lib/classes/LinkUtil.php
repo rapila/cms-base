@@ -95,6 +95,9 @@ class LinkUtil {
 		if(is_string($iTimestamp)) {
 			$iTimestamp = strtotime($iTimestamp);
 		}
+		if($iTimestamp === null) {
+			return;
+		}
 		if($iTimestamp instanceof DateTime) {
 			$oModifyDate = clone $iTimestamp;
 			$oModifyDate->setTimezone(new DateTimeZone('UTC'));
@@ -152,6 +155,7 @@ class LinkUtil {
 		} else if($mProtocolSetting === false) {
 			return 'http://';
 		}
+		return $mProtocolSetting;
 	}
 
 	public static function isSSL() {
