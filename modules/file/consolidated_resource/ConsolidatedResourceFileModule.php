@@ -33,7 +33,7 @@ class ConsolidatedResourceFileModule extends FileModule {
 				if(!$oItemCache->entryExists(false)) {
 					throw new Exception("Consolidated resource $sItemKey does not exist.");
 				}
-				$oCache->setContents($oItemCache->getContentsAsString(), false, true);
+				$oCache->setContents($oItemCache->getContentsAsString()."\n", false, true);
 			}
 		}
 		$oCache->sendCacheControlHeaders();
