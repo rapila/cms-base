@@ -31,13 +31,17 @@ abstract class Manager {
 
 	public static final function usePath() {
 		$sPathItem = array_shift(self::$REQUEST_PATH);
-		array_push(self::$USED_PATH, $sPathItem);
+		if($sPathItem !== null) {
+			self::$USED_PATH[] = $sPathItem;
+		}
 		return $sPathItem;
 	}
 
 	public static final function unusePath() {
 		$sPathItem = array_pop(self::$USED_PATH);
-		array_unshift(self::$REQUEST_PATH, $sPathItem);
+		if($sPathItem !== null) {
+			array_unshift(self::$REQUEST_PATH, $sPathItem);
+		}
 		return $sPathItem;
 	}
 

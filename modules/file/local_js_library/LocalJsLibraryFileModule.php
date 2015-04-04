@@ -2,24 +2,27 @@
 
 class LocalJsLibraryFileModule extends FileModule {
 	private $aLibraryName;
+	private $sVersion;
+	private $bUseCompression;
 
 	public function __construct($aRequestPath) {
 		parent::__construct($aRequestPath);
 		$this->aLibraryName = Manager::usePath();
+		$this->aVersion = Manager::usePath();
+		$sExtension = Manager::usePath();
+		$this->bUseCompression = $sExtension === 'min.js';
 	}
 
 	public function renderFile() {
-		$oCache = new Cache($this->aLibraryName.''.serialize($_GET), DIRNAME_TEMPLATES);
+		$oCache = new Cache(implode('/', Manager::getUsedPath()), DIRNAME_TEMPLATES);
 		header("Content-Type: text/javascript");
 		$oCache->sendCacheControlHeaders();
-		if($oCache->entryExists(true)) {
+		if($oCache->entryExists()) {
 			$oCache->passContents(); exit;
 		}
 		$oIncluder = new ResourceIncluder();
-		$sLibraryVersion = $_GET['version'];
-		$bUseCompression = BooleanParser::booleanForString(@$_GET['use_compression']);
 		//Don’t use SSL for downloads
-		$oIncluder->addJavaScriptLibrary($this->aLibraryName, $sLibraryVersion, $bUseCompression, false, false, ResourceIncluder::PRIORITY_NORMAL, false);
+		$oIncluder->addJavaScriptLibrary($this->aLibraryName, $this->aVersion, $this->bUseCompression, false, false, ResourceIncluder::PRIORITY_NORMAL, false);
 		$sContents = '';
 		foreach($oIncluder->getResourceInfosForIncludedResourcesOfPriority() as $aInfo) {
 			if(isset($aInfo['file_resource'])) {
