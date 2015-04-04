@@ -12,3 +12,8 @@ strategies:
       key_encode: "md5"
   off:
     class: CachingStrategyNone
+
+# Options set here apply to all strategies (unless overridden)
+options:
+  # Experimental: set this to true if you have an opcode cache
+  use_var_export: false
