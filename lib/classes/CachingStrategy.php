@@ -131,7 +131,10 @@ abstract class CachingStrategy {
 		if(!isset(self::$NAMED_STRATEGIES[$sType])) {
 			$aConfig = Settings::getSetting('strategies', $sType, null, 'caching');
 			$sClass = $aConfig['class'];
-			$aOptions = isset($aConfig['options']) ? $aConfig['options'] : array();
+			$aOptions = Settings::getSetting('options', null, array(), 'caching');
+			if(isset($aConfig['options'])) {
+				$aOptions = array_merge($aOptions, $aConfig['options']);
+			}
 			self::$NAMED_STRATEGIES[$sType] = $sClass::create($aOptions);
 		}
 		return self::$NAMED_STRATEGIES[$sType];
