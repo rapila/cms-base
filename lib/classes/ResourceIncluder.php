@@ -285,7 +285,7 @@ class ResourceIncluder {
 		}
 
 		if($bUseLocalProxy) {
-			$sLink = LinkUtil::link(array('local_js_library', $sLibraryName, $sLibraryVersion, ($bUseCompression ? 'js' : 'min.js')), 'FileManager');
+			$sLink = LinkUtil::link(array('local_js_library', $sLibraryName, $sLibraryVersion, ($bUseCompression ? 'min.js' : 'js')), 'FileManager');
 			$sLink = LinkUtil::absoluteLink($sLink, null, $bUseSsl, true);
 			$this->addResource($sLink, self::RESOURCE_TYPE_JS, $sResourceIdentifier, array('version' => $sLibraryVersion, 'use_compression' => $bUseCompression), $iPriority, $sIeCondition, false, is_array($aLibraryDependencies));
 			return;
