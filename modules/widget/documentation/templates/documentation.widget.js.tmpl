@@ -29,7 +29,7 @@ Widget.types.documentation = {
 				if(support.heading && support.link) {
 					this.append_heading(support.heading);
 					var parts_panel = this.panel_prototype.clone();
-					parts_panel.append(this.part_prototype.clone().text(support.heading).attr('href', support.link));
+					parts_panel.append(this.part_prototype.clone().text(support.link_text).attr('href', support.link));
 					this.container.append(parts_panel);
 				}
 				_this.container.accordion({active: 0, heightStyle: 'content', collapsible:false});
