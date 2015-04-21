@@ -4,7 +4,7 @@ Widget.types.user_detail = {
 		this._element = Widget.parseHTML("{{includeTemplate=edit}}");
 		this._element.find('div.hide_if_not_saved').hide();
 		this._element.find(".old_password_elements").hide();
-		
+
 		this.settings.detail_widget.additionalButtons.push({
 			text: "{{writeString=wns.user.reset_settings}}",
 			click: function() {
@@ -14,13 +14,13 @@ Widget.types.user_detail = {
 			}
 		});
 		Widget.callStatic('detail', 'create_for_instance', this);
-		
+
 		// Rights section
 		this.rights_section = this._element.find('div.rights_section').hide();
 		this.backend_login_enabled = this._element.find("input[name='is_backend_login_enabled']").prop('checked', true);
 		this.admin_login_enabled = this._element.find("input[name='is_admin_login_enabled']").prop('checked', true);
 		var is_admin = this._element.find("input[name='is_admin']");
-		
+
 		// Rights section should only be shown if permissions are there, or at least without checkboxes
 		is_admin.bind('change', function() {
 			_this.toggle_rights_section(jQuery(this).prop('checked') === false);
@@ -39,7 +39,7 @@ Widget.types.user_detail = {
 		this.rights_section.find("div.roles_section").prepareWidget(function(widget) {
 			this.user_roles = widget;
 		}.bind(this));
-		
+
 		// Suggest passwort
 		this._element.find('span.suggest_password').click(function() {
 			var input_suggest = _this._element.find('input[name="password_suggest"]');
@@ -88,7 +88,7 @@ Widget.types.user_detail = {
 			this._element.find(".created_info").text(user_data.CreatedInfo);
 			this._element.find("span[class='detail_id']").text(user_data.Id);
 			this._element.find('div.hide_if_not_saved').show();
-			
+
 			this._element.find("select[name='language_id']").ensureWidget(function(language_input) {
 				language_input.val(user_data.LanguageId || '');
 			});
