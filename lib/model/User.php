@@ -337,6 +337,11 @@ class User extends BaseUser {
 		return parent::setPassword($sPassword);
 	}
 
+	public function forcePasswordReset() {
+		$this->setDigestHA1(null);
+		return parent::setPassword('*');
+	}
+
 	public function getLanguageName() {
 		return StringPeer::getString('language.'.$this->getLanguageId(), null, $this->getLanguageId());
 	}

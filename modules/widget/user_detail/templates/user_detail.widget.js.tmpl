@@ -3,7 +3,12 @@ Widget.types.user_detail = {
 		var _this = this;
 		this._element = Widget.parseHTML("{{includeTemplate=edit}}");
 		this._element.find('div.hide_if_not_saved').hide();
-		this._element.find(".old_password_elements").hide();
+		this.password_section = this._element.find(".password_section");
+		this.password_section.find(".old_password_elements").hide();
+		this.password_section.find("input[name='force_password_reset']").change(function() {
+			var force = this.checked;
+			_this.password_section.find('input:text, input:password').prop('disabled', force);
+		});
 
 		this.settings.detail_widget.additionalButtons.push({
 			text: "{{writeString=wns.user.reset_settings}}",
@@ -64,14 +69,20 @@ Widget.types.user_detail = {
 	fill_data: function() {
 		this._element.find('input[name="password_suggest"]').hide();
 		this.userData(function(user_data) {
-			var password_section = this._element.find(".hide_if_saved");
-			if(!user_data.IsSessionUser) {
-				password_section.hide();
-				this.toggle_rights_section(!user_data.IsAdmin);
-			} else {
+			if(user_data.IsSessionUser) {
+				// Users are not able to edit their own rights. Or they are admin, in which case they have no specific “rights”
 				this.rights_section.hide();
-				password_section.show();
-				this._element.find(".old_password_elements").show();
+				// Allow users to change their password…
+				this.password_section.show();
+				// …but first they need to verify their old password.
+				this.password_section.find(".old_password_elements").show();
+			} else {
+				// Users can change each other’s passwords…
+				this.password_section.show();
+				// …and they don’t need to know their old passwords to do so.
+				this.password_section.find(".old_password_elements").hide();
+				// Admins don’t have rights, roles and groups, they can already do everything.
+				this.toggle_rights_section(!user_data.IsAdmin);
 			}
 
 			this._element.find('.status_section input').prop('disabled', user_data.IsSessionUser);
@@ -84,6 +95,7 @@ Widget.types.user_detail = {
 			this._element.find("input[name='password_confirm']").val('');
 			this._element.find("input[name='is_inactive']").prop('checked', user_data.IsInactive);
 			this._element.find("input[name='is_admin']").prop('checked', user_data.IsAdmin);
+			this._element.find("input[name='force_password_reset']").prop('checked', user_data.ForcePasswordReset);
 			this._element.find(".updated_info").text(user_data.UpdatedInfo);
 			this._element.find(".created_info").text(user_data.CreatedInfo);
 			this._element.find("span[class='detail_id']").text(user_data.Id);
