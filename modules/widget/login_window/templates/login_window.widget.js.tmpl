@@ -9,10 +9,14 @@ Widget.types.login_window = {
 			var attributes = form.serializeArrayKV();
 			_this.login(attributes.user_name, attributes.password, function(result, error) {
 				if(error) {
-					_this.login_markup.find('.error').text(error.message).parents('.ui-alert').show();
-				} else {
-					_this.login_markup.dialog('close');
+					this.login_markup.find('.error').text(error.message).parents('.ui-alert').show();
+				} else if(result.is_valid) {
+					this.login_markup.dialog('close');
 					Widget.fire('rapila-logged_in');
+				} else if(result.needs_password_reset) {
+					this.resetRequest(attributes.user_name, function(result) {
+						Widget.notifyUser(Widget.logSeverity.INFO, '{{writeString=wns.login.force_reset.sent}}');
+					});
 				}
 			});
 		}).find('.password_forgotten').click(function(event) {
@@ -35,7 +39,7 @@ Widget.types.login_window = {
 				});
 				_this.resetRequest(input_field.val(), function(result, error) {
 					var error_element = forgotten_alert.find('.ui-notify');
-					if(error) { 
+					if(error) {
 						error_element.show().find('.error').text(error.message);
 					} else {
 						error_element.hide();

@@ -18,6 +18,7 @@ class Session {
 	const USER_IS_DEFAULT_USER = 2;
 	const USER_IS_INACTIVE = 4;
 	const USER_IS_FRONTEND_ONLY = 8;
+	const USER_NEEDS_PASSWORD_RESET = 16;
 
 	public function __construct() {
 		$_SESSION[self::SESSION_OBJECT_KEY] = $this;
@@ -64,6 +65,9 @@ class Session {
 				UserPeer::ignoreRights(true);
 				$oUser->save();
 				return $this->login($sUsername, $sPassword);
+			}
+			if($oUser->getPassword() === '*') {
+				return self::USER_NEEDS_PASSWORD_RESET;
 			}
 			return 0;
 		}

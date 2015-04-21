@@ -14,6 +14,8 @@ class LoginWindowWidgetModule extends PersistentWidgetModule {
 			return array('is_valid' => true);
 		} else if(($iLoginResult & Session::USER_IS_INACTIVE) === Session::USER_IS_INACTIVE) {
 			throw new LocalizedException('flash.login_user_inactive');
+		} else if(($iLoginResult & Session::USER_NEEDS_PASSWORD_RESET) === Session::USER_NEEDS_PASSWORD_RESET) {
+			return array('needs_password_reset' => true);
 		}
 		if(AdminManager::initializeFirstUserIfEmpty($sUserName, $sPassword)) {
 			throw new LocalizedException('flash.login_welcome2', array('username' => $sUserName, 'password' => $sPassword));
