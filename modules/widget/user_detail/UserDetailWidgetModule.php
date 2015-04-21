@@ -38,6 +38,15 @@ class UserDetailWidgetModule extends PersistentWidgetModule {
 		return false;
 	}
 
+	public function sendPasswordHint() {
+		$oUser = UserQuery::create()->findPk($this->iUserId);
+		if($oUser) {
+			LoginManager::sendResetMail($oUser, true, LinkUtil::link(array(), 'LoginManager'));
+			return $this->iUserId;
+		}
+		return false;
+	}
+
 	private function validate($aUserData, $oUser) {
 		$oFlash = Flash::getFlash();
 		$oFlash->setArrayToCheck($aUserData);

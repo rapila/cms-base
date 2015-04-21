@@ -18,6 +18,15 @@ Widget.types.user_detail = {
 				});
 			}
 		});
+
+		this.settings.detail_widget.additionalButtons.push({
+			text: "{{writeString=wns.user.send_password_hint}}",
+			click: function() {
+				_this.sendPasswordHint(function(result) {
+					result && Widget.notifyUser(Widget.logSeverity.INFO, '{{writeString=wns.user.send_password_hint.sent}}');
+				});
+			}
+		});
 		Widget.callStatic('detail', 'create_for_instance', this);
 
 		// Rights section
