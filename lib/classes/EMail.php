@@ -158,11 +158,32 @@ class EMail {
 		
 		$sSubject = '=?'.Settings::getSetting("encoding", "db", "utf-8").'?B?'.base64_encode($this->sSubject).'?=';
 		
-		$bResult = mail($sRecipients, $sSubject, $this->oContent->getBody(), $this->oContent->getHeaderString());
+		$bResult = $this->sendMail($sRecipients, $sSubject, $this->oContent->getBody(), $this->oContent->getHeaderString());
 
 		if($bResult === false) {
 			throw new Exception("Error in EMail->send(): E-Mail was not accepted for delivery");
 		}
+	}
+	
+	private function sendMail($sTo, $sSubject, $sMessage, $sHeaders) {
+		$sSendmailPath = Settings::getSetting('email', 'sendmail_path', null);
+		if($sSendmailPath === null || $sSendmailPath === ini_get('sendmail_path')) {
+			// Use the internal mail function
+			return mail($sTo, $sSubject, $sMessage, $sHeaders);
+		}
+		$rSendmail = popen($sSendmailPath, 'w');
+		if(!$rSendmail) {
+			return false;
+		}
+		// See https://github.com/php/php-src/blob/af3c72bc805fc0167581fe83ecd24398f509cea0/ext/standard/mail.c#L356
+		fprintf($rSendmail, "To: %s\n", $sTo);
+		fprintf($rSendmail, "Subject: %s\n", $sSubject);
+		if($sHeaders) {
+			fprintf($rSendmail, "%s\n", trim($sHeaders));
+		}
+		fprintf($rSendmail, "\n%s\n", $sMessage);
+		$iResult = pclose($rSendmail);
+		return $iResult === 0;
 	}
 
 	private function getAddressToken($sName, $sAddress) {
