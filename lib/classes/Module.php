@@ -316,4 +316,8 @@ abstract class Module {
 	protected function constructTemplate($sTemplateName = null, $bForceGlobalTemplatesDir = false) {
 		return self::constructTemplateForModuleAndType(self::getType(), $this->getModuleName(), $sTemplateName, $bForceGlobalTemplatesDir);
 	}
+
+	protected static function template($sTemplateName = null, $bForceGlobalTemplatesDir = false) {
+		return self::constructTemplateForModuleAndType(self::getType(), static::moduleName(), $sTemplateName, $bForceGlobalTemplatesDir);
+	}
 }
