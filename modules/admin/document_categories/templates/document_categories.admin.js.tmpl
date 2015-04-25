@@ -1,5 +1,5 @@
 jQuery(document).ready(function() {
-	AdminInterface.content.find('table.document_category_list').prepareWidget(function(document_category_list) {
+	AdminInterface.content.find('table.document_category_list').prepareWidget(function(content_list) {
 
 		// Add info_bar elements
 		AdminInterface.info_bar.prepareWidget(function(info_bar) {
@@ -7,14 +7,17 @@ jQuery(document).ready(function() {
 				Widget.create('document_category_detail', function(widget) {
 					widget.open();
 					widget.handle('saved', function() {
-						document_category_list.reload();
+						content_list.reload();
 					});
 				});
 			}, 'n', true).add_search_input("{{writeString=wns.search.enter_search}}", function(search) {
-				if(document_category_list.setSearch(search)) {
-					document_category_list.reload();
+				if(content_list.setSearch(search)) {
+					content_list.reload();
 				}
-			}).add_row_count_info_for_list(document_category_list).add_pager_for_list(document_category_list);
+			}).add_row_count_info_for_list(content_list).add_pager_for_list(content_list);
 		});
+
+		// Add search result notification
+		AdminInterface.strings.handle_strings_for_list_result('wns.document_category.no_result',[] , content_list);
 	});
 });

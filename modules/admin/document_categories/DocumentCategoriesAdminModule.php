@@ -16,7 +16,7 @@ class DocumentCategoriesAdminModule extends AdminModule {
 	}
 
 	public function sidebarContent() {
-		return false;
+		return null;
 	}
 
 	public function usedWidgets() {
