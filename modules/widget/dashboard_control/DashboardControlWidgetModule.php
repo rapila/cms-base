@@ -29,7 +29,7 @@ class DashboardControlWidgetModule extends WidgetModule {
 		return $aResult;
 	}
 
-	public function template() {
+	public function layoutTemplate() {
 		$sLayoutName = self::getLayoutName();
 		if(isset($aDashboardConfig['layout'])) {
 			$sLayoutName = $aDashboardConfig['layout'];

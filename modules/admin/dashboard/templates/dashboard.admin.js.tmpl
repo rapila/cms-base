@@ -132,7 +132,7 @@ jQuery(document).ready(function() {
 		};
 
 		function reload() {
-			dashboard_control.template(function(template) {
+			dashboard_control.layoutTemplate(function(template) {
 				//Clear elements and bound handlers
 				db.find('.dashboard-widget').unbind('.dashboard').empty();
 
