@@ -2,29 +2,22 @@
 /**
  * @package modules.widget
  */
-class DocumentTypeListWidgetModule extends WidgetModule {
+class DocumentTypeListWidgetModule extends SpecializedListWidgetModule {
 
-	private $oListWidget;
-	private $sDocumentKind;
 	public $oDelegateProxy;
-	
-	public function __construct() {
-		$this->oListWidget = new ListWidgetModule();
+	private $sDocumentKind;
+
+	protected function createListWidget() {
+		$oListWidget = new ListWidgetModule();
 		$this->oDelegateProxy = new CriteriaListWidgetDelegate($this, "DocumentType", 'extension');
-		$this->oListWidget->setDelegate($this->oDelegateProxy);
+		$oListWidget->setDelegate($this->oDelegateProxy);
+		return $oListWidget;
 	}
-	
-	public function doWidget() {
-		$aTagAttributes = array('class' => 'document_type_list');
-		$oListTag = new TagWriter('table', $aTagAttributes);
-		$this->oListWidget->setListTag($oListTag);
-		return $this->oListWidget->doWidget();
-	}
-	
+
 	public function getColumnIdentifiers() {
 		return array('id', 'extension', 'document_kind', 'mimetype', 'document_count', 'delete');
 	}
-	
+
 	public function getMetadataForColumn($sColumnIdentifier) {
 		$aResult = array('is_sortable' => true);
 		switch($sColumnIdentifier) {
@@ -33,14 +26,14 @@ class DocumentTypeListWidgetModule extends WidgetModule {
 				break;
 			case 'document_kind':
 				$aResult['heading'] = StringPeer::getString('wns.document_kind');
-				break;			
+				break;
 			case 'mimetype':
 				$aResult['heading'] = StringPeer::getString('wns.mimetype');
 				break;
 			case 'document_count':
 				$aResult['heading'] = StringPeer::getString('wns.documents_count');
 				$aResult['is_sortable'] = false;
-				break;			
+				break;
 			case 'delete':
 				$aResult['heading'] = ' ';
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_ICON;
@@ -57,21 +50,21 @@ class DocumentTypeListWidgetModule extends WidgetModule {
 		}
 		return null;
 	}
-	
+
 	public function getFilterTypeForColumn($sColumnIdentifier) {
 		if($sColumnIdentifier === 'document_kind') {
 			return CriteriaListWidgetDelegate::FILTER_TYPE_BEGINS;
 		}
 		return null;
 	}
-	
+
 	public function getDocumentKindName() {
 		if($this->oDelegateProxy->getDocumentKind() !== CriteriaListWidgetDelegate::SELECT_WITHOUT) {
 			return DocumentKindInputWidgetModule::getDocumentKindName($this->oDelegateProxy->getDocumentKind());
 		}
 		return $this->oDelegateProxy->getDocumentKind();
 	}
-	
+
 	public function getCriteria() {
 		$oQuery = DocumentTypeQuery::create();
 		if($this->oDelegateProxy->getDocumentKind() !== CriteriaListWidgetDelegate::SELECT_ALL) {

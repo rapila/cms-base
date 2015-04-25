@@ -177,7 +177,7 @@ class DocumentListWidgetModule extends SpecializedListWidgetModule {
 	}
 
 	public function getDocumentKindName() {
-		if($this->getDocumentKind() === CriteriaListWidgetDelegate::SELECT_ALL) {
+		if($this->getDocumentKind() !== CriteriaListWidgetDelegate::SELECT_ALL) {
 			return $this->getDocumentKind();
 		}
 		return DocumentKindInputWidgetModule::getDocumentKindName($this->getDocumentKind());

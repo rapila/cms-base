@@ -1,12 +1,12 @@
 jQuery(document).ready(function() {
-	AdminInterface.content.find('table.document_type_list').prepareWidget(function(document_type_list) {
+	AdminInterface.content.find('table.document_type_list').prepareWidget(function(content_list) {
 
 		// Sidebar
 		AdminInterface.sidebar.find('.ui-list').prepareWidget(function(sidebar) {
 			sidebar.settings.row_click_active_mode = 'activate';
 			sidebar.handle('list-selection_changed', function(event, selection) {
-				document_type_list.setOption('document_kind', selection[0] && selection[0].document_kind);
-				document_type_list.reload();
+				content_list.setOption('document_kind', selection[0] && selection[0].document_kind);
+				content_list.reload();
 			});
 		});
 
@@ -16,14 +16,17 @@ jQuery(document).ready(function() {
 				Widget.create('document_type_detail', function(widget) {
 					widget.open();
 					widget.handle('saved', function() {
-						document_type_list.reload();
+						content_list.reload();
 					});
 				});
 			}, 'n', true).add_search_input("{{writeString=wns.search.enter_search}}", function(search) {
-				if(document_type_list.setSearch(search)) {
-					document_type_list.reload();
+				if(content_list.setSearch(search)) {
+					content_list.reload();
 				}
-			}).add_row_count_info_for_list(document_type_list);
+			}).add_row_count_info_for_list(content_list);
 		});
+
+		// Add search result message
+		AdminInterface.strings.handle_strings_for_list_result('wns.document_type.no_result', ['document_kind_name'], content_list);
 	});
 });
