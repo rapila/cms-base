@@ -2,27 +2,19 @@
 /**
  * @package modules.widget
  */
-class GroupListWidgetModule extends WidgetModule {
+class GroupListWidgetModule extends SpecializedListWidgetModule {
 
-	private $oListWidget;
-	
-	public function __construct() {
-		$this->oListWidget = new ListWidgetModule();
+	protected function createListWidget() {
+		$oListWidget = new ListWidgetModule();
 		$oDelegateProxy = new CriteriaListWidgetDelegate($this, "Group", "name");
-		$this->oListWidget->setDelegate($oDelegateProxy);
+		$oListWidget->setDelegate($oDelegateProxy);
+		return $oListWidget;
 	}
-	
-	public function doWidget() {
-		$aTagAttributes = array('class' => 'group_list');
-		$oListTag = new TagWriter('table', $aTagAttributes);
-		$this->oListWidget->setListTag($oListTag);
-		return $this->oListWidget->doWidget();
-	}
-	
+
 	public function getColumnIdentifiers() {
 		return array('id', 'name', 'roles_info', 'user_link_data', 'delete');
 	}
-	
+
 	public function getMetadataForColumn($sColumnIdentifier) {
 		$aResult = array();
 		switch($sColumnIdentifier) {
