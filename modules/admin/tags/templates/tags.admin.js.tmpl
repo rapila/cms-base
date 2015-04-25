@@ -3,9 +3,9 @@ jQuery(document).ready(function() {
 	var sidebar = AdminInterface.sidebar;
 	var content_list = AdminInterface.content;
 	var info_bar = AdminInterface.info_bar;
-	
+
 	var handlers = [];
-	
+
 	sidebar.children('[data-widget-type]').prepareWidget(function(widget) {
 		sidebar = widget;
 	}.deferred(handlers));
@@ -15,22 +15,31 @@ jQuery(document).ready(function() {
 	info_bar.prepareWidget(function(widget) {
 		info_bar = widget;
 	}.deferred(handlers));
-	
+
 	jQuery.when.apply(jQuery, handlers).then(function() {
-		
-		// Add info_bar elements		
+
+		// Add info_bar elements
 		info_bar.add_search_input("{{writeString=wns.search.enter_search}}", function(search) {
 			if(content_list.setSearch(search)) {
 				content_list.reload();
 			}
+		}).add_search_input("{{writeString=wns.search.enter_search}}", function(search) {
+			if(content_list.setSearch(search)) {
+				content_list.reload();
+			}
 		}).add_row_count_info_for_list(content_list);
-		
+
 		// Sidebar selection change handler
 		sidebar.settings.row_click_active_mode = 'activate';
 		sidebar.handle('list-selection_changed', function(event, selection) {
 			content_list.setOption('tag_model_name', selection[0] && selection[0].tag_model_name);
 			content_list.reload();
 		});
+
 		Widget.handle('tag-models-changed', sidebar.reload.bind(sidebar));
+
+		// Search result notification
+		AdminInterface.strings.handle_strings_for_list_result('wns.tags.no_result', ['tag_model_name'], content_list, "{{writeString=wns.tags.no_result.default_message}}");
+
 	});
 });

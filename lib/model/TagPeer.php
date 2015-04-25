@@ -13,6 +13,7 @@
 class TagPeer extends BaseTagPeer {
 
 	public static function addSearchToCriteria($sSearch, $oCriteria) {
+		$sSearch = StringUtil::normalize($sSearch);
 		$oCriteria->add($oCriteria->getNewCriterion(self::NAME, "%$sSearch%", Criteria::LIKE));
 	}
 
