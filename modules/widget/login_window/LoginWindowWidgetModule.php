@@ -22,8 +22,8 @@ class LoginWindowWidgetModule extends PersistentWidgetModule {
 		}
 		throw new LocalizedException('flash.login_check_params');
 	}
-	
-	public function resetRequest($sUserNameOrPassword) {
+
+	public function resetRequest($sUserNameOrPassword, $bForce) {
 		if($sUserNameOrPassword === '') {
 			throw new LocalizedException('flash.login.username_or_email_required');
 		}
@@ -34,24 +34,24 @@ class LoginWindowWidgetModule extends PersistentWidgetModule {
 			$bShowUserName = true;
 		}
 		if($oUser) {
-			LoginManager::sendResetMail($oUser, $bShowUserName);
+			LoginManager::sendResetMail($oUser, $bShowUserName, null, $bForce);
 		}
 	}
-	
+
 	public function getIsLoggedIn() {
 		return Session::getSession()->isAuthenticated();
 	}
-	
+
 	public function logout() {
 		Session::getSession()->logout();
 		Cache::clearAllCaches();
 		return array('success' => true);
 	}
-	
+
 	public static function isSingleton() {
 		return true;
 	}
-	
+
 	public static function needsLogin() {
 		return false;
 	}

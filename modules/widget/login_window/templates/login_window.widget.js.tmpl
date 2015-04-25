@@ -14,8 +14,8 @@ Widget.types.login_window = {
 					this.login_markup.dialog('close');
 					Widget.fire('rapila-logged_in');
 				} else if(result.needs_password_reset) {
-					this.resetRequest(attributes.user_name, function(result) {
-						Widget.notifyUser(Widget.logSeverity.INFO, '{{writeString=wns.login.force_reset.sent}}');
+					this.resetRequest(attributes.user_name, true, function(result) {
+						this.login_markup.find('.error').text('{{writeString=wns.login.force_reset.sent}}').parents('.ui-alert').show();
 					});
 				}
 			});
@@ -39,7 +39,7 @@ Widget.types.login_window = {
 			form.on('submit', function(event) {
 				event.preventDefault();
 				event.stopPropagation();
-				_this.resetRequest(input_field.val(), function(result, error) {
+				_this.resetRequest(input_field.val(), false, function(result, error) {
 					if(error) {
 						error_element.show().find('.error').text(error.message);
 					} else {
@@ -118,7 +118,7 @@ Widget.types.login_window = {
 			}
 		});
 	},
-	
+
 	show: function() {
 		this.login_markup.dialog('open');
 	}

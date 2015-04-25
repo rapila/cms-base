@@ -132,7 +132,7 @@ class LoginManager extends PreviewManager {
 		return 'login';
 	}
 
-	public static function sendResetMail($oUser, $bShowUserName = false, $sLinkBase = null) {
+	public static function sendResetMail($oUser, $bShowUserName = false, $sLinkBase = null, $bForceReset = false) {
 		UserPeer::ignoreRights(true);
 		$oUser->setPasswordRecoverHint(PasswordHash::generateHint());
 		$oUser->save();
@@ -144,6 +144,12 @@ class LoginManager extends PreviewManager {
 		if($bShowUserName) {
 			$oEmailTemplate->replaceIdentifier('username_info', StringPeer::getString('wns.login.password_reset.your_username').': '.$oUser->getUsername());
 		}
+		$sInfoTextKey = 'wns.login.password_recover_email_text2';
+		if($bForceReset) {
+			$sInfoTextKey = 'wns.login.password_recover_email_text2_force';
+		}
+		$oEmailTemplate->replaceIdentifier('ignore_or_reset_info', StringPeer::getString($sInfoTextKey));
+
 		if($sLinkBase === null) {
 			if(Manager::$CURRENT_MANAGER instanceof FrontendManager) {
 				// We’re most likely on a login page: link to self should be ok
