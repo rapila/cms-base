@@ -115,8 +115,4 @@ class LanguageListWidgetModule extends SpecializedListWidgetModule {
 		}
 		return $aResult;
 	}
-
-	public function getCriteria() {
-		return LanguageQuery::create();
-	}
 }
