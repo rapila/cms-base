@@ -1,24 +1,24 @@
-jQuery(document).ready(function() {
-	jQuery('table.language_list').each(function() {
-		jQuery(this).prepareWidget(function(widget) {
-			Widget.callStatic('detail', 'connect_detail_with_list', 'language', widget, 'setLanguageId');
-			widget.handle('list-cell_click', function(event, rowIndex, col, row, cell) {
-				if(col.identifier === 'delete') {
-					var language_name = widget.cell_for_identifier('name', row).text();
-					var delete_message = AdminInterface.strings.get_string('wns.language.delete_warning', { detail_name: language_name});
-					Widget.confirm("{{writeString=wns.delete_warning_title}}", delete_message, function(confirmed) {
-						if(confirmed) {
-							this.delete_row(row);
-						}
-					}.bind(this));
-					event.stopPropagation();
-				}
+Widget.types.language_list = {
+	prepare: function() {
+		var widget = this._list;
+		Widget.callStatic('detail', 'connect_detail_with_list', 'language', widget, 'setLanguageId');
+		widget.handle('list-cell_click', function(event, rowIndex, col, row, cell) {
+			if(col.identifier === 'delete') {
+				var language_name = widget.cell_for_identifier('name', row).text();
+				var delete_message = AdminInterface.strings.get_string('wns.language.delete_warning', { detail_name: language_name});
+				Widget.confirm("{{writeString=wns.delete_warning_title}}", delete_message, function(confirmed) {
+					if(confirmed) {
+						this.delete_row(row);
+					}
+				}.bind(this));
+				event.stopPropagation();
+			}
 
-				if(col.identifier === 'is_active') {
-					this.toggle_boolean(row, col.identifier);
-					event.stopPropagation();
-				}
-			});
+			if(col.identifier === 'is_active') {
+				this.toggle_boolean(row, col.identifier);
+				event.stopPropagation();
+			}
 		});
-	});
-});
+	}
+};
+
