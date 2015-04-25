@@ -2,23 +2,14 @@
 /**
  * @package modules.widget
  */
-class RoleListWidgetModule extends WidgetModule {
-
-	private $oListWidget;
-	private $iGroupId;
+class RoleListWidgetModule extends SpecializedListWidgetModule {
 	public $oDelegateProxy;
 
-	public function __construct() {
-		$this->oListWidget = new ListWidgetModule();
+	protected function createListWidget() {
+		$oListWidget = new ListWidgetModule();
 		$this->oDelegateProxy = new CriteriaListWidgetDelegate($this, "Role", "role_key");
-		$this->oListWidget->setDelegate($this->oDelegateProxy);
-	}
-
-	public function doWidget() {
-		$aTagAttributes = array('class' => 'role_list');
-		$oListTag = new TagWriter('table', $aTagAttributes);
-		$this->oListWidget->setListTag($oListTag);
-		return $this->oListWidget->doWidget();
+		$oListWidget->setDelegate($this->oDelegateProxy);
+		return $oListWidget;
 	}
 
 	public function getColumnIdentifiers() {
