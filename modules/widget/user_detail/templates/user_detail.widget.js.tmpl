@@ -67,8 +67,8 @@ Widget.types.user_detail = {
 
 	toggle_rights_section: function(show_roles_groups) {
 		this.rights_section[show_roles_groups ? 'show' : 'hide']();
-		this.backend_login_enabled.attr('disabled', !show_roles_groups);	
-		this.admin_login_enabled.attr('disabled', !show_roles_groups);	
+		this.backend_login_enabled.attr('disabled', !show_roles_groups);
+		this.admin_login_enabled.attr('disabled', !show_roles_groups);
 		if(!show_roles_groups) {
 			this.backend_login_enabled.prop('checked', true);
 			this.admin_login_enabled.prop('checked', true);
