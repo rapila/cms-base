@@ -2,7 +2,7 @@
 class LanguageObjectControlWidgetModule extends PersistentWidgetModule {
 	private $oCurrentLanguageObject;
 	private $oModuleInstance;
-	
+
 	public function __construct($sSessionKey, $oCurrentLanguageObject, $oModuleInstance) {
 		parent::__construct($sSessionKey);
 		$this->oCurrentLanguageObject = $oCurrentLanguageObject;
@@ -58,14 +58,14 @@ class LanguageObjectControlWidgetModule extends PersistentWidgetModule {
 		$oSaveInto->setData($mSaveData);
 		return array('saved' => $oSaveInto->save(), 'language_object_exists' => !$this->oCurrentLanguageObject->isNew());
 	}
-	
+
 	public function __sleep() {
 		if($this->oCurrentLanguageObject !== null) {
 			$this->oCurrentLanguageObject = $this->oCurrentLanguageObject->getId();
 		}
 		return array_keys(get_object_vars($this));
 	}
-	
+
 	public function __wakeup() {
 		if($this->oCurrentLanguageObject !== null) {
 			$sId = explode('_', $this->oCurrentLanguageObject);
