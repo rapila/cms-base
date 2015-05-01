@@ -40,6 +40,17 @@ class Session {
 		}
 		$this->oUser = UserQuery::create()->findPk($this->iUserId);
 	}
+	
+	/**
+	 * Closes the session.
+	 * Changes on objects in the session made after the call to close will not be persisted across page loads.
+	 * @return the read-only session
+	 */
+	public static function close() {
+		$oSession = Session::getSession();
+		session_write_close();
+		return $oSession;
+	}
 
 	public function isAuthenticated() {
 		return ($this->oUser !== null);
