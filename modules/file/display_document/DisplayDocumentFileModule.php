@@ -4,6 +4,7 @@
  */
 class DisplayDocumentFileModule extends FileModule {
 	protected $oDocument;
+	protected $oSession;
 	
 	public function __construct($aRequestPath) {
 		parent::__construct($aRequestPath);
@@ -11,6 +12,7 @@ class DisplayDocumentFileModule extends FileModule {
 			// Exceptions thrown in a file module’s constructor yield a UserError but that’s OK.
 			throw new Exception("Error in DisplayDocumentFileModule->__construct: no key given");
 		}
+		$this->oSession = Session::close();
 		$this->oDocument = DocumentQuery::create()->findPk(intval($this->aPath[0]));
 		if($this->oDocument === null || ($this->oDocument->getIsProtected() && !$this->isAuthenticated())) {
 			$oErrorPage = PageQuery::create()->findOneByName(Settings::getSetting('error_pages', 'not_found', 'error_404'));
@@ -21,10 +23,11 @@ class DisplayDocumentFileModule extends FileModule {
 			}
 			break;
 		}
+		Session::close();
 	}
 	
 	protected function isAuthenticated() {
-		return Session::getSession()->isAuthenticated();
+		return $this->oSession->isAuthenticated();
 	}
 
 	public function renderFile() {
