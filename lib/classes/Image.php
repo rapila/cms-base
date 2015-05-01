@@ -200,7 +200,7 @@ class Image {
 				$oCache->setContents(ob_get_contents());
 				ob_end_clean();
 			}
-			//This is only for sending Last-Modified and ETag. You’ll still have to call this explicitly as soon as you know the cache string (as early as possible – a lot earlier than this) to send a Not Modified header
+			//This is only for sending Last-Modified. You’ll still have to call this explicitly as soon as you know the cache string (as early as possible – a lot earlier than this) to send a Not Modified response if a If-Modified-Since was sent.
 			$oCache->sendCacheControlHeaders();
 		}
 		

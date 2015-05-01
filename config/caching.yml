@@ -17,3 +17,7 @@ strategies:
 options:
   # Experimental: set this to true if you have an opcode cache
   use_var_export: false
+  # those don’t work well in some environments but should usually be fine. Turning off these also turns off 304 Not Modified responses
+  send_not_modified_response: true
+  # default ttl for cached responses. Possible values are documented in LinkUtil::sendExpires
+  expires: null

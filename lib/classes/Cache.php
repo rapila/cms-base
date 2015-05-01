@@ -218,13 +218,11 @@ class Cache {
 	* @param $iTimestamp deprecated: to use this method without a cache file, call LinkUtil::sendCacheControlHeaders directly
 	*/
 	public function sendCacheControlHeaders($iTimestamp = null) {
-		if($iTimestamp === null) {
-			if(!$this->entryExists(false)) {
-				return;
-			}
-			$iTimestamp = $this->getModificationDate();
+		if($iTimestamp !== null) {
+			LinkUtil::sendCacheControlHeaders($iTimestamp);
+		} else {
+			LinkUtil::sendCacheControlHeadersForCache($this);
 		}
-		LinkUtil::sendCacheControlHeaders($iTimestamp);
 	}
 	
 	/**

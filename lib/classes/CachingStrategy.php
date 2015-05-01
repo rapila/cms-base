@@ -50,6 +50,8 @@ abstract class CachingStrategy {
 	
 	// Universal options
 	protected $respect_cache_control_headers = true;
+	protected $send_not_modified_response = true;
+	protected $expires = null;
 	protected $nocache_param = 'nocache';
 	protected $key_encode = null;
 
@@ -87,6 +89,14 @@ abstract class CachingStrategy {
 			return true;
 		}
 		return false;
+	}
+	
+	public function expiresTimestamp() {
+		return $this->expires;
+	}
+	
+	public function supportsNotModified() {
+		return $this->send_not_modified_response;
 	}
 	
 	public function clearCaches() {

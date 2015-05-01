@@ -5,7 +5,8 @@
 
 class LinkUtil {
 
-	private static $CACHE_CONTROL_HEADERS_SENT;
+	private static $LAST_MODIFIED_SENT = false;
+	private static $EXPIRES_SENT = false;
 
 	const DATE_RFC2616 = 'D, d M Y H:i:s \G\M\T';
 
@@ -70,52 +71,144 @@ class LinkUtil {
 	}
 
 	/**
-	* Sends the cache control header Last-Modified and checks If-Modified-Since for a match (if so, terminates and sends a 304 Not Modified status code)
-	* Uses the given timestamp as base for calculation. If it is an object or a query, the updated-at field of the object (or the newest item that matches the query) is used.
-	* You can call this method twice if you created a new cache file and don’t have any other timestamp. It will only output the headers once.
-	* @param $iTimestamp deprecated: to use this method without a cache file, call LinkUtil::sendCacheControlHeaders directly
+	* Sends the cache control headers. Shortcut for calling sendLastModifiedAndCheckModifiedSince and sendExpires.
+	* • Last-Modified and checks If-Modified-Since for a match (if so, terminates and sends a 304 Not Modified status code)
+	* • Uses the given timestamp as base for calculation. If it is an object or a query, the updated-at field of the object (or the newest item that matches the query) is used.
+	* • You can call this method twice if you created a new cache file and don’t have any other timestamp. It will only output the headers once.
+	* @param $mLastModified The last-modified date to send. Can be one of the following:
+	*                     • `null` to not send a last-modified (only applicable if the second argument is non-null)
+	*                     • A UNIX timestamp as an integer
+	*                     • A string to be parsed into a date using strtotime
+	*                     • A DateTime object
+	*                     • A Propel database object whose updated_at timestamp will be used
+	*                     • A Propel query that will find the object most recently updated and use its updated_at timestamp
+	* @param $mExpires The expires header to send. Can be one of the following:
+	*                     • `null` to not send an expires header (only applicable if first argument is non-null)
+	*                     • A DateInterval object
+	*                     • A date interval spec in the form of Pxx (http://en.wikipedia.org/wiki/Iso8601#Durations) which will be added to today’s date
+	*                     • A UNIX timestamp as an integer
+	*                     • A string to be parsed into a date using strtotime
+	*                     • A DateTime object
+	*                     • `true` to expire in a year (the maxiumum permitted by RFC2616)
+	*                     • `false` to mark as already expired (and to force re-evaluation)
 	*/
-	public static function sendCacheControlHeaders($iTimestamp) {
-		if(Settings::getSetting('general', 'send_not_modified_headers', null) === false) {
-			return;
+	public static function sendCacheControlHeaders($mLastModified, $mExpires = null) {
+		if($mExpires !== null) {
+			self::sendExpires($mExpires);
 		}
-		if(self::$CACHE_CONTROL_HEADERS_SENT) {
+		if($mLastModified !== null) {
+			self::sendLastModifiedAndCheckModifiedSince($mLastModified);
+		}
+	}
+	
+	/**
+	* Version of sendCacheControlHeaders that uses a cache object to calculate the last-modified timestamp
+	*/
+	public static function sendCacheControlHeadersForCache($oCache) {
+		self::sendExpires($oCache);
+		if($oCache->entryExists(false) && $oCache->getStrategy()->supportsNotModified()) {
+			$mLastModified = $oCache->getModificationDate();
+			self::sendLastModifiedAndCheckModifiedSince($mLastModified);
+		}
+	}
+	
+	/**
+	* Sends Last-Modified and checks If-Modified-Since for a match (if so, terminates and sends a 304 Not Modified status code). Uses the given timestamp as base for calculation. If it is an object or a query, the updated-at field of the object (or the newest item that matches the query) is used. You can call this method twice if you created a new cache file and don’t have any other timestamp. It will only output the headers once.
+	* @param $mTimestamp The last-modified date to send. Can be one of the following:
+	*                     • A UNIX timestamp as an integer
+	*                     • A string to be parsed into a date using strtotime
+	*                     • A DateTime object
+	*                     • A Propel database object whose updated_at timestamp will be used
+	*                     • A Propel query that will find the object most recently updated and use its updated_at timestamp
+	*/
+	public static function sendLastModifiedAndCheckModifiedSince($mTimestamp) {
+		if(self::$LAST_MODIFIED_SENT) {
 			return;
 		}
 
-		if($iTimestamp === null) {
+		if($mTimestamp instanceof BaseObject) {
+			$mTimestamp = $mTimestamp->getUpdatedAtTimestamp();
+		}
+		if($mTimestamp instanceof ModelCriteria) {
+			$mTimestamp = $mTimestamp->findMostRecentUpdate();
+		}
+		if(is_string($mTimestamp)) {
+			$mTimestamp = strtotime($mTimestamp);
+		}
+		if($mTimestamp === null) {
 			return;
 		}
-		if($iTimestamp instanceof BaseObject) {
-			$iTimestamp = $iTimestamp->getUpdatedAtTimestamp();
-		}
-		if($iTimestamp instanceof ModelCriteria) {
-			$iTimestamp = $iTimestamp->findMostRecentUpdate();
-		}
-		if(is_string($iTimestamp)) {
-			$iTimestamp = strtotime($iTimestamp);
-		}
-		if($iTimestamp === null) {
-			return;
-		}
-		if($iTimestamp instanceof DateTime) {
-			$oModifyDate = clone $iTimestamp;
-			$oModifyDate->setTimezone(new DateTimeZone('UTC'));
+		if($mTimestamp instanceof DateTime) {
+			$mTimestamp = clone $mTimestamp;
+			$mTimestamp->setTimezone(new DateTimeZone('UTC'));
 		} else {
-			$oModifyDate = new DateTime("@$iTimestamp");
+			$mTimestamp = new DateTime("@$mTimestamp");
 		}
 
-		header("Last-Modified: " . $oModifyDate->format(self::DATE_RFC2616));
-		self::$CACHE_CONTROL_HEADERS_SENT = true;
+		header("Last-Modified: " . $mTimestamp->format(self::DATE_RFC2616));
+		self::$LAST_MODIFIED_SENT = true;
 
 		if(isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
 			$oSinceDate = DateTime::createFromFormat(self::DATE_RFC2616, $_SERVER['HTTP_IF_MODIFIED_SINCE'], new DateTimeZone('UTC'));
-			if($oSinceDate->getTimestamp() >= $oModifyDate->getTimestamp()) {
+			if($oSinceDate->getTimestamp() >= $mTimestamp->getTimestamp()) {
 				self::sendHTTPStatusCode(304, 'Not Modified');
 				header('Content-Length: 0');
 				exit;
 			}
 		}
+	}
+	
+	/**
+	* Sends an expires header.
+	* @param $mExpires The expires header to send. Can be one of the following:
+	*                     • A DateInterval object
+	*                     • A date interval spec in the form of Pxx (http://en.wikipedia.org/wiki/Iso8601#Durations) which will be added to today’s date
+	*                     • A UNIX timestamp as an integer
+	*                     • A string to be parsed into a date using strtotime
+	*                     • A DateTime object
+	*                     • A Cache or CachingStrategy object (which will be asked about the expiresTimestamp)
+	*                     • `true` to expire in a year (the maxiumum permitted by RFC2616)
+	*                     • `false` to mark as already expired (and to force re-evaluation)
+	*/
+	public static function sendExpires($mTimestamp) {
+		if(self::$EXPIRES_SENT) {
+			return;
+		}
+		if($mTimestamp instanceof Cache) {
+			$mTimestamp = $mTimestamp->getStrategy();
+		}
+		if($mTimestamp instanceof CachingStrategy) {
+			$mTimestamp = $mTimestamp->expiresTimestamp();
+		}
+		if($mTimestamp === true) {
+			$mTimestamp = 'P1Y';
+		}
+		if(is_string($mTimestamp) && substr($mTimestamp, 0, 1) === 'P') {
+			$mTimestamp = new DateInterval($mTimestamp);
+		}
+		if(is_string($mTimestamp)) {
+			$mTimestamp = strtotime($mTimestamp);
+		}
+		if($mTimestamp === null) {
+			return;
+		}
+		if($mTimestamp instanceof DateInterval) {
+			$oDate = new DateTime();
+			$mTimestamp = $oDate->add($mTimestamp);
+		} else if($mTimestamp instanceof DateTime) {
+			$mTimestamp = clone $mTimestamp;
+			$mTimestamp->setTimezone(new DateTimeZone('UTC'));
+		} else if(is_int($mTimestamp)) {
+			$mTimestamp = new DateTime("@$mTimestamp");
+		}
+		// Format for output
+		if($mTimestamp === false) {
+			$mTimestamp = 0;
+		} else {
+			$mTimestamp = $mTimestamp->format(self::DATE_RFC2616);
+		}
+		header('Expires: '.$mTimestamp);
+		self::$EXPIRES_SENT = true;
 	}
 
 	/**

@@ -8,8 +8,6 @@ general:
   template_caching: true
   # @see http://www.php.net/manual/en/timezones.php
   timezone: "Europe/Zurich"
-  # those don’t work well in some environments
-  send_not_modified_headers: true
   # whether to trust proxy headers for the following: Forwarded-For, SSL, Host, and Port
   # TODO: Implement
   trust_http_proxy_headers: false
