@@ -28,8 +28,8 @@ class DocumentTypePreviewFileModule extends FileModule {
 		$sCacheString = 'preview_'.$this->oDocumentType->getId().'_'.$this->iSize;
 		$oCache = new Cache($sCacheString, DIRNAME_IMAGES);
 		
+		LinkUtil::sendCacheControlHeaders($this->oDocumentType, $oCache);
 		if($oCache->entryExists() && !$oCache->isOlderThan($this->oDocumentType)) {
-			LinkUtil::sendCacheControlHeaders($this->oDocumentType);
 			header("Content-Type: ".self::MIME_TYPE);
 			$oCache->passContents(true);exit;
 		}
@@ -71,7 +71,6 @@ class DocumentTypePreviewFileModule extends FileModule {
 			$oImage->setSize($this->iSize, $this->iSize, Image::STRETCH);
 		}
 		$oImage->setFileType('png');
-		LinkUtil::sendCacheControlHeaders($this->oDocumentType);
 		$oImage->render(true, null, $oCache); exit;
 	}
 }

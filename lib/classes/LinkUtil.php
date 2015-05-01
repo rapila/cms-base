@@ -89,6 +89,7 @@ class LinkUtil {
 	*                     • A UNIX timestamp as an integer
 	*                     • A string to be parsed into a date using strtotime
 	*                     • A DateTime object
+	*                     • A Cache object (which will be asked about the expiresTimestamp)
 	*                     • `true` to expire in a year (the maxiumum permitted by RFC2616)
 	*                     • `false` to mark as already expired (and to force re-evaluation)
 	*/
@@ -100,7 +101,7 @@ class LinkUtil {
 			self::sendLastModifiedAndCheckModifiedSince($mLastModified);
 		}
 	}
-	
+
 	/**
 	* Version of sendCacheControlHeaders that uses a cache object to calculate the last-modified timestamp
 	*/
@@ -111,7 +112,7 @@ class LinkUtil {
 			self::sendLastModifiedAndCheckModifiedSince($mLastModified);
 		}
 	}
-	
+
 	/**
 	* Sends Last-Modified and checks If-Modified-Since for a match (if so, terminates and sends a 304 Not Modified status code). Uses the given timestamp as base for calculation. If it is an object or a query, the updated-at field of the object (or the newest item that matches the query) is used. You can call this method twice if you created a new cache file and don’t have any other timestamp. It will only output the headers once.
 	* @param $mTimestamp The last-modified date to send. Can be one of the following:
@@ -166,7 +167,7 @@ class LinkUtil {
 	*                     • A UNIX timestamp as an integer
 	*                     • A string to be parsed into a date using strtotime
 	*                     • A DateTime object
-	*                     • A Cache or CachingStrategy object (which will be asked about the expiresTimestamp)
+	*                     • A Cache object (which will be asked about the expiresTimestamp)
 	*                     • `true` to expire in a year (the maxiumum permitted by RFC2616)
 	*                     • `false` to mark as already expired (and to force re-evaluation)
 	*/
@@ -175,10 +176,7 @@ class LinkUtil {
 			return;
 		}
 		if($mTimestamp instanceof Cache) {
-			$mTimestamp = $mTimestamp->getStrategy();
-		}
-		if($mTimestamp instanceof CachingStrategy) {
-			$mTimestamp = $mTimestamp->expiresTimestamp();
+			$mTimestamp = $mTimestamp->getStrategy()->expiresTimestamp($mTimestamp);
 		}
 		if($mTimestamp === true) {
 			$mTimestamp = 'P1Y';
@@ -193,7 +191,7 @@ class LinkUtil {
 			return;
 		}
 		if($mTimestamp instanceof DateInterval) {
-			$oDate = new DateTime();
+			$oDate = new DateTime('now', new DateTimeZone('UTC'));
 			$mTimestamp = $oDate->add($mTimestamp);
 		} else if($mTimestamp instanceof DateTime) {
 			$mTimestamp = clone $mTimestamp;

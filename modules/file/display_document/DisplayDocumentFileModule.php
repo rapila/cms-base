@@ -44,9 +44,10 @@ class DisplayDocumentFileModule extends FileModule {
 		}
 		header('Content-Disposition: '.$sDisplay.';filename="'.$this->oDocument->getFullName().'"');
 
+		//Don’t base the last-modified off the cache but rather off the document’s updated-at.
+		LinkUtil::sendCacheControlHeaders($this->oDocument, $oCache);
+
 		if($oCache->entryExists() && !$oCache->isOlderThan($this->oDocument)) {
-			//Don’t base the last-modified off the cache but rather off the document’s updated-at.
-			LinkUtil::sendCacheControlHeaders($this->oDocument);
 			header("Content-Type: ".$this->oDocument->getDocumentType()->getMimetype());
 			$oCache->passContents(true);exit;
 		}
@@ -78,7 +79,6 @@ class DisplayDocumentFileModule extends FileModule {
 		header("Content-Type: ".$this->oDocument->getDocumentType()->getMimetype());
 		header("Content-Length: ".$this->oDocument->getDataSize());
 		$oCache->setContents(stream_get_contents($rDataStream));
-		LinkUtil::sendCacheControlHeaders($this->oDocument);
 		rewind($rDataStream);
 		fpassthru($rDataStream);
 	}

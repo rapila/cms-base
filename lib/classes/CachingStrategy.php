@@ -91,8 +91,19 @@ abstract class CachingStrategy {
 		return false;
 	}
 	
-	public function expiresTimestamp() {
-		return $this->expires;
+	public function expiresTimestamp($oCache) {
+		$mExpires = $this->expires;
+		$sModule = $oCache->getModule();
+		if(is_array($mExpires)) {
+			if(isset($mExpires[$sModule])) {
+				return $mExpires[$sModule];
+			}
+			if(isset($mExpires['_default'])) {
+				return $mExpires['_default'];
+			}
+			return null;
+		}
+		return $mExpires;
 	}
 	
 	public function supportsNotModified() {

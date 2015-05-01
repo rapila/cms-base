@@ -14,7 +14,7 @@ class LocalJsLibraryFileModule extends FileModule {
 	}
 
 	public function renderFile() {
-		$oCache = new Cache(implode('/', Manager::getUsedPath()), DIRNAME_TEMPLATES);
+		$oCache = new Cache(implode('/', Manager::getUsedPath()), 'versioned');
 		header("Content-Type: text/javascript;charset=utf-8");
 		if($oCache->entryExists()) {
 			$oCache->sendCacheControlHeaders();
