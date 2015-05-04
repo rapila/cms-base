@@ -26,8 +26,7 @@ class Session {
 	}
 
 	public function __sleep() {
-		$this->oUser = null;
-		return array_keys(get_object_vars($this));
+		return array_diff(array_keys(get_object_vars($this)), array('oUser'));
 	}
 
 	public function __wakeup() {

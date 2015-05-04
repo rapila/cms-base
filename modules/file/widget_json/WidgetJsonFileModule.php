@@ -77,6 +77,11 @@ class WidgetJsonFileModule extends FileModule {
 			return;
 		}
 		$sWidgetClass = WidgetModule::getClassNameByName($this->sWidgetType);
+		$bIsPersistent = $sWidgetClass::isPersistent();
+		if(!$bIsPersistent) {
+			// Close session early on readonly calls
+			Session::close();
+		}
 
 		if($this->sAction == 'widgetInformation') {
 			$aInformation = array();
@@ -84,7 +89,7 @@ class WidgetJsonFileModule extends FileModule {
 			$aInformation['resources'] = ResourceIncluder::defaultIncluder()->getIncludes()->render();
 			$aInformation['methods'] = $sWidgetClass::getCustomMethods();
 			$aInformation['is_singleton'] = $sWidgetClass::isSingleton();
-			$aInformation['is_persistent'] = $sWidgetClass::isPersistent();
+			$aInformation['is_persistent'] = $bIsPersistent;
 			return $aInformation;
 		}
 		if($this->sAction == 'staticMethodCall') {
