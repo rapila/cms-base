@@ -23,8 +23,6 @@ linking:
 # give the page name as value here (be sure not to have allocated the name to more than one page)
 error_pages:
   not_found: "error-404"
-  # server_error is ignored for the time being
-  server_error: "internal_server_error"
 
 domain_holder:
   domain: 'example.com'
