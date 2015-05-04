@@ -23,13 +23,13 @@ class ConsolidatedResourceFileModule extends FileModule {
 		}
 		$sKey = 'consolidated-output-'.$this->sType.'-'.implode('|', $aKeys);
 		$oCachingStrategy = clone CachingStrategy::fromConfig('file');
-		$oCache = new Cache($sKey, DIRNAME_PRELOAD, $oCachingStrategy);
+		$oCache = new Cache($sKey, 'resource', $oCachingStrategy);
+		$oItemCachingStrategy = clone $oCachingStrategy;
+		$oItemCachingStrategy->init(array('key_encode' => null));
 		$oCache->sendCacheControlHeaders();
 		if(!$oCache->entryExists(false)) {
 			foreach($aKeys as $sItemKey) {
-				$oCachingStrategy = clone $oCachingStrategy;
-				$oCachingStrategy->init(array('key_encode' => null));
-				$oItemCache = new Cache($sItemKey, DIRNAME_PRELOAD, $oCachingStrategy);
+				$oItemCache = new Cache($sItemKey, DIRNAME_PRELOAD, $oItemCachingStrategy);
 				if(!$oItemCache->entryExists(false)) {
 					throw new Exception("Consolidated resource $sItemKey does not exist.");
 				}

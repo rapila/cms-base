@@ -31,7 +31,7 @@ abstract class TemplateResourceFileModule extends FileModule {
 		} else {
 			header("Content-Type: text/html;charset=utf-8");
 		}
-		$oCache = new Cache('template_resource-'.$sFileName.'-'.Session::language(), DIRNAME_TEMPLATES);
+		$oCache = new Cache('template_resource-'.$sFileName.'-'.Session::language(), 'resource');
 		$oTemplate = null;
 		if($oCache->entryExists() && !$oCache->isOutdated($oResourceFinder)) {
 			$oCache->sendCacheControlHeaders();
@@ -61,12 +61,12 @@ abstract class TemplateResourceFileModule extends FileModule {
 		$sModuleName;
 		$sModuleType;
 	  if($mModule instanceof Module) {
-  		$sModuleName = $mModule->getModuleName();
-  		$sModuleType = $mModule->getType();
-	  } else {
-      $sModuleName = $mModule::getNameByClassName($mModule);
-      $sModuleType = $mModule::getType();
-	  }
+			$sModuleName = $mModule->getModuleName();
+			$sModuleType = $mModule->getType();
+		} else {
+			$sModuleName = $mModule::getNameByClassName($mModule);
+			$sModuleType = $mModule::getType();
+		}
 		if($oResourceIncluder === null) {
 			$oResourceIncluder = ResourceIncluder::defaultIncluder();
 		}
