@@ -34,6 +34,13 @@ class Document extends BaseDocument {
 		return $this->getName().'.'.$this->getExtension();
 	}
 
+	public function getDescriptionOrName() {
+		if($this->getDescription()) {
+			return $this->getDescription();
+		}
+		return $this->getName();
+	}
+
 	public function isImage() {
 		return $this->getDocumentType()->isImageType();
 	}

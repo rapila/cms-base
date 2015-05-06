@@ -6,6 +6,14 @@ require_once 'model/om/BaseLink.php';
  * @package model
  */
 class Link extends BaseLink {
+
+	public function getDescriptionOrName() {
+		if($this->getDescription()) {
+			return $this->getDescription();
+		}
+		return $this->getName();
+	}
+
 	public function getCategoryName() {
 		if($this->getLinkCategory()) {
 			return $this->getLinkCategory()->getName();
