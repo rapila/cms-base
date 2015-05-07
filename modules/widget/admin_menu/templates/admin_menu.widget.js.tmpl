@@ -288,6 +288,8 @@ Widget.types.admin_menu = {
 		documentation: function() {
 			var _this = this;
 			var element = jQuery('<button/>').addClass('open-documentation rapila-icon').text('info');
+			var title = "{{writeString=documentation_icon.button_title}}"
+			if(title) element.attr('title', title);
 			element.button();
 			var key;
 			if(window.PreviewInterface && window.PreviewInterface.page_type) {
