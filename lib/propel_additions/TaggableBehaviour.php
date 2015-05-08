@@ -231,11 +231,16 @@ public static function removeAllTagsFrom(\$s${sClass}Id)
 /**
  * @return All tags for the ${sClass} given by the id
  */
-public static function tagsFor(\$s${sClass}Id, \$sReturn = 'tag')
+public static function tagsFor(\$s${sClass}Id = null, \$sReturn = 'tag')
 {
 	\$oQuery = ${sInstanceClass}Query::create();
-	\$oQuery->filterByTaggedItemId(\$s${sClass}Id);
+	if(\$s${sClass}Id !== null) {
+		\$oQuery->filterByTaggedItemId(\$s${sClass}Id);
+	}
 	\$oQuery->filterByModelName(\"$sClass\");
+	if(\$sReturn === 'count') {
+		return \$oQuery->find()->count();
+	}
 	\$aTagInstances = \$oQuery->find()->getArrayCopy();
 	if(\$sReturn === 'instances') {
 		return \$aTagInstances;
