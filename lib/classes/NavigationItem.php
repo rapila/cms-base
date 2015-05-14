@@ -24,10 +24,26 @@ abstract class NavigationItem {
 	protected abstract function hasChildrenImpl($sLanguageId, $bIncludeDisabled, $bIncludeInvisible);
 
 	private function prepareChildren() {
-		if($this->aCustomChildren === null) {
-			$this->aCustomChildren = array();
-			FilterModule::getFilters()->handleNavigationItemChildrenRequested($this);
+		if($this->aCustomChildren !== null) {
+			return;
 		}
+		$sCacheKey = Session::language().'/'.$this->getId();
+		$oCache = new Cache("$sCacheKey/custom-children", 'navigation');
+		if($oCache->entryExists()) {
+			// Not setting validators will result in the cache being always up-to-date
+			$bIsOutdated = false;
+			FilterModule::getFilters()->handleNavigationItemChildrenCacheDetectOutdated($this, $oCache, array(&$bIsOutdated));
+			if(!$bIsOutdated) {
+				$this->aCustomChildren = $oCache->getContentsAsVariable();
+				foreach($this->aCustomChildren as $oChildNavigationItem) {
+					$oChildNavigationItem->oParent = $this;
+				}
+				return;
+			}
+		}
+		$this->aCustomChildren = array();
+		FilterModule::getFilters()->handleNavigationItemChildrenRequested($this);
+		$oCache->setContents($this->aCustomChildren, true);
 	}
 
 	protected function getCustomChildren($sLanguageId = null, $bIncludeDisabled = false, $bIncludeInvisible = false) {
@@ -203,10 +219,10 @@ abstract class NavigationItem {
 	}
 
 	public function __sleep() {
-		$aVars = get_class_vars(get_class($this));
-		unset($aVars['oParent']);
-		unset($aVars['aCustomChildren']);
-		unset($aVars['aChildren']);
+		$aVars = (array) $this;
+		unset($aVars["\0*\0oParent"]);
+		unset($aVars["\0*\0aCustomChildren"]);
+		unset($aVars["\0*\0aChildren"]);
 		return array_keys($aVars);
 	}
 }
