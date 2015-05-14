@@ -24,45 +24,26 @@ abstract class NavigationItem {
 	protected abstract function hasChildrenImpl($sLanguageId, $bIncludeDisabled, $bIncludeInvisible);
 
 	private function prepareChildren() {
-		if($this->aCustomChildren === null) {
-			$sCacheKey = Session::language().'/'.$this->getId();
-			$oCacheInvalidatorCache = new Cache("$sCacheKey/custom-children-invalidators", 'navigation');
-			if($oCacheInvalidatorCache->entryExists()) {
-				$aCacheInvalidators = $oCacheInvalidatorCache->getContentsAsVariable();
-			} else {
-				$aCacheInvalidators = null;
-			}
-			$oCache = new Cache("$sCacheKey/custom-children", 'navigation');
-			if($oCache->entryExists() && $aCacheInvalidators !== null) {
-				// Not setting validators will result in the cache being always up-to-date
-				$bIsOutdated = false;
-				foreach($aCacheInvalidators as $mCacheInvalidator) {
-					if(is_string($mCacheInvalidator)) {
-						$sQuery = "${mCacheInvalidator}Query";
-						$bIsOutdated = $oCache->isOlderThan($sQuery::create());
-					} else if($mCacheInvalidator instanceof FileResource || $mCacheInvalidator instanceof ResourceFinder) {
-						$bIsOutdated = $oCache->isOutdated($mCacheInvalidator);
-					} else {
-						$bIsOutdated = $oCache->isOlderThan($mCacheInvalidator);
-					}
-					if($bIsOutdated) {
-						break;
-					}
-				}
-				if(!$bIsOutdated) {
-					$this->aCustomChildren = $oCache->getContentsAsVariable();
-					foreach($this->aCustomChildren as $oChildNavigationItem) {
-						$oChildNavigationItem->oParent = $this;
-					}
-					return;
-				}
-			}
-			$aCacheInvalidators = array();
-			$this->aCustomChildren = array();
-			FilterModule::getFilters()->handleNavigationItemChildrenRequested($this, array(&$aCacheInvalidators));
-			$oCache->setContents($this->aCustomChildren, true);
-			$oCacheInvalidatorCache->setContents($aCacheInvalidators, true);
+		if($this->aCustomChildren !== null) {
+			return;
 		}
+		$sCacheKey = Session::language().'/'.$this->getId();
+		$oCache = new Cache("$sCacheKey/custom-children", 'navigation');
+		if($oCache->entryExists()) {
+			// Not setting validators will result in the cache being always up-to-date
+			$bIsOutdated = false;
+			FilterModule::getFilters()->handleNavigationItemChildrenCacheDetectOutdated($this, $oCache, array(&$bIsOutdated));
+			if(!$bIsOutdated) {
+				$this->aCustomChildren = $oCache->getContentsAsVariable();
+				foreach($this->aCustomChildren as $oChildNavigationItem) {
+					$oChildNavigationItem->oParent = $this;
+				}
+				return;
+			}
+		}
+		$this->aCustomChildren = array();
+		FilterModule::getFilters()->handleNavigationItemChildrenRequested($this);
+		$oCache->setContents($this->aCustomChildren, true);
 	}
 
 	protected function getCustomChildren($sLanguageId = null, $bIncludeDisabled = false, $bIncludeInvisible = false) {
