@@ -40,8 +40,15 @@ class PageQuery extends BasePageQuery {
 		return $this->filterByIsInactive(!$bIsActive);
 	}
 
+	/**
+	* @deprecated seems to be a very special method that is rarely used, if at all, replace by local code
+	*/
 	public function filterByFirstLevelNameOrIdentifier($sName) {
 		return $this->filterByName($sName)->_and()->filterByTreeLevel(1)->_or()->filterByIdentifier($sName);
+	}
+
+	public function filterByNameOrIdentifier($sName) {
+		return $this->filterByName($sName)->_or()->filterByIdentifier($sName);
 	}
 }
 
