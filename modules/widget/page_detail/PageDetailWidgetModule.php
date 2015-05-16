@@ -250,7 +250,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 			throw new ValidationException();
 		}
 
-		$this->oPage->setName(StringUtil::normalize($aPageData['name']));
+		$this->oPage->setName($aPageData['name']);
 		$this->oPage->setIsInactive(!$aPageData['global_is_active']);
 		$this->oPage->setIsHidden($aPageData['is_hidden']);
 		$this->oPage->setIsFolder($aPageData['is_folder']);
