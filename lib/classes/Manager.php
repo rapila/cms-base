@@ -64,7 +64,7 @@ abstract class Manager {
 	public static function getOriginalPath() {
 		return self::$ORIGINAL_PATH;
 	}
-	
+
 	public static function routeConfig() {
 		if(self::$ROUTE_CONFIG === null) {
 			self::$ROUTE_CONFIG = new stdClass();

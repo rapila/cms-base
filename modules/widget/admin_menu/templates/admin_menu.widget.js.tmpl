@@ -303,7 +303,7 @@ Widget.types.admin_menu = {
 			return {element: element, callback: function(event) {
 				_this.documentationData(key, function(data) {
 					var content = data.content;
-					content = '<h2><a target="documentation" href="'+data.url+'">' + data.title + '</a></h2>' + content;
+					content = '<h2><a href="'+data.url+'">' + data.title + '</a></h2>' + content;
 					Widget.notifyUser(Widget.logSeverity.DOCUMENTATION, content, {
 						closeDelay: null,
 						identifier: 'documentation-'+key,

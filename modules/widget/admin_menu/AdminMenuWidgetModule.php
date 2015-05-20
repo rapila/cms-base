@@ -114,7 +114,10 @@ class AdminMenuWidgetModule extends PersistentWidgetModule {
 	}
 
 	public function documentationData($sDocumentationName) {
-		return DocumentationProviderTypeModule::dataForPart($sDocumentationName, Session::language());
+		$sPart = DocumentationProviderTypeModule::dataForPart($sDocumentationName, Session::language());
+		$sOpenBrowserInfo = '<p>'.StringPeer::getString('documentation.link_click_tip').'</p>';
+		$sPart['content'] .= $sOpenBrowserInfo;
+		return $sPart;
 	}
 
 	public function clearCaches() {
