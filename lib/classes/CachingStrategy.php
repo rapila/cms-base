@@ -4,16 +4,16 @@
 */
 abstract class CachingStrategy {
 	private static $NAMED_STRATEGIES = array();
-	
+
 	// Initialization
-	
+
 	private $bIsInitialized = false;
 
 	/**
 	* Default constructor. Does not need to be overridden by most implementations.
 	*/
 	public function __construct() {}
-	
+
 	/**
 	* Called when all options have been set.
 	*/
@@ -23,7 +23,7 @@ abstract class CachingStrategy {
 		}
 		$this->bIsInitialized = true;
 	}
-	
+
 	/**
 	* Sets an option (if applicable).
 	*/
@@ -39,7 +39,7 @@ abstract class CachingStrategy {
 	protected function replaceOption(Cache $oCache, $sOption) {
 		return str_replace(array('${module}', '${key}'), array($oCache->getModule(), $this->encodedKey($oCache)), $sOption);
 	}
-	
+
 	public function encodedKey(Cache $oCache) {
 		$sKey = $oCache->getKey();
 		if($this->key_encode) {
@@ -47,7 +47,7 @@ abstract class CachingStrategy {
 		}
 		return $sKey;
 	}
-	
+
 	// Universal options
 	protected $respect_cache_control_headers = true;
 	protected $send_not_modified_response = true;
@@ -56,7 +56,7 @@ abstract class CachingStrategy {
 	protected $key_encode = null;
 
 	// API
-	
+
 	public abstract function exists(Cache $oCache);
 	public abstract function read(Cache $oCache);
 	public function readData(Cache $oCache) {
@@ -73,11 +73,11 @@ abstract class CachingStrategy {
 	public function size(Cache $oCache) {
 		return null;
 	}
-	
+
 	public function cacheIsOffForWriting() {
 		return false;
 	}
-	
+
 	public function cacheIsOff() {
 		if($this->cacheIsOffForWriting()) {
 			return true;
@@ -90,7 +90,7 @@ abstract class CachingStrategy {
 		}
 		return false;
 	}
-	
+
 	public function expiresTimestamp($oCache) {
 		$mExpires = $this->expires;
 		$sModule = $oCache->getModule();
@@ -105,19 +105,19 @@ abstract class CachingStrategy {
 		}
 		return $mExpires;
 	}
-	
+
 	public function supportsNotModified() {
 		return $this->send_not_modified_response;
 	}
-	
+
 	public function clearCaches() {
 		// Default implementation: do nothing
 	}
-	
+
 	public function __clone() {
 		$this->bIsInitialized = false;
 	}
-	
+
 	// Creation helpers
 
 	/**
@@ -160,7 +160,7 @@ abstract class CachingStrategy {
 		}
 		return self::$NAMED_STRATEGIES[$sType];
 	}
-	
+
 	/**
 	* Returns an array of all strategy instances declared in the config.
 	*/
