@@ -17,7 +17,7 @@ class Page extends BasePage {
 	private $oOldParent = null;
 
 	public function setName($sName) {
-		parent::setName(StringUtil::normalizePath($sName));
+		parent::setName(StringUtil::normalizePath($sName, false));
 	}
 
 	public function getChildByName($sName) {
