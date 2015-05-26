@@ -115,7 +115,7 @@ class StringUtil {
 	}
 
 	public static function normalizePath($sInput) {
-		$aPathSpecials = array('/', '#', '?');
+		$aPathSpecials = array('/', '#', '?', '+');
 		$sFillIn = '-';
 		$sInput = self::normalizeMinimally($sInput, $sFillIn);
 		$sInput = str_replace($aPathSpecials, $sFillIn, $sInput);
