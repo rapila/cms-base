@@ -114,11 +114,14 @@ class StringUtil {
 		return $sInput;
 	}
 
-	public static function normalizePath($sInput) {
+	public static function normalizePath($sInput, $bToLowerCase = true) {
 		$aPathSpecials = array('/', '#', '?', '+');
 		$sFillIn = '-';
 		$sInput = self::normalizeMinimally($sInput, $sFillIn);
 		$sInput = str_replace($aPathSpecials, $sFillIn, $sInput);
+		if($bToLowerCase) {
+			$sInput = mb_strtolower($sInput);
+		}
 		return $sInput;
 	}
 
