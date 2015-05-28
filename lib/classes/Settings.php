@@ -4,7 +4,7 @@ class Settings {
 	private $aSettings;
 	private $sFile;
 	private static $INSTANCES = array();
-	
+
 	/// This contains manual overrides for unit tests.
 	/// Will be reset for every test case.
 	private static $OVERRIDES = null;
@@ -119,7 +119,7 @@ class Settings {
 		}
 		return str_replace($aSearch, $aReplace, $sInput);
 	}
-	
+
 	/**
 	* Adds test case override
 	*/
@@ -132,7 +132,7 @@ class Settings {
 		}
 		self::$OVERRIDES[$sPath][$sSection][$sKey] = $mValue;
 	}
-	
+
 	/**
 	* Removes test case overrides
 	*/
