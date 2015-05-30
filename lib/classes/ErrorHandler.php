@@ -34,13 +34,13 @@ class ErrorHandler {
 	* if possible, reads the file php_error.php in the site/lib directory and outputs it as an error message.
 	* This is called from the handleError and handleException methods if the error was not output directly to screen (like in the test environment) and could not be recovered from. If the file does not exist, it will output the text "An Error occured, exiting"
 	*/
-	private static function displayErrorMessage($aError, $bMayPrintDetailedMessage = false) {
+	public static function displayErrorMessage($aError, $bMayPrintDetailedMessage = false) {
 		while(ob_get_level() > 0) {
 			ob_end_clean();
 		}
-		$sErrorFileName = SITE_DIR.'/'.DIRNAME_LIB.'/php_error.php';
+		$sErrorFilePath = ResourceFinder::create(DIRNAME_LIB.'/php_error.php')->noCache()->find();
 		header('HTTP/1.0 500 Internal Server Error');
-		if(!file_exists($sErrorFileName)) {
+		if(!$sErrorFilePath || !file_exists($sErrorFilePath)) {
 			header('Content-Type: text/plain;charset=utf-8');
 			$sMessage = $aError['message'];
 			if(!$bMayPrintDetailedMessage) {
@@ -49,7 +49,7 @@ class ErrorHandler {
 			die($sMessage);
 		}
 		header('Content-Type: text/html;charset=utf-8');
-		include($sErrorFileName);
+		include($sErrorFilePath);
 		exit;
 	}
 
