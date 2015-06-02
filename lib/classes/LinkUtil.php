@@ -217,9 +217,6 @@ class LinkUtil {
 	*/
 	public static function absoluteLink($sLocation, $sHost = null, $mProtocolSetting = 'default', $bAbsoluteLinkMayBeOmitted = false) {
 		$sProtocol = self::getProtocol($mProtocolSetting);
-		if($sProtocol === 'default') {
-			$sProtocol = Settings::getSetting('linking', 'ssl_in_absolute_links', null);
-		}
 		if($bAbsoluteLinkMayBeOmitted && Settings::getSetting('linking', 'always_link_absolutely', false) === false) {
 			// If the current protocol differs from a clear preference given (explicit true or false), we still need to use an absolute link
 			if($sProtocol === '//' || $mProtocolSetting === self::isSSL()) {
