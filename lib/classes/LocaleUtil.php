@@ -2,7 +2,7 @@
 /**
  * @package utils
  */
- 
+
 class LocaleUtil {
 
 	//Gets the user's locale for the current language
@@ -16,7 +16,7 @@ class LocaleUtil {
 		}
 		return $sLanguageId."_".strtoupper($sLanguageId);
 	}
-	
+
 	public static function acceptLocales($sLanguageId = false) {
 		if($sLanguageId === null) {
 			$sLanguageId = Session::language();
@@ -117,7 +117,7 @@ class LocaleUtil {
 		date_default_timezone_set($sPrevTimeZone);
 		return $sResult;
 	}
-	
+
 	public static function parseLocalizedDate($sDate, $sLanguageId, $sFormat="x") {
 		if($sLanguageId === null) {
 			$sLanguageId = Session::language();
@@ -169,7 +169,7 @@ class LocaleUtil {
 		$iTimestamp = mktime(0, 0, 0, 01, $iWeekday, 1973);
 		return self::localizeDate($iTimestamp, $sLanguageId, $bIsLong ? 'A' : 'a');
 	}
-	
+
 	public static function getPreferredUserLanguage() {
 		if(Session::getSession()->hasAttribute("preferred_user_language")) {
 			return Session::getSession()->getAttribute("preferred_user_language");
