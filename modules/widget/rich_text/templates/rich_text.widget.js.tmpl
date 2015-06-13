@@ -177,6 +177,14 @@ Widget.types.rich_text = {
 						return orig.apply(this, arguments);
 					};
 				});
+			} else if(dialogName === 'table') {
+				var infoTab = dialogDefinition.getContents('info');
+				var cellSpacing = infoTab.get('txtCellSpace');
+				cellSpacing['default'] = "0";
+				var cellPadding = infoTab.get('txtCellPad');
+				cellPadding['default'] = "0";
+				var border = infoTab.get('txtBorder');
+				border['default'] = "0";
 			}
 		});
 	},
