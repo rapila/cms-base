@@ -10,8 +10,8 @@ class LinkUtil {
 
 	const DATE_RFC2616 = 'D, d M Y H:i:s \G\M\T';
 
-	public static function redirectToManager($mPath="", $mManager=null, $aParameters=array(), $bIncludeLanguage=null) {
-		self::redirect(LinkUtil::link($mPath, $mManager, $aParameters, $bIncludeLanguage));
+	public static function redirectToManager($mPath="", $mManager=null, $aParameters=array(), $bIncludeLanguage=null, $bPermanent=false) {
+		self::redirect(LinkUtil::link($mPath, $mManager, $aParameters, $bIncludeLanguage), null, 'default', $bPermanent);
 	}
 
 	//redirectToLanguage can only be used if language attribute is still in REQUEST_PATH (if it ever was)
