@@ -39,7 +39,7 @@ class Session {
 		}
 		$this->oUser = UserQuery::create()->findPk($this->iUserId);
 	}
-	
+
 	/**
 	 * Closes the session.
 	 * Changes on objects in the session made after the call to close will not be persisted across page loads.
