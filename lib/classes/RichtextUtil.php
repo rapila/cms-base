@@ -263,7 +263,7 @@ class RichtextUtil {
 		}
 		if($oHtmlTag->getName() === 'a') {
 			if($sParsedChildren === '') return '';
-			$bHasMatched = preg_match("%/".preg_quote(Manager::getPrefixForManager('FileManager'), "%")."/([^/]+)/(\\d+)((/.+)*)$%", $oHtmlTag->getParameter('href'), $aMatches) === 1;
+			$bHasMatched = preg_match("%/".preg_quote(Manager::getPrefixForManager('FileManager'), "%")."/([^/]+)/(\\d+)((\\D.+)?)$%", $oHtmlTag->getParameter('href'), $aMatches) === 1;
 			if($bHasMatched) {
 				$sFileMethod = $aMatches[1];
 				$iId = $aMatches[2];
