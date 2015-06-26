@@ -215,8 +215,8 @@ class RichtextUtil {
 	}
 
 	private static function link($sLocation) {
-		if(self::$USE_ABSOLUTE_LINKS !== null) {
-			return LinkUtil::absoluteLink($sLocation, null, self::$USE_ABSOLUTE_LINKS);
+		if(self::$USE_ABSOLUTE_LINKS !== false) {
+			return LinkUtil::absoluteLink($sLocation, null, self::$USE_ABSOLUTE_LINKS, true);
 		} else {
 			return $sLocation;
 		}
