@@ -247,18 +247,25 @@ class LinkUtil {
 	}
 
 	public static function isSSL() {
-		// http://stackoverflow.com/questions/7304182/detecting-ssl-with-php
-		if(isset($_SERVER['HTTPS'])) {
-			if('on' == strtolower($_SERVER['HTTPS'])) {
+		if(Settings::getSetting('general', 'trust_http_proxy_headers', false) === 'X-Forwarded') {
+			if(!isset($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
+				return false;
+			}
+			return strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https';
+		} else {
+			// http://stackoverflow.com/questions/7304182/detecting-ssl-with-php
+			if(isset($_SERVER['HTTPS'])) {
+				if('on' == strtolower($_SERVER['HTTPS'])) {
+					return true;
+				}
+				if('1' == $_SERVER['HTTPS']) {
+					return true;
+				}
+			} elseif (isset($_SERVER['SERVER_PORT']) && ('443' == $_SERVER['SERVER_PORT'])) {
 				return true;
 			}
-			if('1' == $_SERVER['HTTPS']) {
-				return true;
-			}
-		} elseif (isset($_SERVER['SERVER_PORT']) && ('443' == $_SERVER['SERVER_PORT'])) {
-			return true;
+			return false;
 		}
-		return false;
 	}
 
 	public static function linkToSelf($mPath=null, $aParameters=null, $bIgnoreRequest = false) {

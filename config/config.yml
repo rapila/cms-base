@@ -1,15 +1,24 @@
 general:
-  # for plugins that need to call php via cli
+  # For plugins that need to call php via cli
   php_path: 'php'
+  # Whether A language path part is mandatory.
   multilingual: true
-  # general caching of files like configuration yaml files and language ini files. Deprecated: use default->strategy:None in caching.yml
+  # General caching of files like configuration yaml files and language ini files.
+  # Deprecated: use default->strategy:None in caching.yml
   caching: true
-  # caching of template contents. Deprecated: use templates->strategy:None in caching.yml
+  # Caching of template contents.
+  # Deprecated: use templates->strategy:None in caching.yml
   template_caching: true
   # @see http://www.php.net/manual/en/timezones.php
   timezone: "Europe/Zurich"
-  # whether to trust proxy headers for the following: Forwarded-For, SSL, Host, and Port
-  # TODO: Implement
+  # Whether to trust proxy headers for the following: Client Address, SSL, and Port
+  # Possible values:
+  #   false (default) → Do not trust proxy headers
+  #   'Forwarded' → Use the RFC 7239 standard header "Forwarded"
+  #   'X-Forwarded' → Use the non-standard "X-Forwarded-*" family of headers
+  #   true → same as "Forwarded"
+  # Warning: this is insecure if you are not actually behind a proxy that sets these headers
+  # Currently, only 'X-Forwarded' is implemented and it only works determining whether HTTPS is used.
   trust_http_proxy_headers: false
 
 linking:
