@@ -70,7 +70,7 @@ class CriteriaListWidgetDelegate implements ListWidgetDelegate {
 		}
 		return $this->aFilterTypes[$sFilterColumn];
 	}
-	
+
 	public function getColumnIdentifiers() {
 		return $this->oCriteriaDelegate->getColumnIdentifiers();
 	}
