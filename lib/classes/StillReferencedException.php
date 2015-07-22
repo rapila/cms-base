@@ -5,6 +5,12 @@ class StillReferencedException extends LocalizedException {
 		$aMessageParameters = array();
 		foreach($oReferencedObject->getReferees() as $oReferee) {
 			$oFrom = $oReferee->getFrom();
+			// Cleanup loose ends: delete the reference if the from object doesn't exist (anymore).
+			if($oFrom === null) {
+				$oReferee->delete();
+				continue;
+			}
+
 			$aFrom = array();
 			$aFrom["model"] = $oReferee->getFromModelName();
 			$aFrom["name"] = Util::descriptionForObject($oFrom, $sDefaultLanguageId);
