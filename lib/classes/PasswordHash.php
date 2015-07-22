@@ -4,11 +4,11 @@ class PasswordHash {
 			$sSalt = str_pad(dechex(mt_rand()), 8, '0', STR_PAD_LEFT).str_pad(dechex(mt_rand()), 8, '0', STR_PAD_LEFT);
 			return substr($sSalt, -16);
 	}
-	
+
 	public static function hashPassword($sPassword) {
 		return self::getPasswordHash(self::getPasswordSalt(), $sPassword);
 	}
-	
+
 	private static function getPasswordHash($sSalt, $sPassword) {
 		return $sSalt.hash('whirlpool', $sSalt . $sPassword);
 	}
@@ -17,15 +17,15 @@ class PasswordHash {
 		$sSalt = substr($sHash, 0, 16);
 		return $sHash === self::getPasswordHash($sSalt, $sPassword);
 	}
-	
+
 	public static function comparePasswordFallback($sPassword, $sHash) {
 		return strlen($sHash) === strlen(md5('')) && md5($sPassword) === $sHash;
 	}
-	
+
 	public static function generateHint() {
 		return self::generatePassword();
 	}
-	
+
 	public static function checkPasswordValidity($sPassword, $oFlash) {
 		if((mb_strlen($sPassword) < Settings::getSetting('login', 'password_min_length', 4))) {
 			$oFlash->addMessage('password_length');
@@ -33,7 +33,7 @@ class PasswordHash {
 		}
 		return true;
 	}
-	
+
 	public static function generatePassword() {
 		$iLength = mt_rand(8, 10);
 		$sResult = "";
