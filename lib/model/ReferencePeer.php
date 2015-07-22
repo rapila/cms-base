@@ -12,7 +12,7 @@
  */
 class ReferencePeer extends BaseReferencePeer {
 	private static $aUnsavedReferences = array();
-	
+
 	/**
 	* adds a reference track from an object to another if that reference does not already exist
 	* expects objects or arrays in the form array(id, 'ModelName')
@@ -22,13 +22,13 @@ class ReferencePeer extends BaseReferencePeer {
 			self::$aUnsavedReferences[] = array($mFromObject, $mToObject);
 			return;
 		}
-		
+
 		self::prepareObjectArgument($mFromObject);
 		self::prepareObjectArgument($mToObject);
 		if(self::referenceExists($mFromObject, $mToObject)) {
 			return;
 		}
-		
+
 		$oReference = new Reference();
 		$oReference->setFromId($mFromObject[0]);
 		$oReference->setFromModelName($mFromObject[1]);
@@ -44,31 +44,31 @@ class ReferencePeer extends BaseReferencePeer {
 			}
 		}
 	}
-	
+
 	public static function referenceExists($mFromObject, $mToObject) {
 		$oCriteria = self::prepareCriteria($mFromObject, $mToObject);
 		return $oCriteria->count() !== 0;
 	}
-	
+
 	public static function countReferences($mToObject) {
 		$oCriteria = self::prepareCriteria(null, $mToObject);
 		return $oCriteria->count();
 	}
-	
+
 	public static function hasReference($mToObject) {
 		return self::countReferences($mToObject) !== 0;
 	}
-	
+
 	public static function getReferences($mToObject) {
 		$oCriteria = self::prepareCriteria(null, $mToObject);
 		return $oCriteria->find();
 	}
-	
+
 	public static function getReferencesFromObject($mFromObject) {
 		$oCriteria = self::prepareCriteria($mFromObject);
 		return $oCriteria->find();
 	}
-	
+
 	public static function removeReferences($mFromObject, $mToObject = null) {
 		$oCriteria = self::prepareCriteria($mFromObject, $mToObject);
 		foreach($oCriteria->find() as $oReference) {
@@ -83,11 +83,11 @@ class ReferencePeer extends BaseReferencePeer {
 			}
 		}
 	}
-	
+
 	public static function removeReference($mFromObject, $mToObject) {
 		self::removeReferences($mFromObject, $mToObject);
 	}
-	
+
 	public static function saveUnsavedReferences($oFromObjectFilter = null) {
 		$aUnsavedReferences = self::$aUnsavedReferences;
 		self::$aUnsavedReferences = array();
@@ -103,13 +103,13 @@ class ReferencePeer extends BaseReferencePeer {
 		}
 		return count(self::$aUnsavedReferences);
 	}
-	
+
 	private static function prepareObjectArgument(&$mObject) {
 		if(is_object($mObject)) {
 			$mObject = array($mObject->getPKString(), get_class($mObject));
 		}
 	}
-	
+
 	private static function prepareCriteria($mFromObject = null, $mToObject = null) {
 		$oCriteria = ReferenceQuery::create();
 		if($mFromObject !== null) {
@@ -120,19 +120,19 @@ class ReferencePeer extends BaseReferencePeer {
 		}
 		return $oCriteria;
 	}
-	
+
 	private static function prepareCriteriaFrom($oCriteria, $mFromObject) {
 		self::prepareObjectArgument($mFromObject);
 		$oCriteria->filterByFromId($mFromObject[0]);
 		$oCriteria->filterByFromModelName($mFromObject[1]);
 	}
-	
+
 	private static function prepareCriteriaTo($oCriteria, $mToObject) {
 		self::prepareObjectArgument($mToObject);
 		$oCriteria->filterByToId($mToObject[0]);
 		$oCriteria->filterByToModelName($mToObject[1]);
 	}
-	
+
 	public static function mayOperateOn($oUser, $mObject, $sOperation) {
 		$sSourcePeer = "{$mObject->getFromModelName()}Peer";
 		//Take semantics from FROM object
