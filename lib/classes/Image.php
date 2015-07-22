@@ -250,7 +250,7 @@ class Image {
 		$rNewImage = imagecreatetruecolor($this->iWidth, $this->iHeight);
 		// retrieve version number since version_compare can't handle versions like “bundled (2.1.0 compatible)”
 		// prerelease versions are not processed anymore
-		preg_match("/[0-9\.]+/", self::$GD_INFO['GD Version'], $aMatches);
+		preg_match("/[0-9.]+/", self::$GD_INFO['GD Version'], $aMatches);
 		if($this->sFileType === 'png' && version_compare($aMatches[0], '2.0.1', '>=')) {
 			$rTransparent = imagecolorallocatealpha($rNewImage, 0, 0, 0, 127);
 			imagefill($rNewImage, 0, 0, $rTransparent);
