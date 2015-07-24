@@ -56,6 +56,7 @@ class ReferencePeer extends BaseReferencePeer {
 	}
 
 	public static function hasReference($mToObject) {
+		TestReferencesFileModule::checkReferences(self::getReferences($mToObject), true);
 		return self::countReferences($mToObject) !== 0;
 	}
 
