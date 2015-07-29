@@ -4,41 +4,31 @@
  */
 class RichtextUtil {
 
-	private static $RICHTEXT_INDEX = 0;
-
 	public static $USE_ABSOLUTE_LINKS = 'default';
 
-	private $sAreaName;
 	private $aSettings;
 
 	private $mTrackReferences = null;
 
 	public function __construct($sAreaName=null, $aSettings=null) {
-		if($sAreaName === null) {
-			$sAreaName = "richtext_area_";
-		}
-		$this->sAreaName = $sAreaName.self::$RICHTEXT_INDEX;
-		self::$RICHTEXT_INDEX++;
-
 		if($aSettings === null) {
 			$aSettings = Settings::getSetting('admin', 'text_module', array());
 		}
 		$this->aSettings = $aSettings;
 	}
 
+	/**
+	* @deprecated use an instance
+	*/
 	public static function parseInputFromEditorForStorage($sInput) {
 		$oRichtextUtil = new RichtextUtil();
-		$_POST[$oRichtextUtil->sAreaName] = $sInput;
-		return $oRichtextUtil->parseInputFromEditor();
+		return $oRichtextUtil->parseInputFromEditor($sInput);
 	}
 
 	/**
 	* Returns a TagParser instance all the handlers set correctly to parse text coming from a richtext area.
 	*/
-	public function getTagParser($sInput = null) {
-		if($sInput === null) {
-			$sInput = $_POST[$this->sAreaName];
-		}
+	public function getTagParser($sInput) {
 		$oTagParser = new TagParser("<text>".$sInput."</text>");
 		$oTagParser->getTag()->setParseCallback(array($this, 'textTagParseCallback'));
 		return $oTagParser;
@@ -222,8 +212,11 @@ class RichtextUtil {
 		}
 	}
 
+	/**
+	* @deprecated
+	*/
 	public function getAreaName() {
-		return $this->sAreaName;
+		return null;
 	}
 
 	public function setTrackReferences($mTrackReferences) {
