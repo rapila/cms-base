@@ -10,19 +10,11 @@ class RichtextUtil {
 
 	private $mTrackReferences = null;
 
-	public function __construct($sAreaName=null, $aSettings=null) {
+	public function __construct($aSettings=null) {
 		if($aSettings === null) {
 			$aSettings = Settings::getSetting('admin', 'text_module', array());
 		}
 		$this->aSettings = $aSettings;
-	}
-
-	/**
-	* @deprecated use an instance
-	*/
-	public static function parseInputFromEditorForStorage($sInput) {
-		$oRichtextUtil = new RichtextUtil();
-		return $oRichtextUtil->parseInputFromEditor($sInput);
 	}
 
 	/**
@@ -210,13 +202,6 @@ class RichtextUtil {
 		} else {
 			return $sLocation;
 		}
-	}
-
-	/**
-	* @deprecated
-	*/
-	public function getAreaName() {
-		return null;
 	}
 
 	public function setTrackReferences($mTrackReferences) {
