@@ -19,6 +19,9 @@ Widget.types.rich_text = {
 				CKEDITOR.plugins.addExternal(plugin_name, plugin_path);
 			}
 		}
+		// Make sure width/height gets output as attributes, not style
+		this.settings.disallowedContent = 'img{width,height}';
+		this.settings.extraAllowedContent = 'img[width,height]';
 		CKEDITOR.on('dialogDefinition', function(ev) {
 			var dialogName = ev.data.name;
 			var dialogDefinition = ev.data.definition;
@@ -222,31 +225,6 @@ Widget.types.rich_text = {
 		var instance = this.instance = CKEDITOR.replace(this.textarea[0], this.settings);
 		instance.on('instanceReady', function(event) {
 			instance.window.$.document.documentElement.classList.add(_this.settings.bodyClass);
-			instance.dataProcessor.htmlFilter.addRules({
-				elements: {
-					img: function( element ) {
-						var styling;
-						if(!element.attributes.width) {
-							if(element.attributes.style) {
-								styling = element.attributes.style;
-								var findwidth = new RegExp("\[width: \]\s*(((?!\[width: \]|\[px\]).)+)\s*\[px\]");
-								var sWidth = findwidth.exec(styling);
-								sWidth = sWidth[1];
-								if(sWidth) element.attributes.width = sWidth;
-							}
-						}
-						if(!element.attributes.height) {
-							if(element.attributes.style) {
-								styling = element.attributes.style;
-								var findheight = new RegExp("\[height: \]\s*(((?!\[height: \]|\[px\]).)+)\s*\[px\]");
-								var sHeight = findheight.exec(styling);
-								sHeight = sHeight[1];
-								if(sHeight) element.attributes.height = sHeight;
-							}
-						}
-					}
-				}
-			});
 			for(var i=1;i<=6;i++) {
 				instance.dataProcessor.writer.setRules('h'+i, {
 					indent : false,
