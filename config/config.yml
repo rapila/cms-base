@@ -83,6 +83,8 @@ text_module:
       - ["HorizontalRule", "Smiley", "SpecialChar", "-", "RemoveFormat", "PasteText", "Scayt", "ShowBlocks"]
       - ["Source"]
   richtext_width: 700
+  # To output images larger than used (for retina displays and zooming), set this value to > 1
+  image_scale_factor: 1
 
 security:
   generate_digest_secrets: false

@@ -91,9 +91,9 @@ class RichtextUtil {
 		if($oDocument !== null && $oDocument->isImage()) {
 			$oWriter = new TagWriter('img', $oIdentifier->getParameters());
 			$aParameters = array();
-			if($oIdentifier->hasParameter('max_width')) {
-				$aParameters['max_width'] = $oIdentifier->getParameter('max_width');
-				$oWriter->setParameter('max_width', null);
+			if($oIdentifier->hasParameter('width')) {
+				$aParameters['max_width'] = $oIdentifier->getParameter('width');
+				$aParameters['max_width'] = (int) ($aParameters['max_width'] * Settings::getSetting('text_module', 'image_scale_factor', 1.0));
 			}
 			$oWriter->setParameter('src', self::link($oDocument->getDisplayUrl($aParameters)));
 			$oWriter->setParameter('alt', $oDocument->getDescription());
@@ -110,9 +110,6 @@ class RichtextUtil {
 			$oWriter->setParameter('src', self::link($oDocument->getDisplayUrl()));
 			$oWriter->setParameter('alt', $oDocument->getDescription());
 			$oWriter->setParameter('title', $oDocument->getDescription());
-			if($oIdentifier->hasParameter('max_width')) {
-				$oWriter->setParameter('width', $oIdentifier->getParameter('max_width'));
-			}
 			return $oWriter->parse();
 		}
 	}
@@ -230,9 +227,6 @@ class RichtextUtil {
 		if($oHtmlTag->getName() === 'img') {
 			if(preg_match("%display_document/(\\d+)%", $oHtmlTag->getParameter('src'), $aMatches)) {
 				$aParameters = $oHtmlTag->getParameters();
-				if($oHtmlTag->hasParameter('width')) {
-					$aParameters['max_width'] = $oHtmlTag->getParameter('width');
-				}
 				$this->addTrackReference($aMatches[1], "Document");
 				return TemplateIdentifier::constructIdentifier('image', $aMatches[1], $aParameters);
 			}
