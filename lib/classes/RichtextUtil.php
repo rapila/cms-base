@@ -232,8 +232,6 @@ class RichtextUtil {
 				$aParameters = $oHtmlTag->getParameters();
 				if($oHtmlTag->hasParameter('width')) {
 					$aParameters['max_width'] = $oHtmlTag->getParameter('width');
-					unset($aParameters['width']);
-					unset($aParameters['height']);
 				}
 				$this->addTrackReference($aMatches[1], "Document");
 				return TemplateIdentifier::constructIdentifier('image', $aMatches[1], $aParameters);
