@@ -190,7 +190,7 @@ class EMail {
 		$this->oFlash->setArrayToCheck(array('email' => $sAddress));
 		$this->oFlash->checkForEmail('email', 'e_mail');
 		if($this->oFlash->hasMessages()) {
-			throw new EMailAddressInvalidException("Exception in EMail->getAddressToken(): address $sAddress not valid", $sAddress);
+			throw new EMailAddressInvalidException("Exception in EMail->getAddressToken(): address $sAddress ($sName) not valid", $sAddress);
 		}
 		if($sName === null || trim($sName) === '') {
 			return $sAddress;
