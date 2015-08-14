@@ -1,4 +1,5 @@
 name: "Pages"
 description: "Pages manage the page or menu tree"
 website: "http://www.rapi.la/"
+allowed_roles: [pages]
 version: 2.0
