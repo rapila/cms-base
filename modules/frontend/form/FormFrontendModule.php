@@ -28,23 +28,35 @@ class FormFrontendModule extends DynamicFrontendModule {
 	public static function getRecaptchaCode($sId = '') {
 		$oTemplate = self::constructTemplateForModuleAndType(self::$MODULE_TYPE, 'form', 'recaptcha');
 		$oTemplate->replaceIdentifier('key', Settings::getSetting('frontend', 're_captcha_public_key', '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'));
-		ResourceIncluder::defaultIncluder()->addResource('https://www.google.com/recaptcha/api.js?fallback=true', ResourceIncluder::RESOURCE_TYPE_JS);
+		$sAPI = 'https://www.google.com/recaptcha/api.js?';
+		$oOutput = new XHTMLOutput();
+		if($oOutput->getContentType() === 'application/xhtml+xml') {
+			// Use fallback version because users don’t want to wait for timeout when document.write isn’t working.
+			$sAPI .= '&fallback=true';
+		}
+		ResourceIncluder::defaultIncluder()->addResource($sAPI, ResourceIncluder::RESOURCE_TYPE_JS);
 		return $oTemplate;
 	}
 
 	public static function validateRecaptchaInput() {
 		$sSecret = Settings::getSetting('frontend', 're_captcha_private_key', '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe');
+		$sResponse = @$_POST["g-recaptcha-response"];
+		if(!$sResponse) {
+			$sResponse = @$_POST["g-recaptcha-noscript-response"];
+		}
+		$sRemote = @$_SERVER["REMOTE_ADDR"];
+
 		$rCurl = curl_init('https://www.google.com/recaptcha/api/siteverify');
 		curl_setopt($rCurl, CURLOPT_POST, true);
 		curl_setopt($rCurl, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($rCurl, CURLOPT_POSTFIELDS, http_build_query(array('secret' => $sSecret, 'response' => @$_POST["g-recaptcha-response"], 'remoteip' => @$_SERVER["REMOTE_ADDR"])));
+		curl_setopt($rCurl, CURLOPT_POSTFIELDS, http_build_query(array('secret' => $sSecret, 'response' => $sResponse, 'remoteip' => $sRemote)));
 		curl_setopt($rCurl, CURLOPT_HTTPHEADER, array("Accept: application/json"));
-		$sResponse = curl_exec($rCurl);
-		if(!$sResponse) {
+		$sResult = curl_exec($rCurl);
+
+		if(!$sResult) {
 			throw new Exception("reCAPTCHA API request failed. ".curl_error($rCurl), curl_errno($rCurl));
 		}
-		$oResponse = json_decode($sResponse);
-		ErrorHandler::log("Recaptcha response", $oResponse, $sSecret, @$_POST["g-recaptcha-response"]);
+		$oResponse = json_decode($sResult);
 		return $oResponse->success;
 	}
 
