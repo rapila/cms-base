@@ -127,7 +127,6 @@ Widget.types.document_detail = {
 				this._element.find(":input[name='is_protected']").prop('checked', document_data.IsProtected);
 				this._element.find(":input[name='author']").val(document_data.Author);
 				this._element.find(":input[name='content_created_at']").val(document_data.ContentCreatedAt);
-
 				this.set_widget_val('document_category_id', document_data.DocumentCategoryId || '__without');
 				this.set_widget_val('language_id', document_data.LanguageId || '');
 				this.set_widget_val('license', document_data.License || '');

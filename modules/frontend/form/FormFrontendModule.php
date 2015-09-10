@@ -3,10 +3,8 @@
  * @package modules.frontend
  */
 
-require_once('recaptcha/recaptchalib.php');
-
 class FormFrontendModule extends DynamicFrontendModule {
-	
+
 	public function __construct($oLanguageObject = null, $aRequestPath = null, $iId = 1) {
 		parent::__construct($oLanguageObject, $aRequestPath, $iId);
 	}
@@ -18,7 +16,7 @@ class FormFrontendModule extends DynamicFrontendModule {
 		$oFormStorage->renderForm($oTemplate, $this->iId);
 		return $oTemplate;
 	}
-	
+
 	private function getFormStorage() {
 		$oFormStorage = @unserialize($this->getData());
 		if(!($oFormStorage instanceof FormStorage)) {
@@ -26,26 +24,36 @@ class FormFrontendModule extends DynamicFrontendModule {
 		}
 		return $oFormStorage;
 	}
- 
+
 	public static function getRecaptchaCode($sId = '') {
 		$oTemplate = self::constructTemplateForModuleAndType(self::$MODULE_TYPE, 'form', 'recaptcha');
-		$oTemplate->replaceIdentifier('server', RECAPTCHA_API_SERVER);
-		$oTemplate->replaceIdentifier('key', Settings::getSetting('frontend', 're_captcha_public_key', '6Lfm_gQAAAAAACIbK9PxwwhDhkGJHcHEcdIRRRR9'));
-		$oTemplate->replaceIdentifier('id', 'recaptcha_content_'.$sId);
+		$oTemplate->replaceIdentifier('key', Settings::getSetting('frontend', 're_captcha_public_key', '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'));
+		ResourceIncluder::defaultIncluder()->addResource('https://www.google.com/recaptcha/api.js?fallback=true', ResourceIncluder::RESOURCE_TYPE_JS);
 		return $oTemplate;
 	}
-	
+
 	public static function validateRecaptchaInput() {
-		$oAnswer = recaptcha_check_answer(Settings::getSetting('frontend', 're_captcha_private_key', '6Lfm_gQAAAAAALjNy87IkZ8An1gryBROu40vxgJi'), $_SERVER["REMOTE_ADDR"], @$_POST["recaptcha_challenge_field"], @$_POST["recaptcha_response_field"]);
-		return $oAnswer->is_valid;
+		$sSecret = Settings::getSetting('frontend', 're_captcha_private_key', '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe');
+		$rCurl = curl_init('https://www.google.com/recaptcha/api/siteverify');
+		curl_setopt($rCurl, CURLOPT_POST, true);
+		curl_setopt($rCurl, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($rCurl, CURLOPT_POSTFIELDS, http_build_query(array('secret' => $sSecret, 'response' => @$_POST["g-recaptcha-response"], 'remoteip' => @$_SERVER["REMOTE_ADDR"])));
+		curl_setopt($rCurl, CURLOPT_HTTPHEADER, array("Accept: application/json"));
+		$sResponse = curl_exec($rCurl);
+		if(!$sResponse) {
+			throw new Exception("reCAPTCHA API request failed. ".curl_error($rCurl), curl_errno($rCurl));
+		}
+		$oResponse = json_decode($sResponse);
+		ErrorHandler::log("Recaptcha response", $oResponse, $sSecret, @$_POST["g-recaptcha-response"]);
+		return $oResponse->success;
 	}
-	
+
 	public static function getContentInfo($oLanguageObject) {
 		$oFormStorage = @unserialize(stream_get_contents($oLanguageObject->getData()));
 		if(!$oFormStorage) {
 			return null;
 		}
-		
+
 		$sType = $oFormStorage->getFormType();
 		$sAction = '';
 		if($sType === "external") {
@@ -57,12 +65,12 @@ class FormFrontendModule extends DynamicFrontendModule {
 		}
 		return $sType.' » '.$sAction.' ['.strtoupper($oFormStorage->getRequestMethod()).']';
 	}
-	
+
 	public function widgetData() {
 		if($this->oLanguageObject->getData() === null) {
 			return null;
 		}
-		
+
 		$oFormStorage = $this->getFormStorage();
 		$aResult = array();
 		$aResult['request_method'] = $oFormStorage->getRequestMethod();
@@ -71,31 +79,31 @@ class FormFrontendModule extends DynamicFrontendModule {
 		$aResult['email_address'] = $oFormStorage->getFormOption('email_address');
 		$aResult['template_addition'] = $oFormStorage->getFormOption('template_addition');
 		$aResult['manager'] = $oFormStorage->getFormOption('manager');
-		
+
 		$aResult['objects'] = array();
-		
+
 		foreach($oFormStorage->getFormObjects() as $iKey => $oFormObject) {
 			$aObject = array();
-			
+
 			$aObject['field_type'] = $oFormObject->getType();
 			$aObject['field_name'] = $oFormObject->getName();
 			$aObject['field_label'] = $oFormObject->getLabel();
 			$aObject['default_value'] = $oFormObject->getDefaultValue();
 			$aObject['class_name'] = $oFormObject->getClassName();
 			$aObject['is_required'] = $oFormObject->isRequired();
-			
+
 			$aResult['objects'][] = $aObject;
 		}
-		
+
 		return $aResult;
 	}
-	
+
 	public function getSaveData($mData) {
 		$oFormStorage = $this->getFormStorage();
-		
+
 		$oFormStorage->clearObjects();
 		$oFormStorage->clearOptions();
-		
+
 		$oFormStorage->setRequestMethod($mData['request_method']);
 		$oFormStorage->setFormType($mData['form_type']);
 		if($oFormStorage->getFormType() === "external") {
@@ -128,7 +136,7 @@ class FormFrontendModule extends DynamicFrontendModule {
 				$oFormStorage->addFormObject($oFormObject);
 			}
 		}
-		
+
 		return serialize($oFormStorage);
 	}
 }
@@ -139,7 +147,7 @@ class FormStorage {
 	private $aFormOptions;
 	private $sFormSessionKeyPart;
 	private $sRequestMethod;
-	
+
 	public function __construct($oLanguageObject) {
 		$this->sFormSessionKeyPart = $oLanguageObject->getLanguageId()."_".$oLanguageObject->getObjectId();
 		$this->sRequestMethod = "post";
@@ -147,12 +155,12 @@ class FormStorage {
 		$this->aFormOptions = array();
 		$this->sFormType = "external";
 	}
-	
+
 	public function renderForm($oTemplate, $iFormId) {
 		foreach($this->aFormObjects as $oFormObject) {
 			$oTemplate->replaceIdentifierMultiple('form_objects', $oFormObject->renderFormObject($iFormId));
 		}
-		
+
 		$oValidationObject = new FormObject('hidden', 'form_action', 'form_frontend_module_'.$iFormId, $this);
 		$oTemplate->replaceIdentifierMultiple('form_objects', $oValidationObject->renderFormObject($iFormId));
 		$oOriginObject = new FormObject('hidden', 'origin', LinkUtil::linkToSelf(), $this);
@@ -163,39 +171,39 @@ class FormStorage {
 		}
 		$oTemplate->replaceIdentifier('method', $this->getRequestMethod());
 	}
-	
+
 	public function getFormSessionKey() {
 		return "form_".md5($this->sFormSessionKeyPart);
 	}
-	
+
 	public function getRequestProperty($sName) {
 		if($this->sRequestMethod === "post") {
 			return @$_POST[$sName];
 		}
 		return @$_GET[$sName];
 	}
-	
+
 	public function addFormObject(FormObject $oFormObject) {
 		$oFormObject->setParent($this);
 		$this->aFormObjects[] = $oFormObject;
 	}
-	
+
 	public function addFormOption($sOptionName, $sOptionValue) {
 		$this->aFormOptions[$sOptionName] = $sOptionValue;
 	}
-	
+
 	public function getFormOption($sOptionName) {
 		return @$this->aFormOptions[$sOptionName];
 	}
-	
+
 	public function getFormObjects() {
 		return $this->aFormObjects;
 	}
-	
+
 	public function getFormOptions() {
 		return $this->aFormOptions;
 	}
-	
+
 	public function &saveCurrentValuesToSession() {
 		$aCurrentValues = array();
 		foreach($this->aFormObjects as $oFormObject) {
@@ -205,11 +213,11 @@ class FormStorage {
 		$oSession->setAttribute($this->getFormSessionKey(), $aCurrentValues);
 		return $aCurrentValues;
 	}
-	
+
 	public function deleteCurrentValuesFromSession() {
 		Session::getSession()->resetAttribute($this->getFormSessionKey());
 	}
-	
+
 	public function getCurrentValueFor($sName) {
 		$sProperty = $this->getRequestProperty($sName);
 		if($sProperty !== null) {
@@ -220,11 +228,11 @@ class FormStorage {
 		if(!$oSession->hasAttribute($sSessionKey)) {
 			$oSession->setAttribute($sSessionKey, array());
 		}
-		
+
 		$aFormAttributes = $oSession->getAttribute($sSessionKey);
 		return @$aFormAttributes[$sName];
 	}
-	
+
 	public function setRequestMethod($sRequestMethod) {
 			$this->sRequestMethod = $sRequestMethod;
 	}
@@ -232,7 +240,7 @@ class FormStorage {
 	public function getRequestMethod() {
 			return $this->sRequestMethod;
 	}
-	
+
 	public function setFormType($sFormType) {
 			$this->sFormType = $sFormType;
 	}
@@ -240,15 +248,15 @@ class FormStorage {
 	public function getFormType() {
 			return $this->sFormType;
 	}
-	
+
 	public function clearObjects() {
 		$this->aFormObjects = array();
 	}
-	
+
 	public function clearOptions() {
 		$this->aFormOptions = array();
 	}
-	
+
 	public static function getAvailableTypes() {
 		return array('text', 'textarea', 'password', 'submit', 'hidden', 'flash', 'captcha');
 		// return array('textarea', 'text', 'password', 'submit', 'select', 'checkbox', 'radio', 'button');
@@ -264,7 +272,7 @@ class FormObject {
 	private $oParent;
 	private $sValidator;
 	private $bIsRequired;
-	
+
 	public function __construct($sType, $sName = null, $sDefaultValue = null, $oParent = null, $sClassName = null) {
 		$this->sType = $sType;
 		$this->sName = $sName;
@@ -274,7 +282,7 @@ class FormObject {
 		$this->sValidator = null;
 		$this->bIsRequired = true;
 	}
-	
+
 	public function renderFormObject($iFormId) {
 		$oKeyValueTemplate = new Template("{{label}} {{field}} {{identifierContext=start;name=writeFlashValue;value=\{\{name\}\}}}<br />{{writeFlashValue=\{\{name\}\}}}{{identifierContext=end;name=writeFlashValue;value=\{\{name\}\}}}", null, true);
 		$oKeyValueTemplate->replaceIdentifier('field', $this->getFieldCode($iFormId));
@@ -290,27 +298,27 @@ class FormObject {
 		}
 		return TagWriter::quickTag($sTagName, array('class' => $this->sClassName), $oKeyValueTemplate);
 	}
-	
+
 	//methods for deciding how to render a form object
 	protected function isVisibleFormElement() {
 		return $this->sType !== 'hidden';
 	}
-	
+
 	protected function getFormObjectId($iFormId) {
 		return 'form_'.$iFormId.'_'.$this->sName;
 	}
-	
+
 	protected function getFieldCode($iFormId) {
 		if($this->sType === 'textarea') {
 			return TagWriter::quickTag($this->sType, array('id' => $this->getFormObjectId($iFormId), 'name' => $this->sName, 'class' => $this->sClassName), $this->getCurrentValue());
 		}
 		return TagWriter::quickTag('input', array('value' => $this->getCurrentValue(), 'id' => $this->getFormObjectId($iFormId), 'name' => $this->sName, 'type' => $this->sType, 'class' => $this->sClassName));
 	}
-	
+
 	public function shouldExcludeFromReport() {
 		return $this->sType === 'submit';
 	}
-	
+
 	public function setParent($oParent) {
 			$this->oParent = $oParent;
 	}
@@ -318,7 +326,7 @@ class FormObject {
 	public function getParent() {
 			return $this->oParent;
 	}
-	
+
 	public function setLabel($sLabel) {
 			$this->sLabel = $sLabel;
 	}
@@ -326,7 +334,7 @@ class FormObject {
 	public function getLabel() {
 			return $this->sLabel;
 	}
-	
+
 	public function setDefaultValue($sDefaultValue) {
 			$this->sDefaultValue = $sDefaultValue;
 	}
@@ -334,7 +342,7 @@ class FormObject {
 	public function getDefaultValue() {
 			return $this->sDefaultValue;
 	}
-	
+
 	public function setType($sType) {
 			$this->sType = $sType;
 	}
@@ -342,7 +350,7 @@ class FormObject {
 	public function getType() {
 			return $this->sType;
 	}
-	
+
 	public function setName($sName) {
 			$this->sName = $sName;
 	}
@@ -350,7 +358,7 @@ class FormObject {
 	public function getName() {
 			return $this->sName;
 	}
-	
+
 	public function setClassName($sClassName) {
 			$this->sClassName = $sClassName;
 	}
@@ -358,7 +366,7 @@ class FormObject {
 	public function getClassName() {
 			return $this->sClassName;
 	}
-	
+
 	public function setValidator($sValidator) {
 			$this->sValidator = $sValidator;
 	}
@@ -366,7 +374,7 @@ class FormObject {
 	public function getValidator() {
 			return $this->sValidator;
 	}
-	
+
 	public function setIsRequired($bIsRequired) {
 			$this->bIsRequired = $bIsRequired;
 	}
@@ -374,7 +382,7 @@ class FormObject {
 	public function isRequired() {
 			return $this->bIsRequired;
 	}
-	
+
 	public function getCurrentValue() {
 		$sValue = $this->oParent->getCurrentValueFor($this->sName);
 		if($sValue === null) {
@@ -388,19 +396,19 @@ class CaptchaObject extends FormObject {
 	public function __construct($sType, $sName = null, $sDefaultValue = null, $oParent = null, $sClassName = null) {
 		parent::__construct($sType, $sName, $sDefaultValue, $oParent, $sClassName);
 	}
-	
+
 	protected function getFormObjectId($iFormId) {
 		return 'recaptcha_response_field';
 	}
-	
+
 	protected function getFieldCode($iFormId) {
 		return FormFrontendModule::getRecaptchaCode('form_frontend_module_'.$iFormId);
 	}
-	
+
 	public function shouldExcludeFromReport() {
 		return true;
 	}
-	
+
 	protected function isVisibleFormElement() {
 		return true;
 	}
