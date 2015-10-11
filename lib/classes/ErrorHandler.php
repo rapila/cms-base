@@ -40,6 +40,7 @@ class ErrorHandler {
 		}
 		$sErrorFilePath = ResourceFinder::create(DIRNAME_LIB.'/php_error.php')->noCache()->find();
 		header('HTTP/1.0 500 Internal Server Error');
+		header('Expires: 0');
 		if(!$sErrorFilePath || !file_exists($sErrorFilePath)) {
 			header('Content-Type: text/plain;charset=utf-8');
 			$sMessage = $aError['message'];
