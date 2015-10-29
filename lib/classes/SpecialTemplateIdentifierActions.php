@@ -217,7 +217,11 @@ class SpecialTemplateIdentifierActions {
 		if(!$oTemplateIdentifier->hasParameter('section')) {
 			return null;
 		}
-		return Settings::getSetting($oTemplateIdentifier->getParameter('section'), $oTemplateIdentifier->getValue(), null);
+		$sFile = null;
+		if($oTemplateIdentifier->hasParameter('file')) {
+			$sFile = $oTemplateIdentifier->getParameter('file');
+		}
+		return Settings::getSetting($oTemplateIdentifier->getParameter('section'), $oTemplateIdentifier->getValue(), null, $sFile);
 	}
 
 	public function writeManagerPrefix($oTemplateIdentifier) {
