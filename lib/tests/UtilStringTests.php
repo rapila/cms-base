@@ -19,10 +19,10 @@ class UtilStringTests extends PHPUnit_Framework_TestCase {
 	}
 	
 	public function testNormalizationOfDiacriticsToASCII() {
-		if(defined('ICONV_VERSION') && version_compare(ICONV_VERSION, '1.11', '>=')) {
-			$this->assertSame("ruembael-aosduf-o-asso-faoss-duf", StringUtil::normalizeToASCII("rümbäl-aosduf-ø-ˆå¨ß∂ˆø¨-ƒåøßˆ-duf"));
-		} else {
+		if(getenv('SKIP_ICONV_TESTS')) {
 			$this->markTestSkipped('Iconv not present or too old.');
+			return;
 		}
+		$this->assertSame("ruembael-aosduf-o-asso-faoss-duf", StringUtil::normalizeToASCII("rümbäl-aosduf-ø-ˆå¨ß∂ˆø¨-ƒåøßˆ-duf"));
 	}
 }
