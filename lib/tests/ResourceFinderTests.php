@@ -109,7 +109,7 @@ class ResourceFinderTests extends PHPUnit_Framework_TestCase {
 	
 	public function testOptionalRecursivePathItemAtEnd() {
 		$aConfigPaths = ResourceFinder::findAllResourcesByExpressions(array(DIRNAME_CONFIG, 'production', array()), ResourceFinder::SEARCH_BASE_ONLY);
-		$this->assertSame(array(MAIN_DIR.'/base/config/production', MAIN_DIR.'/base/config/production/config.yml', MAIN_DIR.'/base/config/production/resource_includer.yml'), $aConfigPaths);
+		$this->assertSame(array(MAIN_DIR.'/base/config/production', MAIN_DIR.'/base/config/production/caching.yml', MAIN_DIR.'/base/config/production/config.yml', MAIN_DIR.'/base/config/production/resource_includer.yml'), $aConfigPaths);
 	}
 	
 	public function testNoRecursivePathItemByExpression() {
