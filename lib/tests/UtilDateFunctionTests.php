@@ -26,7 +26,8 @@ class UtilDateFunctionTests extends PHPUnit_Framework_TestCase {
 	public function testDateParserNegativeENGB() {
 		$_SERVER['HTTP_ACCEPT_LANGUAGE'] = "en-GB";
 		$iDate = -1202299952;
-		$this->assertSame("26/11/1931", LocaleUtil::localizeDate($iDate, "en"));
+		$this->assertContains("26/11/", LocaleUtil::localizeDate($iDate, "en"));
+		$this->assertContains("31", LocaleUtil::localizeDate($iDate, "en"));
 	}
 	public function testGetLocaleIdEN() {
 		$_SERVER['HTTP_ACCEPT_LANGUAGE'] = "en-US,de-DE,de-AT,en_GB";
