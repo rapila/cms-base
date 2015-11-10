@@ -1,4 +1,4 @@
-# Rapila ![Build status](https://api.travis-ci.org/rapila/cms-full.svg)
+# Rapila [![Build status](https://api.travis-ci.org/rapila/cms-full.svg)](https://travis-ci.org/rapila/cms-full)
 
 Rapila is a PHP-based CMS like many others you’ll find out there.
 
