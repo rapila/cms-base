@@ -623,8 +623,6 @@ class Template {
 
 	private function convertIdentifierAndContextToMarkers($mIdentifier, $sValue=TemplateIdentifier::PARAMETER_EMPTY_VALUE, $iFlags=0) {
 		$aMarkers = array();
-		// FIXME: Currently NO_NEW_CONTEXT can only be set in the method call but it won’t have any effect when used in the template
-		//        directly via templateFlag=. Should we fix this? It needs to be passed to 
 		$bSaveContexts = ($iFlags&self::NO_NEW_CONTEXT) !== self::NO_NEW_CONTEXT;
 
 		$sIdentifier = $mIdentifier;
@@ -660,6 +658,7 @@ class Template {
 				if($oIdentifier->getValue() === 'start') {
 					// Reset flags when a new context starts
 					$iIdentifierFlags = $iFlags | $oIdentifier->iFlags;
+					$bSaveContexts = ($iIdentifierFlags&self::NO_NEW_CONTEXT) !== self::NO_NEW_CONTEXT;
 					$oContextStart = $oIdentifier;
 				} else {
 					if($bSaveContexts) {
@@ -679,6 +678,7 @@ class Template {
 				if(!$oContextStart) {
 					// Reset flag because there is no context
 					$iIdentifierFlags = $iFlags | $oIdentifier->iFlags;
+					$bSaveContexts = ($iIdentifierFlags&self::NO_NEW_CONTEXT) !== self::NO_NEW_CONTEXT;
 				}
 			}
 			if($oMarker) {

@@ -160,7 +160,7 @@ EOT;
 		$this->assertSame("a1aa2a", $oTemplate->render());
 
 		$sTemplateText = <<<EOT
-{{identifierContext=start;name=test;templateFlag=NO_NEWLINE}}a{{test;templateFlag=NO_NEWLINE}}a{{identifierContext=end;name=test}}
+{{identifierContext=start;name=test}}a{{test;templateFlag=NO_NEWLINE}}a{{identifierContext=end;name=test}}
 {{identifierContext=start;name=test}}a{{test}}a{{identifierContext=end;name=test}}
 EOT;
 		$oTemplate = new Template($sTemplateText, null, true);
@@ -176,6 +176,32 @@ EOT;
 		$oTemplate->replaceIdentifierMultiple('test', new Template('1', null, true));
 		$oTemplate->replaceIdentifierMultiple('test', new Template('2', null, true));
 		$this->assertSame("a1aa2a\n1\n2\n", $oTemplate->render());
+	}
+	
+	public function testContextInlineFlagMultipleNoNewContext() {
+		$sTemplateText = <<<EOT
+{{identifierContext=start;name=test}}a{{test}}a{{identifierContext=end;name=test}}
+EOT;
+		$oTemplate = new Template($sTemplateText, null, true);
+		$oTemplate->replaceIdentifierMultiple('test', new Template('1', null, true), null, Template::NO_NEW_CONTEXT);
+		$oTemplate->replaceIdentifierMultiple('test', new Template('2', null, true), null, Template::NO_NEW_CONTEXT);
+		$this->assertSame("a1\n2\na", $oTemplate->render());
+
+		$sTemplateText = <<<EOT
+{{identifierContext=start;name=test;templateFlag=NO_NEW_CONTEXT}}a{{test}}a{{identifierContext=end;name=test}}
+EOT;
+		$oTemplate = new Template($sTemplateText, null, true);
+		$oTemplate->replaceIdentifierMultiple('test', new Template('1', null, true));
+		$oTemplate->replaceIdentifierMultiple('test', new Template('2', null, true));
+		$this->assertSame("a1\n2\na", $oTemplate->render());
+
+		$sTemplateText = <<<EOT
+{{identifierContext=start;name=test;templateFlag=NO_NEW_CONTEXT}}a{{test;templateFlag=NO_NEW_CONTEXT}}a{{identifierContext=end;name=test}}
+EOT;
+		$oTemplate = new Template($sTemplateText, null, true);
+		$oTemplate->replaceIdentifierMultiple('test', new Template('1', null, true));
+		$oTemplate->replaceIdentifierMultiple('test', new Template('2', null, true));
+		$this->assertSame("a1\n2\na", $oTemplate->render());
 	}
 
 	public function testSimpleInlineFlagMultipleLeaveIdentifiers1() {
