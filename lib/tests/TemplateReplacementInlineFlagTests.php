@@ -123,6 +123,60 @@ EOT;
 		
 		$this->assertSame('"a\\" \\"/a"', $oTemplate->render());
 	}
+	
+	public function testSimpleInlineFlagMultipleNoNewline() {
+		$sTemplateText = <<<EOT
+{{test}}
+EOT;
+		$oTemplate = new Template($sTemplateText, null, true);
+		$oTemplate->replaceIdentifierMultiple('test', new Template('1', null, true));
+		$oTemplate->replaceIdentifierMultiple('test', new Template('2', null, true));
+		$this->assertSame("1\n2\n", $oTemplate->render());
+
+		$sTemplateText = <<<EOT
+{{test;templateFlag=NO_NEWLINE}}
+EOT;
+		$oTemplate = new Template($sTemplateText, null, true);
+		$oTemplate->replaceIdentifierMultiple('test', new Template('1', null, true));
+		$oTemplate->replaceIdentifierMultiple('test', new Template('2', null, true));
+		$this->assertSame("12", $oTemplate->render());
+	}
+	
+	public function testContextInlineFlagMultipleNoNewline() {
+		$sTemplateText = <<<EOT
+{{identifierContext=start;name=test}}a{{test}}a{{identifierContext=end;name=test}}
+EOT;
+		$oTemplate = new Template($sTemplateText, null, true);
+		$oTemplate->replaceIdentifierMultiple('test', new Template('1', null, true));
+		$oTemplate->replaceIdentifierMultiple('test', new Template('2', null, true));
+		$this->assertSame("a1a\na2a\n", $oTemplate->render());
+
+		$sTemplateText = <<<EOT
+{{identifierContext=start;name=test;templateFlag=NO_NEWLINE}}a{{test}}a{{identifierContext=end;name=test}}
+EOT;
+		$oTemplate = new Template($sTemplateText, null, true);
+		$oTemplate->replaceIdentifierMultiple('test', new Template('1', null, true));
+		$oTemplate->replaceIdentifierMultiple('test', new Template('2', null, true));
+		$this->assertSame("a1aa2a", $oTemplate->render());
+
+		$sTemplateText = <<<EOT
+{{identifierContext=start;name=test;templateFlag=NO_NEWLINE}}a{{test;templateFlag=NO_NEWLINE}}a{{identifierContext=end;name=test}}
+{{identifierContext=start;name=test}}a{{test}}a{{identifierContext=end;name=test}}
+EOT;
+		$oTemplate = new Template($sTemplateText, null, true);
+		$oTemplate->replaceIdentifierMultiple('test', new Template('1', null, true));
+		$oTemplate->replaceIdentifierMultiple('test', new Template('2', null, true));
+		$this->assertSame("a1aa2a\na1a\na2a\n", $oTemplate->render());
+
+		$sTemplateText = <<<EOT
+{{identifierContext=start;name=test}}a{{test}}a{{identifierContext=end;name=test;templateFlag=NO_NEWLINE}}
+{{test}}
+EOT;
+		$oTemplate = new Template($sTemplateText, null, true);
+		$oTemplate->replaceIdentifierMultiple('test', new Template('1', null, true));
+		$oTemplate->replaceIdentifierMultiple('test', new Template('2', null, true));
+		$this->assertSame("a1aa2a\n1\n2\n", $oTemplate->render());
+	}
 
 	public function testSimpleInlineFlagMultipleLeaveIdentifiers1() {
 		$sTemplateText = <<<EOT

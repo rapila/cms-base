@@ -623,6 +623,8 @@ class Template {
 
 	private function convertIdentifierAndContextToMarkers($mIdentifier, $sValue=TemplateIdentifier::PARAMETER_EMPTY_VALUE, $iFlags=0) {
 		$aMarkers = array();
+		// FIXME: Currently NO_NEW_CONTEXT can only be set in the method call but it won’t have any effect when used in the template
+		//        directly via templateFlag=. Should we fix this? It needs to be passed to 
 		$bSaveContexts = ($iFlags&self::NO_NEW_CONTEXT) !== self::NO_NEW_CONTEXT;
 
 		$sIdentifier = $mIdentifier;
@@ -644,15 +646,24 @@ class Template {
 		$aIdentifiers = $aIdentifiers + $this->identifiersMatching("identifierContext", self::$ANY_VALUE, $aParams);
 		ksort($aIdentifiers);
 
+		$iIdentifierFlags = $iFlags;
+
 		$oContextStart = null;
 		foreach($aIdentifiers as $oIdentifier) {
+			// Add all the flags from the current identifier to the running flags.
+			// $iIdentifierFlags should pick up all flags from all identifiers belonging to this identifier and its context identifiers
+			$iIdentifierFlags = $iIdentifierFlags | $oIdentifier->iFlags;
+			// FIXME: Ins’t the key already the position?
 			$iPosition = $this->identifierPosition($oIdentifier);
 			$oMarker = null;
 			if($oIdentifier->getName() === 'identifierContext') {
 				if($oIdentifier->getValue() === 'start') {
+					// Reset flags when a new context starts
+					$iIdentifierFlags = $iFlags | $oIdentifier->iFlags;
 					$oContextStart = $oIdentifier;
 				} else {
 					if($bSaveContexts) {
+						// Generate a marker for the whole context
 						$oMarker = new TemplateMarker($this, $this->partBetween($oContextStart, $oIdentifier, true), true);
 					}
 					$this->replaceAt($oContextStart);
@@ -662,11 +673,16 @@ class Template {
 				}
 			} else {
 				if(!($bSaveContexts && $oContextStart)) {
+					// Generate a marker for the identifier alone
 					$oMarker = new TemplateMarker($this, array($oIdentifier));
+				}
+				if(!$oContextStart) {
+					// Reset flag because there is no context
+					$iIdentifierFlags = $iFlags | $oIdentifier->iFlags;
 				}
 			}
 			if($oMarker) {
-				if(($iFlags&self::NO_NEWLINE) !== self::NO_NEWLINE) {
+				if(($iIdentifierFlags&self::NO_NEWLINE) !== self::NO_NEWLINE) {
 					array_unshift($oMarker->aContents, self::$NEWLINE_VALUE);
 				}
 				$this->insertAt($iPosition+1, array($oMarker));
