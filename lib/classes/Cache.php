@@ -141,6 +141,9 @@ class Cache {
 		if(is_string($iTimestamp)) {
 			$iTimestamp = strtotime($iTimestamp);
 		}
+		if($iTimestamp instanceof DateTime) {
+			$iTimestamp = $iTimestamp->getTimestamp();
+		}
 		return $iTimestamp > $this->getModificationDate();
 	}
 	
