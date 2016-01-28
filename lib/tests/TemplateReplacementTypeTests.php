@@ -28,6 +28,22 @@ class TemplateReplacementTypeTests extends PHPUnit_Framework_TestCase {
 		$this->assertSame("true", $oTestTemplate->render());
 	}
 	
+	public function testCallableReplace() {
+		$oTestTemplate = new Template('{{test}}', null, true);
+		$oTestTemplate->replaceIdentifier('test', function() {
+			return 1;
+		});
+		$this->assertSame("1", $oTestTemplate->render());
+	}
+	
+	public function testStringNotCallableReplace() {
+		$oTestTemplate = new Template('{{test}}', null, true);
+		$cFunction = create_function('', 'return "gaga";');
+		$oTestTemplate->replaceIdentifier('test', $cFunction);
+		$this->assertNotEquals("gaga", $oTestTemplate->render());
+		$this->assertSame((string)$cFunction, $oTestTemplate->render());
+	}
+	
 	public function testBooleanFalseReplace() {
 		$oTestTemplate = new Template('{{test}}', null, true);
 		$oTestTemplate->replaceIdentifier('test', false);
