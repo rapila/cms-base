@@ -36,6 +36,24 @@ class TemplateReplacementTypeTests extends PHPUnit_Framework_TestCase {
 		$this->assertSame("1", $oTestTemplate->render());
 	}
 	
+	public function testCallableReplaceNested() {
+		$oTestTemplate = new Template('{{test}}', null, true);
+		$oTestTemplate->replaceIdentifier('test', function() {
+			return array('hello', ' ', 'you');
+		});
+		$this->assertSame("hello you", $oTestTemplate->render());
+	}
+	
+	public function testCallableReplaceNested2x() {
+		$oTestTemplate = new Template('{{test}}', null, true);
+		$oTestTemplate->replaceIdentifier('test', function() {
+			return function() {
+				return array('hello', ' ', 'you');
+			};
+		});
+		$this->assertSame("hello you", $oTestTemplate->render());
+	}
+	
 	public function testStringNotCallableReplace() {
 		$oTestTemplate = new Template('{{test}}', null, true);
 		$cFunction = create_function('', 'return "gaga";');
