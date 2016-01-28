@@ -438,6 +438,8 @@ class Template {
 			$aText[] = sprintf('%f', $mText);
 		} else if(is_numeric($mText)) {
 			$aText[] = sprintf('%d', $mText);
+		} else if (is_callable($mText)) {
+			$aText = $this->getTextForReplaceIdentifier($mText(), $iFlags);
 		} else if(is_object($mText)) {
 			$sObjectDescription = Util::descriptionForObject($mText);
 			if(!$sObjectDescription) {
