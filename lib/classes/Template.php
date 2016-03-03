@@ -165,7 +165,7 @@ class Template {
 			}
 
 			if(Settings::getSetting('general', 'template_caching', false)) {
-				$oCache = new Cache($oPath->getFullPath()."_".Session::language()."_".$sTargetEncoding."_".$sRootTemplateName, DIRNAME_TEMPLATES);
+				$oCache = new Cache($oPath->getFullPath()."_".LocaleUtil::getLocaleId()."_".$sTargetEncoding."_".$sRootTemplateName, DIRNAME_TEMPLATES);
 				$bCacheIsCurrent = $oCache->entryExists() && !$oCache->isOutdated($oPath->getFullPath());
 			}
 

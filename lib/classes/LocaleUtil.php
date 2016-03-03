@@ -5,6 +5,8 @@
 
 class LocaleUtil {
 
+	private static $ACCEPT_LOCALE_LISTS = array();
+
 	//Gets the user's locale for the current language
 	public static function getLocaleId($sLanguageId = null) {
 		if($sLanguageId === null) {
@@ -20,6 +22,9 @@ class LocaleUtil {
 	public static function acceptLocales($sLanguageId = false) {
 		if($sLanguageId === null) {
 			$sLanguageId = Session::language();
+		}
+		if(isset(self::$ACCEPT_LOCALE_LISTS[$sLanguageId])) {
+			return self::$ACCEPT_LOCALE_LISTS[$sLanguageId];
 		}
 		$fQSlantAmount = 0.0001;
 		$aResult = array();
@@ -51,6 +56,7 @@ class LocaleUtil {
 				});
 			}
 		}
+		self::$ACCEPT_LOCALE_LISTS[$sLanguageId] = $aResult;
 		return $aResult;
 	}
 
