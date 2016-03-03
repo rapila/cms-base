@@ -5,7 +5,8 @@
 
 class LocaleUtil {
 
-	private static $ACCEPT_LOCALE_LISTS = array();
+	/// @VisibleForTesting
+	public static $ACCEPT_LOCALE_LISTS = array();
 
 	//Gets the user's locale for the current language
 	public static function getLocaleId($sLanguageId = null) {

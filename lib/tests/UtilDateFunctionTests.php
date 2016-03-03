@@ -3,6 +3,10 @@
  * @package test
  */
 class UtilDateFunctionTests extends PHPUnit_Framework_TestCase {
+	public function setUp() {
+		LocaleUtil::$ACCEPT_LOCALE_LISTS = array();
+	}
+
 	public function testDateParserDE() {
 		$_SERVER['HTTP_ACCEPT_LANGUAGE'] = "";
 		$iDate = 0;
