@@ -40,6 +40,15 @@ class PageQuery extends BasePageQuery {
 		return $this->filterByIsInactive(!$bIsActive);
 	}
 
+	public function filterByPagePropertyValue($sName, $sValue) {
+		return $this->distinct()
+		       ->usePagePropertyQuery()
+		       	->condition('pp_name', 'PageProperty.Name = ?', $sName)
+		       	->condition('pp_value', 'PageProperty.Value = ?', $sValue)
+		       	->where(array('pp_name', 'pp_value'), 'and')
+		       ->endUse();
+	}
+
 	/**
 	* @deprecated seems to be a very special method that is rarely used, if at all, replace by local code
 	*/
