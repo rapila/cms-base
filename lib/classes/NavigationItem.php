@@ -4,6 +4,7 @@
  */
 abstract class NavigationItem {
 	protected $oParent;
+	private $oCanonical = false;
 	protected $aCustomChildren;
 	protected $aChildren;
 
@@ -171,6 +172,12 @@ abstract class NavigationItem {
 	protected abstract function getCanonicalImpl($sLanguageId = null);
 
 	public function getCanonical($sLanguageId = null) {
+		if($this->oCanonical === false) {
+			$this->oCanonical = $this->findCanonical($sLanguageId);
+		}
+		return $this->oCanonical;
+	}
+	private function findCanonical($sLanguageId) {
 		$oCanonical = $this->getCanonicalImpl($sLanguageId);
 		if($oCanonical) {
 			return $oCanonical;
@@ -179,7 +186,7 @@ abstract class NavigationItem {
 			return null;
 		}
 		$oParentCanonical = $this->getParent()->getCanonical();
-		if($oParentCanonical === null) {
+		if(!$oParentCanonical) {
 			return null;
 		}
 		return $oParentCanonical->namedChild($this->getName(), $sLanguageId, !$this->isEnabled(), !$this->isVisible());
@@ -221,6 +228,7 @@ abstract class NavigationItem {
 	public function __sleep() {
 		$aVars = (array) $this;
 		unset($aVars["\0*\0oParent"]);
+		unset($aVars["\0*\0oCanonical"]);
 		unset($aVars["\0*\0aCustomChildren"]);
 		unset($aVars["\0*\0aChildren"]);
 		return array_keys($aVars);
