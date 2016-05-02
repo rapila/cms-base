@@ -66,7 +66,7 @@ class LoginManager extends PreviewManager {
 	}
 
 	private function renderLogin() {
-		$this->oTemplate->replaceIdentifier('action_password_forgotten', LinkUtil::link(null, null, array('password_forgotten' => 'true')));
+		$this->oTemplate->replaceIdentifier('action_password_forgotten', LinkUtil::link(false, null, array('password_forgotten' => 'true')));
 		$this->oTemplate->replaceIdentifier(self::USER_NAME, '');
 		$this->oTemplate->replaceIdentifier(self::LOGIN_PASSWORD, '');
 	}

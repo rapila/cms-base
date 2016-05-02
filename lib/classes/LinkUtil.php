@@ -299,7 +299,14 @@ class LinkUtil {
 		return $aOverrideParameters;
 	}
 
-	public static function link($mPath=array(), $mManager=null, $aParameters=array(), $mLanguage=null, $bIncludeLanguage=null) {
+	public static function link($mPath=false, $mManager=null, $aParameters=array(), $mLanguage=null, $bIncludeLanguage=null) {
+		if($mPath === null) {
+			// Respect null-links
+			return null;
+		}
+		if(!$mPath) {
+			$mPath = array();
+		}
 		if(!is_array($mPath)) {
 			$mPath = explode("/", $mPath);
 		}
