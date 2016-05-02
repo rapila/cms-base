@@ -86,7 +86,7 @@ class PageNavigationItem extends NavigationItem {
 		return $this->oMe->getFullPathArray();
 	}
 	
-	public function getId() {
+	protected final function getIdImpl() {
 		return $this->oMe->getId();
 	}
 	

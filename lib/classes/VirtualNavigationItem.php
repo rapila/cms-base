@@ -68,6 +68,13 @@ class VirtualNavigationItem extends NavigationItem {
 	public function getData() {
 		return $this->mData;
 	}
+
+	protected final function getIdImpl() {
+		if($this->isRoot()) {
+			return "";
+		}
+		return "{$this->oParent->getId()}/{$this->getName()}";
+	}
 	
 	public function hasData($mKey) {
 		return isset($this->mData[$mKey]);
