@@ -1,3 +1,3 @@
 general:
   use_local_library_cache: true
-  consolidate_resources: true
+  consolidate_resources: false
