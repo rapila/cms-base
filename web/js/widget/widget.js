@@ -963,7 +963,14 @@ jQuery.widget("ui.dialog", jQuery.ui.dialog, {
 			///TODO: handle arrays (keys ending in “[]”), checkboxes and radios (.attr)
 			var _this = this;
 			jQuery.each(data, function(key, item) {
-				_this.find('[name='+key.escapeSelector()+']').val(item);
+				var formItem = _this.find('[name='+key.escapeSelector()+']');
+				if(formItem.is(':checkbox')) {
+					formItem.prop('checked', !!item);
+				} else if(formItem.is(':radio')) {
+					formItem.prop('checked', formItem.value === item);
+				} else {
+					formItem.val(item);
+				}
 			});
 			return this;
 		},
