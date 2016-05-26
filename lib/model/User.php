@@ -23,7 +23,7 @@ class User extends BaseUser {
 	}
 
 	public function getFullNameInverted($sSeparator=', ') {
-		return implode($sSeparator=', ', array_reverse($this->getFullNameArray()));
+		return implode(', ', array_reverse($this->getFullNameArray()));
 	}
 
 	public function getFullNameArray() {
