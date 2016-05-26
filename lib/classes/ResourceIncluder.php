@@ -301,8 +301,8 @@ class ResourceIncluder {
 			$sSriDigest = implode(' ', $sSriDigest);
 		}
 
-		// Don’t send cookies for libraries
-		$sCrossOrigin = 'anonymous';
+		// Don’t send cookies for libraries if a SRI digest is used
+		$sCrossOrigin = $sSriDigest ? 'anonymous' : null;
 		if(isset($aLibraryOptions['crossorigin'])) {
 			$sCrossOrigin = $aLibraryOptions['crossorigin'];
 		}
