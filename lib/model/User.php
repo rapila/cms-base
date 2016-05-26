@@ -23,7 +23,7 @@ class User extends BaseUser {
 	}
 
 	public function getFullNameInverted($sSeparator=', ') {
-		return implode($sSeparator=', ', array_reverse($this->getFullNameArray()));
+		return implode(', ', array_reverse($this->getFullNameArray()));
 	}
 
 	public function getFullNameArray() {
@@ -33,6 +33,10 @@ class User extends BaseUser {
 		}
 		if($this->getLastName()) {
 			$aResult[] = $this->getLastName();
+		}
+		// Use user name if no other names set
+		if(count($aResult) === 0) {
+			$aResult[] = $this->getUsername();
 		}
 		return $aResult;
 	}
