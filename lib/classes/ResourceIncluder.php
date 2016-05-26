@@ -284,6 +284,20 @@ class ResourceIncluder {
 			}
 		}
 
+		// Handle crossorigin and SRI attributes
+		$aSri = array();
+		$sSriDigest = null;
+		$sSriKey = $bUseCompression ? 'sri' : 'sri_uncompressed';
+		if(isset($aLibraryOptions[$sSriKey])) {
+			$aSri = $aLibraryOptions[$sSriKey];
+			if(!is_array($aSri)) {
+				$aSri = array($sLibraryVersion => $aSri);
+			}
+		}
+		if(isset($aSri[$sLibraryVersion])) {
+			$sSriDigest = $aSri[$sLibraryVersion];
+		}
+
 		// Don’t send cookies for libraries
 		$sCrossOrigin = 'anonymous';
 		if(isset($aLibraryOptions['crossorigin'])) {
@@ -296,7 +310,8 @@ class ResourceIncluder {
 			$this->addResource($sLink, self::RESOURCE_TYPE_JS, $sResourceIdentifier, array(
 				'version' => $sLibraryVersion,
 				'use_compression' => $bUseCompression,
-				'crossorigin' => $sCrossOrigin
+				'crossorigin' => $sCrossOrigin,
+				'sri' => $sSriDigest
 			), $iPriority, $sIeCondition, false, is_array($aLibraryDependencies));
 			return;
 		}
@@ -323,7 +338,8 @@ class ResourceIncluder {
 		$this->addResource(str_replace('${library_name}', $sLibraryName, $sLibraryUrl), self::RESOURCE_TYPE_JS, $sResourceIdentifier, array(
 			'version' => $sLibraryVersion,
 			'use_compression' => $bUseCompression,
-			'crossorigin' => $sCrossOrigin
+			'crossorigin' => $sCrossOrigin,
+			'sri' => $sSriDigest
 		), $iPriority, $sIeCondition, false, is_array($aLibraryDependencies));
 	}
 
