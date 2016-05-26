@@ -38,7 +38,9 @@ class User extends BaseUser {
 	}
 
 	public function getInitials() {
-		return strtolower(substr($this->getFirstName(),0,1).substr($this->getLastName(),0,1));
+		return implode('', array_map(function($sNamePart) {
+			return strtolower(substr($sNamePart,0,1));
+		}, $this->getFullNameArray()));
 	}
 
 	public function getUserKind() {
