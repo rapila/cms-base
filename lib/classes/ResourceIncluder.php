@@ -284,10 +284,20 @@ class ResourceIncluder {
 			}
 		}
 
+		// Don’t send cookies for libraries
+		$sCrossOrigin = 'anonymous';
+		if(isset($aLibraryOptions['crossorigin'])) {
+			$sCrossOrigin = $aLibraryOptions['crossorigin'];
+		}
+
 		if($bUseLocalProxy) {
 			$sLink = LinkUtil::link(array('local_js_library', $sLibraryName, $sLibraryVersion, ($bUseCompression ? 'min.js' : 'js')), 'FileManager');
 			$sLink = LinkUtil::absoluteLink($sLink, null, $bUseSsl, true);
-			$this->addResource($sLink, self::RESOURCE_TYPE_JS, $sResourceIdentifier, array('version' => $sLibraryVersion, 'use_compression' => $bUseCompression), $iPriority, $sIeCondition, false, is_array($aLibraryDependencies));
+			$this->addResource($sLink, self::RESOURCE_TYPE_JS, $sResourceIdentifier, array(
+				'version' => $sLibraryVersion,
+				'use_compression' => $bUseCompression,
+				'crossorigin' => $sCrossOrigin
+			), $iPriority, $sIeCondition, false, is_array($aLibraryDependencies));
 			return;
 		}
 
@@ -310,7 +320,11 @@ class ResourceIncluder {
 			}
 		}
 
-		$this->addResource(str_replace('${library_name}', $sLibraryName, $sLibraryUrl), self::RESOURCE_TYPE_JS, $sResourceIdentifier, array('version' => $sLibraryVersion, 'use_compression' => $bUseCompression), $iPriority, $sIeCondition, false, is_array($aLibraryDependencies));
+		$this->addResource(str_replace('${library_name}', $sLibraryName, $sLibraryUrl), self::RESOURCE_TYPE_JS, $sResourceIdentifier, array(
+			'version' => $sLibraryVersion,
+			'use_compression' => $bUseCompression,
+			'crossorigin' => $sCrossOrigin
+		), $iPriority, $sIeCondition, false, is_array($aLibraryDependencies));
 	}
 
 	public function addCustomResource($aResourceInfo, $iPriority = self::PRIORITY_NORMAL, $bEndsDependencyList = false) {
