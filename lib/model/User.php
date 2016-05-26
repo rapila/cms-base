@@ -34,6 +34,10 @@ class User extends BaseUser {
 		if($this->getLastName()) {
 			$aResult[] = $this->getLastName();
 		}
+		// Use user name if no other names set
+		if(count($aResult) === 0) {
+			$aResult[] = $this->getUsername();
+		}
 		return $aResult;
 	}
 

@@ -138,6 +138,7 @@ class LoginManager extends PreviewManager {
 		$oUser->save();
 
 		$oEmailTemplate = new Template('e_mail_pw_recover', array(DIRNAME_TEMPLATES, 'login'));
+		$oEmailTemplate->replaceIdentifier('full_name', $oUser->getFullName());
 		$oEmailTemplate->replaceIdentifier('first_name', $oUser->getFirstName());
 		$oEmailTemplate->replaceIdentifier('last_name', $oUser->getLastName());
 		$oEmailTemplate->replaceIdentifier('username', $oUser->getUsername());
@@ -168,7 +169,7 @@ class LoginManager extends PreviewManager {
 		$oEmail = new EMail(StringPeer::getString('wns.login.password_recover_email_subject'), $oEmailTemplate);
 		$sSenderAddress = LinkUtil::getDomainHolderEmail('cms');
 		$oEmail->setSender(Settings::getSetting('domain_holder', 'name', 'rapila on '.$_SERVER['HTTP_HOST']), $sSenderAddress);
-		$oEmail->addRecipient($oUser->getEmail());
+		$oEmail->addRecipient($oUser->getEmail(), $oUser->getFullName());
 		$oEmail->send();
 	}
 
