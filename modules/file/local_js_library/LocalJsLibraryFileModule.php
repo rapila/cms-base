@@ -24,6 +24,13 @@ class LocalJsLibraryFileModule extends FileModule {
 		// Don’t use SSL for downloads
 		// Don’t include dependencies either
 		$oIncluder->addJavaScriptLibrary($this->aLibraryName, $this->aVersion, $this->bUseCompression, false, false, ResourceIncluder::PRIORITY_NORMAL, false);
+		$sContents = self::getResourceIncluderContents($oIncluder);
+		$oCache->setContents($sContents);
+		$oCache->sendCacheControlHeaders();
+		print($sContents);
+	}
+	
+	public static function getResourceIncluderContents($oIncluder) {
 		$sContents = '';
 		foreach($oIncluder->getResourceInfosForIncludedResourcesOfPriority() as $aInfo) {
 			if(isset($aInfo['file_resource'])) {
@@ -36,8 +43,6 @@ class LocalJsLibraryFileModule extends FileModule {
 				$sContents .= file_get_contents($sLocation);
 			}
 		}
-		$oCache->setContents($sContents);
-		$oCache->sendCacheControlHeaders();
-		print($sContents);
+		return $sContents;
 	}
 }
