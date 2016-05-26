@@ -297,6 +297,9 @@ class ResourceIncluder {
 		if(isset($aSri[$sLibraryVersion])) {
 			$sSriDigest = $aSri[$sLibraryVersion];
 		}
+		if(is_array($sSriDigest)) {
+			$sSriDigest = implode(' ', $sSriDigest);
+		}
 
 		// Don’t send cookies for libraries
 		$sCrossOrigin = 'anonymous';
