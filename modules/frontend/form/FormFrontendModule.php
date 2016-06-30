@@ -270,7 +270,7 @@ class FormStorage {
 	}
 
 	public static function getAvailableTypes() {
-		return array('text', 'textarea', 'password', 'submit', 'hidden', 'flash', 'captcha');
+		return array('text', 'textarea', 'password', 'submit', 'hidden', 'flash', 'captcha', 'button', 'button-submit');
 		// return array('textarea', 'text', 'password', 'submit', 'select', 'checkbox', 'radio', 'button');
 	}
 }
@@ -324,7 +324,22 @@ class FormObject {
 		if($this->sType === 'textarea') {
 			return TagWriter::quickTag($this->sType, array('id' => $this->getFormObjectId($iFormId), 'name' => $this->sName, 'class' => $this->sClassName), $this->getCurrentValue());
 		}
-		return TagWriter::quickTag('input', array('value' => $this->getCurrentValue(), 'id' => $this->getFormObjectId($iFormId), 'name' => $this->sName, 'type' => $this->sType, 'class' => $this->sClassName));
+		$sType = $this->sType;
+		$sTagName = 'input';
+		if(strpos($sType, '-') !== false) {
+			list($sTagName, $sType) = explode('-', $sType);
+		}
+		$aArgs = array('value' => $this->getCurrentValue(), 'id' => $this->getFormObjectId($iFormId), 'name' => $this->sName, 'type' => $sType, 'class' => $this->sClassName);
+		$sContents = null;
+		if($sType === 'textarea') {
+			$sTagName = 'textarea';
+			unset($aArgs['type']);
+		}
+		if($sTagName !== 'input') {
+			$sContents = $this->getCurrentValue();
+			unset($aArgs['value']);
+		}
+		return TagWriter::quickTag($sTagName, $aArgs, $sContents);
 	}
 
 	public function shouldExcludeFromReport() {
