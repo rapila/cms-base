@@ -207,6 +207,8 @@ Widget.types.detail = {
 				}
 			}
 		});
+		// Get the wrapper widget
+		this._element = this.content.dialog('widget');
 		this.has_dialog = true;
 		if(this.settings.disabled) {
 			this.disable();
