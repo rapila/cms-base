@@ -176,8 +176,14 @@ Widget.types.detail = {
 			'class': 'secondary special',
 			click: this.settings.delete_callback
 		});
+		var _this = this;
 		buttons = buttons.concat(this.settings.additionalButtons.map(function(butt) {
-			return $.extend({}, butt, {'class': 'class' in butt ? butt['class']+' special' : 'special'});
+			return $.extend({}, butt, {
+				'class': 'class' in butt ? butt['class']+' special' : 'special',
+				click: 'click' in butt ? function(event) {
+					return butt.click.call(this, event, _this, _this.instance);
+				} : undefined
+			});
 		}));
 		// option something like.....
 
