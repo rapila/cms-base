@@ -115,12 +115,17 @@ class LocaleUtil {
 			}
 			date_default_timezone_set($sTimeZone);
 		}
-		// add % only if not already set, double % are displayed differently on different server environment
-		$sPrefix = '';
-		if(strlen($sFormat) === 1) {
-			$sPrefix = '%';
+		if($sLanguageId === '_') {
+			// Special case: Use the date function instead of strftime (it offers more formats for locale-independent stuff)
+			$sResult =  date($sFormat, $iTimestamp);
+		} else {
+			// add % only if not already set, double % are displayed differently on different server environment
+			$sPrefix = '';
+			if(strlen($sFormat) === 1) {
+				$sPrefix = '%';
+			}
+			$sResult = strftime("$sPrefix$sFormat", $iTimestamp);
 		}
-		$sResult = strftime("$sPrefix$sFormat", $iTimestamp);
 		date_default_timezone_set($sPrevTimeZone);
 		return $sResult;
 	}
