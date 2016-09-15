@@ -55,6 +55,26 @@ EOT;
 		
 		$this->assertSame("“test”", $oTemplate->render());
 	}
+	
+	public function testQuoteWithInnerDefault() {
+		Session::getSession()->setLanguage('en');
+		$sTemplateText = <<<EOT
+{{quoteString=\{\{test\;defaultValue=default\}\}}}
+EOT;
+		$oTemplate = new Template($sTemplateText, null, true);
+
+		$this->assertSame("“default”", $oTemplate->render());
+	}
+	
+	public function testQuoteWithInnerDefaultValue() {
+		Session::getSession()->setLanguage('en');
+		$sTemplateText = <<<EOT
+{{quoteString=\{\{test\}\};defaultValue=default}}
+EOT;
+		$oTemplate = new Template($sTemplateText, null, true);
+
+		$this->assertSame("default", $oTemplate->render());
+	}
 
 	public function validCalculations() {
 		return array(
@@ -96,26 +116,6 @@ EOT;
 		$oExpected = new Template(TemplateIdentifier::constructIdentifier('result'), null, true);
 		$oExpected->replaceIdentifier('result', $sExpectedResult);
 		$this->assertSame($oExpected->render(), $oTemplate->render());
-	}
-	
-	public function testQuoteWithInnerDefault() {
-		Session::getSession()->setLanguage('en');
-		$sTemplateText = <<<EOT
-{{quoteString=\{\{test\;defaultValue=default\}\}}}
-EOT;
-		$oTemplate = new Template($sTemplateText, null, true);
-
-		$this->assertSame("“default”", $oTemplate->render());
-	}
-	
-	public function testQuoteWithInnerDefaultValue() {
-		Session::getSession()->setLanguage('en');
-		$sTemplateText = <<<EOT
-{{quoteString=\{\{test\}\};defaultValue=default}}
-EOT;
-		$oTemplate = new Template($sTemplateText, null, true);
-
-		$this->assertSame("default", $oTemplate->render());
 	}
 	
 	public function testWriteResourceIncludes() {
