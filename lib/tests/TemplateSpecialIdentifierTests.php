@@ -55,6 +55,48 @@ EOT;
 		
 		$this->assertSame("“test”", $oTemplate->render());
 	}
+
+	public function validCalculations() {
+		return array(
+			array('0.1 + 0.2', 0.3),
+			array('1 + 2', 3),
+
+			array('0.1 - 0.2', -0.1),
+			array('1 - 2', -1),
+
+			array('0.1 * 2', 0.2),
+			array('1 * 2', 2),
+
+			array('0.1 / 0.2', 0.5),
+			array('1 / 2', 0.5),
+
+			array('2 * 2 + 3 * 3', 13),
+
+			array('1 + 0.6 - 3 * 2 / 50', 1.48),
+
+			array('(5 + 3) * -1', -8),
+
+			array('2+2*2', 6),
+			array('(2+2)*2', 8),
+			array('(2+2)*-2', -8),
+			array('(2+-2)*2'),
+
+			array('sin(10) * cos(50) / min(10, 20/2)', (sin(10) * cos(50) / min(10, 20/2))),
+
+			array('100500 * 3.5E5', 100500 * 3.5E5),
+			array('100500 * 3.5E-5', 100500 * 3.5E-5)
+		);
+	}
+
+  /**
+   * @dataProvider validCalculations
+   */
+	public function testCalculations($sCalculation, $sExpectedResult = '0') {
+		$oTemplate = new Template(TemplateIdentifier::constructIdentifier('doCalculation', $sCalculation), null, true);
+		$oExpected = new Template(TemplateIdentifier::constructIdentifier('result'), null, true);
+		$oExpected->replaceIdentifier('result', $sExpectedResult);
+		$this->assertSame($oExpected->render(), $oTemplate->render());
+	}
 	
 	public function testQuoteWithInnerDefault() {
 		Session::getSession()->setLanguage('en');
