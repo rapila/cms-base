@@ -143,13 +143,13 @@ class LoginManager extends PreviewManager {
 		$oEmailTemplate->replaceIdentifier('last_name', $oUser->getLastName());
 		$oEmailTemplate->replaceIdentifier('username', $oUser->getUsername());
 		if($bShowUserName) {
-			$oEmailTemplate->replaceIdentifier('username_info', StringPeer::getString('wns.login.password_reset.your_username').': '.$oUser->getUsername());
+			$oEmailTemplate->replaceIdentifier('username_info', TranslationPeer::getString('wns.login.password_reset.your_username').': '.$oUser->getUsername());
 		}
 		$sInfoTextKey = 'wns.login.password_recover_email_text2';
 		if($bForceReset) {
 			$sInfoTextKey = 'wns.login.password_recover_email_text2_force';
 		}
-		$oEmailTemplate->replaceIdentifier('ignore_or_reset_info', StringPeer::getString($sInfoTextKey));
+		$oEmailTemplate->replaceIdentifier('ignore_or_reset_info', TranslationPeer::getString($sInfoTextKey));
 
 		if($sLinkBase === null) {
 			if(Manager::$CURRENT_MANAGER instanceof FrontendManager) {
@@ -166,7 +166,7 @@ class LoginManager extends PreviewManager {
 		}
 		$sLink = "http://".$_SERVER['HTTP_HOST'].$sLinkBase.LinkUtil::prepareLinkParameters($aParams);
 		$oEmailTemplate->replaceIdentifier('new_pw_url', $sLink);
-		$oEmail = new EMail(StringPeer::getString('wns.login.password_recover_email_subject'), $oEmailTemplate);
+		$oEmail = new EMail(TranslationPeer::getString('wns.login.password_recover_email_subject'), $oEmailTemplate);
 		$sSenderAddress = LinkUtil::getDomainHolderEmail('cms');
 		$oEmail->setSender(Settings::getSetting('domain_holder', 'name', 'rapila on '.$_SERVER['HTTP_HOST']), $sSenderAddress);
 		$oEmail->addRecipient($oUser->getEmail(), $oUser->getFullName());

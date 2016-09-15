@@ -14,11 +14,11 @@ class LinkCategory extends BaseLinkCategory {
 	public function getLinkToLinkData() {
 		$aArray = array();
 		if($this->getLinkCount() == 0) {
-			$aArray[] = StringPeer::getString('wns.none');
+			$aArray[] = TranslationPeer::getString('wns.none');
 		} else if($this->getLinkCount() === 1) {
-			$aArray[] = $this->getLinkCount().' '.StringPeer::getString('wns.link');
+			$aArray[] = $this->getLinkCount().' '.TranslationPeer::getString('wns.link');
 		} else {
-			$aArray[] = $this->getLinkCount().' '.StringPeer::getString('wns.links');
+			$aArray[] = $this->getLinkCount().' '.TranslationPeer::getString('wns.links');
 		}
 		$aArray[] = LinkUtil::link(array('links'), 'AdminManager', array('link_category_id' => $this->getId()));
 		return $aArray;

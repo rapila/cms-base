@@ -58,7 +58,7 @@ class LoginFrontendModule extends DynamicFrontendModule {
 			}
 		}
 
-		$oTemplate->replaceIdentifier('login_title', StringPeer::getString($sAction == 'password_forgotten' ? 'wns.login.password_reset' : 'wns.login'));
+		$oTemplate->replaceIdentifier('login_title', TranslationPeer::getString($sAction == 'password_forgotten' ? 'wns.login.password_reset' : 'wns.login'));
 		$sOrigin = isset($_REQUEST['origin']) ? $_REQUEST['origin'] : LinkUtil::linkToSelf();
 		$oTemplate->replaceIdentifier('origin', $sOrigin);
 

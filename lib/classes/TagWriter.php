@@ -86,7 +86,7 @@ class TagWriter {
 
 	public static function getEmailLinkWriter($sLinkUrl, $sText=null, $sQuery='') {
 		if($sText === null) {
-			$sText = StringPeer::getString("wns.email");
+			$sText = TranslationPeer::getString("wns.email");
 		} else if(Settings::getSetting("frontend", "protect_email_addresses", false)) {
 			$sText = str_replace("@", " [at] ", $sText);
 		}

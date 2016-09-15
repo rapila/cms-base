@@ -106,7 +106,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		}
 		$aResult[$i+1]['value'] = "";
 		$aResult[$i+1]['is_default'] = true;
-		$aResult[$i+1]['name'] = StringPeer::getString('wns.default');
+		$aResult[$i+1]['name'] = TranslationPeer::getString('wns.default');
 
 		krsort($aResult);
 		return $aResult;
@@ -122,7 +122,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		$aResult = array();
 		foreach(Module::listModulesByType(PageTypeModule::getType()) as $sKey => $aValues) {
 			$aResult[$sKey]['value'] = $sKey;
-			$aResult[$sKey]['name'] = StringPeer::getString('page_type.'.$aValues['name'], null, StringUtil::makeReadableName($aValues['name']));
+			$aResult[$sKey]['name'] = TranslationPeer::getString('page_type.'.$aValues['name'], null, StringUtil::makeReadableName($aValues['name']));
 		}
 		return $aResult;
 	}
@@ -157,7 +157,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		$aResult['page_identifier'] = array('value' => $oPage->getIdentifier(), 'defaultValue' => null, 'type' => null);
 
 		foreach($aResult as $sName => &$aValues) {
-			$aValues['display_name'] = StringPeer::getString("page_property.$sName", null, StringUtil::makeReadableName($sName));
+			$aValues['display_name'] = TranslationPeer::getString("page_property.$sName", null, StringUtil::makeReadableName($sName));
 		}
 
 		return $aResult;

@@ -18,8 +18,8 @@ class LanguageDetailWidgetModule extends PersistentWidgetModule {
 		$sLanguageKey = LanguagePeer::STATIC_STRING_NAMESPACE.'.'.$this->sLanguageId;
 
     // check existence of translation string in its own language
-		if(StringPeer::getString($sLanguageKey, $this->sLanguageId, '') === '') {
-			$sMessage = StringPeer::getString('wns.check_static_strings', AdminManager::getContentLanguage(), 'Please check strings', $aParameters= array('string_key' => $sLanguageKey));
+		if(TranslationPeer::getString($sLanguageKey, $this->sLanguageId, '') === '') {
+			$sMessage = TranslationPeer::getString('wns.check_static_strings', AdminManager::getContentLanguage(), 'Please check strings', $aParameters= array('string_key' => $sLanguageKey));
 			$aResult['LanguageStringMissing'] = $sMessage;
 		}
 		return $aResult;

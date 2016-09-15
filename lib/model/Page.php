@@ -52,7 +52,7 @@ class Page extends BasePage {
 		if($sLocalDescription = $this->getActivePageString($sLanguageId)->getMetaDescription()) {
 			return $sLocalDescription;
 		}
-		return StringPeer::getString('meta.description', $sLanguageId, '');
+		return TranslationPeer::getString('meta.description', $sLanguageId, '');
 	}
 
 	public function getConsolidatedKeywords($sLanguageId = null, $bReturnArray = false) {
@@ -61,7 +61,7 @@ class Page extends BasePage {
 		}
 
 		$aKeywords = array();
-		$aKeywords[] = StringPeer::getString('meta.keywords', null, '');
+		$aKeywords[] = TranslationPeer::getString('meta.keywords', null, '');
 		$aTags = TagPeer::tagInstancesForObject($this);
 		foreach($aTags as $iKey => $oTag) {
 			$aTags[$iKey] = $oTag->getTag()->getName();

@@ -41,7 +41,7 @@ class LanguageInputWidgetModule extends PersistentWidgetModule {
 	
 	const STATIC_STRING_NAMESPACE = 'language';
 	public static function getLanguageName($sOfLanguageId, $sInLanguageId = null) {
-		return StringPeer::getString(self::STATIC_STRING_NAMESPACE.".".$sOfLanguageId, $sInLanguageId, $sOfLanguageId);
+		return TranslationPeer::getString(self::STATIC_STRING_NAMESPACE.".".$sOfLanguageId, $sInLanguageId, $sOfLanguageId);
 	}
 	
 	public function setSessionLanguage($sLanguage) {

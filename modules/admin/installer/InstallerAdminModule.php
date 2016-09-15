@@ -45,7 +45,7 @@ class InstallerAdminModule extends AdminModule {
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_DATA;
 				break;
 			case 'title':
-				$aResult['heading'] = StringPeer::getString('wns.backup.sidebar_heading');
+				$aResult['heading'] = TranslationPeer::getString('wns.backup.sidebar_heading');
 				break;
 		}
 		return $aResult;
@@ -55,7 +55,7 @@ class InstallerAdminModule extends AdminModule {
 		$aResult = array();
 		$aInstaller = InstallUtil::loadYamlFile(BASE_DIR.'/'.DIRNAME_MODULES.'/admin/installer/installer_options.yml');
 		foreach($aInstaller['options'] as $sSectionName => $aOptions) {
-			$aResult[] = array('action' => $sSectionName, 'title' => StringPeer::getString('wns.backup.'.$sSectionName, null, StringUtil::makeReadableName($sSectionName)));
+			$aResult[] = array('action' => $sSectionName, 'title' => TranslationPeer::getString('wns.backup.'.$sSectionName, null, StringUtil::makeReadableName($sSectionName)));
 		}
 		if($iRowCount === null) {
 			$iRowCount = count($aResult);

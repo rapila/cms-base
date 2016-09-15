@@ -67,7 +67,7 @@ class DocumentationWidgetModule extends PersistentWidgetModule {
 
 		if(count($aEmptyDocumentations) > 0) {
 			$oOthers = new stdClass();
-			$oOthers->title = StringPeer::getString('wns.others', $sPreferredLanguageId, 'Weiteres');
+			$oOthers->title = TranslationPeer::getString('wns.others', $sPreferredLanguageId, 'Weiteres');
 			$oOthers->url = null;
 			$oOthers->parts = $aEmptyDocumentations;
 			$aDocumentations[] = $oOthers;

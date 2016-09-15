@@ -103,7 +103,7 @@ class ListWidgetModule extends PersistentWidgetModule {
 				$aMetadata['display_heading'] = self::displayTypeVisible($aMetadata['display_type']);
 			}
 			if(!isset($aMetadata['heading']) && $aMetadata['display_heading']) {
-				$aMetadata['heading'] = StringPeer::getString("$this->sStringPrefix.$sColumnIdentifier");
+				$aMetadata['heading'] = TranslationPeer::getString("$this->sStringPrefix.$sColumnIdentifier");
 			}
 			if(!isset($aMetadata['field_name'])) {
 				$aMetadata['field_name'] = $sColumnIdentifier;

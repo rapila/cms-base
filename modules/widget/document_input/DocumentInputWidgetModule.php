@@ -12,7 +12,7 @@ class DocumentInputWidgetModule extends PersistentWidgetModule {
 			}
 		}
 		if(count($aCustomFiles) > 0) {
-			$sCustomFiles = StringPeer::getString('wns.documents.custom_files');
+			$sCustomFiles = TranslationPeer::getString('wns.documents.custom_files');
 			$aResult[$sCustomFiles] = array_flip($aCustomFiles);
 		}
 		// find files in database ordered by category
@@ -22,7 +22,7 @@ class DocumentInputWidgetModule extends PersistentWidgetModule {
 				$aResult[$oCategory->getName()][$aDocument['Id']] = $aDocument['Name'];
 			}
 		}
-		$sWithoutCategory = StringPeer::getString('wns.documents.select_without_title');
+		$sWithoutCategory = TranslationPeer::getString('wns.documents.select_without_title');
 		foreach(self::getDocumentsWithoutCategoryId() as $iId => $sName) {
 			$aResult[$sWithoutCategory][$iId] = $sName;
 		}

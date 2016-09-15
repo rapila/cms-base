@@ -39,7 +39,7 @@ class UserPeer extends BaseUserPeer {
 				default:	$sCheckMethod = 'hasBackendUsers';
 			}
 			if(self::$sCheckMethod()) {
-				$aUserOptions[$iKey] = StringPeer::getString('user.'.$iValue);
+				$aUserOptions[$iKey] = TranslationPeer::getString('user.'.$iValue);
 			}
 		}
 		return $aUserOptions;

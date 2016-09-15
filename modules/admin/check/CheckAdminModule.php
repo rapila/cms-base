@@ -52,7 +52,7 @@ class CheckAdminModule extends AdminModule {
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_DATA;
 				break;
 			case 'title':
-				$aResult['heading'] = StringPeer::getString('wns.check.sidebar_heading');
+				$aResult['heading'] = TranslationPeer::getString('wns.check.sidebar_heading');
 				break;
 		}
 		return $aResult;
@@ -62,7 +62,7 @@ class CheckAdminModule extends AdminModule {
 		$aResult = array();
 		$aCheckOptions = array("pages", "strings", "static_strings", "config", "tags", "content");
 		foreach($aCheckOptions as $sAction) {
-			$aResult[] = array('action' => $sAction, 'title' => StringPeer::getString('wns.check.'.$sAction));
+			$aResult[] = array('action' => $sAction, 'title' => TranslationPeer::getString('wns.check.'.$sAction));
 		}
 		if($iRowCount === null) {
 			$iRowCount = count($aResult);

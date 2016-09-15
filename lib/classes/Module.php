@@ -61,7 +61,7 @@ abstract class Module {
 	}
 
 	public static function getDisplayNameByTypeAndName($sType, $sName, $sLanguageId = null) {
-		$sDisplayName = StringPeer::getString("module.$sType.$sName", $sLanguageId, "");
+		$sDisplayName = TranslationPeer::getString("module.$sType.$sName", $sLanguageId, "");
 		if($sDisplayName === "") {
 			$aModuleInfo = self::getModuleInfoByTypeAndName($sType, $sName);
 			if(isset($aModuleInfo['name'])) {

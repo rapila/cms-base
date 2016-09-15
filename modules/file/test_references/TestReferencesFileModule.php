@@ -8,7 +8,7 @@ class TestReferencesFileModule extends FileModule {
 
 	public function __construct($aRequestPath) {
 		if(!Session::user() || !Session::user()->getIsAdmin()) {
-			die(StringPeer::getString('wns.page.not_found'));
+			die(TranslationPeer::getString('wns.page.not_found'));
 		}
 		parent::__construct($aRequestPath);
 	}
@@ -20,25 +20,25 @@ class TestReferencesFileModule extends FileModule {
 
 		if(count(self::$REFERENCES_WITHOUT_FROM) === 0 && count(self::$REFERENCES_WITHOUT_TO) === 0) {
 			if(!$bCleanup) {
-				print StringPeer::getString('test_references.references_are_ok', null, null, array('count' => count($aReferences)));
+				print TranslationPeer::getString('test_references.references_are_ok', null, null, array('count' => count($aReferences)));
 			} else {
-				print StringPeer::getString('test_references.wrong_references_removed');
-				print TagWriter::quickTag('p', array(), TagWriter::quickTag('a', array('href' => LinkUtil::link(array('test_references'), 'FileManager')), StringPeer::getString('test_references.test_again')));
+				print TranslationPeer::getString('test_references.wrong_references_removed');
+				print TagWriter::quickTag('p', array(), TagWriter::quickTag('a', array('href' => LinkUtil::link(array('test_references'), 'FileManager')), TranslationPeer::getString('test_references.test_again')));
 			}
 		} else {
 			if(count(self::$REFERENCES_WITHOUT_FROM) > 0) {
-				print TagWriter::quickTag('p', array(), count(self::$REFERENCES_WITHOUT_FROM). StringPeer::getString('test_references.loose_from_references_found'));
+				print TagWriter::quickTag('p', array(), count(self::$REFERENCES_WITHOUT_FROM). TranslationPeer::getString('test_references.loose_from_references_found'));
 				foreach(self::$REFERENCES_WITHOUT_FROM as $oReference) {
 					print TagWriter::quickTag('p', array(), $oReference->getFromModelName().'/'.$oReference->getFromId());
 				}
 			}
 			if(count(self::$REFERENCES_WITHOUT_TO) > 0) {
-				print TagWriter::quickTag('p', array(), count(self::$REFERENCES_WITHOUT_TO). StringPeer::getString('test_references.loose_to_references_found'));
+				print TagWriter::quickTag('p', array(), count(self::$REFERENCES_WITHOUT_TO). TranslationPeer::getString('test_references.loose_to_references_found'));
 				foreach(self::$REFERENCES_WITHOUT_TO as $oReference) {
 					print TagWriter::quickTag('p', array(), $oReference->getToModelName().'/'.$oReference->getToId());
 				}
 			}
-			print TagWriter::quickTag('p', array(), TagWriter::quickTag('a', array('href' => LinkUtil::link(array('test_references', self::DO_CLEANUP), 'FileManager')), StringPeer::getString('test_references.remove_loose_ends')));
+			print TagWriter::quickTag('p', array(), TagWriter::quickTag('a', array('href' => LinkUtil::link(array('test_references', self::DO_CLEANUP), 'FileManager')), TranslationPeer::getString('test_references.remove_loose_ends')));
 		}
 	}
 

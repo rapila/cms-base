@@ -22,7 +22,7 @@ class SettingsAdminModule extends AdminModule {
 			$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_DATA;
 		} else {
 			$oUser = Session::getSession()->getUser();
-			$aResult['heading'] = StringPeer::getString('wns.settings.sidebar_heading', null, null, array('user_name' => $oUser->getFullName()));
+			$aResult['heading'] = TranslationPeer::getString('wns.settings.sidebar_heading', null, null, array('user_name' => $oUser->getFullName()));
 		}
 		return $aResult;
 	}
@@ -31,7 +31,7 @@ class SettingsAdminModule extends AdminModule {
 		$aResult = array();
 		$aSettingOptions = array('admin_menu', 'rich_text', 'dashboard');
 		foreach($aSettingOptions as $sAction) {
-			$aResult[] = array('key' => $sAction, 'title' => StringPeer::getString('wns.settings.type.'.$sAction));
+			$aResult[] = array('key' => $sAction, 'title' => TranslationPeer::getString('wns.settings.type.'.$sAction));
 		}
 		if($iRowCount === null) {
 			$iRowCount = count($aResult);

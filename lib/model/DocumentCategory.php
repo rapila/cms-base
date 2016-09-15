@@ -33,11 +33,11 @@ class DocumentCategory extends BaseDocumentCategory {
 	public function getLinkToDocumentData() {
 		$aArray = array();
 		if($this->getDocumentCount() == 0) {
-			$aArray[] = StringPeer::getString('wns.none');
+			$aArray[] = TranslationPeer::getString('wns.none');
 		} else if($this->getDocumentCount() === 1) {
-			$aArray[] = $this->getDocumentCount().' '.StringPeer::getString('wns.document');
+			$aArray[] = $this->getDocumentCount().' '.TranslationPeer::getString('wns.document');
 		} else {
-			$aArray[] = $this->getDocumentCount().' '.StringPeer::getString('wns.documents');
+			$aArray[] = $this->getDocumentCount().' '.TranslationPeer::getString('wns.documents');
 		}
 		$aArray[] = LinkUtil::link(array('documents'), 'AdminManager', array('document_category_id' => $this->getId()));
 		return $aArray;

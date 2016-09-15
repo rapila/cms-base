@@ -82,29 +82,29 @@ class LanguageListWidgetModule extends SpecializedListWidgetModule {
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_DATA;
 				break;
 			case 'language_id':
-				$aResult['heading'] = StringPeer::getString('wns.language_id');
+				$aResult['heading'] = TranslationPeer::getString('wns.language_id');
 				$aResult['field_name'] = 'id';
 				$aResult['is_sortable'] = true;
 				break;
 			case 'name':
-				$aResult['heading'] = StringPeer::getString('wns.name');
+				$aResult['heading'] = TranslationPeer::getString('wns.name');
 				$aResult['field_name'] = 'language_name';
 				break;
 			case 'path_prefix':
-				$aResult['heading'] = StringPeer::getString('wns.language.path_prefix');
+				$aResult['heading'] = TranslationPeer::getString('wns.language.path_prefix');
 				break;
 			case 'is_default':
-				$aResult['heading'] = StringPeer::getString('wns.language.is_default');
+				$aResult['heading'] = TranslationPeer::getString('wns.language.is_default');
 				break;
 			case 'is_default_edit':
-				$aResult['heading'] = StringPeer::getString('wns.language.is_default_edit');
+				$aResult['heading'] = TranslationPeer::getString('wns.language.is_default_edit');
 				break;
 			case 'sort':
-				$aResult['heading'] = StringPeer::getString('wns.sort');
+				$aResult['heading'] = TranslationPeer::getString('wns.sort');
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_REORDERABLE;
 				break;
 			case 'is_active':
-				$aResult['heading'] = StringPeer::getString('wns.is_active');
+				$aResult['heading'] = TranslationPeer::getString('wns.is_active');
 				$aResult['is_sortable'] = true;
 				break;
 			case 'delete':

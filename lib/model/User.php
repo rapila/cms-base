@@ -349,6 +349,6 @@ class User extends BaseUser {
 	}
 
 	public function getLanguageName() {
-		return StringPeer::getString('language.'.$this->getLanguageId(), null, $this->getLanguageId());
+		return TranslationPeer::getString('language.'.$this->getLanguageId(), null, $this->getLanguageId());
 	}
 }

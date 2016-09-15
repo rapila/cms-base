@@ -22,6 +22,6 @@ class EmptyFrontendModule extends FrontendModule {
 	}
 	
 	public function renderBackend() {
-		return StringPeer::getString('wns.empty.confirm');
+		return TranslationPeer::getString('wns.empty.confirm');
 	}
 }

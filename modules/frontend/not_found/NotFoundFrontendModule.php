@@ -12,7 +12,7 @@ class NotFoundFrontendModule extends DynamicFrontendModule {
 	}
 
 	public function renderBackend() {
-		return StringPeer::getString('frontend_module.save_to_activate');
+		return TranslationPeer::getString('frontend_module.save_to_activate');
 	}
 
 	public function getSaveData($aData) {

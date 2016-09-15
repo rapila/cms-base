@@ -17,11 +17,11 @@ class LocalizedException extends Exception {
 		}
 		$aMessageParameters['exception_type'] = $sExceptionType;
 		$this->aMessageParameters = $aMessageParameters;
-		parent::__construct(StringPeer::getString($sMessageKey, $sDefaultLanguageId, null, $aMessageParameters), $iCode);
+		parent::__construct(TranslationPeer::getString($sMessageKey, $sDefaultLanguageId, null, $aMessageParameters), $iCode);
 	}
 
 	public function getLocalizedMessage($sLanguageId = null) {
-		return StringPeer::getString($this->sMessageKey, $sLanguageId, null, $this->aMessageParameters);
+		return TranslationPeer::getString($this->sMessageKey, $sLanguageId, null, $this->aMessageParameters);
 	}
 
 	public function getMessageParameters() {

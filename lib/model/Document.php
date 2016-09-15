@@ -265,7 +265,7 @@ class Document extends BaseDocument {
 			'year' => $iYear,
 			'license' => $this->getLicense()
 		);
-		return StringPeer::getString("wns.license.disclaimer.$sDisclaimer", null, null, $aOptions);
+		return TranslationPeer::getString("wns.license.disclaimer.$sDisclaimer", null, null, $aOptions);
 	}
 
 	public function getDocumentCategory(PropelPDO $con = null, $doQuery = true) {

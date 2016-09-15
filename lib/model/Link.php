@@ -75,7 +75,7 @@ class Link extends BaseLink {
 
 	public function getLanguageName() {
 	  if($this->getLanguageId()) {
-	    return StringPeer::getString('language.'.$this->getLanguageId());
+	    return TranslationPeer::getString('language.'.$this->getLanguageId());
 	  }
 	}
 

@@ -12,9 +12,9 @@ class StringDetailWidgetModule extends PersistentWidgetModule {
 	
 	public function stringData() {
 		$oCriteria = new Criteria();
-		$oCriteria->addGroupByColumn(StringPeer::STRING_KEY);
-		$oCriteria->add(StringPeer::STRING_KEY, $this->sStringId);
-		$oString = StringPeer::doSelectOne($oCriteria);
+		$oCriteria->addGroupByColumn(TranslationPeer::STRING_KEY);
+		$oCriteria->add(TranslationPeer::STRING_KEY, $this->sStringId);
+		$oString = TranslationPeer::doSelectOne($oCriteria);
 		if($oString === null) {
 			$oString = new String();
 		}
@@ -29,7 +29,7 @@ class StringDetailWidgetModule extends PersistentWidgetModule {
 			return null;
 		}
 		$aResult = array();
-		foreach(StringPeer::getStringsByStringKey($this->sStringId) as $oString) {
+		foreach(TranslationPeer::getStringsByStringKey($this->sStringId) as $oString) {
 			$aResult[] = $oString->getLanguageId();
 		}
 		return $aResult;
@@ -66,8 +66,8 @@ class StringDetailWidgetModule extends PersistentWidgetModule {
 		
 		foreach(LanguageQuery::create()->orderById()->find() as $oLanguage) {
 			$oUpdateCriteria = new Criteria();
-			$oUpdateCriteria->add(StringPeer::LANGUAGE_ID, $oLanguage->getId());
-			$oUpdateCriteria->add(StringPeer::STRING_KEY, $this->sStringId);
+			$oUpdateCriteria->add(TranslationPeer::LANGUAGE_ID, $oLanguage->getId());
+			$oUpdateCriteria->add(TranslationPeer::STRING_KEY, $this->sStringId);
 			
 			if(isset($aStringData['text_'.$oLanguage->getId()])) {
 				$sText = trim($aStringData['text_'.$oLanguage->getId()]);
@@ -102,18 +102,18 @@ class StringDetailWidgetModule extends PersistentWidgetModule {
 			}
 		}
 		// check sidebar reload criteria
-		$sNameSpaceOld = StringPeer::getNameSpaceFromStringKey($this->sStringId);
-		$sNameSpaceNew = StringPeer::getNameSpaceFromStringKey($aStringData['string_key']);
+		$sNameSpaceOld = TranslationPeer::getNameSpaceFromStringKey($this->sStringId);
+		$sNameSpaceNew = TranslationPeer::getNameSpaceFromStringKey($aStringData['string_key']);
 		
 		// if both are the same the sidebar is not effected
 		$bSidebarHasChanged = false;
 		if($sNameSpaceOld !== $sNameSpaceNew) {
 			// if there was an old name space then we have to check whether it was the last string with this namespace
-			if($sNameSpaceOld !== null && !StringPeer::nameSpaceExists($sNameSpaceOld)) {
+			if($sNameSpaceOld !== null && !TranslationPeer::nameSpaceExists($sNameSpaceOld)) {
 				$bSidebarHasChanged = true;
 			}
 			// if the new exits only once it has been created and the sidebar needs to be relaoded
-			if($sNameSpaceNew !== null && StringPeer::countNameSpaceByName($sNameSpaceNew) === 1) {
+			if($sNameSpaceNew !== null && TranslationPeer::countNameSpaceByName($sNameSpaceNew) === 1) {
 				$bSidebarHasChanged = true;
 			}
 		}

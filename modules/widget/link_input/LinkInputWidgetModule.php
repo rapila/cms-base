@@ -11,7 +11,7 @@ class LinkInputWidgetModule extends WidgetModule {
 				$aResult[$oLinkCategory->getName()][$oLink->getId()] = $oLink->getName();
 			}
 		}
-		$sWithoutCategory = StringPeer::getString('wns.links.select_without_title');
+		$sWithoutCategory = TranslationPeer::getString('wns.links.select_without_title');
 		foreach(LinkQuery::create()->filterByLinkCategoryId(null, Criteria::ISNULL)->orderByName()->find() as $oLink) {
 			$aResult[$sWithoutCategory][$oLink->getId()] = $oLink->getName();
 		}		

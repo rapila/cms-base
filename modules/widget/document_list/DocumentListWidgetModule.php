@@ -39,23 +39,23 @@ class DocumentListWidgetModule extends SpecializedListWidgetModule {
 		$aResult = array('is_sortable' => true);
 		switch($sColumnIdentifier) {
 			case 'name_truncated':
-				$aResult['heading'] = StringPeer::getString('wns.name');
+				$aResult['heading'] = TranslationPeer::getString('wns.name');
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_TEXT;
 				break;
 			case 'has_description':
-				$aResult['heading'] = StringPeer::getString('wns.document.has_description');
+				$aResult['heading'] = TranslationPeer::getString('wns.document.has_description');
 				$aResult['is_sortable'] = false;
 				break;
 			case 'sort':
-				$aResult['heading'] = StringPeer::getString('wns.sort');
+				$aResult['heading'] = TranslationPeer::getString('wns.sort');
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_REORDERABLE;
 				break;
 			case 'file_size':
-				$aResult['heading'] = StringPeer::getString('wns.document.file.size');
+				$aResult['heading'] = TranslationPeer::getString('wns.document.file.size');
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_NUMERIC;
 				break;
 			case 'extension':
-				$aResult['heading'] = StringPeer::getString('wns.document.file.info');
+				$aResult['heading'] = TranslationPeer::getString('wns.document.file.info');
 				break;
 			case 'document_kind':
 				$aResult['heading'] = '';
@@ -75,11 +75,11 @@ class DocumentListWidgetModule extends SpecializedListWidgetModule {
 				$aResult['is_sortable'] = false;
 				break;
 			case 'is_protected':
-				$aResult['heading'] = StringPeer::getString('wns.document.is_protected');
+				$aResult['heading'] = TranslationPeer::getString('wns.document.is_protected');
 				$aResult['has_function'] = true;
 				break;
 			case 'updated_at_formatted':
-				$aResult['heading'] = StringPeer::getString('wns.updated_at');
+				$aResult['heading'] = TranslationPeer::getString('wns.updated_at');
 				break;
 			case 'delete':
 				$aResult['heading'] = ' ';
@@ -200,7 +200,7 @@ class DocumentListWidgetModule extends SpecializedListWidgetModule {
 	}
 
 	public function getLanguageName() {
-		return StringPeer::getString('language.'.$this->oDelegateProxy->getLanguageId(), null, $this->oDelegateProxy->getLanguageId());
+		return TranslationPeer::getString('language.'.$this->oDelegateProxy->getLanguageId(), null, $this->oDelegateProxy->getLanguageId());
 	}
 
 	public function getDocumentCategoryName() {
@@ -209,7 +209,7 @@ class DocumentListWidgetModule extends SpecializedListWidgetModule {
 			return $oDocumentCategory->getName();
 		}
 		if($this->oDelegateProxy->getDocumentCategoryId() === CriteriaListWidgetDelegate::SELECT_WITHOUT) {
-			return StringPeer::getString('wns.documents.without_category');
+			return TranslationPeer::getString('wns.documents.without_category');
 		}
 		return $this->oDelegateProxy->getDocumentCategoryId();
 	}

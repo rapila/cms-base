@@ -26,13 +26,13 @@ class StringListWidgetModule extends SpecializedListWidgetModule {
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_DATA;
 				break;
 			case 'string_key':
-				$aResult['heading'] = StringPeer::getString('wns.string.string_key');
+				$aResult['heading'] = TranslationPeer::getString('wns.string.string_key');
 				break;
 			case 'text_truncated_current':
-				$aResult['heading'] = StringPeer::getString('wns.string.string_text.heading', null, 'Text', array('language_id' => AdminManager::getContentLanguage()));
+				$aResult['heading'] = TranslationPeer::getString('wns.string.string_text.heading', null, 'Text', array('language_id' => AdminManager::getContentLanguage()));
 				break;
 			case 'languages_available':
-				$aResult['heading'] = StringPeer::getString('wns.languages_filled');
+				$aResult['heading'] = TranslationPeer::getString('wns.languages_filled');
 				$aResult['is_sortable'] = false;
 				break;
 			case 'delete':
@@ -47,19 +47,19 @@ class StringListWidgetModule extends SpecializedListWidgetModule {
 
 	public function deleteRow($aRowData, $oCriteria) {
 		$bResult = false;
-		$sNameSpace = StringPeer::getNameSpaceFromStringKey($aRowData['id']);
-		if(StringPeer::doDelete($oCriteria) && $sNameSpace !== null) {
-			$bResult = !StringPeer::nameSpaceExists($sNameSpace);
+		$sNameSpace = TranslationPeer::getNameSpaceFromStringKey($aRowData['id']);
+		if(TranslationPeer::doDelete($oCriteria) && $sNameSpace !== null) {
+			$bResult = !TranslationPeer::nameSpaceExists($sNameSpace);
 		}
 		return array(StringDetailWidgetModule::SIDEBAR_CHANGED => $bResult);
 	}
 
 	public function getDatabaseColumnForColumn($sColumnIdentifier) {
 		if($sColumnIdentifier === 'name_space') {
-			return StringPeer::STRING_KEY;
+			return TranslationPeer::STRING_KEY;
 		}
 		if($sColumnIdentifier === 'text_truncated_current') {
-			return StringPeer::TEXT;
+			return TranslationPeer::TEXT;
 		}
 		return null;
 	}

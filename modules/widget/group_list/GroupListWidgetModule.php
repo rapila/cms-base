@@ -19,15 +19,15 @@ class GroupListWidgetModule extends SpecializedListWidgetModule {
 		$aResult = array();
 		switch($sColumnIdentifier) {
 			case 'name':
-				$aResult['heading'] = StringPeer::getString('wns.group.name');
+				$aResult['heading'] = TranslationPeer::getString('wns.group.name');
 				$aResult['is_sortable'] = true;
 				break;
 			case 'user_link_data':
-				$aResult['heading'] = StringPeer::getString('wns.group.user_count');
+				$aResult['heading'] = TranslationPeer::getString('wns.group.user_count');
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_URL;
 				break;
 			case 'roles_info':
-				$aResult['heading'] = StringPeer::getString('wns.group.roles');
+				$aResult['heading'] = TranslationPeer::getString('wns.group.roles');
 				break;
 			case 'delete':
 				$aResult['heading'] = ' ';

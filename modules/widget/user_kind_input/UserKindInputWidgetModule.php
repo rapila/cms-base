@@ -12,11 +12,11 @@ class UserKindInputWidgetModule extends PersistentWidgetModule {
 	}
 		
 	public static function allUserKinds() {
-		return array(CriteriaListWidgetDelegate::SELECT_ALL => StringPeer::getString('wns.user_kind.all'),
-		             User::IS_ADMIN_USER => StringPeer::getString('wns.user.admin'),
-		             User::IS_BACKEND_LOGIN_ENABLED => StringPeer::getString('wns.user.backend'), 
-		             User::IS_ADMIN_LOGIN_ENABLED => StringPeer::getString('wns.user.is_admin_login_enabled'), 
-		             User::IS_FRONTEND_USER => StringPeer::getString('wns.user.frontend')
+		return array(CriteriaListWidgetDelegate::SELECT_ALL => TranslationPeer::getString('wns.user_kind.all'),
+		             User::IS_ADMIN_USER => TranslationPeer::getString('wns.user.admin'),
+		             User::IS_BACKEND_LOGIN_ENABLED => TranslationPeer::getString('wns.user.backend'), 
+		             User::IS_ADMIN_LOGIN_ENABLED => TranslationPeer::getString('wns.user.is_admin_login_enabled'), 
+		             User::IS_FRONTEND_USER => TranslationPeer::getString('wns.user.frontend')
 		);
 	}
 	

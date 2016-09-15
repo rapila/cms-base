@@ -384,14 +384,14 @@ class DefaultPageTypeModule extends PageTypeModule {
 			}
 			$sInheritedFrom = $oInheritedFrom ? $oInheritedFrom->getName() : '';
 
-			$aTagParams = array('class' => 'template-container template-container-'.$sContainerName, 'data-container-name' => $sContainerName, 'data-container-string' => StringPeer::getString('container_name.'.$sContainerName, null, $sContainerName), 'data-inherited-from' => $sInheritedFrom);
+			$aTagParams = array('class' => 'template-container template-container-'.$sContainerName, 'data-container-name' => $sContainerName, 'data-container-string' => TranslationPeer::getString('container_name.'.$sContainerName, null, $sContainerName), 'data-inherited-from' => $sInheritedFrom);
 			$oContainerTag = TagWriter::quickTag('ol', $aTagParams);
 
 			$mInnerTemplate = new Template(TemplateIdentifier::constructIdentifier('content'), null, true);
 
 			//Replace container info
 			//…name
-			$mInnerTemplate->replaceIdentifierMultiple('content', TagWriter::quickTag('div', array('class' => 'template-container-description'), StringPeer::getString('wns.page.template_container', null, null, array('container' => StringPeer::getString('template_container.'.$sContainerName, null, $sContainerName)), true)));
+			$mInnerTemplate->replaceIdentifierMultiple('content', TagWriter::quickTag('div', array('class' => 'template-container-description'), TranslationPeer::getString('wns.page.template_container', null, null, array('container' => TranslationPeer::getString('template_container.'.$sContainerName, null, $sContainerName)), true)));
 			//…additional info
 			$mInnerTemplate->replaceIdentifierMultiple('content', TagWriter::quickTag('div', array('class' => 'template-container-info')));
 			//…tag

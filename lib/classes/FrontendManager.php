@@ -206,7 +206,7 @@ class FrontendManager extends Manager {
 				$oPage = PageQuery::create()->findOneByName($sErrorPageName);
 			}
 			if($oPage === null) {
-				die(StringPeer::getString('wns.page.not_found'));
+				die(TranslationPeer::getString('wns.page.not_found'));
 			}
 			self::$CURRENT_PAGE = $oPage;
 			self::$CURRENT_NAVIGATION_ITEM = PageNavigationItem::navigationItemForPage($oPage);

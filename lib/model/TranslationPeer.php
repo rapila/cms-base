@@ -18,7 +18,7 @@ class TranslationPeer extends BaseTranslationPeer {
 
 	/**
 	 * Loads all the static strings from either the cache or the ini files. Note that ini files in modules are not verified for outdatedness, so if they were updated, just clear all the caches or hard reload a page
-	 * This method should not be called directly from outsite StringPeer except for testing and debugging purposes
+	 * This method should not be called directly from outsite TranslationPeer except for testing and debugging purposes
 	 */
 	public static function getStaticStrings($sLanguageId) {
 		if(!isset(self::$STATIC_STRINGS[$sLanguageId])) {

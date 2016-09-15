@@ -74,10 +74,10 @@ class CriteriaListTagListWidgetDelegate {
 		if($this->oTagList->getIncludeAllAndWithout() && TagQuery::create()->filterByTagged($this->oTagList->getTaggedModelName())->count() > 0) {
 			return array(
 				array('name' => CriteriaListWidgetDelegate::SELECT_ALL,
-							'display_name' => StringPeer::getString('wns.tags.select_all_title'),
+							'display_name' => TranslationPeer::getString('wns.tags.select_all_title'),
 							'magic_column' => 'all'),
 				array('name' => CriteriaListWidgetDelegate::SELECT_WITHOUT,
-							'display_name' => StringPeer::getString('wns.tags.select_without_title'),
+							'display_name' => TranslationPeer::getString('wns.tags.select_without_title'),
 							'magic_column' => 'without'));
 		}
 		return array();

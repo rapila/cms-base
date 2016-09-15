@@ -32,7 +32,7 @@ class StringsAdminModule extends AdminModule implements ListWidgetDelegate {
 		$aResult = array();
 		switch($sColumnIdentifier) {
 			case 'title':
-				$aResult['heading'] = StringPeer::getString('wns.string.name_space');
+				$aResult['heading'] = TranslationPeer::getString('wns.string.name_space');
 				break;
 			case 'name_space':
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_DATA;
@@ -46,16 +46,16 @@ class StringsAdminModule extends AdminModule implements ListWidgetDelegate {
 	}
 
 	public static function getCustomListElements() {
-		if(count(StringPeer::getNamespaces()) > 0) {
+		if(count(TranslationPeer::getNamespaces()) > 0) {
 		 	$aElements = array(
 				array('name_space' => CriteriaListWidgetDelegate::SELECT_ALL,
-							'title' => StringPeer::getString('wns.strings.select_all_title'),
+							'title' => TranslationPeer::getString('wns.strings.select_all_title'),
 							'magic_column' => 'all')
 			);
 			if(StringQuery::create()->filterByKeysWithoutNamespace()->count() > 0) {
 			 	$aElementsWithout = array(
 					array('name_space' => CriteriaListWidgetDelegate::SELECT_WITHOUT,
-								'title' => StringPeer::getString('wns.strings.select_without_title'),
+								'title' => TranslationPeer::getString('wns.strings.select_without_title'),
 								'magic_column' => 'without')
 				);
 				$aElements = array_merge($aElements, $aElementsWithout);
@@ -67,7 +67,7 @@ class StringsAdminModule extends AdminModule implements ListWidgetDelegate {
 
 	public function getListContents($iRowStart = 0, $iRowCount = null) {
 		$aResult = array();
-		foreach(StringPeer::getNamespaces() as $sNameSpace) {
+		foreach(TranslationPeer::getNamespaces() as $sNameSpace) {
 			$aResult[] = array('title' => $sNameSpace, 'name_space' => "$sNameSpace.");
 		}
 		$aResult = array_merge(self::getCustomListElements(), $aResult);

@@ -25,15 +25,15 @@ class LinkCategoryListWidgetModule extends SpecializedListWidgetModule {
 		$aResult = array();
 		switch($sColumnIdentifier) {
 			case 'name':
-				$aResult['heading'] = StringPeer::getString('wns.name');
+				$aResult['heading'] = TranslationPeer::getString('wns.name');
 				$aResult['is_sortable'] = true;
 				break;
 			case 'link_to_link_data':
-				$aResult['heading'] = StringPeer::getString('wns.links_count');
+				$aResult['heading'] = TranslationPeer::getString('wns.links_count');
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_URL;
 				break;
 			case 'is_externally_managed':
-        $aResult['heading'] = StringPeer::getString('wns.internally_managed_only');
+        $aResult['heading'] = TranslationPeer::getString('wns.internally_managed_only');
 				$aResult['heading_filter'] = array('externally_managed_input', $this->oExternallyManagedInputFilter->getSessionKey());
 				break;
 			case 'delete':

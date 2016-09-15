@@ -22,16 +22,16 @@ class DocumentTypeListWidgetModule extends SpecializedListWidgetModule {
 		$aResult = array('is_sortable' => true);
 		switch($sColumnIdentifier) {
 			case 'extension':
-				$aResult['heading'] = StringPeer::getString('wns.extension');
+				$aResult['heading'] = TranslationPeer::getString('wns.extension');
 				break;
 			case 'document_kind':
-				$aResult['heading'] = StringPeer::getString('wns.document_kind');
+				$aResult['heading'] = TranslationPeer::getString('wns.document_kind');
 				break;
 			case 'mimetype':
-				$aResult['heading'] = StringPeer::getString('wns.mimetype');
+				$aResult['heading'] = TranslationPeer::getString('wns.mimetype');
 				break;
 			case 'document_count':
-				$aResult['heading'] = StringPeer::getString('wns.documents_count');
+				$aResult['heading'] = TranslationPeer::getString('wns.documents_count');
 				$aResult['is_sortable'] = false;
 				break;
 			case 'delete':

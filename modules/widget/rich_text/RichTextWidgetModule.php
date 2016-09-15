@@ -128,7 +128,7 @@ class RichTextWidgetModule extends PersistentWidgetModule {
 		if(isset($this->aModuleSettings['insertable_parts'])) {
 			foreach($this->aModuleSettings['insertable_parts'] as &$aPartSpec) {
 				if(isset($aPartSpec['tooltip_string_key'])) {
-					$aPartSpec['tooltip'] = StringPeer::getString($aPartSpec['tooltip_string_key']);
+					$aPartSpec['tooltip'] = TranslationPeer::getString($aPartSpec['tooltip_string_key']);
 					unset($aPartSpec['tooltip_string_key']);
 				}
 				if(!isset($aPartSpec['template'])) {

@@ -25,13 +25,13 @@ class UserListWidgetModule extends SpecializedListWidgetModule {
 		$aResult = array('is_sortable' => true);
 		switch($sColumnIdentifier) {
 			case 'full_name':
-				$aResult['heading'] = StringPeer::getString('wns.name');
+				$aResult['heading'] = TranslationPeer::getString('wns.name');
 				break;
 			case 'username':
-				$aResult['heading'] = StringPeer::getString('wns.user_name');
+				$aResult['heading'] = TranslationPeer::getString('wns.user_name');
 				break;
 			case 'email':
-				$aResult['heading'] = StringPeer::getString('wns.email');
+				$aResult['heading'] = TranslationPeer::getString('wns.email');
 				break;
 			case 'user_kind':
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_ICON;
@@ -41,10 +41,10 @@ class UserListWidgetModule extends SpecializedListWidgetModule {
 				$aResult['is_sortable'] = false;
 				break;
 			case 'language_name':
-				$aResult['heading'] = StringPeer::getString('wns.language');
+				$aResult['heading'] = TranslationPeer::getString('wns.language');
 				break;
 			case 'updated_at_formatted':
-				$aResult['heading'] = StringPeer::getString('wns.updated_at');
+				$aResult['heading'] = TranslationPeer::getString('wns.updated_at');
 				break;
 			case 'delete':
 				$aResult['is_sortable'] = false;
@@ -86,7 +86,7 @@ class UserListWidgetModule extends SpecializedListWidgetModule {
 			return $oGroup->getName();
 		}
 		if($this->oDelegateProxy->getGroupId() === CriteriaListWidgetDelegate::SELECT_WITHOUT) {
-			return StringPeer::getString('wns.users.without_category');
+			return TranslationPeer::getString('wns.users.without_category');
 		}
 		return $this->oDelegateProxy->getGroupId();
 	}

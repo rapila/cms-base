@@ -25,20 +25,20 @@ class RoleListWidgetModule extends SpecializedListWidgetModule {
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_DATA;
 				break;
 			case 'role_key':
-				$aResult['heading'] = StringPeer::getString('wns.role.role_key');
+				$aResult['heading'] = TranslationPeer::getString('wns.role.role_key');
 				$aResult['is_sortable'] = true;
 				break;
 			case 'description':
-				$aResult['heading'] = StringPeer::getString('wns.role.description');
+				$aResult['heading'] = TranslationPeer::getString('wns.role.description');
 				$aResult['is_sortable'] = true;
 				break;
 			case 'user_id':
-				$aResult['heading'] = StringPeer::getString('wns.role.user_with_role_count');
+				$aResult['heading'] = TranslationPeer::getString('wns.role.user_with_role_count');
 				$aResult['field_name'] = 'user_with_role_count';
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_NUMERIC;
 				break;
 			case 'group_id':
-				$aResult['heading'] = StringPeer::getString('wns.role.group_with_role_count');
+				$aResult['heading'] = TranslationPeer::getString('wns.role.group_with_role_count');
 				$aResult['field_name'] = 'group_with_role_count';
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_NUMERIC;
 				break;

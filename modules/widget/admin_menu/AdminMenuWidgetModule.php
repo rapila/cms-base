@@ -115,7 +115,7 @@ class AdminMenuWidgetModule extends PersistentWidgetModule {
 
 	public function documentationData($sDocumentationName) {
 		$sPart = DocumentationProviderTypeModule::dataForPart($sDocumentationName, Session::language());
-		$sOpenBrowserInfo = '<p>'.StringPeer::getString('documentation.link_click_tip').'</p>';
+		$sOpenBrowserInfo = '<p>'.TranslationPeer::getString('documentation.link_click_tip').'</p>';
 		$sPart['content'] .= $sOpenBrowserInfo;
 		return $sPart;
 	}

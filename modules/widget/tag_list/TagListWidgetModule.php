@@ -25,15 +25,15 @@ class TagListWidgetModule extends SpecializedListWidgetModule {
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_DATA;
 				break;
 			case 'name':
-				$aResult['heading'] = StringPeer::getString('wns.tag.name');
+				$aResult['heading'] = TranslationPeer::getString('wns.tag.name');
 				$aResult['is_sortable'] = true;
 				break;
 			case 'tag_instance_count':
-				$aResult['heading'] = StringPeer::getString('wns.tag.instance_count');
+				$aResult['heading'] = TranslationPeer::getString('wns.tag.instance_count');
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_NUMERIC;
 				break;
 			case 'language_ids_of_strings':
-				$aResult['heading'] = StringPeer::getString('wns.tag.available_strings');
+				$aResult['heading'] = TranslationPeer::getString('wns.tag.available_strings');
 				break;
 			case 'delete':
 				$aResult['heading'] = ' ';

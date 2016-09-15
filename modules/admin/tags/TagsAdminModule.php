@@ -31,7 +31,7 @@ class TagsAdminModule extends AdminModule implements ListWidgetDelegate {
 		$aResult = array();
 		switch($sColumnIdentifier) {
 			case 'title':
-				$aResult['heading'] = StringPeer::getString('wns.tag_instance.model_name');
+				$aResult['heading'] = TranslationPeer::getString('wns.tag_instance.model_name');
 				break;
 			case 'tag_model_name':
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_DATA;
@@ -48,7 +48,7 @@ class TagsAdminModule extends AdminModule implements ListWidgetDelegate {
 		if(TagInstancePeer::doCount(TagInstancePeer::getTaggedModelsCriteria())) {
 		 	return array(
 				array('tag_model_name' => CriteriaListWidgetDelegate::SELECT_ALL,
-							'title' => StringPeer::getString('wns.documents.select_all_title'),
+							'title' => TranslationPeer::getString('wns.documents.select_all_title'),
 							'magic_column' => 'all')
 			);
 		}

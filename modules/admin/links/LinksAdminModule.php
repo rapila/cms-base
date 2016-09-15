@@ -43,7 +43,7 @@ class LinksAdminModule extends AdminModule {
 				$aResult['field_name'] = 'id';
 				break;
 			case 'name':
-				$aResult['heading'] = StringPeer::getString('wns.links.sidebar_heading');
+				$aResult['heading'] = TranslationPeer::getString('wns.links.sidebar_heading');
 				break;
 			case 'magic_column':
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_CLASSNAME;
@@ -57,10 +57,10 @@ class LinksAdminModule extends AdminModule {
 		if($this->getCriteria()->count() > 0) {
 			return array(
 				array('link_category_id' => CriteriaListWidgetDelegate::SELECT_ALL,
-							'name' => StringPeer::getString('wns.sidebar.select_all'),
+							'name' => TranslationPeer::getString('wns.sidebar.select_all'),
 							'magic_column' => 'all'),
 				array('link_category_id' => CriteriaListWidgetDelegate::SELECT_WITHOUT,
-							'name' => StringPeer::getString('wns.links.select_without_title'),
+							'name' => TranslationPeer::getString('wns.links.select_without_title'),
 							'magic_column' => 'without'));
 		}
 		return array();

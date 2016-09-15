@@ -715,7 +715,7 @@ class Template {
 		if($sStringKey === null) {
 			$sStringKey = $sPstringName;
 		}
-		$sString = StringPeer::getString($sStringKey, null, null, $aParameters, true, $this->iDefaultFlags);
+		$sString = TranslationPeer::getString($sStringKey, null, null, $aParameters, true, $this->iDefaultFlags);
 		$this->replaceIdentifier('writeParameterizedString', $sString, $sPstringName);
 	}
 

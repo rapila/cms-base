@@ -87,7 +87,7 @@ class DocumentListFrontendModule extends DynamicFrontendModule {
 			$aResult = array('' => ' ---- ')+$aResult;
 		}
 		if(count($aResult) === 0) {
-			$aResult = array('' => StringPeer::getString('wns.document_list.no_tags_available'));
+			$aResult = array('' => TranslationPeer::getString('wns.document_list.no_tags_available'));
 		}
 		return $aResult;
 	}
@@ -97,15 +97,15 @@ class DocumentListFrontendModule extends DynamicFrontendModule {
 	}
 
 	public static function getSortOptions() {
-		$aResult[self::SORT_BY_NAME] = StringPeer::getString('wns.order.by_name');
-		$aResult[self::SORT_BY_SORT] = StringPeer::getString('wns.order.by_sort');
-		$aResult[self::SORT_BY_CREATEDAT] = StringPeer::getString('wns.order.by_createdat');
+		$aResult[self::SORT_BY_NAME] = TranslationPeer::getString('wns.order.by_name');
+		$aResult[self::SORT_BY_SORT] = TranslationPeer::getString('wns.order.by_sort');
+		$aResult[self::SORT_BY_CREATEDAT] = TranslationPeer::getString('wns.order.by_createdat');
 		return $aResult;
 	}
 
 	public static function getSortOrders() {
-		$aResult['asc'] = StringPeer::getString('wns.order.asc');
-		$aResult['desc'] = StringPeer::getString('wns.order.desc');
+		$aResult['asc'] = TranslationPeer::getString('wns.order.asc');
+		$aResult['desc'] = TranslationPeer::getString('wns.order.desc');
 		return $aResult;
 	}
 
@@ -135,7 +135,7 @@ class DocumentListFrontendModule extends DynamicFrontendModule {
 				}
 			}
 			if(count($aResult) > 0) {
-				$aOutput[] = StringPeer::getString('wns.document_category').': '.implode(', ', $aResult);
+				$aOutput[] = TranslationPeer::getString('wns.document_category').': '.implode(', ', $aResult);
 			}
 		}
 		if(isset($aData['tags']) && is_array($aData['tags'])) {
@@ -146,7 +146,7 @@ class DocumentListFrontendModule extends DynamicFrontendModule {
 				}
 			}
 			if(count($aResult) > 0) {
-				$aOutput[] = StringPeer::getString('wns.tags').': '.implode(', ', $aResult);
+				$aOutput[] = TranslationPeer::getString('wns.tags').': '.implode(', ', $aResult);
 			}
 		}
 		return implode("\n", $aOutput);

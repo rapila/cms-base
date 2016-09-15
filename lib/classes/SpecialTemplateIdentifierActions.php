@@ -21,11 +21,11 @@ class SpecialTemplateIdentifierActions {
 		if($oTemplateIdentifier->hasParameter('defaultValue')) {
 			$sDefaultValue = $oTemplateIdentifier->getParameter('defaultValue');
 		}
-		return StringPeer::getString($oTemplateIdentifier->getValue(), $oTemplateIdentifier->getParameter('languageId'), $sDefaultValue, null, true, $this->oTemplate->iDefaultFlags);
+		return TranslationPeer::getString($oTemplateIdentifier->getValue(), $oTemplateIdentifier->getParameter('languageId'), $sDefaultValue, null, true, $this->oTemplate->iDefaultFlags);
 	}
 
 	public function writeParameterizedString($oTemplateIdentifier) {
-		return StringPeer::getString($oTemplateIdentifier->getValue(), null, null, $oTemplateIdentifier->getParameters(), true, $this->oTemplate->iDefaultFlags);
+		return TranslationPeer::getString($oTemplateIdentifier->getValue(), null, null, $oTemplateIdentifier->getParameters(), true, $this->oTemplate->iDefaultFlags);
 	}
 
 	public function writeFlashValue($oTemplateIdentifier) {

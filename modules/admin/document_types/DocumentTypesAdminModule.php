@@ -42,7 +42,7 @@ class DocumentTypesAdminModule extends AdminModule implements ListWidgetDelegate
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_DATA;
 				break;
 			case 'title':
-				$aResult['heading'] = StringPeer::getString('wns.document_types.sidebar_heading');
+				$aResult['heading'] = TranslationPeer::getString('wns.document_types.sidebar_heading');
 				$aResult['field_name'] = 'name';
 				break;
 			case 'magic_column':
@@ -57,7 +57,7 @@ class DocumentTypesAdminModule extends AdminModule implements ListWidgetDelegate
 		if(count(self::getDocumentKinds()) > 0) {
 		 	return array(
 				array('document_kind' => CriteriaListWidgetDelegate::SELECT_ALL,
-							'title' => StringPeer::getString('wns.documents.select_all_title'),
+							'title' => TranslationPeer::getString('wns.documents.select_all_title'),
 							'magic_column' => 'all')
 			);
 		}

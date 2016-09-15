@@ -16,7 +16,7 @@ class TagDetailWidgetModule extends PersistentWidgetModule {
 			return null;
 		}
 		$sTagName = $oTag->getName();
-		return StringPeer::getString("tag.$sTagName", $sLanguageId, '');
+		return TranslationPeer::getString("tag.$sTagName", $sLanguageId, '');
 	}
 	
 	public function tagData() {
@@ -93,7 +93,7 @@ class TagDetailWidgetModule extends PersistentWidgetModule {
 			$oTag->setName($aTagData['name']);
 		}
 		foreach($aTagData['edited_languages'] as $iIndex => $sLanguageId) {
-			StringPeer::addOrUpdateString($sStringName, $aTagData['text'][$iIndex], $sLanguageId);
+			TranslationPeer::addOrUpdateString($sStringName, $aTagData['text'][$iIndex], $sLanguageId);
 		}
 		$oTag->save();
 	}
