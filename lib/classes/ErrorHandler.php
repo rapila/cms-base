@@ -200,7 +200,10 @@ class ErrorHandler {
 			if(isset($aTraceInfo['file'])) {
 				$sFile = ' in '.$aTraceInfo['file'].' ('.$aTraceInfo['line'].')';
 			}
-			$sFunction = $aTraceInfo['function'].'()'.$sFile;
+			$sFunction = '';
+			if(isset($aTraceInfo['function'])) {
+				$aTraceInfo['function'].'()'.$sFile;
+			}
 			if(isset($aTraceInfo['class'])) {
 				$sFunction = $aTraceInfo['class'].$aTraceInfo['type'].$sFunction;
 			}
