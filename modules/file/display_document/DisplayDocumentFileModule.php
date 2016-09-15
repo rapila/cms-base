@@ -21,7 +21,6 @@ class DisplayDocumentFileModule extends FileModule {
 			} else {
 				print "Not found";exit;
 			}
-			break;
 		}
 		Session::close();
 	}
