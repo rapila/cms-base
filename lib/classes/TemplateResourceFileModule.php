@@ -58,8 +58,8 @@ abstract class TemplateResourceFileModule extends FileModule {
 		if($aParameters === null) {
 			$aParameters = array_fill_keys(self::$RESOURCE_TYPES, array());
 		}
-		$sModuleName;
-		$sModuleType;
+		$sModuleName = null;
+		$sModuleType = null;
 	  if($mModule instanceof Module) {
 			$sModuleName = $mModule->getModuleName();
 			$sModuleType = $mModule->getType();

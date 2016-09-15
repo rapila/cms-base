@@ -491,7 +491,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 	private function cleanupCSS($oCss) {
 		//Change selectors
 		$sContainerClass = '.filled_modules';
-		$aMatches;
+		$aMatches = null;
 		foreach($oCss->getAllDeclarationBlocks() as $oBlock) {
 			$aSelectors = $oBlock->getSelectors();
 			foreach($aSelectors as $iKey => $oSelector) {
