@@ -27,6 +27,7 @@ define('FILENAME_INFO',         'info.yml');
 
 // main dir constants
 define('MAIN_DIR' ,             dirname(dirname(dirname(__FILE__))));
+chdir(MAIN_DIR); // Move to the main directory (for relative paths)
 define('SITE_DIR',              MAIN_DIR.'/'.DIRNAME_SITE);
 define('BASE_DIR',              MAIN_DIR.'/'.DIRNAME_BASE);
 define('PLUGINS_DIR',           MAIN_DIR.'/'.DIRNAME_PLUGINS);
