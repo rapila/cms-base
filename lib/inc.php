@@ -66,7 +66,7 @@ if(!isset($_REQUEST['path'])) {
 		$_REQUEST['path'] = $sPathInfo;
 	} else {
 		// This is for a HHVM-proxygen set-up
-		$_REQUEST['path'] = $_SERVER['REQUEST_URI'];
+		$_REQUEST['path'] = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
 	}
 }
 if(StringUtil::startsWith($_REQUEST['path'], '/')) {
