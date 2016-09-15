@@ -85,7 +85,7 @@ class TagDetailWidgetModule extends PersistentWidgetModule {
 				$sLanguageId = $oString->getLanguageId();
 				//You can’t technically rename strings because string_key is the PKEY so we delete it and re-generate
 				$oString->delete();
-				$oString = new String();
+				$oString = new Translation();
 				$oString->setStringKey($sStringName);
 				$oString->setLanguageId($sLanguageId);
 				$oString->save();

@@ -16,7 +16,7 @@ class StringDetailWidgetModule extends PersistentWidgetModule {
 		$oCriteria->add(TranslationPeer::STRING_KEY, $this->sStringId);
 		$oString = TranslationPeer::doSelectOne($oCriteria);
 		if($oString === null) {
-			$oString = new String();
+			$oString = new Translation();
 		}
 		$aResult = $oString->toArray();
 		$aResult['CreatedInfo'] = Util::formatCreatedInfo($oString);
@@ -81,7 +81,7 @@ class StringDetailWidgetModule extends PersistentWidgetModule {
 				}
 				
 				if($oString === null) {
-					$oString = new String();
+					$oString = new Translation();
 					$oString->setLanguageId($oLanguage->getId());
 					$oString->setStringKey($aStringData['string_key']);
 				} else if ($this->sStringId !== null && $this->sStringId !== $aStringData['string_key']) {

@@ -8,7 +8,7 @@ class StringListWidgetModule extends SpecializedListWidgetModule {
 
 	protected function createListWidget() {
 		$oListWidget = new ListWidgetModule();
-		$this->oDelegateProxy = new CriteriaListWidgetDelegate($this, "String", 'string_key');
+		$this->oDelegateProxy = new CriteriaListWidgetDelegate($this, "Translation", 'string_key');
 		$oListWidget->setDelegate($this->oDelegateProxy);
 		return $oListWidget;
 	}
