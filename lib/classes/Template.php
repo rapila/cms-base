@@ -243,7 +243,7 @@ class Template {
 			$iLastMatchEndPos = $iMatchPosition+$iMatchLength;
 
 			$sMatchName = @$aValue[1][0];
-			$sMatchValue = @$aValue[3][0];
+			$sMatchValue = @$aValue[2][0] ? @$aValue[3][0] : null;
 			$sMatchParameters = @$aValue[7][0];
 			$aTemplateContents[] = new TemplateIdentifier($sMatchName, $sMatchValue, $sMatchParameters, $oTemplate);
 		}

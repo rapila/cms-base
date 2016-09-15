@@ -81,10 +81,6 @@ class TemplateIdentifier extends TemplatePart {
 	}
 
 	public function setValue($sValue) {
-		if($sValue === "") {
-			$sValue = null;
-		}
-
 		$this->sValue = $sValue;
 	}
 
