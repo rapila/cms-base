@@ -39,6 +39,9 @@ abstract class TemplateResourceFileModule extends FileModule {
 		} else {
 			$oTemplate = new Template(TemplateIdentifier::constructIdentifier('contents'), null, true, false, null, $sFileName);
 			$aResources = $oResourceFinder->find();
+			if(!$aResources) {
+				$aResources = array();
+			}
 			if($aResources instanceof FileResource) {
 				$aResources = array($aResources);
 			}
