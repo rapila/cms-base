@@ -555,7 +555,7 @@ class ResourceIncluder {
 					$sAbsoluteLocationRoot = $sRelativeLocationRoot;
 
 					$bHasTruncatedTail = false;
-					$iSlashPosition;
+					$iSlashPosition = null;
 					// Calculate the absolute location root (will be "" most of the time unless the CSS was loaded from an external domain or linking/always_link_absolutely is true)
 					while(($iSlashPosition = strrpos($sAbsoluteLocationRoot, '/')) !== false) {
 						$sAbsoluteLocationRoot = substr($sAbsoluteLocationRoot, 0, $iSlashPosition);
