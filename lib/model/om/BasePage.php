@@ -4035,11 +4035,16 @@ abstract class BasePage extends BaseObject implements Persistent
     /**
      * @return All tags for the Page given by the id
      */
-    public static function tagsFor($sPageId, $sReturn = 'tag')
+    public static function tagsFor($sPageId = null, $sReturn = 'tag')
     {
         $oQuery = TagInstanceQuery::create();
-        $oQuery->filterByTaggedItemId($sPageId);
+        if($sPageId !== null) {
+            $oQuery->filterByTaggedItemId($sPageId);
+        }
         $oQuery->filterByModelName("Page");
+        if($sReturn === 'count') {
+            return $oQuery->find()->count();
+        }
         $aTagInstances = $oQuery->find()->getArrayCopy();
         if($sReturn === 'instances') {
             return $aTagInstances;

@@ -14,13 +14,13 @@
  *
  * @package    propel.generator.model.map
  */
-class StringTableMap extends TableMap
+class TranslationTableMap extends TableMap
 {
 
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = 'model.map.StringTableMap';
+    const CLASS_NAME = 'model.map.TranslationTableMap';
 
     /**
      * Initialize the table attributes, columns and validators
@@ -33,8 +33,8 @@ class StringTableMap extends TableMap
     {
         // attributes
         $this->setName('strings');
-        $this->setPhpName('String');
-        $this->setClassname('String');
+        $this->setPhpName('Translation');
+        $this->setClassname('Translation');
         $this->setPackage('model');
         $this->setUseIdGenerator(false);
         // columns
@@ -87,4 +87,4 @@ class StringTableMap extends TableMap
         );
     } // getBehaviors()
 
-} // StringTableMap
+} // TranslationTableMap

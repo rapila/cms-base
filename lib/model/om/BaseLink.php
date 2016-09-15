@@ -2147,11 +2147,16 @@ abstract class BaseLink extends BaseObject implements Persistent
     /**
      * @return All tags for the Link given by the id
      */
-    public static function tagsFor($sLinkId, $sReturn = 'tag')
+    public static function tagsFor($sLinkId = null, $sReturn = 'tag')
     {
         $oQuery = TagInstanceQuery::create();
-        $oQuery->filterByTaggedItemId($sLinkId);
+        if($sLinkId !== null) {
+            $oQuery->filterByTaggedItemId($sLinkId);
+        }
         $oQuery->filterByModelName("Link");
+        if($sReturn === 'count') {
+            return $oQuery->find()->count();
+        }
         $aTagInstances = $oQuery->find()->getArrayCopy();
         if($sReturn === 'instances') {
             return $aTagInstances;

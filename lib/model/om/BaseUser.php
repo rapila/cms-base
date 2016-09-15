@@ -261,16 +261,16 @@ abstract class BaseUser extends BaseObject implements Persistent
     protected $collLanguagesRelatedByUpdatedByPartial;
 
     /**
-     * @var        PropelObjectCollection|String[] Collection to store aggregation of String objects.
+     * @var        PropelObjectCollection|Translation[] Collection to store aggregation of Translation objects.
      */
-    protected $collStringsRelatedByCreatedBy;
-    protected $collStringsRelatedByCreatedByPartial;
+    protected $collTranslationsRelatedByCreatedBy;
+    protected $collTranslationsRelatedByCreatedByPartial;
 
     /**
-     * @var        PropelObjectCollection|String[] Collection to store aggregation of String objects.
+     * @var        PropelObjectCollection|Translation[] Collection to store aggregation of Translation objects.
      */
-    protected $collStringsRelatedByUpdatedBy;
-    protected $collStringsRelatedByUpdatedByPartial;
+    protected $collTranslationsRelatedByUpdatedBy;
+    protected $collTranslationsRelatedByUpdatedByPartial;
 
     /**
      * @var        PropelObjectCollection|UserGroup[] Collection to store aggregation of UserGroup objects.
@@ -584,13 +584,13 @@ abstract class BaseUser extends BaseObject implements Persistent
      * An array of objects scheduled for deletion.
      * @var		PropelObjectCollection
      */
-    protected $stringsRelatedByCreatedByScheduledForDeletion = null;
+    protected $translationsRelatedByCreatedByScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
      * @var		PropelObjectCollection
      */
-    protected $stringsRelatedByUpdatedByScheduledForDeletion = null;
+    protected $translationsRelatedByUpdatedByScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
@@ -1689,9 +1689,9 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             $this->collLanguagesRelatedByUpdatedBy = null;
 
-            $this->collStringsRelatedByCreatedBy = null;
+            $this->collTranslationsRelatedByCreatedBy = null;
 
-            $this->collStringsRelatedByUpdatedBy = null;
+            $this->collTranslationsRelatedByUpdatedBy = null;
 
             $this->collUserGroupsRelatedByCreatedBy = null;
 
@@ -2259,36 +2259,36 @@ abstract class BaseUser extends BaseObject implements Persistent
                 }
             }
 
-            if ($this->stringsRelatedByCreatedByScheduledForDeletion !== null) {
-                if (!$this->stringsRelatedByCreatedByScheduledForDeletion->isEmpty()) {
-                    foreach ($this->stringsRelatedByCreatedByScheduledForDeletion as $stringRelatedByCreatedBy) {
+            if ($this->translationsRelatedByCreatedByScheduledForDeletion !== null) {
+                if (!$this->translationsRelatedByCreatedByScheduledForDeletion->isEmpty()) {
+                    foreach ($this->translationsRelatedByCreatedByScheduledForDeletion as $translationRelatedByCreatedBy) {
                         // need to save related object because we set the relation to null
-                        $stringRelatedByCreatedBy->save($con);
+                        $translationRelatedByCreatedBy->save($con);
                     }
-                    $this->stringsRelatedByCreatedByScheduledForDeletion = null;
+                    $this->translationsRelatedByCreatedByScheduledForDeletion = null;
                 }
             }
 
-            if ($this->collStringsRelatedByCreatedBy !== null) {
-                foreach ($this->collStringsRelatedByCreatedBy as $referrerFK) {
+            if ($this->collTranslationsRelatedByCreatedBy !== null) {
+                foreach ($this->collTranslationsRelatedByCreatedBy as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
             }
 
-            if ($this->stringsRelatedByUpdatedByScheduledForDeletion !== null) {
-                if (!$this->stringsRelatedByUpdatedByScheduledForDeletion->isEmpty()) {
-                    foreach ($this->stringsRelatedByUpdatedByScheduledForDeletion as $stringRelatedByUpdatedBy) {
+            if ($this->translationsRelatedByUpdatedByScheduledForDeletion !== null) {
+                if (!$this->translationsRelatedByUpdatedByScheduledForDeletion->isEmpty()) {
+                    foreach ($this->translationsRelatedByUpdatedByScheduledForDeletion as $translationRelatedByUpdatedBy) {
                         // need to save related object because we set the relation to null
-                        $stringRelatedByUpdatedBy->save($con);
+                        $translationRelatedByUpdatedBy->save($con);
                     }
-                    $this->stringsRelatedByUpdatedByScheduledForDeletion = null;
+                    $this->translationsRelatedByUpdatedByScheduledForDeletion = null;
                 }
             }
 
-            if ($this->collStringsRelatedByUpdatedBy !== null) {
-                foreach ($this->collStringsRelatedByUpdatedBy as $referrerFK) {
+            if ($this->collTranslationsRelatedByUpdatedBy !== null) {
+                foreach ($this->collTranslationsRelatedByUpdatedBy as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -3244,16 +3244,16 @@ abstract class BaseUser extends BaseObject implements Persistent
                     }
                 }
 
-                if ($this->collStringsRelatedByCreatedBy !== null) {
-                    foreach ($this->collStringsRelatedByCreatedBy as $referrerFK) {
+                if ($this->collTranslationsRelatedByCreatedBy !== null) {
+                    foreach ($this->collTranslationsRelatedByCreatedBy as $referrerFK) {
                         if (!$referrerFK->validate($columns)) {
                             $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
                         }
                     }
                 }
 
-                if ($this->collStringsRelatedByUpdatedBy !== null) {
-                    foreach ($this->collStringsRelatedByUpdatedBy as $referrerFK) {
+                if ($this->collTranslationsRelatedByUpdatedBy !== null) {
+                    foreach ($this->collTranslationsRelatedByUpdatedBy as $referrerFK) {
                         if (!$referrerFK->validate($columns)) {
                             $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
                         }
@@ -3704,11 +3704,11 @@ abstract class BaseUser extends BaseObject implements Persistent
             if (null !== $this->collLanguagesRelatedByUpdatedBy) {
                 $result['LanguagesRelatedByUpdatedBy'] = $this->collLanguagesRelatedByUpdatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
-            if (null !== $this->collStringsRelatedByCreatedBy) {
-                $result['StringsRelatedByCreatedBy'] = $this->collStringsRelatedByCreatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            if (null !== $this->collTranslationsRelatedByCreatedBy) {
+                $result['TranslationsRelatedByCreatedBy'] = $this->collTranslationsRelatedByCreatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
-            if (null !== $this->collStringsRelatedByUpdatedBy) {
-                $result['StringsRelatedByUpdatedBy'] = $this->collStringsRelatedByUpdatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            if (null !== $this->collTranslationsRelatedByUpdatedBy) {
+                $result['TranslationsRelatedByUpdatedBy'] = $this->collTranslationsRelatedByUpdatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
             if (null !== $this->collUserGroupsRelatedByCreatedBy) {
                 $result['UserGroupsRelatedByCreatedBy'] = $this->collUserGroupsRelatedByCreatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
@@ -4161,15 +4161,15 @@ abstract class BaseUser extends BaseObject implements Persistent
                 }
             }
 
-            foreach ($this->getStringsRelatedByCreatedBy() as $relObj) {
+            foreach ($this->getTranslationsRelatedByCreatedBy() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addStringRelatedByCreatedBy($relObj->copy($deepCopy));
+                    $copyObj->addTranslationRelatedByCreatedBy($relObj->copy($deepCopy));
                 }
             }
 
-            foreach ($this->getStringsRelatedByUpdatedBy() as $relObj) {
+            foreach ($this->getTranslationsRelatedByUpdatedBy() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addStringRelatedByUpdatedBy($relObj->copy($deepCopy));
+                    $copyObj->addTranslationRelatedByUpdatedBy($relObj->copy($deepCopy));
                 }
             }
 
@@ -4520,11 +4520,11 @@ abstract class BaseUser extends BaseObject implements Persistent
         if ('LanguageRelatedByUpdatedBy' == $relationName) {
             $this->initLanguagesRelatedByUpdatedBy();
         }
-        if ('StringRelatedByCreatedBy' == $relationName) {
-            $this->initStringsRelatedByCreatedBy();
+        if ('TranslationRelatedByCreatedBy' == $relationName) {
+            $this->initTranslationsRelatedByCreatedBy();
         }
-        if ('StringRelatedByUpdatedBy' == $relationName) {
-            $this->initStringsRelatedByUpdatedBy();
+        if ('TranslationRelatedByUpdatedBy' == $relationName) {
+            $this->initTranslationsRelatedByUpdatedBy();
         }
         if ('UserGroupRelatedByCreatedBy' == $relationName) {
             $this->initUserGroupsRelatedByCreatedBy();
@@ -9325,36 +9325,36 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * Clears out the collStringsRelatedByCreatedBy collection
+     * Clears out the collTranslationsRelatedByCreatedBy collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
      * @return User The current object (for fluent API support)
-     * @see        addStringsRelatedByCreatedBy()
+     * @see        addTranslationsRelatedByCreatedBy()
      */
-    public function clearStringsRelatedByCreatedBy()
+    public function clearTranslationsRelatedByCreatedBy()
     {
-        $this->collStringsRelatedByCreatedBy = null; // important to set this to null since that means it is uninitialized
-        $this->collStringsRelatedByCreatedByPartial = null;
+        $this->collTranslationsRelatedByCreatedBy = null; // important to set this to null since that means it is uninitialized
+        $this->collTranslationsRelatedByCreatedByPartial = null;
 
         return $this;
     }
 
     /**
-     * reset is the collStringsRelatedByCreatedBy collection loaded partially
+     * reset is the collTranslationsRelatedByCreatedBy collection loaded partially
      *
      * @return void
      */
-    public function resetPartialStringsRelatedByCreatedBy($v = true)
+    public function resetPartialTranslationsRelatedByCreatedBy($v = true)
     {
-        $this->collStringsRelatedByCreatedByPartial = $v;
+        $this->collTranslationsRelatedByCreatedByPartial = $v;
     }
 
     /**
-     * Initializes the collStringsRelatedByCreatedBy collection.
+     * Initializes the collTranslationsRelatedByCreatedBy collection.
      *
-     * By default this just sets the collStringsRelatedByCreatedBy collection to an empty array (like clearcollStringsRelatedByCreatedBy());
+     * By default this just sets the collTranslationsRelatedByCreatedBy collection to an empty array (like clearcollTranslationsRelatedByCreatedBy());
      * however, you may wish to override this method in your stub class to provide setting appropriate
      * to your application -- for example, setting the initial array to the values stored in database.
      *
@@ -9363,17 +9363,17 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @return void
      */
-    public function initStringsRelatedByCreatedBy($overrideExisting = true)
+    public function initTranslationsRelatedByCreatedBy($overrideExisting = true)
     {
-        if (null !== $this->collStringsRelatedByCreatedBy && !$overrideExisting) {
+        if (null !== $this->collTranslationsRelatedByCreatedBy && !$overrideExisting) {
             return;
         }
-        $this->collStringsRelatedByCreatedBy = new PropelObjectCollection();
-        $this->collStringsRelatedByCreatedBy->setModel('String');
+        $this->collTranslationsRelatedByCreatedBy = new PropelObjectCollection();
+        $this->collTranslationsRelatedByCreatedBy->setModel('Translation');
     }
 
     /**
-     * Gets an array of String objects which contain a foreign key that references this object.
+     * Gets an array of Translation objects which contain a foreign key that references this object.
      *
      * If the $criteria is not null, it is used to always fetch the results from the database.
      * Otherwise the results are fetched from the database the first time, then cached.
@@ -9383,107 +9383,107 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @param Criteria $criteria optional Criteria object to narrow the query
      * @param PropelPDO $con optional connection object
-     * @return PropelObjectCollection|String[] List of String objects
+     * @return PropelObjectCollection|Translation[] List of Translation objects
      * @throws PropelException
      */
-    public function getStringsRelatedByCreatedBy($criteria = null, PropelPDO $con = null)
+    public function getTranslationsRelatedByCreatedBy($criteria = null, PropelPDO $con = null)
     {
-        $partial = $this->collStringsRelatedByCreatedByPartial && !$this->isNew();
-        if (null === $this->collStringsRelatedByCreatedBy || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collStringsRelatedByCreatedBy) {
+        $partial = $this->collTranslationsRelatedByCreatedByPartial && !$this->isNew();
+        if (null === $this->collTranslationsRelatedByCreatedBy || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collTranslationsRelatedByCreatedBy) {
                 // return empty collection
-                $this->initStringsRelatedByCreatedBy();
+                $this->initTranslationsRelatedByCreatedBy();
             } else {
-                $collStringsRelatedByCreatedBy = StringQuery::create(null, $criteria)
+                $collTranslationsRelatedByCreatedBy = TranslationQuery::create(null, $criteria)
                     ->filterByUserRelatedByCreatedBy($this)
                     ->find($con);
                 if (null !== $criteria) {
-                    if (false !== $this->collStringsRelatedByCreatedByPartial && count($collStringsRelatedByCreatedBy)) {
-                      $this->initStringsRelatedByCreatedBy(false);
+                    if (false !== $this->collTranslationsRelatedByCreatedByPartial && count($collTranslationsRelatedByCreatedBy)) {
+                      $this->initTranslationsRelatedByCreatedBy(false);
 
-                      foreach ($collStringsRelatedByCreatedBy as $obj) {
-                        if (false == $this->collStringsRelatedByCreatedBy->contains($obj)) {
-                          $this->collStringsRelatedByCreatedBy->append($obj);
+                      foreach ($collTranslationsRelatedByCreatedBy as $obj) {
+                        if (false == $this->collTranslationsRelatedByCreatedBy->contains($obj)) {
+                          $this->collTranslationsRelatedByCreatedBy->append($obj);
                         }
                       }
 
-                      $this->collStringsRelatedByCreatedByPartial = true;
+                      $this->collTranslationsRelatedByCreatedByPartial = true;
                     }
 
-                    $collStringsRelatedByCreatedBy->getInternalIterator()->rewind();
+                    $collTranslationsRelatedByCreatedBy->getInternalIterator()->rewind();
 
-                    return $collStringsRelatedByCreatedBy;
+                    return $collTranslationsRelatedByCreatedBy;
                 }
 
-                if ($partial && $this->collStringsRelatedByCreatedBy) {
-                    foreach ($this->collStringsRelatedByCreatedBy as $obj) {
+                if ($partial && $this->collTranslationsRelatedByCreatedBy) {
+                    foreach ($this->collTranslationsRelatedByCreatedBy as $obj) {
                         if ($obj->isNew()) {
-                            $collStringsRelatedByCreatedBy[] = $obj;
+                            $collTranslationsRelatedByCreatedBy[] = $obj;
                         }
                     }
                 }
 
-                $this->collStringsRelatedByCreatedBy = $collStringsRelatedByCreatedBy;
-                $this->collStringsRelatedByCreatedByPartial = false;
+                $this->collTranslationsRelatedByCreatedBy = $collTranslationsRelatedByCreatedBy;
+                $this->collTranslationsRelatedByCreatedByPartial = false;
             }
         }
 
-        return $this->collStringsRelatedByCreatedBy;
+        return $this->collTranslationsRelatedByCreatedBy;
     }
 
     /**
-     * Sets a collection of StringRelatedByCreatedBy objects related by a one-to-many relationship
+     * Sets a collection of TranslationRelatedByCreatedBy objects related by a one-to-many relationship
      * to the current object.
      * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
      * and new objects from the given Propel collection.
      *
-     * @param PropelCollection $stringsRelatedByCreatedBy A Propel collection.
+     * @param PropelCollection $translationsRelatedByCreatedBy A Propel collection.
      * @param PropelPDO $con Optional connection object
      * @return User The current object (for fluent API support)
      */
-    public function setStringsRelatedByCreatedBy(PropelCollection $stringsRelatedByCreatedBy, PropelPDO $con = null)
+    public function setTranslationsRelatedByCreatedBy(PropelCollection $translationsRelatedByCreatedBy, PropelPDO $con = null)
     {
-        $stringsRelatedByCreatedByToDelete = $this->getStringsRelatedByCreatedBy(new Criteria(), $con)->diff($stringsRelatedByCreatedBy);
+        $translationsRelatedByCreatedByToDelete = $this->getTranslationsRelatedByCreatedBy(new Criteria(), $con)->diff($translationsRelatedByCreatedBy);
 
 
-        $this->stringsRelatedByCreatedByScheduledForDeletion = $stringsRelatedByCreatedByToDelete;
+        $this->translationsRelatedByCreatedByScheduledForDeletion = $translationsRelatedByCreatedByToDelete;
 
-        foreach ($stringsRelatedByCreatedByToDelete as $stringRelatedByCreatedByRemoved) {
-            $stringRelatedByCreatedByRemoved->setUserRelatedByCreatedBy(null);
+        foreach ($translationsRelatedByCreatedByToDelete as $translationRelatedByCreatedByRemoved) {
+            $translationRelatedByCreatedByRemoved->setUserRelatedByCreatedBy(null);
         }
 
-        $this->collStringsRelatedByCreatedBy = null;
-        foreach ($stringsRelatedByCreatedBy as $stringRelatedByCreatedBy) {
-            $this->addStringRelatedByCreatedBy($stringRelatedByCreatedBy);
+        $this->collTranslationsRelatedByCreatedBy = null;
+        foreach ($translationsRelatedByCreatedBy as $translationRelatedByCreatedBy) {
+            $this->addTranslationRelatedByCreatedBy($translationRelatedByCreatedBy);
         }
 
-        $this->collStringsRelatedByCreatedBy = $stringsRelatedByCreatedBy;
-        $this->collStringsRelatedByCreatedByPartial = false;
+        $this->collTranslationsRelatedByCreatedBy = $translationsRelatedByCreatedBy;
+        $this->collTranslationsRelatedByCreatedByPartial = false;
 
         return $this;
     }
 
     /**
-     * Returns the number of related String objects.
+     * Returns the number of related Translation objects.
      *
      * @param Criteria $criteria
      * @param boolean $distinct
      * @param PropelPDO $con
-     * @return int             Count of related String objects.
+     * @return int             Count of related Translation objects.
      * @throws PropelException
      */
-    public function countStringsRelatedByCreatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+    public function countTranslationsRelatedByCreatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
     {
-        $partial = $this->collStringsRelatedByCreatedByPartial && !$this->isNew();
-        if (null === $this->collStringsRelatedByCreatedBy || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collStringsRelatedByCreatedBy) {
+        $partial = $this->collTranslationsRelatedByCreatedByPartial && !$this->isNew();
+        if (null === $this->collTranslationsRelatedByCreatedBy || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collTranslationsRelatedByCreatedBy) {
                 return 0;
             }
 
             if ($partial && !$criteria) {
-                return count($this->getStringsRelatedByCreatedBy());
+                return count($this->getTranslationsRelatedByCreatedBy());
             }
-            $query = StringQuery::create(null, $criteria);
+            $query = TranslationQuery::create(null, $criteria);
             if ($distinct) {
                 $query->distinct();
             }
@@ -9493,28 +9493,28 @@ abstract class BaseUser extends BaseObject implements Persistent
                 ->count($con);
         }
 
-        return count($this->collStringsRelatedByCreatedBy);
+        return count($this->collTranslationsRelatedByCreatedBy);
     }
 
     /**
-     * Method called to associate a String object to this object
-     * through the String foreign key attribute.
+     * Method called to associate a Translation object to this object
+     * through the Translation foreign key attribute.
      *
-     * @param    String $l String
+     * @param    Translation $l Translation
      * @return User The current object (for fluent API support)
      */
-    public function addStringRelatedByCreatedBy(String $l)
+    public function addTranslationRelatedByCreatedBy(Translation $l)
     {
-        if ($this->collStringsRelatedByCreatedBy === null) {
-            $this->initStringsRelatedByCreatedBy();
-            $this->collStringsRelatedByCreatedByPartial = true;
+        if ($this->collTranslationsRelatedByCreatedBy === null) {
+            $this->initTranslationsRelatedByCreatedBy();
+            $this->collTranslationsRelatedByCreatedByPartial = true;
         }
 
-        if (!in_array($l, $this->collStringsRelatedByCreatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
-            $this->doAddStringRelatedByCreatedBy($l);
+        if (!in_array($l, $this->collTranslationsRelatedByCreatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddTranslationRelatedByCreatedBy($l);
 
-            if ($this->stringsRelatedByCreatedByScheduledForDeletion and $this->stringsRelatedByCreatedByScheduledForDeletion->contains($l)) {
-                $this->stringsRelatedByCreatedByScheduledForDeletion->remove($this->stringsRelatedByCreatedByScheduledForDeletion->search($l));
+            if ($this->translationsRelatedByCreatedByScheduledForDeletion and $this->translationsRelatedByCreatedByScheduledForDeletion->contains($l)) {
+                $this->translationsRelatedByCreatedByScheduledForDeletion->remove($this->translationsRelatedByCreatedByScheduledForDeletion->search($l));
             }
         }
 
@@ -9522,28 +9522,28 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	StringRelatedByCreatedBy $stringRelatedByCreatedBy The stringRelatedByCreatedBy object to add.
+     * @param	TranslationRelatedByCreatedBy $translationRelatedByCreatedBy The translationRelatedByCreatedBy object to add.
      */
-    protected function doAddStringRelatedByCreatedBy($stringRelatedByCreatedBy)
+    protected function doAddTranslationRelatedByCreatedBy($translationRelatedByCreatedBy)
     {
-        $this->collStringsRelatedByCreatedBy[]= $stringRelatedByCreatedBy;
-        $stringRelatedByCreatedBy->setUserRelatedByCreatedBy($this);
+        $this->collTranslationsRelatedByCreatedBy[]= $translationRelatedByCreatedBy;
+        $translationRelatedByCreatedBy->setUserRelatedByCreatedBy($this);
     }
 
     /**
-     * @param	StringRelatedByCreatedBy $stringRelatedByCreatedBy The stringRelatedByCreatedBy object to remove.
+     * @param	TranslationRelatedByCreatedBy $translationRelatedByCreatedBy The translationRelatedByCreatedBy object to remove.
      * @return User The current object (for fluent API support)
      */
-    public function removeStringRelatedByCreatedBy($stringRelatedByCreatedBy)
+    public function removeTranslationRelatedByCreatedBy($translationRelatedByCreatedBy)
     {
-        if ($this->getStringsRelatedByCreatedBy()->contains($stringRelatedByCreatedBy)) {
-            $this->collStringsRelatedByCreatedBy->remove($this->collStringsRelatedByCreatedBy->search($stringRelatedByCreatedBy));
-            if (null === $this->stringsRelatedByCreatedByScheduledForDeletion) {
-                $this->stringsRelatedByCreatedByScheduledForDeletion = clone $this->collStringsRelatedByCreatedBy;
-                $this->stringsRelatedByCreatedByScheduledForDeletion->clear();
+        if ($this->getTranslationsRelatedByCreatedBy()->contains($translationRelatedByCreatedBy)) {
+            $this->collTranslationsRelatedByCreatedBy->remove($this->collTranslationsRelatedByCreatedBy->search($translationRelatedByCreatedBy));
+            if (null === $this->translationsRelatedByCreatedByScheduledForDeletion) {
+                $this->translationsRelatedByCreatedByScheduledForDeletion = clone $this->collTranslationsRelatedByCreatedBy;
+                $this->translationsRelatedByCreatedByScheduledForDeletion->clear();
             }
-            $this->stringsRelatedByCreatedByScheduledForDeletion[]= $stringRelatedByCreatedBy;
-            $stringRelatedByCreatedBy->setUserRelatedByCreatedBy(null);
+            $this->translationsRelatedByCreatedByScheduledForDeletion[]= $translationRelatedByCreatedBy;
+            $translationRelatedByCreatedBy->setUserRelatedByCreatedBy(null);
         }
 
         return $this;
@@ -9555,7 +9555,7 @@ abstract class BaseUser extends BaseObject implements Persistent
      * an identical criteria, it returns the collection.
      * Otherwise if this User is new, it will return
      * an empty collection; or if this User has previously
-     * been saved, it will retrieve related StringsRelatedByCreatedBy from storage.
+     * been saved, it will retrieve related TranslationsRelatedByCreatedBy from storage.
      *
      * This method is protected by default in order to keep the public
      * api reasonable.  You can provide public methods for those you
@@ -9564,47 +9564,47 @@ abstract class BaseUser extends BaseObject implements Persistent
      * @param Criteria $criteria optional Criteria object to narrow the query
      * @param PropelPDO $con optional connection object
      * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return PropelObjectCollection|String[] List of String objects
+     * @return PropelObjectCollection|Translation[] List of Translation objects
      */
-    public function getStringsRelatedByCreatedByJoinLanguage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    public function getTranslationsRelatedByCreatedByJoinLanguage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
     {
-        $query = StringQuery::create(null, $criteria);
+        $query = TranslationQuery::create(null, $criteria);
         $query->joinWith('Language', $join_behavior);
 
-        return $this->getStringsRelatedByCreatedBy($query, $con);
+        return $this->getTranslationsRelatedByCreatedBy($query, $con);
     }
 
     /**
-     * Clears out the collStringsRelatedByUpdatedBy collection
+     * Clears out the collTranslationsRelatedByUpdatedBy collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
      * @return User The current object (for fluent API support)
-     * @see        addStringsRelatedByUpdatedBy()
+     * @see        addTranslationsRelatedByUpdatedBy()
      */
-    public function clearStringsRelatedByUpdatedBy()
+    public function clearTranslationsRelatedByUpdatedBy()
     {
-        $this->collStringsRelatedByUpdatedBy = null; // important to set this to null since that means it is uninitialized
-        $this->collStringsRelatedByUpdatedByPartial = null;
+        $this->collTranslationsRelatedByUpdatedBy = null; // important to set this to null since that means it is uninitialized
+        $this->collTranslationsRelatedByUpdatedByPartial = null;
 
         return $this;
     }
 
     /**
-     * reset is the collStringsRelatedByUpdatedBy collection loaded partially
+     * reset is the collTranslationsRelatedByUpdatedBy collection loaded partially
      *
      * @return void
      */
-    public function resetPartialStringsRelatedByUpdatedBy($v = true)
+    public function resetPartialTranslationsRelatedByUpdatedBy($v = true)
     {
-        $this->collStringsRelatedByUpdatedByPartial = $v;
+        $this->collTranslationsRelatedByUpdatedByPartial = $v;
     }
 
     /**
-     * Initializes the collStringsRelatedByUpdatedBy collection.
+     * Initializes the collTranslationsRelatedByUpdatedBy collection.
      *
-     * By default this just sets the collStringsRelatedByUpdatedBy collection to an empty array (like clearcollStringsRelatedByUpdatedBy());
+     * By default this just sets the collTranslationsRelatedByUpdatedBy collection to an empty array (like clearcollTranslationsRelatedByUpdatedBy());
      * however, you may wish to override this method in your stub class to provide setting appropriate
      * to your application -- for example, setting the initial array to the values stored in database.
      *
@@ -9613,17 +9613,17 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @return void
      */
-    public function initStringsRelatedByUpdatedBy($overrideExisting = true)
+    public function initTranslationsRelatedByUpdatedBy($overrideExisting = true)
     {
-        if (null !== $this->collStringsRelatedByUpdatedBy && !$overrideExisting) {
+        if (null !== $this->collTranslationsRelatedByUpdatedBy && !$overrideExisting) {
             return;
         }
-        $this->collStringsRelatedByUpdatedBy = new PropelObjectCollection();
-        $this->collStringsRelatedByUpdatedBy->setModel('String');
+        $this->collTranslationsRelatedByUpdatedBy = new PropelObjectCollection();
+        $this->collTranslationsRelatedByUpdatedBy->setModel('Translation');
     }
 
     /**
-     * Gets an array of String objects which contain a foreign key that references this object.
+     * Gets an array of Translation objects which contain a foreign key that references this object.
      *
      * If the $criteria is not null, it is used to always fetch the results from the database.
      * Otherwise the results are fetched from the database the first time, then cached.
@@ -9633,107 +9633,107 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * @param Criteria $criteria optional Criteria object to narrow the query
      * @param PropelPDO $con optional connection object
-     * @return PropelObjectCollection|String[] List of String objects
+     * @return PropelObjectCollection|Translation[] List of Translation objects
      * @throws PropelException
      */
-    public function getStringsRelatedByUpdatedBy($criteria = null, PropelPDO $con = null)
+    public function getTranslationsRelatedByUpdatedBy($criteria = null, PropelPDO $con = null)
     {
-        $partial = $this->collStringsRelatedByUpdatedByPartial && !$this->isNew();
-        if (null === $this->collStringsRelatedByUpdatedBy || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collStringsRelatedByUpdatedBy) {
+        $partial = $this->collTranslationsRelatedByUpdatedByPartial && !$this->isNew();
+        if (null === $this->collTranslationsRelatedByUpdatedBy || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collTranslationsRelatedByUpdatedBy) {
                 // return empty collection
-                $this->initStringsRelatedByUpdatedBy();
+                $this->initTranslationsRelatedByUpdatedBy();
             } else {
-                $collStringsRelatedByUpdatedBy = StringQuery::create(null, $criteria)
+                $collTranslationsRelatedByUpdatedBy = TranslationQuery::create(null, $criteria)
                     ->filterByUserRelatedByUpdatedBy($this)
                     ->find($con);
                 if (null !== $criteria) {
-                    if (false !== $this->collStringsRelatedByUpdatedByPartial && count($collStringsRelatedByUpdatedBy)) {
-                      $this->initStringsRelatedByUpdatedBy(false);
+                    if (false !== $this->collTranslationsRelatedByUpdatedByPartial && count($collTranslationsRelatedByUpdatedBy)) {
+                      $this->initTranslationsRelatedByUpdatedBy(false);
 
-                      foreach ($collStringsRelatedByUpdatedBy as $obj) {
-                        if (false == $this->collStringsRelatedByUpdatedBy->contains($obj)) {
-                          $this->collStringsRelatedByUpdatedBy->append($obj);
+                      foreach ($collTranslationsRelatedByUpdatedBy as $obj) {
+                        if (false == $this->collTranslationsRelatedByUpdatedBy->contains($obj)) {
+                          $this->collTranslationsRelatedByUpdatedBy->append($obj);
                         }
                       }
 
-                      $this->collStringsRelatedByUpdatedByPartial = true;
+                      $this->collTranslationsRelatedByUpdatedByPartial = true;
                     }
 
-                    $collStringsRelatedByUpdatedBy->getInternalIterator()->rewind();
+                    $collTranslationsRelatedByUpdatedBy->getInternalIterator()->rewind();
 
-                    return $collStringsRelatedByUpdatedBy;
+                    return $collTranslationsRelatedByUpdatedBy;
                 }
 
-                if ($partial && $this->collStringsRelatedByUpdatedBy) {
-                    foreach ($this->collStringsRelatedByUpdatedBy as $obj) {
+                if ($partial && $this->collTranslationsRelatedByUpdatedBy) {
+                    foreach ($this->collTranslationsRelatedByUpdatedBy as $obj) {
                         if ($obj->isNew()) {
-                            $collStringsRelatedByUpdatedBy[] = $obj;
+                            $collTranslationsRelatedByUpdatedBy[] = $obj;
                         }
                     }
                 }
 
-                $this->collStringsRelatedByUpdatedBy = $collStringsRelatedByUpdatedBy;
-                $this->collStringsRelatedByUpdatedByPartial = false;
+                $this->collTranslationsRelatedByUpdatedBy = $collTranslationsRelatedByUpdatedBy;
+                $this->collTranslationsRelatedByUpdatedByPartial = false;
             }
         }
 
-        return $this->collStringsRelatedByUpdatedBy;
+        return $this->collTranslationsRelatedByUpdatedBy;
     }
 
     /**
-     * Sets a collection of StringRelatedByUpdatedBy objects related by a one-to-many relationship
+     * Sets a collection of TranslationRelatedByUpdatedBy objects related by a one-to-many relationship
      * to the current object.
      * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
      * and new objects from the given Propel collection.
      *
-     * @param PropelCollection $stringsRelatedByUpdatedBy A Propel collection.
+     * @param PropelCollection $translationsRelatedByUpdatedBy A Propel collection.
      * @param PropelPDO $con Optional connection object
      * @return User The current object (for fluent API support)
      */
-    public function setStringsRelatedByUpdatedBy(PropelCollection $stringsRelatedByUpdatedBy, PropelPDO $con = null)
+    public function setTranslationsRelatedByUpdatedBy(PropelCollection $translationsRelatedByUpdatedBy, PropelPDO $con = null)
     {
-        $stringsRelatedByUpdatedByToDelete = $this->getStringsRelatedByUpdatedBy(new Criteria(), $con)->diff($stringsRelatedByUpdatedBy);
+        $translationsRelatedByUpdatedByToDelete = $this->getTranslationsRelatedByUpdatedBy(new Criteria(), $con)->diff($translationsRelatedByUpdatedBy);
 
 
-        $this->stringsRelatedByUpdatedByScheduledForDeletion = $stringsRelatedByUpdatedByToDelete;
+        $this->translationsRelatedByUpdatedByScheduledForDeletion = $translationsRelatedByUpdatedByToDelete;
 
-        foreach ($stringsRelatedByUpdatedByToDelete as $stringRelatedByUpdatedByRemoved) {
-            $stringRelatedByUpdatedByRemoved->setUserRelatedByUpdatedBy(null);
+        foreach ($translationsRelatedByUpdatedByToDelete as $translationRelatedByUpdatedByRemoved) {
+            $translationRelatedByUpdatedByRemoved->setUserRelatedByUpdatedBy(null);
         }
 
-        $this->collStringsRelatedByUpdatedBy = null;
-        foreach ($stringsRelatedByUpdatedBy as $stringRelatedByUpdatedBy) {
-            $this->addStringRelatedByUpdatedBy($stringRelatedByUpdatedBy);
+        $this->collTranslationsRelatedByUpdatedBy = null;
+        foreach ($translationsRelatedByUpdatedBy as $translationRelatedByUpdatedBy) {
+            $this->addTranslationRelatedByUpdatedBy($translationRelatedByUpdatedBy);
         }
 
-        $this->collStringsRelatedByUpdatedBy = $stringsRelatedByUpdatedBy;
-        $this->collStringsRelatedByUpdatedByPartial = false;
+        $this->collTranslationsRelatedByUpdatedBy = $translationsRelatedByUpdatedBy;
+        $this->collTranslationsRelatedByUpdatedByPartial = false;
 
         return $this;
     }
 
     /**
-     * Returns the number of related String objects.
+     * Returns the number of related Translation objects.
      *
      * @param Criteria $criteria
      * @param boolean $distinct
      * @param PropelPDO $con
-     * @return int             Count of related String objects.
+     * @return int             Count of related Translation objects.
      * @throws PropelException
      */
-    public function countStringsRelatedByUpdatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+    public function countTranslationsRelatedByUpdatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
     {
-        $partial = $this->collStringsRelatedByUpdatedByPartial && !$this->isNew();
-        if (null === $this->collStringsRelatedByUpdatedBy || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collStringsRelatedByUpdatedBy) {
+        $partial = $this->collTranslationsRelatedByUpdatedByPartial && !$this->isNew();
+        if (null === $this->collTranslationsRelatedByUpdatedBy || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collTranslationsRelatedByUpdatedBy) {
                 return 0;
             }
 
             if ($partial && !$criteria) {
-                return count($this->getStringsRelatedByUpdatedBy());
+                return count($this->getTranslationsRelatedByUpdatedBy());
             }
-            $query = StringQuery::create(null, $criteria);
+            $query = TranslationQuery::create(null, $criteria);
             if ($distinct) {
                 $query->distinct();
             }
@@ -9743,28 +9743,28 @@ abstract class BaseUser extends BaseObject implements Persistent
                 ->count($con);
         }
 
-        return count($this->collStringsRelatedByUpdatedBy);
+        return count($this->collTranslationsRelatedByUpdatedBy);
     }
 
     /**
-     * Method called to associate a String object to this object
-     * through the String foreign key attribute.
+     * Method called to associate a Translation object to this object
+     * through the Translation foreign key attribute.
      *
-     * @param    String $l String
+     * @param    Translation $l Translation
      * @return User The current object (for fluent API support)
      */
-    public function addStringRelatedByUpdatedBy(String $l)
+    public function addTranslationRelatedByUpdatedBy(Translation $l)
     {
-        if ($this->collStringsRelatedByUpdatedBy === null) {
-            $this->initStringsRelatedByUpdatedBy();
-            $this->collStringsRelatedByUpdatedByPartial = true;
+        if ($this->collTranslationsRelatedByUpdatedBy === null) {
+            $this->initTranslationsRelatedByUpdatedBy();
+            $this->collTranslationsRelatedByUpdatedByPartial = true;
         }
 
-        if (!in_array($l, $this->collStringsRelatedByUpdatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
-            $this->doAddStringRelatedByUpdatedBy($l);
+        if (!in_array($l, $this->collTranslationsRelatedByUpdatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddTranslationRelatedByUpdatedBy($l);
 
-            if ($this->stringsRelatedByUpdatedByScheduledForDeletion and $this->stringsRelatedByUpdatedByScheduledForDeletion->contains($l)) {
-                $this->stringsRelatedByUpdatedByScheduledForDeletion->remove($this->stringsRelatedByUpdatedByScheduledForDeletion->search($l));
+            if ($this->translationsRelatedByUpdatedByScheduledForDeletion and $this->translationsRelatedByUpdatedByScheduledForDeletion->contains($l)) {
+                $this->translationsRelatedByUpdatedByScheduledForDeletion->remove($this->translationsRelatedByUpdatedByScheduledForDeletion->search($l));
             }
         }
 
@@ -9772,28 +9772,28 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	StringRelatedByUpdatedBy $stringRelatedByUpdatedBy The stringRelatedByUpdatedBy object to add.
+     * @param	TranslationRelatedByUpdatedBy $translationRelatedByUpdatedBy The translationRelatedByUpdatedBy object to add.
      */
-    protected function doAddStringRelatedByUpdatedBy($stringRelatedByUpdatedBy)
+    protected function doAddTranslationRelatedByUpdatedBy($translationRelatedByUpdatedBy)
     {
-        $this->collStringsRelatedByUpdatedBy[]= $stringRelatedByUpdatedBy;
-        $stringRelatedByUpdatedBy->setUserRelatedByUpdatedBy($this);
+        $this->collTranslationsRelatedByUpdatedBy[]= $translationRelatedByUpdatedBy;
+        $translationRelatedByUpdatedBy->setUserRelatedByUpdatedBy($this);
     }
 
     /**
-     * @param	StringRelatedByUpdatedBy $stringRelatedByUpdatedBy The stringRelatedByUpdatedBy object to remove.
+     * @param	TranslationRelatedByUpdatedBy $translationRelatedByUpdatedBy The translationRelatedByUpdatedBy object to remove.
      * @return User The current object (for fluent API support)
      */
-    public function removeStringRelatedByUpdatedBy($stringRelatedByUpdatedBy)
+    public function removeTranslationRelatedByUpdatedBy($translationRelatedByUpdatedBy)
     {
-        if ($this->getStringsRelatedByUpdatedBy()->contains($stringRelatedByUpdatedBy)) {
-            $this->collStringsRelatedByUpdatedBy->remove($this->collStringsRelatedByUpdatedBy->search($stringRelatedByUpdatedBy));
-            if (null === $this->stringsRelatedByUpdatedByScheduledForDeletion) {
-                $this->stringsRelatedByUpdatedByScheduledForDeletion = clone $this->collStringsRelatedByUpdatedBy;
-                $this->stringsRelatedByUpdatedByScheduledForDeletion->clear();
+        if ($this->getTranslationsRelatedByUpdatedBy()->contains($translationRelatedByUpdatedBy)) {
+            $this->collTranslationsRelatedByUpdatedBy->remove($this->collTranslationsRelatedByUpdatedBy->search($translationRelatedByUpdatedBy));
+            if (null === $this->translationsRelatedByUpdatedByScheduledForDeletion) {
+                $this->translationsRelatedByUpdatedByScheduledForDeletion = clone $this->collTranslationsRelatedByUpdatedBy;
+                $this->translationsRelatedByUpdatedByScheduledForDeletion->clear();
             }
-            $this->stringsRelatedByUpdatedByScheduledForDeletion[]= $stringRelatedByUpdatedBy;
-            $stringRelatedByUpdatedBy->setUserRelatedByUpdatedBy(null);
+            $this->translationsRelatedByUpdatedByScheduledForDeletion[]= $translationRelatedByUpdatedBy;
+            $translationRelatedByUpdatedBy->setUserRelatedByUpdatedBy(null);
         }
 
         return $this;
@@ -9805,7 +9805,7 @@ abstract class BaseUser extends BaseObject implements Persistent
      * an identical criteria, it returns the collection.
      * Otherwise if this User is new, it will return
      * an empty collection; or if this User has previously
-     * been saved, it will retrieve related StringsRelatedByUpdatedBy from storage.
+     * been saved, it will retrieve related TranslationsRelatedByUpdatedBy from storage.
      *
      * This method is protected by default in order to keep the public
      * api reasonable.  You can provide public methods for those you
@@ -9814,14 +9814,14 @@ abstract class BaseUser extends BaseObject implements Persistent
      * @param Criteria $criteria optional Criteria object to narrow the query
      * @param PropelPDO $con optional connection object
      * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return PropelObjectCollection|String[] List of String objects
+     * @return PropelObjectCollection|Translation[] List of Translation objects
      */
-    public function getStringsRelatedByUpdatedByJoinLanguage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    public function getTranslationsRelatedByUpdatedByJoinLanguage($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
     {
-        $query = StringQuery::create(null, $criteria);
+        $query = TranslationQuery::create(null, $criteria);
         $query->joinWith('Language', $join_behavior);
 
-        return $this->getStringsRelatedByUpdatedBy($query, $con);
+        return $this->getTranslationsRelatedByUpdatedBy($query, $con);
     }
 
     /**
@@ -17361,13 +17361,13 @@ abstract class BaseUser extends BaseObject implements Persistent
                     $o->clearAllReferences($deep);
                 }
             }
-            if ($this->collStringsRelatedByCreatedBy) {
-                foreach ($this->collStringsRelatedByCreatedBy as $o) {
+            if ($this->collTranslationsRelatedByCreatedBy) {
+                foreach ($this->collTranslationsRelatedByCreatedBy as $o) {
                     $o->clearAllReferences($deep);
                 }
             }
-            if ($this->collStringsRelatedByUpdatedBy) {
-                foreach ($this->collStringsRelatedByUpdatedBy as $o) {
+            if ($this->collTranslationsRelatedByUpdatedBy) {
+                foreach ($this->collTranslationsRelatedByUpdatedBy as $o) {
                     $o->clearAllReferences($deep);
                 }
             }
@@ -17600,14 +17600,14 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->collLanguagesRelatedByUpdatedBy->clearIterator();
         }
         $this->collLanguagesRelatedByUpdatedBy = null;
-        if ($this->collStringsRelatedByCreatedBy instanceof PropelCollection) {
-            $this->collStringsRelatedByCreatedBy->clearIterator();
+        if ($this->collTranslationsRelatedByCreatedBy instanceof PropelCollection) {
+            $this->collTranslationsRelatedByCreatedBy->clearIterator();
         }
-        $this->collStringsRelatedByCreatedBy = null;
-        if ($this->collStringsRelatedByUpdatedBy instanceof PropelCollection) {
-            $this->collStringsRelatedByUpdatedBy->clearIterator();
+        $this->collTranslationsRelatedByCreatedBy = null;
+        if ($this->collTranslationsRelatedByUpdatedBy instanceof PropelCollection) {
+            $this->collTranslationsRelatedByUpdatedBy->clearIterator();
         }
-        $this->collStringsRelatedByUpdatedBy = null;
+        $this->collTranslationsRelatedByUpdatedBy = null;
         if ($this->collUserGroupsRelatedByCreatedBy instanceof PropelCollection) {
             $this->collUserGroupsRelatedByCreatedBy->clearIterator();
         }
@@ -17855,11 +17855,16 @@ abstract class BaseUser extends BaseObject implements Persistent
     /**
      * @return All tags for the User given by the id
      */
-    public static function tagsFor($sUserId, $sReturn = 'tag')
+    public static function tagsFor($sUserId = null, $sReturn = 'tag')
     {
         $oQuery = TagInstanceQuery::create();
-        $oQuery->filterByTaggedItemId($sUserId);
+        if($sUserId !== null) {
+            $oQuery->filterByTaggedItemId($sUserId);
+        }
         $oQuery->filterByModelName("User");
+        if($sReturn === 'count') {
+            return $oQuery->find()->count();
+        }
         $aTagInstances = $oQuery->find()->getArrayCopy();
         if($sReturn === 'instances') {
             return $aTagInstances;

@@ -123,7 +123,7 @@
 	<column name="sort" type="tinyint" size="2" />
 </table>
 
-<table name="strings" phpName="String">
+<table name="strings" phpName="Translation">
 	<column name="language_id" type="varchar" size="3" required="true" primaryKey="true" />
 	<foreign-key foreignTable="languages">
 		<reference local="language_id" foreign="id" />

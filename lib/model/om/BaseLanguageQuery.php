@@ -48,9 +48,9 @@
  * @method LanguageQuery rightJoinLanguageObjectHistory($relationAlias = null) Adds a RIGHT JOIN clause to the query using the LanguageObjectHistory relation
  * @method LanguageQuery innerJoinLanguageObjectHistory($relationAlias = null) Adds a INNER JOIN clause to the query using the LanguageObjectHistory relation
  *
- * @method LanguageQuery leftJoinString($relationAlias = null) Adds a LEFT JOIN clause to the query using the String relation
- * @method LanguageQuery rightJoinString($relationAlias = null) Adds a RIGHT JOIN clause to the query using the String relation
- * @method LanguageQuery innerJoinString($relationAlias = null) Adds a INNER JOIN clause to the query using the String relation
+ * @method LanguageQuery leftJoinTranslation($relationAlias = null) Adds a LEFT JOIN clause to the query using the Translation relation
+ * @method LanguageQuery rightJoinTranslation($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Translation relation
+ * @method LanguageQuery innerJoinTranslation($relationAlias = null) Adds a INNER JOIN clause to the query using the Translation relation
  *
  * @method LanguageQuery leftJoinUserRelatedByLanguageId($relationAlias = null) Adds a LEFT JOIN clause to the query using the UserRelatedByLanguageId relation
  * @method LanguageQuery rightJoinUserRelatedByLanguageId($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UserRelatedByLanguageId relation
@@ -955,41 +955,41 @@ abstract class BaseLanguageQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related String object
+     * Filter the query by a related Translation object
      *
-     * @param   String|PropelObjectCollection $string  the related object to use as filter
+     * @param   Translation|PropelObjectCollection $translation  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return                 LanguageQuery The current query, for fluid interface
      * @throws PropelException - if the provided filter is invalid.
      */
-    public function filterByString($string, $comparison = null)
+    public function filterByTranslation($translation, $comparison = null)
     {
-        if ($string instanceof String) {
+        if ($translation instanceof Translation) {
             return $this
-                ->addUsingAlias(LanguagePeer::ID, $string->getLanguageId(), $comparison);
-        } elseif ($string instanceof PropelObjectCollection) {
+                ->addUsingAlias(LanguagePeer::ID, $translation->getLanguageId(), $comparison);
+        } elseif ($translation instanceof PropelObjectCollection) {
             return $this
-                ->useStringQuery()
-                ->filterByPrimaryKeys($string->getPrimaryKeys())
+                ->useTranslationQuery()
+                ->filterByPrimaryKeys($translation->getPrimaryKeys())
                 ->endUse();
         } else {
-            throw new PropelException('filterByString() only accepts arguments of type String or PropelCollection');
+            throw new PropelException('filterByTranslation() only accepts arguments of type Translation or PropelCollection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the String relation
+     * Adds a JOIN clause to the query using the Translation relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return LanguageQuery The current query, for fluid interface
      */
-    public function joinString($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinTranslation($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('String');
+        $relationMap = $tableMap->getRelation('Translation');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -1004,14 +1004,14 @@ abstract class BaseLanguageQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'String');
+            $this->addJoinObject($join, 'Translation');
         }
 
         return $this;
     }
 
     /**
-     * Use the String relation String object
+     * Use the Translation relation Translation object
      *
      * @see       useQuery()
      *
@@ -1019,13 +1019,13 @@ abstract class BaseLanguageQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return   StringQuery A secondary query class using the current class as primary query
+     * @return   TranslationQuery A secondary query class using the current class as primary query
      */
-    public function useStringQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useTranslationQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
-            ->joinString($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'String', 'StringQuery');
+            ->joinTranslation($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Translation', 'TranslationQuery');
     }
 
     /**

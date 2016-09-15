@@ -2698,11 +2698,16 @@ abstract class BaseDocument extends BaseObject implements Persistent
     /**
      * @return All tags for the Document given by the id
      */
-    public static function tagsFor($sDocumentId, $sReturn = 'tag')
+    public static function tagsFor($sDocumentId = null, $sReturn = 'tag')
     {
         $oQuery = TagInstanceQuery::create();
-        $oQuery->filterByTaggedItemId($sDocumentId);
+        if($sDocumentId !== null) {
+            $oQuery->filterByTaggedItemId($sDocumentId);
+        }
         $oQuery->filterByModelName("Document");
+        if($sReturn === 'count') {
+            return $oQuery->find()->count();
+        }
         $aTagInstances = $oQuery->find()->getArrayCopy();
         if($sReturn === 'instances') {
             return $aTagInstances;
