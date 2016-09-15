@@ -72,7 +72,7 @@ class StringListWidgetModule extends SpecializedListWidgetModule {
 	}
 
 	public function getCriteria() {
-		$oQuery = StringQuery::create();
+		$oQuery = TranslationQuery::create();
 		if($this->oDelegateProxy->getNameSpace() === CriteriaListWidgetDelegate::SELECT_WITHOUT) {
 			return $oQuery->filterByKeysWithoutNamespace();
 		} elseif($this->oDelegateProxy->getNameSpace() !== CriteriaListWidgetDelegate::SELECT_ALL) {

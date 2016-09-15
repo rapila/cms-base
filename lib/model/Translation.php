@@ -19,7 +19,7 @@ class Translation extends BaseTranslation {
 		if($this->getLanguageId() === $sLanguageId) {
 			return $this->getTextTruncated($iLength);
 		} else {
-			$oString = StringQuery::create()->findPk(array($sLanguageId, $this->getStringKey()));
+			$oString = TranslationQuery::create()->findPk(array($sLanguageId, $this->getStringKey()));
 			if($oString) {
 				return $oString->getTextTruncated($iLength);
 			}
@@ -28,6 +28,6 @@ class Translation extends BaseTranslation {
 	}
 	
 	public function getLanguagesAvailable() {
-		return implode(', ', StringQuery::create()->filterByStringKey($this->getStringKey())->orderByLanguageId()->select('LanguageId')->find()->toArray());
+		return implode(', ', TranslationQuery::create()->filterByStringKey($this->getStringKey())->orderByLanguageId()->select('LanguageId')->find()->toArray());
 	}
 }

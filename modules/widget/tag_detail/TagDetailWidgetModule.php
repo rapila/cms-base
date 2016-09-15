@@ -81,7 +81,7 @@ class TagDetailWidgetModule extends PersistentWidgetModule {
 		if($oTag->getName() !== $aTagData['name']) {
 			//Rename Strings for the tag
 			$sOldStringName = "tag.{$oTag->getName()}";
-			foreach(StringQuery::create()->filterByStringKey($sOldStringName)->find() as $oString) {
+			foreach(TranslationQuery::create()->filterByStringKey($sOldStringName)->find() as $oString) {
 				$sLanguageId = $oString->getLanguageId();
 				//You can’t technically rename strings because string_key is the PKEY so we delete it and re-generate
 				$oString->delete();

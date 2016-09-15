@@ -52,7 +52,7 @@ class StringsAdminModule extends AdminModule implements ListWidgetDelegate {
 							'title' => TranslationPeer::getString('wns.strings.select_all_title'),
 							'magic_column' => 'all')
 			);
-			if(StringQuery::create()->filterByKeysWithoutNamespace()->count() > 0) {
+			if(TranslationQuery::create()->filterByKeysWithoutNamespace()->count() > 0) {
 			 	$aElementsWithout = array(
 					array('name_space' => CriteriaListWidgetDelegate::SELECT_WITHOUT,
 								'title' => TranslationPeer::getString('wns.strings.select_without_title'),

@@ -151,7 +151,7 @@ EOT;
 		if($sLanguageId === null) {
 			$sLanguageId = Session::language();
 		}
-		$oString = StringQuery::create()->findPk(array($sLanguageId, $sStringKey));
+		$oString = TranslationQuery::create()->findPk(array($sLanguageId, $sStringKey));
 	
 		if(!$sContent) {
 			if($oString !== null) {
@@ -173,7 +173,7 @@ EOT;
 	}
 	
 	public static function countNameSpaceByName($sNameSpace) {
-		return StringQuery::create()->filterByStringKey("$sNameSpace.%", Criteria::LIKE)->count();
+		return TranslationQuery::create()->filterByStringKey("$sNameSpace.%", Criteria::LIKE)->count();
 	}
 
 	public static function getNameSpaceFromStringKey($sStringKey) {

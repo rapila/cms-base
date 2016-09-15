@@ -36,7 +36,7 @@ class StringDetailWidgetModule extends PersistentWidgetModule {
 	}
 	
 	public function getTextFor($sLanguageId) {
-		$oString = StringQuery::create()->findPk(array($sLanguageId, $this->sStringId));
+		$oString = TranslationQuery::create()->findPk(array($sLanguageId, $this->sStringId));
 		if($oString === null) {
 			return '';
 		}
@@ -50,7 +50,7 @@ class StringDetailWidgetModule extends PersistentWidgetModule {
 
 		// if string is new, or string_key has changed, then the existence of the string_key has to be checked
 		if($this->sStringId === null || $this->sStringId !== $aStringData['string_key']) {
-			if(StringQuery::create()->filterByStringKey($aStringData['string_key'])->count() > 0) {
+			if(TranslationQuery::create()->filterByStringKey($aStringData['string_key'])->count() > 0) {
 				$oFlash->addMessage('string.key_exists');
 			}
 		}
@@ -71,7 +71,7 @@ class StringDetailWidgetModule extends PersistentWidgetModule {
 			
 			if(isset($aStringData['text_'.$oLanguage->getId()])) {
 				$sText = trim($aStringData['text_'.$oLanguage->getId()]);
-				$oString = StringQuery::create()->findPk(array($oLanguage->getId(), $this->sStringId));
+				$oString = TranslationQuery::create()->findPk(array($oLanguage->getId(), $this->sStringId));
 				
 				if($sText === '') {
 					if($oString !== null) {
@@ -91,7 +91,7 @@ class StringDetailWidgetModule extends PersistentWidgetModule {
 				$oString->setText($sText);
 				$oString->save();
 			} else {
-				$oString = StringQuery::create()->findPk(array($oLanguage->getId(), $this->sStringId));
+				$oString = TranslationQuery::create()->findPk(array($oLanguage->getId(), $this->sStringId));
 				if($oString === null) {
 					continue;
 				}

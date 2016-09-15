@@ -54,7 +54,7 @@ class StringCheckWidgetModule extends PersistentWidgetModule {
 	
 	private function checkStrings($sCheckLanguageId = null) {
 		$aAllStrings = array();
-		foreach(StringQuery::create()->orderByStringKey()->find() as $oString) {
+		foreach(TranslationQuery::create()->orderByStringKey()->find() as $oString) {
 			if(!in_array($oString->getStringKey(), $aAllStrings)) {
 				$aAllStrings[] = $oString->getStringKey();
 			}

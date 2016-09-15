@@ -50,7 +50,7 @@ class Tag extends BaseTag {
 	}
 
 	public function getLanguageIdsOfStrings() {
-		$aLanguages = StringQuery::create()->filterByStringKey('tag.'.$this->getName())->select('LanguageId')->find()->toArray();
+		$aLanguages = TranslationQuery::create()->filterByStringKey('tag.'.$this->getName())->select('LanguageId')->find()->toArray();
 		if(is_array($aLanguages) && !empty($aLanguages)) {
 			return $aLanguages;
 		}
