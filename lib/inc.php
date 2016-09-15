@@ -42,7 +42,7 @@ $aLibDirs = ResourceFinder::create()->addPath(DIRNAME_LIB)->addOptionalPath(DIRN
 
 set_include_path(MAIN_DIR.'/'.DIRNAME_GENERATED.PATH_SEPARATOR.implode(PATH_SEPARATOR, $aLibDirs).PATH_SEPARATOR.get_include_path());
 
-$sPathInfo = isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '';
+$sPathInfo = isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : null;
 
 // frontend dir constants
 define('MAIN_DIR_FE',        PHP_SAPI === 'cli' ? Settings::getSetting('domain_holder', 'root_url', '/') : preg_replace("/^(.*)index\.php(\/.*)?$/", '$1', $_SERVER['PHP_SELF']));
@@ -62,7 +62,12 @@ define('INT_IMAGES_DIR_FE',  INT_WEB_DIR_FE.'/images');       /**< @deprecated *
 define('EXT_IMAGES_DIR_FE',  EXT_WEB_DIR_FE.'/images');       /**< @deprecated */
 
 if(!isset($_REQUEST['path'])) {
-	$_REQUEST['path'] = $sPathInfo;
+	if($sPathInfo !== null) {
+		$_REQUEST['path'] = $sPathInfo;
+	} else {
+		// This is for a HHVM-proxygen set-up
+		$_REQUEST['path'] = $_SERVER['REQUEST_URI'];
+	}
 }
 if(StringUtil::startsWith($_REQUEST['path'], '/')) {
 	$_REQUEST['path'] = substr($_REQUEST['path'], 1);
