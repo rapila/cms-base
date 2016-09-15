@@ -130,4 +130,8 @@ class Autoloader {
 	private static function findVendorLibClass($sClassName) {
 		return 'lib/'.self::findVendorClass($sClassName);
 	}
+	
+	private static function findVendorSrcClass($sClassName) {
+		return 'src/'.self::findVendorClass($sClassName);
+	}
 }
