@@ -16,7 +16,7 @@ fi
 
 shopt -s nullglob
 
-for PREFIX in ${PREFIXES[@]}; do
+for PREFIX in "${PREFIXES[@]}"; do
   SRC="$(pwd)/${PREFIX}web"
   TARGET="$DOCROOT/${PREFIX}web"
 
@@ -26,5 +26,12 @@ for PREFIX in ${PREFIXES[@]}; do
     ln -s "$SRC" "$TARGET"
   fi
 done
+
+if ! [ -f "$DOCROOT/index.php" ]; then
+	tee "$DOCROOT/index.php" <<EOF
+<?php
+	require_once('../index.php');
+EOF
+fi
 
 
