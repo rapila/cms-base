@@ -2,7 +2,7 @@
 
 class NamespacedPreviewCssFileModule extends FileModule {
 	private $oFile;
-	
+
 	public function __construct($aRequestPath) {
 		parent::__construct($aRequestPath);
 
@@ -13,14 +13,14 @@ class NamespacedPreviewCssFileModule extends FileModule {
 		array_unshift($aRequestPath, DIRNAME_WEB, ResourceIncluder::RESOURCE_TYPE_CSS);
 		$this->oFile = ResourceFinder::findResourceObject($aRequestPath);
 	}
-	
+
 	public function renderFile() {
 		if($this->oFile === null) {
 			throw new Exception("File ".implode('/', $this->aPath)." not found");
 		}
 		self::processCSSContent(file_get_contents($this->oFile->getFullPath()), $this->oFile);
 	}
-	
+
 	public static function processCSSContent($sContent, $oFile) {
 		$oCache = new Cache('preview_css'.$oFile->getInternalPath(), DIRNAME_TEMPLATES);
 		header("Content-Type: text/css;charset=".Settings::getSetting('encoding', 'browser', 'utf-8'));
@@ -69,7 +69,7 @@ class NamespacedPreviewCssFileModule extends FileModule {
 					$sURL = $oFile->getFrontendDirectoryPath().DIRECTORY_SEPARATOR.$sURL;
 				}
 
-				$oValue->setURL(new Sabberworm\CSS\Value\String($sURL));
+				$oValue->setURL(new Sabberworm\CSS\Value\CSSString($sURL));
 			}
 		}
 
