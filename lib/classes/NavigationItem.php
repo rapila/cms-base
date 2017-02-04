@@ -158,6 +158,14 @@ abstract class NavigationItem {
 	*/
 	protected abstract function getIdImpl();
 
+	/**
+	* Gets a value uniquely identifying this navigation item in the form of (page id)/virtual/path/items.
+	* Should be overridden by VirtualNavigationItem subclasses that implement getIdImpl if they return a value there that does not conform to the form as specified above.
+	*/
+	public function getPathId() {
+		return $this->getIdImpl();
+	}
+
 	public function getParent() {
 		return $this->oParent;
 	}
