@@ -13,7 +13,7 @@ class PageInputWidgetModule extends WidgetModule {
 				}
 				$oResult = new StdClass();
 				$oResult->level = $iLevel;
-				$oResult->page_id = $oNavigationItem->getId();
+				$oResult->page_id = $oNavigationItem->getPathId();
 				$oResult->name = $oNavigationItem->getName();
 				$aResult[] = $oResult;
 				if($oNavigationItem->hasChildren(null, false, true)) {
