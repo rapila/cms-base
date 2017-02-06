@@ -77,7 +77,7 @@ class VirtualNavigationItem extends NavigationItem {
 	}
 
 	public function getPathId() {
-		return "{$this->oParent->getIdImpl()}/{$this->getName()}";
+		return "{$this->oParent->getPathId()}/{$this->getName()}";
 	}
 
 	public function hasData($mKey) {
