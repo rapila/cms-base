@@ -65,29 +65,30 @@ class Autoloader {
 	
 	private static function findRapilaClass($sClassName) {
 		$sFileName = "$sClassName.php";
+		$aFileName = explode('\\', $sFileName);
 
 		//Standard Classes
-		$sPath = ResourceFinder::create()->addPath(DIRNAME_LIB, DIRNAME_CLASSES, $sFileName)->find();
+		$sPath = ResourceFinder::create()->addPath(DIRNAME_LIB, DIRNAME_CLASSES)->addPaths($aFileName)->find();
 		if($sPath) {
 			return $sPath;
 		}
 	
 		//Generated Model classes
-		$sPath = ResourceFinder::create()->addPath(DIRNAME_GENERATED, DIRNAME_MODEL, $sFileName)->searchMainOnly()->find();
+		$sPath = ResourceFinder::create()->addPath(DIRNAME_GENERATED, DIRNAME_MODEL)->addPaths($aFileName)->searchMainOnly()->find();
 		if($sPath) {
 			return $sPath;
 		}
-		$sPath = ResourceFinder::create()->addPath(DIRNAME_GENERATED, DIRNAME_MODEL, false, $sFileName)->byExpressions()->searchMainOnly()->find();
+		$sPath = ResourceFinder::create()->addPath(DIRNAME_GENERATED, DIRNAME_MODEL, false)->addPaths($aFileName)->byExpressions()->searchMainOnly()->find();
 		if(($sPath = ArrayUtil::assocPeek($sPath)) !== null) {
 			return $sPath;
 		}
 	
 		//Model classes
-		$sPath = ResourceFinder::create()->addPath(DIRNAME_LIB, DIRNAME_MODEL, $sFileName)->find();
+		$sPath = ResourceFinder::create()->addPath(DIRNAME_LIB, DIRNAME_MODEL)->addPaths($aFileName)->find();
 		if($sPath) {
 			return $sPath;
 		}
-		$sPath = ResourceFinder::create()->addPath(DIRNAME_LIB, DIRNAME_MODEL, false, $sFileName)->byExpressions()->find();
+		$sPath = ResourceFinder::create()->addPath(DIRNAME_LIB, DIRNAME_MODEL, false)->addPaths($aFileName)->byExpressions()->find();
 		if(($sPath = ArrayUtil::assocPeek($sPath)) !== null) {
 			return $sPath;
 		}
@@ -100,7 +101,7 @@ class Autoloader {
 				}
 
 				if($sModuleBaseClass::isValidModuleClassName($sClassName)) {
-					$sPath = ResourceFinder::create(array(DIRNAME_MODULES, $sModuleType, $sModuleBaseClass::getNameByClassName($sClassName), $sFileName))->find();
+					$sPath = ResourceFinder::create()->addPath(DIRNAME_MODULES, $sModuleType, $sModuleBaseClass::getNameByClassName($sClassName))->addPaths($aFileName)->find();
 					if($sPath) {
 						return $sPath;
 					}
