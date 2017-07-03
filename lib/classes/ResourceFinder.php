@@ -182,6 +182,12 @@ class ResourceFinder {
 		return $this;
 	}
 
+	public function addPaths($aPaths) {
+		$this->aPath = array_merge($this->aPath, $aPaths);
+		$this->mResult = false;
+		return $this;
+	}
+
 	public function addExpression() {
 		$this->aPath = array_merge($this->aPath, func_get_args());
 		$this->mResult = false;
