@@ -158,7 +158,7 @@ class LinkUtil {
 			}
 		}
 	}
-	
+
 	/**
 	* Sends an expires header.
 	* @param $mExpires The expires header to send. Can be one of the following:
@@ -228,7 +228,7 @@ class LinkUtil {
 		}
 		return "$sProtocol$sHost$sLocation";
 	}
-	
+
 	public static function getProtocol(&$mProtocolSetting = 'default') {
 		if($mProtocolSetting === 'default') {
 			$mProtocolSetting = Settings::getSetting('linking', 'ssl_in_absolute_links', null);
