@@ -11,35 +11,35 @@
  * SimplePager
  * • inspired by the PropelPager
  * • handling only query objects
- * 
+ *
  * Example Usage:
- * 
+ *
  * $oQuery = ExampleQuery::create()->whateverQuery();
- * 
- * $oPager = new SimplePager($oQuery, 1, 50); [query, page, max_rows per_page] 
- * 
+ *
+ * $oPager = new SimplePager($oQuery, 1, 50); [query, page, max_rows per_page]
+ *
  * $oPager->requiresPagination()
  * $oPager->setPageLinkBase(url_without_page)
- * 
+ *
  * $oPager->getPreviousLink()
  * $oPager->getNextLink()
- * 
+ *
  * foreach($oPager->getPreviousLinks() as $iPage) {
  * 		echo $oPager->getPageLink($iPage);
  * }
  * // returns PropelCollection
  * $oPager->getResult()[->getData()]
- * 
+ *
  * Iterate since PropelObjects extends ArrayObject
  * $oIterator = $oPager->getResult()->getIterator();
  * while ($oIterator->valid()) {
  *	 echo $oIterator->current();
  *	 $oIterator->next();
  * }
- * 
- * // Queries executed with defined select 
+ *
+ * // Queries executed with defined select
  * $oPager->getQuery()->select('fieldName1', 'fieldName2')->find() // etc
- * 
+ *
  * @author		Jürg Messmer <jm@mosaics.ch>
  * @version   0.8
  * 20120908.1121
@@ -48,16 +48,16 @@ class SimplePager implements Iterator {
 
 	// Query without count and limit
 	private $oQuery;
-	
+
 	// Total of records
 	private $iTotalRecordCount;
-	
+
 	// Total of expected pages
-	private $iTotalPagesCount;
-	
+	private $iTotalPageCount;
+
 	// Current page
 	private $iPage;
-	
+
 	// Propel collection
 	private $aResult = null;
 
@@ -69,7 +69,7 @@ class SimplePager implements Iterator {
 
 	/** @var        int Max rows per page to return (0 means all) */
 	protected $iMaxRowsPerPage = 0;
-	
+
 	/** @var        string page link without page number */
 	private $sPageLinkBase = null;
 
@@ -90,7 +90,7 @@ class SimplePager implements Iterator {
 		$this->setPage($iPage);
 		$this->setRowsPerPage($iMaxRowsPerPage);
 	}
-	
+
 	/**
 	 * @return  boolean
 	 */
@@ -100,7 +100,7 @@ class SimplePager implements Iterator {
 		}
 		return $this->iMaxRowsPerPage < $this->iTotalRecordCount;
 	}
-	
+
 	/**
 	 * Set the asic pager url without page number
 	 *
@@ -126,10 +126,10 @@ class SimplePager implements Iterator {
 		}
 		return $this->aResult;
 	}
-	
+
 	/**
 	 * @return query object
-	 */	
+	 */
 	public function getQuery() {
 		$this->oQuery->setOffset($this->iStart);
 		$this->oQuery->setLimit($this->iMaxRowsPerPage);
@@ -271,21 +271,21 @@ class SimplePager implements Iterator {
 		}
 		return $next;
 	}
-	
+
 	/**
 	 * @param int $iPage
 	 *
 	 * @return string
-	 */	
+	 */
 	public function getPageLink($iPage) {
 		return $this->sPageLinkBase.$iPage;
 	}
-	
+
 	/**
 	 * get relative or absolute page link
 	 *
 	 * @return  mixed string/null
-	 */	
+	 */
 	public function getPreviousLink() {
 		if($this->sPageLinkBase === null) {
 			throw new Exception("Error in __METHOD__: use of method requires sPageLinkBase");
@@ -300,7 +300,7 @@ class SimplePager implements Iterator {
 	 * get relative or absolute page link
 	 *
 	 * @return  mixed string/null
-	 */	
+	 */
 	public function getNextLink() {
 		if($this->sPageLinkBase === null) {
 			throw new Exception("Error in __METHOD__: use of method requires sPageLinkBase");
@@ -310,7 +310,7 @@ class SimplePager implements Iterator {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Set the current iPage number (First iPage is 1).
 	 * @param  int $iPage
@@ -329,7 +329,7 @@ class SimplePager implements Iterator {
 	public function getPage() {
 		return $this->iPage;
 	}
-	
+
 	/**
 	 * Set the number of rows per iPage.
 	 * @param  int $iMaxRowsPerPage
@@ -352,7 +352,7 @@ class SimplePager implements Iterator {
 	 * Calculate start row / max rows based on current iPage and iMaxRowsPerPage.
 	 * @return  void
 	 */
-	private function calculateStart() { 	
+	private function calculateStart() {
 		$this->iStart = ( ($this->iPage - 1) * $this->iMaxRowsPerPage );
 	}
 
@@ -366,7 +366,7 @@ class SimplePager implements Iterator {
 
 	/**
 	 * Sets the start row or offset.
-	 * @param int 
+	 * @param int
 	 */
 	public function setStart($iValue) {
 		$this->iStart = $iValue;
@@ -387,7 +387,7 @@ class SimplePager implements Iterator {
 		}
 		return $this->iTotalPageCount;
 	}
-	
+
 	/**
 	 * Sets max rows (limit).
 	 * @param  int $iValue
@@ -396,7 +396,7 @@ class SimplePager implements Iterator {
 	public function setMaxRowPerPage($iValue) {
 		$this->iMaxRowsPerPage = $iValue;
 	}
-	
+
 	public function getRowsOnPage($iPage) {
 		if($this->iMaxRowsPerPage === 0) {
 			return $iPage === 1 ? $this->getTotalRecordCount() : 0;
@@ -417,7 +417,7 @@ class SimplePager implements Iterator {
 	public function count() {
 		return count($this->getResult());
 	}
-	
+
 	// Iterator methods
 	public function current() {
 		$oResult = new stdClass();
