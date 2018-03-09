@@ -879,7 +879,7 @@ abstract class BaseGroupQuery extends ModelCriteria
     }
     public function findMostRecentUpdate($bAsTimestamp = false) {
         $oQuery = clone $this;
-        $sDate = $oQuery->lastUpdatedFirst()->select("UpdatedAt")->findOne();
+        $sDate = $oQuery->clearOrderByColumns()->lastUpdatedFirst()->select("UpdatedAt")->findOne();
         if($sDate === null) {
             return null;
         }
