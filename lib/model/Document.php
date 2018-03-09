@@ -87,6 +87,7 @@ class Document extends BaseDocument {
 			$oImage = $this->getImage();
 			$oTemplate->replaceIdentifier('dimension', $oImage->getOriginalWidth(), 'width');
 			$oTemplate->replaceIdentifier('dimension', $oImage->getOriginalHeight(), 'height');
+			$oTemplate->replaceIdentifier('orientation', $oImage->getOrientation());
 			$oImage->destroy();
 		}
 		$oDocument = $this;

@@ -74,6 +74,13 @@ class Image {
 			return $this->iHeight;
 	}
 
+	public function getOrientation() {
+		if($this->iOriginalHeight < $this->iOriginalWidth) {
+			return "landscape";
+		}
+		return "portrait";
+	}
+
 	public function getScalingFactor()
 	{
 			return $this->fScalingFactor;
