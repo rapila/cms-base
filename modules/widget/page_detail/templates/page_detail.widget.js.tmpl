@@ -20,9 +20,10 @@ Widget.types.page_detail = {
 				}
 			}
 		});
+		this.page_type = null;
+		this.template_name = null;
 
 		this.edit_template_and_page_type = this._element.find('.edit_template_and_page_type').on('click', function(event) {
-
 			// create modal window
 			event.stopPropagation();
 			_this.template_and_pagetype.dialog({
@@ -43,6 +44,7 @@ Widget.types.page_detail = {
 				},
 				close: function() {
 					_this.template_and_pagetype[0].reset();
+					_this.set_template_and_page_type(_this.template_name, _this.page_type);
 					_this.edit_template_and_page_type.blur();
 				}
 			});
@@ -229,12 +231,13 @@ Widget.types.page_detail = {
 	},
 
 	set_template_and_page_type: function(template_name, page_type) {
-		this.template_select.find('option').attr('selected', false).end().find('option[value="'+template_name+'"]').attr('selected', 'selected');
-		this.template_select.val(template_name === null ? "" : template_name);
+		this.page_type = page_type;
+		this.template_name = template_name;
+
+		this.template_select.find('option').removeAttr("selected").end().val(template_name === null ? "" : template_name);
 		this._element.find("span.template_info").text(this.template_select.find(":selected").text());
 
-		this.page_type_select.find('option').attr('selected', false).end().find('option[value="'+page_type+'"]').attr('selected', 'selected');
-		this.page_type_select.val(page_type === null ? "" : page_type);
+		this.page_type_select.find('option').removeAttr("selected").end().val(page_type === null ? "" : page_type);
 		this._element.find("span.pagetype_info").text(this.page_type_select.find(":selected").text());
 	},
 
@@ -250,6 +253,8 @@ Widget.types.page_detail = {
 		this._element.find(".page_href").text(page_data.PageLink).attr('href', page_data.PageHref);
 
 		this.canonical_id_dropdown.val(page_data.CanonicalId === null ? "" : page_data.CanonicalId);
+		this.template_name = page_data.TemplateName;
+		this.page_type = page_data.PageType;
 		this.set_template_and_page_type(page_data.TemplateName, page_data.PageType);
 
 		this.delete_button.prop({title: page_data.DeleteNotPermitted});
