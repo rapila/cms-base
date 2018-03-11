@@ -56,22 +56,22 @@ class Image {
 
 	public function getOriginalWidth()
 	{
-			return $this->iOriginalWidth;
+		return $this->iOriginalWidth;
 	}
 
 	public function getOriginalHeight()
 	{
-			return $this->iOriginalHeight;
+		return $this->iOriginalHeight;
 	}
 
 	public function getWidth()
 	{
-			return $this->iWidth;
+		return $this->iWidth;
 	}
 
 	public function getHeight()
 	{
-			return $this->iHeight;
+		return $this->iHeight;
 	}
 
 	public function getOrientation() {
@@ -282,11 +282,11 @@ class Image {
 	}
 
 	public static function imageFromData($sImageData) {
-			$rImageResource = @imagecreatefromstring($sImageData);
-			if(!$rImageResource) {
-				throw new Exception("imagecreatefromstring: Unrecognized image format");
-			}
-			return new Image($rImageResource);
+		$rImageResource = @imagecreatefromstring($sImageData);
+		if(!$rImageResource) {
+			throw new Exception("imagecreatefromstring: Unrecognized image format");
+		}
+		return new Image($rImageResource);
 	}
 
 	public static function imageFromStream($rImageResource) {
