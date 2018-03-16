@@ -27,12 +27,8 @@ abstract class FrontendModule extends Module {
 			$oCache = new Cache($oCacheKey->render($sPrefix), DIRNAME_FULL_PAGE);
 
 			$bIsCached = $oCache->entryExists();
-			$bIsOutdated = false;
-
 			if($bIsCached) {
-				if($this->oLanguageObject) {
-					$bIsOutdated = $oCache->isOlderThan($this->oLanguageObject);
-				}
+				$bIsOutdated = $this->isOutdated($oCache);
 				if(!$bIsOutdated) {
 					return $oCache->getContentsAsString();
 				}
@@ -54,6 +50,14 @@ abstract class FrontendModule extends Module {
 
 	public function cacheKey() {
 		return CacheKey::create()->dependOnPath()->dependOnRequestParameter(self::acceptedRequestParams());
+	}
+
+	public function isOutdated($oCache) {
+		if($this->oLanguageObject) {
+			return $oCache->isOlderThan($this->oLanguageObject);
+		}
+
+		return false;
 	}
 
 	/**
