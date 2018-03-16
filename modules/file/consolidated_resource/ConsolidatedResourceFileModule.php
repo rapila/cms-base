@@ -1,12 +1,12 @@
 <?php
 class ConsolidatedResourceFileModule extends FileModule {
 	private $sType;
-	
+
 	public function __construct($aRequestPath) {
 		parent::__construct($aRequestPath);
 		$this->sType = Manager::usePath();
 	}
-	
+
 	public function renderFile() {
 		//Send Content-Type
 		$sCharset = Settings::getSetting('encoding', 'browser', 'utf-8');
@@ -31,6 +31,10 @@ class ConsolidatedResourceFileModule extends FileModule {
 			foreach($aKeys as $sItemKey) {
 				$oItemCache = new Cache($sItemKey, DIRNAME_PRELOAD, $oItemCachingStrategy);
 				if(!$oItemCache->entryExists(false)) {
+					if(StringUtil::endsWith($sItemKey, '.map')) {
+						// Browser tried to load source map referenced in concatenated file, don’t notify developers
+						throw new UserError("Consolidated resource $sItemKey does not exist.");
+					}
 					throw new Exception("Consolidated resource $sItemKey does not exist.");
 				}
 				$oCache->setContents($oItemCache->getContentsAsString()."\n", false, true);
