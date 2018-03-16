@@ -38,6 +38,9 @@ abstract class FrontendModule extends Module {
 		if($sResult instanceof Template) {
 			$sResult = $sResult->render();
 		}
+		if(!$sResult) {
+			$sResult = '';
+		}
 		if($oCache) {
 			$oCache->setContents($sResult);
 		}
