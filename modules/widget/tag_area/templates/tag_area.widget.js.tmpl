@@ -27,7 +27,7 @@ Widget.types.tag_area = {
 
 	reload_tags: function() {
 		var _this = this;
-		this.listTags(function(all_tags) {
+		this.listTags(window.AdminInterface.current_admin_module, function(all_tags) {
 			this._element.find('.tag').remove();
 			this._element.removeClass('has_tags');
 			jQuery.each(all_tags, function(i, tag) {

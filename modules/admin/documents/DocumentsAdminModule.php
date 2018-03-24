@@ -22,6 +22,10 @@ class DocumentsAdminModule extends AdminModule {
 		$this->oSidebarWidget->setSetting('initial_selection', array('document_category_id' => $this->oListWidget->getDocumentCategoryId()));
 	}
 
+	public static function getPrincipalModel() {
+		return 'Document';
+	}
+
 	public function mainContent() {
 		return $this->oListWidget->doWidget();
 	}

@@ -36,6 +36,10 @@ class PagesAdminModule extends AdminModule {
 		$oResourceIncluder->addResource('admin/template.css', null, null, array(), ResourceIncluder::PRIORITY_NORMAL, null, true);
 	}
 
+	public static function getPrincipalModel() {
+		return 'Page';
+	}
+
 	private static function initializeRootPage() {
 		$oRootPage = new Page();
 		$oRootPage->makeRoot();

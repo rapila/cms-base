@@ -11,11 +11,21 @@ class TagAreaWidgetModule extends PersistentWidgetModule {
 	private $sModelName;
 	private $mTaggedItemId;
 
-	public function listTags() {
+	public function listTags($sAdminModuleName = null) {
 		$oQuery = TagQuery::create();
 		$sModelName = $this->sModelName;
 		if($this->sModelName && $this->mTaggedItemId) {
 			return $sModelName::tagsFor($this->mTaggedItemId, 'names');
+		}
+
+		// list only tags related to local principal model in case of config use_tags_globally = false
+		$sPrincipalModel = null;
+		if(!Settings::getSetting('admin', 'use_tags_globally', true)) {
+			$sAdminModuleClass = AdminModule::getClassNameByName($sAdminModuleName);
+			$cModelFunction = "$sAdminModuleClass::getPrincipalModel";
+			if(is_callable($cModelFunction)) {
+				$sPrincipalModel = $cModelFunction();
+			}
 		}
 
 		$aTagModels = Settings::getSetting('admin', 'tag_models', 'Tag');
@@ -25,7 +35,14 @@ class TagAreaWidgetModule extends PersistentWidgetModule {
 		$aResult = array();
 		foreach($aTagModels as $sTagModel) {
 			$sQuery = "${sTagModel}Query";
-			$aResult = array_merge($aResult, $sQuery::create()->select('name')->find()->getArrayCopy());
+			if($sPrincipalModel === null) {
+				$oQuery = $sQuery::create()->select('name');
+			} else {
+				$sInstanceClassName = "${sTagModel}Instance";
+				$sJoinInstanceClassName = "join${sInstanceClassName}";
+				$oQuery = $sQuery::create()->$sJoinInstanceClassName()->useQuery($sInstanceClassName)->filterByModelName($sPrincipalModel)->endUse();
+			}
+			$aResult = array_merge($aResult, $oQuery->select('name')->find()->getArrayCopy());
 		}
 		$aResult = array_unique($aResult);
 		sort($aResult);
