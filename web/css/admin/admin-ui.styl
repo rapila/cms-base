@@ -402,13 +402,15 @@ td span.remove_entry
 		&:not(:last-child)
 			border-bottom 1px dotted #999
 		a.ui-menu-item
-			padding 2px 5px
+			padding 4px 5px
 			margin 0
 			box-sizing border-box
 			border none
 			line-height 1.5
 			border-radius 0
-			&.ui-state-focus
+			&.ui-state-focus,
+			&:hover
+				cursor pointer
 				border none
 				color white
 				background-color transparent
