@@ -99,6 +99,9 @@ jQuery(document).ready(function() {
 			},
 			icons_from_item: function(item) {
 				var result = [];
+				if(item.IsFolder) {
+					result.push('is-folder');
+				}
 				if(item.IsProtected) {
 					result.push('is-protected');
 				}

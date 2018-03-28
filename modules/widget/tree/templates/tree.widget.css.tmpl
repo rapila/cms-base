@@ -29,10 +29,13 @@ li.jstree-last.jstree-leaf {
 }
 *[data-widget-type=tree] ul ins.jstree-custom-icon {
 	position: absolute;
-	right: 0;
+	right: 5px;
 }
 *[data-widget-type=tree] ul ins.jstree-custom-icon:nth-child(2) {
-	right: 30px;
+	right: 28px;
+}
+*[data-widget-type=tree] ul ins.jstree-custom-icon:nth-child(3) {
+	right: 51px;
 }
 
 *[data-widget-type=tree] .tree-opener { float: left; }
@@ -77,9 +80,9 @@ li.jstree-last.jstree-leaf {
 
 *[data-widget-type=tree] li .jstree-custom-icon {
   height: 22px;
-  width: 29px;
+  width: 20px;
   margin-top: 0;
-  margin-left: 5px;
+  margin-left: 4px;
 }
 
 *[data-widget-type=tree] li.ui-state-hover > a,
@@ -151,28 +154,40 @@ li.jstree-last.jstree-leaf {
 }
 
 *[data-widget-type=tree] .ui-icon.ui-icon-is-protected {
-	background: transparent url('{{writeDirectInclude=admin/page_protected_default.png;template=location_only}}') no-repeat;
+	background: transparent url('{{writeDirectInclude=admin/page_protected_default_new.png;template=location_only}}') no-repeat;
 }
 .ui-state-default .ui-icon.ui-icon-is-protected {
-	background: transparent url('{{writeDirectInclude=admin/page_protected_default.png;template=location_only}}') no-repeat;
+	background: transparent url('{{writeDirectInclude=admin/page_protected_default_new.png;template=location_only}}') no-repeat;
+}
+*[data-widget-type=tree] .ui-icon.ui-icon-is-folder {
+	background: transparent url('{{writeDirectInclude=admin/page_folder_default_new.png;template=location_only}}') no-repeat;
+}
+.ui-state-default .ui-icon.ui-icon-is-folder {
+	background: transparent url('{{writeDirectInclude=admin/page_folder_default_new.png;template=location_only}}') no-repeat;
 }
 *[data-widget-type=tree] .ui-icon.ui-icon-is-hidden {
-	background: transparent url('{{writeDirectInclude=admin/page_hidden_default.png;template=location_only}}') no-repeat;
+	background: transparent url('{{writeDirectInclude=admin/page_hidden_default_new.png;template=location_only}}') no-repeat;
 }
 .ui-state-default .ui-icon.ui-icon-is-hidden {
-	background: transparent url('{{writeDirectInclude=admin/page_hidden_default.png;template=location_only}}') no-repeat;
+	background: transparent url('{{writeDirectInclude=admin/page_hidden_default_new.png;template=location_only}}') no-repeat;
 }
 .ui-state-hover > a > .ui-icon.ui-icon-is-protected {
-	background: transparent url('{{writeDirectInclude=admin/page_protected_active.png;template=location_only}}') no-repeat;
+	background: transparent url('{{writeDirectInclude=admin/page_protected_active_new.png;template=location_only}}') no-repeat;
 }
 .ui-state-hover > a > .ui-icon.ui-icon-is-hidden {
-	background: transparent url('{{writeDirectInclude=admin/page_hidden_active.png;template=location_only}}') no-repeat;
+	background: transparent url('{{writeDirectInclude=admin/page_hidden_active_new.png;template=location_only}}') no-repeat;
+}
+.ui-state-hover > a > .ui-icon.ui-icon-is-folder {
+	background: transparent url('{{writeDirectInclude=admin/page_folder_active_new.png;template=location_only}}') no-repeat;
 }
 .ui-state-active > a > .ui-icon.ui-icon-is-protected {
-	background: transparent url('{{writeDirectInclude=admin/page_protected_active.png;template=location_only}}') no-repeat;
+	background: transparent url('{{writeDirectInclude=admin/page_protected_active_new.png;template=location_only}}') no-repeat;
 }
 .ui-state-active > a > .ui-icon.ui-icon-is-hidden {
-	background: transparent url('{{writeDirectInclude=admin/page_hidden_active.png;template=location_only}}') no-repeat;
+	background: transparent url('{{writeDirectInclude=admin/page_hidden_active_new.png;template=location_only}}') no-repeat;
+}
+.ui-state-active > a > .ui-icon.ui-icon-is-folder {
+	background: transparent url('{{writeDirectInclude=admin/page_folder_active_new.png;template=location_only}}') no-repeat;
 }
 
 #vakata-dragged {
@@ -182,15 +197,15 @@ li.jstree-last.jstree-leaf {
 	font-weight: 700;
 }
 
-#vakata-dragged ins { } 
-#vakata-dragged .jstree-ok { } 
-#vakata-dragged .jstree-invalid { } 
+#vakata-dragged ins { }
+#vakata-dragged .jstree-ok { }
+#vakata-dragged .jstree-invalid { }
 body #jstree-marker {
 	background-color: #e3ef99;
 	color: #666;
 	height: 10px;
 	width: 10px;
-	font-size: 15px; 
+	font-size: 15px;
 	border-radius: 5px;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
