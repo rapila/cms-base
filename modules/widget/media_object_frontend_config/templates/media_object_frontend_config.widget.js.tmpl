@@ -8,7 +8,7 @@ Widget.types.media_object_frontend_config = {
 			widget.settings.default_value_label = '{{writeString=wns.media_object.use_url}}';
 		}, function(widget) {
 			_this.document_input = widget._element;
-			
+
 			widget.handle('reloaded', function() {
 				//Update values on load (depends on a populated document_input)
 				deferred.then(function(data) {
@@ -74,7 +74,7 @@ Widget.types.media_object_frontend_config = {
 			_this.update_preview();
 		});
 	},
-	
+
 	find_param: function(elements, param) {
 		var value = elements.find('*['+param+']').attr(param);
 		if(!value) {
@@ -82,7 +82,7 @@ Widget.types.media_object_frontend_config = {
 		}
 		return value;
 	},
-	
+
 	add_entry: function(data) {
 		this._element.find("span.default_message").hide();
 		var new_entry = this.entry_prototype.clone();
@@ -105,15 +105,15 @@ Widget.types.media_object_frontend_config = {
 		}
 		return new_entry;
 	},
-	
+
 	update_visibilities: function(media_entry) {
 		var document_select = media_entry.find("select[name='document_id[]']");
 		var url_input = media_entry.find("input[name='url[]']");
-		
+
 		var document_group = media_entry.find('.group_fields.document_id');
 		var url_group = media_entry.find('.group_fields.url');
 		var mimetype_group = media_entry.find('.group_fields.mimetype');
-		
+
 		if(url_input.val()) {
 			document_group.hide();
 		} else {
@@ -131,14 +131,22 @@ Widget.types.media_object_frontend_config = {
 			media_entry.find("input[name='mimetype[]']").val('');
 		}
 	},
-	
+
 	update_preview: function() {
 		this.renderPreview(this._element.serializeArrayKV(), function(result) {
 			this.preview.empty().append(Widget.parseHTML(result));
 		});
 	},
-	
+
 	save: function() {
 		return this._element.serializeArrayKV();
-	}
+	},
+
+	additional_buttons: [
+		{
+			text: '{{writeString=documents.do_admin}}',
+			icon: 'wrench',
+			action: jQuery.openLink.bind(window, "{{writeLink=documents;manager=AdminManager}}")
+		}
+	]
 };
