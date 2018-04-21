@@ -1,18 +1,6 @@
 	<div class="group_fields">
-		<label for="document_categories[]">{{writeString=wns.document_list.category_option}}</label>
-		<select name="document_categories[]" {{if=eq;1=\{\{writeSettingValue=list_allows_multiple_categories\;section=admin\}\};2=true}} multiple="multiple"{{endIf}} class="ui-widget-content"></select>
-	</div>
-	<div class="group_fields">
-		<label for="tags[]">{{writeString=wns.link_list.tag_option}}</label>
-		<select name="tags[]" {{if=eq;1=\{\{writeSettingValue=list_allows_multiple_categories\;section=admin\}\};2=true}} multiple="multiple"{{endIf}} class="ui-widget-content"></select>
-	</div><br />
-	<div class="group_fields">
 		<label for="document_kind">{{writeString=wns.document_list.kind_option}}</label>
 		<select name="document_kind" class="ui-widget-content autowidth"></select>
-	</div>
-	<div class="group_fields">
-		<label for="list_template">{{writeString=wns.document_list.template_option}}</label>
-		<select name="list_template" class="ui-widget-content autowidth"></select>
 	</div>
 	<div class="group_fields">
 		<label for="sort_by">{{writeString=wns.document_list.sort_option}}</label>
@@ -21,4 +9,18 @@
 	<div class="group_fields">
 		<label for="sort_order">{{writeString=wns.document_list.sort_order}}</label>
 		<select name="sort_order" class="ui-widget-content autowidth"></select>
+	</div>
+	<div class="group_fields">
+		<label for="list_template">{{writeString=wns.document_list.template_option}}</label>
+		<select name="list_template" class="ui-widget-content autowidth"></select>
 	</div><br style="clear:left;" />
+	<div class="group_fields">
+		<label for="document_categories[]">{{writeString=wns.document_list.category_option}}</label>
+		<select name="document_categories[]" {{if=eq;1=\{\{writeSettingValue=list_allows_multiple_categories\;section=admin\}\};2=true}} multiple="multiple"{{endIf}} class="ui-widget-content"></select>
+	</div>
+	<div class="group_fields">
+		<label for="tags[]">{{writeString=wns.document_list.tag_option}}</label>
+		<select name="tags[]" {{if=eq;1=\{\{writeSettingValue=list_allows_multiple_categories\;section=admin\}\};2=true}} multiple="multiple"{{endIf}} class="ui-widget-content"></select>
+	</div><br />
+	<p class="multi_select_info">{{writeString=wns.document_list_config.multiple_select_info}}</p>
+

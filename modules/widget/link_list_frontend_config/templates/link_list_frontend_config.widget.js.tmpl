@@ -1,6 +1,9 @@
 Widget.types.link_list_frontend_config = {
 	prepare: function() {
 		var display_modes = this.getConfigData() || {};
+		display_modes.tags = display_modes.tags ? display_modes.tags : [];
+		display_modes.link_categories = display_modes.link_categories ? display_modes.link_categories : [];
+
 		var config_modes = this.getConfigurationModes();
 		this.content = (config_modes.link_categories.length == 0) ? Widget.parseHTML("{{includeTemplate=edit_no_categories}}") : Widget.parseHTML("{{includeTemplate=edit}}");
 		var _this = this;
