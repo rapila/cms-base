@@ -16,25 +16,16 @@ Widget.types.tree = {
 			core: {
 				data: this.load_item.bind(this),
 				check_callback: function(operation, node, parent, position, more) {
-					if(operation === 'copy_node') {
+					if(operation !== 'move_node') {
+						// FIXME: Support create_node, rename_node, delete_node, copy_node, edit operations
 						return false;
 					}
 					var src_data = node.data;
 					if(!_this.settings.may_move_item(src_data)) {
 						return false;
 					}
-					debugger;
-					var dest_data = data.r !== -1 && data.r.data('jstree');
-					if(!dest_data || !data.p) {
-						return false;
-					}
-					var result = false;
-					if(data.p === 'inside' || data.p === 'first' || data.p === 'last') {
-						result = _this.settings.may_create_child(dest_data);
-					} else {
-						result = _this.settings.may_create_sibling(dest_data);
-					}
-					return result;
+					var dest_data = parent.data;
+					return _this.settings.may_create_child(dest_data);
 				},
 				multiple: false,
 				force_text: true,
@@ -48,6 +39,7 @@ Widget.types.tree = {
 				is_draggable: function(node) {
 					return _this.settings.may_move_item(node[0].data);
 				},
+				check_while_dragging: false,
 				use_html5: false
 			}
 		});
@@ -156,7 +148,6 @@ Widget.types.tree = {
 		description_from_item: jQuery.noop,
 		has_children: jQuery.noop,
 		may_create_child: jQuery.noop,
-		may_create_sibling: jQuery.noop,
 		may_move_item: jQuery.noop,
 		identifier_from_data: jQuery.noop,
 		is_open: jQuery.noop,

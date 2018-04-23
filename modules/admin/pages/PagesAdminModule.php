@@ -89,7 +89,6 @@ class PagesAdminModule extends AdminModule {
 		$oUser = Session::getSession()->getUser();
 		$aResult = $oPage->toArray();
 		$aResult['UserMayCreateChildren'] = $oUser->mayCreateChildren($oPage);
-		$aResult['UserMayCreateSiblings'] = $oPage->getParent() !== null && $oUser->mayCreateChildren($oPage->getParent());
 		return $aResult;
 	}
 
