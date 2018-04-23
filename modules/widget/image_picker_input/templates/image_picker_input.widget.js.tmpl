@@ -6,11 +6,11 @@ Widget.types.image_picker_input = {
 		Widget.create('image_picker', function(picker) {
 			this.picker = picker;
 			this.picker.set_callback(this.callback.bind(this));
-			this.picker_remover.bind('click', this.picker.remove_picture.bind(this.picker));
-			this.picker_image.bind('click', this.picker.open_chooser.bind(this.picker));
-			this.picker_chooser.bind('click', this.picker.open_chooser.bind(this.picker));
+			this.picker_remover.on('click', this.picker.remove_picture.bind(this.picker));
+			this.picker_image.on('click', this.picker.open_chooser.bind(this.picker));
+			this.picker_chooser.on('click', this.picker.open_chooser.bind(this.picker));
 		}.bind(this), this._element.attr('data-widget-picker-session'));
-		this._element.bind('change', this.picker_changed.bind(this));
+		this._element.on('change', this.picker_changed.bind(this));
 	},
 	
 	callback: function(picked_docoument_id) {

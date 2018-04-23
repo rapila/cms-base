@@ -24,10 +24,10 @@ Widget.types.media_object_frontend_config = {
 		this.preview = this._element.find('.preview');
 		this.config = this._element.find('.config');
 		this.entry_prototype = Widget.parseHTML('{{includeTemplate=entry}}');
-		this._element.find('a').bind('click', function(event) {
+		this._element.find('a').on('click', function(event) {
 			_this.add_entry();
 		});
-		this._element.delegate("input[name='url[]']", 'change', function() {
+		this._element.on('change', "input[name='url[]']", function() {
 			var url_input = jQuery(this);
 			var media_entry = url_input.closest('.media_entry');
 			if(!url_input.val()) {
@@ -53,7 +53,7 @@ Widget.types.media_object_frontend_config = {
 					media_entry.find("input[name='mimetype[]']").val(mimetype || '');
 				}
 			}
-		}).delegate("select[name='document_id[]'], input[name='url[]']", 'change', function() {
+		}).on('change', "select[name='document_id[]'], input[name='url[]']", function() {
 			var media_entry = jQuery(this).closest('.media_entry');
 			_this.update_visibilities(media_entry);
 			var mimetype_input = media_entry.find("input[name='mimetype[]']");
@@ -63,9 +63,9 @@ Widget.types.media_object_frontend_config = {
 					_this.update_preview();
 				}
 			});
-		}).delegate('input, select', 'change', function() {
+		}).on('change', 'input, select', function() {
 			_this.update_preview();
-		}).delegate('.delete_media', 'click', function() {
+		}).on('change', '.delete_media', function() {
 			var media_entry = jQuery(this).closest('.media_entry');
 			media_entry.remove();
 			if(_this.config.find('.media_entry').length === 0) {

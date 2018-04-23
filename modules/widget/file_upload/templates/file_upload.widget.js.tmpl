@@ -17,7 +17,7 @@ Widget.types.file_upload = {
 		
 		var _this = this;
 		var current_drag_is_file = false;
-		element.bind('dragenter', function(event) {
+		element.on('dragenter', function(event) {
 			current_drag_is_file = event.dataTransfer && (event.dataTransfer.files !== null || event.dataTransfer.types.contains("Files"));
 			if(single_file_only && event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files.length > 1) {
 				current_drag_is_file = false;
@@ -31,12 +31,12 @@ Widget.types.file_upload = {
 			var target_is_descendant = !el.is(event.target) && el.has(event.target);
 			el.data('drag-hover-target_is_descendant', target_is_descendant);
 			el.addClass('ui-state-droppable-hover');
-		}).bind('dragover', function(event) {
+		}).on('dragover', function(event) {
 			if(!current_drag_is_file) {
 				return;
 			}
 			event.originalEvent.preventDefault();
-		}).bind('dragleave', function(event) {
+		}).on('dragleave', function(event) {
 			var tar = jQuery(event.target);
 			var el = selector ? tar.closest(selector, element) : element;
 			if(!el.length) {
@@ -47,7 +47,7 @@ Widget.types.file_upload = {
 			if(el.is(event.target) && !target_is_descendant) {
 				el.removeClass('ui-state-droppable-hover');
 			}
-		}).bind('drop', function(event) {
+		}).on('drop', function(event) {
 			event.preventDefault();
 			if(!event.dataTransfer || (single_file_only && event.dataTransfer.files.length > 1)) {
 				return;

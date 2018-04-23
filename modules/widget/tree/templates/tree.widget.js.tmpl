@@ -12,7 +12,7 @@ Widget.types.tree = {
 		}
 
 		// Item click handler
-		this._element.bind('select_node.jstree', function(event) {
+		this._element.on('select_node.jstree', function(event) {
 			// Get the selected item
 			var element = _this._tree.get_selected();
 			// Open it
@@ -25,8 +25,7 @@ Widget.types.tree = {
 
 		//Open initially opened items
 		this._element.one('loaded.jstree', function(event, result) {
-			var open_initial_nodes = function(event, data) {
-				var callback = arguments.callee;
+			function open_initial_nodes(event, data) {
 				var opened_node = data.rslt.obj;
 				_this._tree._get_children(opened_node).each(function() {
 					var node = jQuery(this);
@@ -34,7 +33,7 @@ Widget.types.tree = {
 					if(_this.settings.is_active(data)) {
 						_this._tree.select_node(node);
 					} else if(_this.settings.is_open(data)) {
-						_this._element.one('open_node.jstree', callback);
+						_this._element.one('open_node.jstree', open_initial_nodes);
 						_this._tree.open_node(node);
 					}
 				});
@@ -81,13 +80,13 @@ Widget.types.tree = {
 			}
 		});
 		this._tree = jQuery.jstree._reference(this._element);
-		this._element.bind('move_node.jstree', function(event, data) {
+		this._element.on('move_node.jstree', function(event, data) {
 			_this.moveItem(_this.identifier_from_element(data.rslt.o), _this.identifier_from_element(data.rslt.r), data.rslt.p, function(res, error) {
 				if(error) {
 					jQuery.jstree.rollback(data.rlbk);
 				}
 			}, WidgetJSONOptions.with_callback_handles_error(false));
-		}).bind('refresh.jstree', function(event, data) {
+		}).on('refresh.jstree', function(event, data) {
 			if(_this.current_element_identifier && _this.current_element().length == 0) {
 				var new_element = _this.element_with_identifier(_this.current_element_identifier);
 				_this._tree.deselect_all();

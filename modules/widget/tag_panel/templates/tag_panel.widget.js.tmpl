@@ -5,7 +5,7 @@ Widget.types.tag_panel = {
 		Widget.createWithElement('tag_area', function(tag_area) {
 			tag_area.handle('element_set', function(event, element) {
 				_this.panel.prepend(element);
-				_this.panel.prepend(jQuery('<a/>').addClass('close_panel').text('x').bind('click', function() {
+				_this.panel.prepend(jQuery('<a/>').addClass('close_panel').text('x').on('click', function() {
 					_this.hide('right');
 				}));
 			});
@@ -21,7 +21,7 @@ Widget.types.tag_panel = {
 			.click(jQuery.openLink.bind(jQuery, '{{writeLink=tags;manager=AdminManager}}'));
 		var new_tag = jQuery('<input/>').addClass('ui-widget-content').attr('type', 'text').appendTo(this.admin_area);
 		var create_new_tag = jQuery('<button/>').text('{{writeString=wns.tag.add}}').appendTo(this.admin_area).button({disabled: true});
-		new_tag.bind('keyup', function(event) {
+		new_tag.on('keyup', function(event) {
 			if(jQuery.trim(new_tag.val())) {
 				create_new_tag.button('enable');
 			} else {
@@ -34,7 +34,7 @@ Widget.types.tag_panel = {
 				_this.hide();
 			}
 		});
-		create_new_tag.bind('click', function(event) {
+		create_new_tag.on('click', function(event) {
 			if(!create_new_tag.button('option', 'disabled')) {
 				_this.tag_area.append_tag(jQuery.trim(new_tag.val()));
 				new_tag.val('');

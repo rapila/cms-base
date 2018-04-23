@@ -289,7 +289,7 @@ Widget.types.page_detail = {
 				if(attrs.defaultValue) {
 					property_container.find('span.page_property_default_name').text(attrs.defaultValue);
 					if(attrs.type === 'color') {
-						input.bind('change', function(defaultValue) {
+						input.on('change', function(defaultValue) {
 							if(this.val()) {
 								this.css({backgroundColor: this.val()});
 							} else {

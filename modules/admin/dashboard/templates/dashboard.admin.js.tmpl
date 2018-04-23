@@ -53,7 +53,7 @@ jQuery(document).ready(function() {
 			};
 
 			//Change handlers
-			container.bind('db-configured.dashboard', function(event) {
+			container.on('db-configured.dashboard', function(event) {
 				module.color = container.css('backgroundColor');
 				module.title = heading.text();
 				module.contrastColor = heading.css('color');
@@ -69,19 +69,19 @@ jQuery(document).ready(function() {
 				}
 				dashboard_control.saveSettings(uid, module);
 			});
-			container.bind('db-collapsed.dashboard', function(event, state) {
+			container.on('db-collapsed.dashboard', function(event, state) {
 				module.collapsed = state;
 				dashboard_control.changeCollapsed(uid, state);
 			});
-			container.bind('db-moved.dashboard', function(event, move) {
+			container.on('db-moved.dashboard', function(event, move) {
 				module.container = move.to;
 				dashboard_control.move(uid, move.to, move.pos);
 			});
-			container.bind('db-removing.dashboard', function(event) {
+			container.on('db-removing.dashboard', function(event) {
 				Widget.confirm('{{writeString=wns.dashboard.remove}}', '{{writeString=wns.dashboard.remove_widget}}', function(removed) {
 					if(removed) {
 						dashboard_control.remove(uid, function() {
-							container.unbind('.dashboard');
+							container.off('.dashboard');
 							container.remove();
 							update_empty_message();
 						});
@@ -96,7 +96,7 @@ jQuery(document).ready(function() {
 			var module = skeleton.module;
 			if(module.collapsed) {
 				skeleton.collapse();
-				skeleton.container.one('db-collapsed', arguments.callee.bind(this, skeleton));
+				skeleton.container.one('db-collapsed', init_widget.bind(this, skeleton));
 				skeleton.container.show();
 				return;
 			}
@@ -124,7 +124,7 @@ jQuery(document).ready(function() {
 				Widget.callStatic('detail', 'clickable_labels_for', form);
 				skeleton.config_form = form;
 				form.appendTo(skeleton.container.find('.dashboard-edit-box'));
-				form.bind('submit', function(event) {
+				form.on('submit', function(event) {
 					event.preventDefault();
 				});
 				skeleton.container.show();
@@ -134,7 +134,7 @@ jQuery(document).ready(function() {
 		function reload() {
 			dashboard_control.layoutTemplate(function(template) {
 				//Clear elements and bound handlers
-				db.find('.dashboard-widget').unbind('.dashboard').empty();
+				db.find('.dashboard-widget').off('.dashboard').empty();
 
 				//Reload
 				db.html(template);

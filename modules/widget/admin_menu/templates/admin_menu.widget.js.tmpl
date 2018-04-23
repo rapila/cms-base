@@ -138,7 +138,7 @@ Widget.types.admin_menu = {
 				result.element.addClass('ui-state-active');
 			}
 			if(this.settings.attach_events) {
-				result.element.bind('change', function(event) {
+				result.element.on('change', function(event) {
 					var selected = jQuery(this).find(':selected');
 					if(!jQuery.isFunction(selected.data('action'))) {
 						result.element.addClass('inactive');

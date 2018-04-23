@@ -89,7 +89,7 @@ Widget.types.login_window = {
 		this.login_markup.find('.input_default_state').each(function() {
 			var input = jQuery(this);
 			input.data('default_value', input.val());
-		}).bind('focus', function(event) {
+		}).on('focus', function(event) {
 			var input = jQuery(this);
 			if(!event.originalEvent) {
 				//Is artificial focus – ignore
@@ -102,12 +102,12 @@ Widget.types.login_window = {
 			if(input.is('[name="password"]')) {
 				input[0].type = "password";
 			}
-		}).bind('keypress', function() {
+		}).on('keypress', function() {
 			var input = jQuery(this);
 			if(input.is('.input_default_state')) {
 				input.removeClass('input_default_state');
 			}
-		}).bind('blur', function() {
+		}).on('blur', function() {
 			var input = jQuery(this);
 			if(!input.val()) {
 				input.addClass('input_default_state');

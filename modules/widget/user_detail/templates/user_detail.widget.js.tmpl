@@ -36,7 +36,7 @@ Widget.types.user_detail = {
 		var is_admin = this._element.find("input[name='is_admin']");
 
 		// Rights section should only be shown if permissions are there, or at least without checkboxes
-		is_admin.bind('change', function() {
+		is_admin.on('change', function() {
 			_this.toggle_rights_section(jQuery(this).prop('checked') === false);
 		});
 

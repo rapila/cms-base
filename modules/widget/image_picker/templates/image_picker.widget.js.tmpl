@@ -50,7 +50,7 @@ Widget.types.image_picker = {
 				}
 			});
 		} else {
-			this.image_area.delegate('div.ui-image-picker-image', 'click', function() {
+			this.image_area.on('click', 'div.ui-image-picker-image', function() {
 				var document_id = jQuery(this).data('document_id');
 				_this.settings.callback(document_id);
 				if(_this.is_popup) {

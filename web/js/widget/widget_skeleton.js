@@ -40,14 +40,14 @@
 	});
 
 	//Handle unsaved changes gracefully
-	win.bind('beforeunload', function(event) {
+	win.on('beforeunload', function(event) {
 		if(UnsavedChanges.global > 0) {
 			event.returnValue = '';
 			return '';
 		}
 	});
 	
-	win.bind('unload', function(event) {
+	win.on('unload', function(event) {
 		var ids = [];
 		jQuery.each(Widget.seenWidgets, function(id) {
 			ids.push(id);

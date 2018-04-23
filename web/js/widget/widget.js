@@ -1,8 +1,8 @@
 //Bind method (heavily used)
 if(!Function.prototype.bind) {
-	Function.prototype.bind = function(context) {
+	Function.prototype.bind = function bind(context) {
 		var __method = this;
-		var __arguments = jQuery.makeArray(arguments).slice(arguments.callee.length);
+		var __arguments = jQuery.makeArray(arguments).slice(bind.length);
 		return function() {
 			var args = __arguments.concat(jQuery.makeArray(arguments));
 			return __method.apply(context, args);
@@ -107,9 +107,9 @@ jQuery.widget("ui.dialog", jQuery.ui.dialog, {
 					this.init(eventName);
 					var hk = (fireIfPast ? hook.past : hook.dflt)[eventName];
 					if(isOnce) {
-						handler = function() {
+						handler = function handler() {
 							var result = originalHandler.apply(this, jQuery.makeArray(arguments));
-							hk.remove(arguments.callee);
+							hk.remove(handler);
 							return result;
 						};
 					}
@@ -137,8 +137,8 @@ jQuery.widget("ui.dialog", jQuery.ui.dialog, {
 			return Widget.widgetJSON(this.widgetType, this, action, callback, options, attributes);
 		},
 
-		_callMethod: function(name) {
-			var args = jQuery.makeArray(arguments).slice(arguments.callee.length);
+		_callMethod: function callMethod(name) {
+			var args = jQuery.makeArray(arguments).slice(callMethod.length);
 			var options = args.pop();
 			if(!options || options.constructor !== WidgetJSONOptions) {
 				options !== undefined && args.push(options);
@@ -582,7 +582,7 @@ jQuery.widget("ui.dialog", jQuery.ui.dialog, {
 		},
 
 		tooltip: function(element, text) {
-			jQuery(element).bind('mouseenter', alert.bind(window, text));
+			jQuery(element).on('mouseenter', alert.bind(window, text));
 		},
 
 		confirm: function(title, message, callback, cancelButtonText, okButtonText) {
@@ -607,9 +607,9 @@ jQuery.widget("ui.dialog", jQuery.ui.dialog, {
 		//Hide activity indicator
 		end_activity: jQuery.noop,
 
-		widgetJSON: function(widgetType, widgetOrId, action, callback, options) {
+		widgetJSON: function widgetJSON(widgetType, widgetOrId, action, callback, options) {
 			options = options || new WidgetJSONOptions();
-			var attributes = arguments[arguments.callee.length] || {};
+			var attributes = arguments[widgetJSON.length] || {};
 			if(!jQuery.isArray(action)) {
 				action = [action];
 			}
@@ -812,7 +812,7 @@ jQuery.widget("ui.dialog", jQuery.ui.dialog, {
 						link.attr('href', item.admin_link);
 						li.append(link);
 					} else if(item.admin_widget) {
-						link.bind('click', function() {
+						link.on('click', function() {
 							Widget.createWithElement(item.admin_widget[0], function(widget) {
 								widget.handle('element_set', function() {
 									var buttons = [];
@@ -1108,11 +1108,11 @@ jQuery.widget("ui.dialog", jQuery.ui.dialog, {
 			return this;
 		};
 		this.protect = function(element) {
-			element.delegate(':input', 'change.UnsavedChanges', this.set.bind(this));
+			element.on('change.UnsavedChanges', ':input', this.set.bind(this));
 			return this;
 		};
 		this.unprotect = function(element) {
-			element.undelegate('.UnsavedChanges');
+			element.off('.UnsavedChanges');
 			return this;
 		};
 

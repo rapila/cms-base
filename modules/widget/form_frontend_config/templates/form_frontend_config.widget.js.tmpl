@@ -11,7 +11,7 @@ Widget.types.form_frontend_config = {
 		this.form_field_prototype = jQuery("{{includeTemplate=edit_form_field_row}}");
 		this.form_field_prototype.find(".switcher_field").populate(this.getFieldTypeOptions());
 		
-		types_dropdown.bind('change', function() {
+		types_dropdown.on('change', function() {
 			_this._element.find('.conditional_field-for-form_type').hide().filter('.'+jQuery(this).val()).show();
 		}).change();
 		
@@ -35,12 +35,12 @@ Widget.types.form_frontend_config = {
 			containment: this.form_field_area.closest('table')
 		});
 		
-		this._element.find('.add_entry').bind('click', function() {
+		this._element.find('.add_entry').on('click', function() {
 			_this.add_item();
 			_this.update_form_fields();
 		});
 		
-		this._element.delegate('.remove_entry', 'click', function() {
+		this._element.on('click', '.remove_entry', function() {
 			jQuery(this).closest('tr').remove();
 			_this.update_form_fields();
 		});

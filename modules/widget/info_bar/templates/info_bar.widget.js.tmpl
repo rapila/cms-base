@@ -146,7 +146,7 @@ Widget.types.info_bar = {
 					if(search_input.val() === '') {
 						search_input.addClass('default_state').val(default_value);
 					}
-				}).bind('keyup', function(event) {
+				}).on('keyup', function(event) {
 					if(event.which === 27) {
 						return clear_button.click();
 					}

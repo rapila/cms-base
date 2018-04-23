@@ -76,10 +76,10 @@
 					method.call(_this, event, jQuery(this).closest('li'));
 				};
 			};
-			filled_modules.delegate('li .remove_button', 'click', bind(this.remove_object));
-			filled_modules.delegate('li .edit_condition_button', 'click', bind(this.edit_condition));
-			filled_modules.delegate('li .edit_button', 'click', bind(this.edit_object));
-			filled_modules.delegate('li .draft_status', 'click', bind(this.drop_draft));
+			filled_modules.on('click', 'li .remove_button', bind(this.remove_object));
+			filled_modules.on('click', 'li .edit_condition_button', bind(this.edit_condition));
+			filled_modules.on('click', 'li .edit_button', bind(this.edit_object));
+			filled_modules.on('click', 'li .draft_status', bind(this.drop_draft));
 
 			var available_modules = container.find('.available_modules');
 			var delete_drop_zone = container.find('.delete_drop_zone').droppable({
@@ -222,19 +222,19 @@
 					filled_container.position_bar();
 				});
 
-				filled_container.bind('mouseenter', function() {
+				filled_container.on('mouseenter', function() {
 					if(leave_timeout) {
 						window.clearTimeout(leave_timeout); leave_timeout = null;
 					}
 					preview_bar.show('fast');
 					filled_container.position_bar();
-				}).bind('mouseleave', leave);
+				}).on('mouseleave', leave);
 
-				preview_bar.bind('mouseenter', function(event) {
+				preview_bar.on('mouseenter', function(event) {
 					if(leave_timeout) {
 						window.clearTimeout(leave_timeout); leave_timeout = null;
 					}
-				}).bind('mouseleave', leave);
+				}).on('mouseleave', leave);
 			});
 			Widget.callStatic('permission', 'mayEditPageContents', page_id, function(may) {
 				jQuery('.preview_bar').css({opacity: may ? 1 : 0.5})[may ? 'addClass' : 'removeClass']('may_edit');
@@ -252,7 +252,7 @@
 				});
 			};
 
-			jQuery('.preview_bar').delegate('.edit', 'click', function() {
+			jQuery('.preview_bar').on('click', '.edit', function() {
 				var preview_bar = jQuery(this).closest('.preview_bar');
 				if(!preview_bar.is('.may_edit')) {
 					return;
@@ -295,7 +295,7 @@
 						});
 					}, edit_info.control_session_key);
 				});
-			}).delegate('.cancel', 'click', function() {
+			}).on('click', '.cancel', function() {
 				var preview_bar = jQuery(this).closest('.preview_bar');
 				var container = preview_bar.data('filled_container');
 				container.data('protector').warn(function(ok) {
@@ -304,7 +304,7 @@
 						cleanup(preview_bar, container);
 					}
 				});
-			}).delegate('.save', 'click', function(event) {
+			}).on('click', '.save', function(event) {
 				var preview_bar = jQuery(this).closest('.preview_bar');
 				var container = preview_bar.data('filled_container');
 				preview_bar.removeClass('editing').addClass('loading');
