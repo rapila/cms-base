@@ -22,5 +22,6 @@
 		<label for="tags[]">{{writeString=wns.document_list.tag_option}}</label>
 		<select name="tags[]" {{if=eq;1=\{\{writeSettingValue=list_allows_multiple_categories\;section=admin\}\};2=true}} multiple="multiple"{{endIf}} class="ui-widget-content"></select>
 	</div><br />
+{{if=eq;1=\{\{writeSettingValue=list_allows_multiple_categories\;section=admin\}\};2=true}}
 	<p class="multi_select_info">{{writeString=wns.document_list_config.multiple_select_info}}</p>
-
+{{endIf}}
