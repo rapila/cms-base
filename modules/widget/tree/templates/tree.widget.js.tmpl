@@ -1,3 +1,26 @@
+$.jstree.plugins.tree_widget = function(options, parent) {
+	var widget = options.widget;
+	if(!widget) {
+		return;
+	}
+	this.redraw_node = function(node, deep, callback, force_render) {
+		node = this.get_node(node);
+		var obj = parent.redraw_node.apply(this, arguments);
+		if(!obj) {
+			return obj;
+		}
+		var $obj = jQuery(obj);
+		if(widget.dnd) {
+			widget.dnd.init_dnd($obj, widget.settings.model_name, node.id, true);
+		}
+		if(node.icon) {
+			// Add icon classes to li
+			$obj.addClass(node.icon);
+		}
+		return obj;
+	};
+};
+
 Widget.types.tree = {
 	prepare: function() {
 		var _this = this;
@@ -12,7 +35,7 @@ Widget.types.tree = {
 		}
 
 		this._element.jstree({
-			plugins: ['dnd', 'unique', 'state'],
+			plugins: ['dnd', 'unique', 'state', 'tree_widget'],
 			core: {
 				data: this.load_item.bind(this),
 				check_callback: function(operation, node, parent, position, more) {
@@ -41,7 +64,8 @@ Widget.types.tree = {
 				},
 				check_while_dragging: false,
 				use_html5: false
-			}
+			},
+			tree_widget: {widget: this}
 		});
 
 		this._tree = jQuery.jstree.reference(this._element);
@@ -54,19 +78,18 @@ Widget.types.tree = {
 			_this.activate(info.node.data);
 		});
 
-		this._element.on('move_node.jstree', function(node, parent, position) {
-			debugger;
-			_this.moveItem(node.data.id, parent.data.id, position, function(res, error) {
+		this._element.on('move_node.jstree', function(event, info) {
+			_this.moveItem(info.node.id, info.parent, info.position, function(res, error) {
 				if(error) {
 					_this.reload();
 				}
 			}, WidgetJSONOptions.with_callback_handles_error(false));
 		}).on('refresh.jstree', function(event, data) {
+			// TODO: Check if still needed
 			if(_this.current_element_identifier) {
 				_this._tree.select_node(_this.current_element_identifier);
 			}
 		});
-		// this.reload();
 	},
 
 	reload: function() {
@@ -90,9 +113,9 @@ Widget.types.tree = {
 					state: {
 						opened: has_children && _this.settings.is_open(child),
 						selected: _this.settings.is_active(child),
-						loaded: false,
+						loaded: !has_children,
 					},
-					has_children: has_children,
+					children: has_children ? [] : null,
 					data: child
 				};
 			});
