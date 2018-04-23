@@ -160,15 +160,22 @@ Widget.types.list = {
 			return;
 		}
 		var hash = window.location.hash || '#';
-		hash = hash.replace(new RegExp('([#&])('+this.settings.hash_key+'(=([&]|$)+)?)'), '$1');
-		const id = this.schema_for_col(0).identifier;
+		var finder = new RegExp('([#&])('+this.settings.hash_key+'(=[^&]+)?)', 'g');
+		hash = hash.replace(finder, '$1');
+		const id = this.schema.find(function(schema) {
+			return schema.display_type === 'data';
+		}).identifier;
 		hash = hash + '&' + selection.map(function(data) {
 			return hash_key + '=' + data[id];
 		}).join('&');
-		if(hash.indexOf('#?') === 0) {
+		if(hash.indexOf('#&') === 0) {
 			hash = '#' + hash.substring(2);
 		}
 		window.location.hash = hash;
+	},
+
+	load_from_hash: function() {
+
 	},
 
 	/**
