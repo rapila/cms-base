@@ -58,7 +58,7 @@ admin:
   tag_models: ['Tag']
 
   # on false: use only tags related to admin module (documents, links, etc)
-  use_tags_globaly: true
+  use_tags_globally: true
 
 error_handling:
   should_stop_on_recoverable_errors: false
