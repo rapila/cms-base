@@ -110,10 +110,9 @@ encoding:
   #possible values: full, xml_only. xml_only is much faster and results in smaller file sizes, however, full encoding may help if you have encoding issues with certain browsers
   entities: xml_only
 
-# for overwriting in site/config both parameters have to be copied, otherwise content_language will differ from language
+# language default
 session_default:
-  language: en &fe_language
-  content_language: *fe_language
+  language: en
 
 #language_chooser default
 language_chooser:

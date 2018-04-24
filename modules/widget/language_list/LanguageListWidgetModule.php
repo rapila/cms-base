@@ -49,9 +49,6 @@ class LanguageListWidgetModule extends SpecializedListWidgetModule {
 		if($oLanguage->getIsDefault()) {
 			throw new LocalizedException('wns.language.delete_default.denied');
 		}
-		if($oLanguage->getIsDefaultEdit()) {
-			throw new LocalizedException('wns.language.delete_default.denied');
-		}
 		if(LanguagePeer::doCount(new Criteria()) < 2) {
 			throw new LocalizedException('wns.language.delete_last.denied');
 		}
@@ -64,7 +61,7 @@ class LanguageListWidgetModule extends SpecializedListWidgetModule {
 		$iResult = $oLanguage->delete();
 		$oReplacementLanguage = LanguageQuery::create()->findOne();
 		if(AdminManager::getContentLanguage() === $sLanguageId) {
-			AdminManager::setContentLanguage(Settings::getSetting("session_default", AdminManager::CONTENT_LANGUAGE_SESSION_KEY, $oReplacementLanguage->getId()));
+			AdminManager::setContentLanguage($oReplacementLanguage->getId());
 		}
 		if(Session::language() === $sLanguageId) {
 			Session::getSession()->setLanguage(Settings::getSetting("session_default", Session::SESSION_LANGUAGE_KEY, $oReplacementLanguage->getId()));
@@ -72,7 +69,7 @@ class LanguageListWidgetModule extends SpecializedListWidgetModule {
 	}
 
 	public function getColumnIdentifiers() {
-		return array('id', 'language_id', 'name', 'path_prefix', 'is_default', 'is_default_edit', 'is_active', 'sort', 'delete');
+		return array('id', 'language_id', 'name', 'path_prefix', 'is_default', 'is_active', 'sort', 'delete');
 	}
 
 	public function getMetadataForColumn($sColumnIdentifier) {
@@ -95,9 +92,6 @@ class LanguageListWidgetModule extends SpecializedListWidgetModule {
 				break;
 			case 'is_default':
 				$aResult['heading'] = TranslationPeer::getString('wns.language.is_default');
-				break;
-			case 'is_default_edit':
-				$aResult['heading'] = TranslationPeer::getString('wns.language.is_default_edit');
 				break;
 			case 'sort':
 				$aResult['heading'] = TranslationPeer::getString('wns.sort');
