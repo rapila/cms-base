@@ -48,7 +48,7 @@ EOT
 	}
 
 	public function testConsolidatedIncludes() {
-		$this->oIncluder->addResource(array('web', 'js', 'widget', 'ckeditor', 'skins', 'moono', 'editor.css'));
+		$this->oIncluder->addResource(array('web', 'js', 'widget', 'ckeditor', 'skins', 'moono-lisa', 'editor.css'));
 		$this->oIncluder->addResource('admin/admin-ui.css', null, null, null, ResourceIncluder::PRIORITY_FIRST, 'IE');
 		$this->oIncluder->addResource('widget/ckeditor/ckeditor.js', null, null, array('ie_condition' => 'IE lt 6'));
 		$this->oIncluder->addJavaScriptLibrary('jqueryui', 1, true, true, null);
@@ -63,7 +63,7 @@ EOT
 	}
 
 	public function testConsolidatedIncludesIE() {
-		$this->oIncluder->addResource(array('web', 'js', 'widget', 'ckeditor', 'skins', 'moono', 'editor.css'));
+		$this->oIncluder->addResource(array('web', 'js', 'widget', 'ckeditor', 'skins', 'moono-lisa', 'editor.css'));
 		$this->oIncluder->addResource('admin/admin-ui.css', null, null, null, ResourceIncluder::PRIORITY_FIRST);
 		$this->oIncluder->addResource('widget/ckeditor/ckeditor.js');
 		$this->oIncluder->addJavaScriptLibrary('jqueryui', 1, true, true, null);

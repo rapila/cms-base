@@ -71,9 +71,9 @@ login:
 
 # default config for ckeditor
 # important note: toolbar config always requires space after comma ", " in order to function properly
-# skins available: moono, kama
+# skins available: moono-lisa
 text_module:
-  skin: moono
+  skin: moono-lisa
   toolbar:
     -
       - ["Bold", "Italic"]
