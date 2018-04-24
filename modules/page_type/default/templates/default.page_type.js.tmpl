@@ -364,7 +364,10 @@
 							widget.setObjectId(item_to_edit.attr('data-object-id'));
 						}
 
-						widget.handle('element_set', function(event, element) {
+						widget.handle('element_set', function element_set(event, element) {
+							widget.notify_size_change = function notify_size_change() {
+								element.dialog('option', 'position', {my: 'center', at: 'center', of: window});
+							};
 							Widget.callStatic('detail', 'clickable_labels_for', element);
 							var save = function(is_draft) {
 								language_object_control.save(widget.save(), is_draft, function(result) {
