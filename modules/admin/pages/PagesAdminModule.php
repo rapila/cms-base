@@ -1,4 +1,3 @@
-
 <?php
 /**
  * @package modules.admin
