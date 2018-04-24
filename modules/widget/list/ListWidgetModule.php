@@ -114,10 +114,18 @@ class ListWidgetModule extends PersistentWidgetModule {
 			if(!isset($aMetadata['is_sortable'])) {
 				$aMetadata['is_sortable'] = $aMetadata['display_type'] === self::DISPLAY_TYPE_REORDERABLE;
 			}
+			if(!isset($aMetadata['args'])) {
+				$aMetadata['args'] = [];
+			}
 
 			$this->aSchema[] = $aMetadata;
 		}
 		return $this->aSchema;
+	}
+
+	public function __sleep() {
+		$this->aSchema = null;
+		return array_keys(get_object_vars($this));
 	}
 
 	public function allowSort($sColumnIdentifier) {
@@ -182,7 +190,10 @@ class ListWidgetModule extends PersistentWidgetModule {
 		$aColumns = array();
 		foreach($this->getSchema() as $aColumn) {
 			if($aColumn['has_data']) {
-				$aColumns[$aColumn['identifier']] = $aColumn['field_name'];
+				$aColumns[$aColumn['identifier']] = [
+					'column' => $aColumn['field_name'],
+					'args' => $aColumn['args']
+				];
 			}
 		}
 		return $aColumns;

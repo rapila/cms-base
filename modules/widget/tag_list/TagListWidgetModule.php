@@ -31,6 +31,13 @@ class TagListWidgetModule extends SpecializedListWidgetModule {
 			case 'tag_instance_count':
 				$aResult['heading'] = TranslationPeer::getString('wns.tag.instance_count');
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_NUMERIC;
+				$aResult['args'] = function() {
+					$sTagModelName = $this->oDelegateProxy->getTagModelName();
+					if($sTagModelName === CriteriaListWidgetDelegate::SELECT_ALL) {
+						$sTagModelName = null;
+					}
+					return [$sTagModelName];
+				};
 				break;
 			case 'language_ids_of_strings':
 				$aResult['heading'] = TranslationPeer::getString('wns.tag.available_strings');
@@ -48,6 +55,27 @@ class TagListWidgetModule extends SpecializedListWidgetModule {
 		if($sFilterColumn === 'tag_model_name') {
 			return CriteriaListWidgetDelegate::FILTER_TYPE_MANUAL;
 		}
+	}
+
+	public function deleteRow($aRowData, $oCriteria) {
+		$iTagId = $aRowData['id'];
+		$sTagModelName = $this->oDelegateProxy->getTagModelName();
+		$bSidebarChanged = true;
+		if($sTagModelName && $sTagModelName !== CriteriaListWidgetDelegate::SELECT_ALL) {
+			// Delete all matching tags
+			TagInstanceQuery::create()->filterByTagId($iTagId)->filterByModelName($sTagModelName)->delete();
+			// Check if other tags are still available
+			if(TagInstanceQuery::create()->filterByModelName($sTagModelName)->count() > 0) {
+				$bSidebarChanged = false;
+			}
+			// Clean up
+			if(TagInstanceQuery::create()->filterByTagId($iTagId)->count() === 0) {
+				TagQuery::create()->findPk($iTagId)->delete();
+			}
+		} else {
+			TagQuery::create()->findPk($iTagId)->delete();
+		}
+		return array(TagDetailWidgetModule::SIDEBAR_CHANGED => $bSidebarChanged);
 	}
 
 	public function getCriteria() {
