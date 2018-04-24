@@ -265,7 +265,7 @@ Widget.types.admin_menu = {
 			}).menu({
 				select: function(event, ui) {
 					menu.hide();
-					ui.item.data('callback')(event);
+					ui.item.closest('li').data('callback')(event);
 				}
 			}).hide();
 			var element = jQuery('<button/>').addClass('open-action rapila-icon').text(icon).attr('title',"{{writeString=wns.admin_menu.settings_dropdown_tile}}");
