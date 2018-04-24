@@ -94,19 +94,19 @@ jQuery(document).ready(function() {
 					return 'page_is_inactive';
 				}
 			},
+			primary_icon_from_item: function(item) {
+				return item.IsFolder ? 'file' : 'files';
+			},
 			icons_from_item: function(item) {
-				var result = ['is-page'];
+				var result = [];
 				if(item.IsProtected) {
-					result.push('is-protected');
+					result.push('pencil');
 				}
 				if(item.IsHidden) {
-					result.push('is-hidden');
+					result.push('hidden');
 				}
 				if(item.IsInactive) {
-					result.push('is-inactive');
-				}
-				if(item.IsFolder) {
-					result.push('is-folder');
+					result.push('close');
 				}
 				return result;
 			}
