@@ -828,7 +828,10 @@ jQuery.widget("ui.dialog", jQuery.ui.dialog, {
 											accesskey: 's'
 										});
 									}
-									widget._element.dialog({buttons: buttons, width: 550, title: item.name});
+									widget._element.dialog({
+										appendTo: document.body,
+										buttons: buttons, width: 550, title: item.name
+									});
 								});
 							}, jQuery.noop, item.admin_widget[1]);
 						});

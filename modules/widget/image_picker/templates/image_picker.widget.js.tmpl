@@ -103,7 +103,13 @@ Widget.types.image_picker = {
 				}
 				_this._element.dialog('close');
 			};
-			this._element.dialog({title: "{{writeString=wns.image_picker.pick_image}}", buttons: buttons, width: 600, maxHeight: 800});
+			this._element.dialog({
+				appendTo: document.body,
+				title: "{{writeString=wns.image_picker.pick_image}}",
+				buttons: buttons,
+				width: 600,
+				maxHeight: 800
+			});
 			return;
 		}
 		this.is_popup = true;

@@ -27,6 +27,7 @@ Widget.types.page_detail = {
 			// create modal window
 			event.stopPropagation();
 			_this.template_and_pagetype.dialog({
+				appendTo: document.body,
 				title: "{{writeString=wns.page.template_or_pagetype_change}}",
 				modal: true,
 				buttons: {

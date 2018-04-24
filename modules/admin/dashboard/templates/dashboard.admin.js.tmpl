@@ -229,6 +229,7 @@ jQuery(document).ready(function() {
 						}
 					];
 					dialog.dialog({
+						appendTo: document.body,
 						buttons: buttons
 					});
 				}, 'n', true, false, "{{writeString=wns.dashboard.create_widget}}", {documentation: 'admin.dashboard/add-new-item'});

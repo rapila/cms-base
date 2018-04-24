@@ -55,6 +55,7 @@ Widget.types.login_window = {
 				});
 			});
 			forgotten_alert.dialog({
+				appendTo: document.body,
 				title: '{{writeString=wns.passwort_require_new}}',
 				autoOpen: true,
 				closeOnEscape: true,
@@ -71,6 +72,7 @@ Widget.types.login_window = {
 			});
 		});
 		this.login_markup.dialog({
+			appendTo: document.body,
 			title: '{{writeString=wns.login_at_site}}',
 			autoOpen: false,
 			modal: true,

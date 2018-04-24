@@ -115,7 +115,6 @@
 
 			filled_modules_containers.sortable({
 				connectWith: filled_modules_containers,
-				helper: 'clone',
 				update: function(event, ui) {
 					if(ui.sender) {
 						return;
@@ -157,7 +156,9 @@
 						_this.filled_frontend_modules[target.attr('data-container-name')].contents.splice(position, 0, content_params);
 						_this.update_content_properties(item, {content: content_params});
 					});
+					item.css({width: '', height: ''}).removeClass('ui-draggable ui-draggable-handle ui-draggable-dragging');
 					_this.update_additional_container_info(target);
+					filled_modules_containers.sortable('refresh');
 				}
 			});
 
@@ -400,6 +401,7 @@
 								});
 							}
 							element.dialog({
+								appendTo: document.body,
 								dialogClass: 'default-page-type-editor',
 								close: function() {
 									protector.unprotect(element).release();
@@ -419,11 +421,10 @@
 									return false;
 								},
 								title: item_to_edit.find('.module_name').text(),
-								position: ['center', 50],
 								// modal: true,
 								width: widget.settings.preferred_width || 550,
 								// open: function(event, ui){},
-								resize: function(event, ui) {
+								resizeStop: function(event, ui) {
 									if(widget.resize_to) {
 										widget.resize_to(null, ui.size.height-200);
 									}

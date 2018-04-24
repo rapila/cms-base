@@ -188,6 +188,7 @@ Widget.types.detail = {
 		// option something like.....
 
 		this.content.dialog({
+			appendTo: document.body,
 			title: this.settings.title,
 			autoOpen: this.settings.autoOpen,
 			modal: this.settings.modal,
@@ -197,8 +198,7 @@ Widget.types.detail = {
 			dialogClass: this.settings.dialogClass,
 			width: this.settings.width,
 			height: this.settings.height,
-			buttons: buttons,
-			position: ['center', 50]
+			buttons: buttons
 		}).dialog('open').on('keydown', function(event) {
 			if(event.which === 13) {
 				if(!jQuery(event.target).is('textarea')) {

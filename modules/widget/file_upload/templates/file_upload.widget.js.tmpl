@@ -101,6 +101,7 @@ Widget.types.file_upload = {
 						dialog = {};
 						dialog.element = jQuery('<div/>').text(error.message);
 						dialog.element.dialog({
+							appendTo: document.body,
 							buttons: {
 								"{{writeString=wns.document_type.allow}}": function() {
 									dialog.element.dialog("close");
