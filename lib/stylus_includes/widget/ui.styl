@@ -12,12 +12,19 @@
 .ui-placeholder
 	background-color #d3d3d3
 
-button.ui-button
-	background url("../../images/admin/button_gradient_dark.png") repeat scroll 0 0 transparent
+button.ui-button,
+.ui-widget-header .ui-state-highlight,
+.ui-widget-header .ui-state-active,
+button.ui-button.ui-state-highlight,
+.ui-button:hover, button.ui-state-active:hover
+	background url("../../images/admin/button_gradient_dark.png") repeat scroll 0 0 transparent !important
 	line-height 14px
 	border-color #000000 #555555 #666666 #555555
 	border-width 1px 1px 1px 1px
 	border-radius 3px
+
+.ui-button:hover
+	color #e3ef99 !important
 
 .ui-widget-content
 	background-image none

@@ -38,6 +38,7 @@ Widget.types.tree = {
 		}
 
 		this._element.jstree({
+			// plugins: ['dnd', 'unique', 'state', 'tree_widget', 'wholerow'],
 			plugins: ['dnd', 'unique', 'state', 'tree_widget'],
 			core: {
 				data: this.load_item.bind(this),

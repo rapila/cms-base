@@ -1,15 +1,29 @@
+[data-widget-type='tree'] div.ui-tree {
+	font-size: 1.2em;
+}
 [data-widget-type='tree'] i.jstree-themeicon.rapila-icon {
 	font-style: normal;
 }
-
 [data-widget-type='tree'] i.jstree-themeicon.is-page::after {
 	content: 'page';
 }
-
 [data-widget-type='tree'] i.jstree-themeicon.is-folder::after {
 	content: 'folder';
 }
-
 [data-widget-type='tree'] .jstree-anchor > span.rapila-icon.is-inactive::after {
 	content: 'hidden';
 }
+[data-widget-type='tree'] li.jstree-node a {
+	display: inline-block;
+	width: 100%;
+	padding: 1px;
+}
+/*[data-widget-type='tree'] li.jstree-node a span.rapila-icon {
+	float: right;
+}
+*/
+[data-widget-type='tree'] li.jstree-node a.jstree-clicked {
+	background-color: #888;
+	color: #fff;
+}
+

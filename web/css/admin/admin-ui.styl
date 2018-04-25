@@ -79,8 +79,14 @@
 		background-image url("theme/images/ui-icons_b8d600_256x240.png")
 
 #admin_sidebar
-	.ui-tree > ul > li > a
-		padding-top 6px
+	.ui-tree
+		font-size 1.2em
+		> ul > li
+			padding 2px
+			> a
+				padding-top 6px
+		li .jstree-icon
+			width 20px
 	.ui-tree,
 	.ui-list,
 	.ui-list-row.ui-state-active,
@@ -405,6 +411,7 @@ td span.remove_entry
 			border-bottom 1px dotted #999
 		a.ui-menu-item
 			padding 4px 5px
+			display block
 			margin 0
 			box-sizing border-box
 			border none
