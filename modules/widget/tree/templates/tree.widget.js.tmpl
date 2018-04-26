@@ -10,16 +10,20 @@ $.jstree.plugins.tree_widget = function(options, parent) {
 			return obj;
 		}
 		var $obj = jQuery(obj);
+		// Init drop target (for tags, etc.)
 		if(widget.dnd) {
 			widget.dnd.init_dnd($obj, widget.settings.model_name, node.id, true);
 		}
+		// Set primary icon
 		var primary_icon = widget.settings.primary_icon_from_item(node.data);
 		var $primary_icon = $obj.find('> .jstree-anchor > i.jstree-themeicon').text(primary_icon);
+		// Add secondary icons
 		var icons = widget.settings.icons_from_item(node.data)
 			.map(function(icon) {
 				return jQuery('<span/>').addClass('rapila-icon status').text(icon||'');
 			});
 		$obj.children('.jstree-anchor').append(icons);
+		// Wrap title with span.title
 		var title = $primary_icon[0].nextSibling;
 		var $title = jQuery('<span/>').addClass('title').text(title.textContent||'');
 		title.parentNode.replaceChild($title[0], title);

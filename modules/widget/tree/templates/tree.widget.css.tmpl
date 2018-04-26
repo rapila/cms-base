@@ -6,27 +6,38 @@
 	font-style: normal;
 }
 
-[data-widget-type='tree'] li {
-	display: flex;
-	flex-wrap: wrap;
+[data-widget-type='tree'] li.jstree-node {
+	display: grid;
+	grid-template-columns: 20px 1fr;
+	
 }
 
-[data-widget-type='tree'] li.ui-state-active {
+[data-widget-type='tree'] li.jstree-node.ui-state-active {
 	background-color: #728697 !important;
 }
 
-[data-widget-type='tree'] li ul.jstree-children {
-	flex-basis: 100%;
+[data-widget-type='tree'] li.jstree-node ul.jstree-children {
+	grid-row: 2;
+	grid-column: 1 / -1;
+}
+
+[data-widget-type='tree'] li.jstree-node i.jstree-ocl {
+	grid-row: 1;
+	grid-column: 1;
 }
 
 [data-widget-type='tree'] li.jstree-node a.jstree-anchor {
+	grid-row: 1;
+	grid-column: 2;
 	display: flex;
-	flex-grow: 1;
 	padding: 1px;
 }
 
 [data-widget-type='tree'] li.jstree-node a.jstree-anchor > .title {
+	width: 0;
 	flex-grow: 1;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 [data-widget-type='tree'] li.jstree-node a.jstree-anchor > .rapila-icon.status {
