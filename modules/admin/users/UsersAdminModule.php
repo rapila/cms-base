@@ -9,6 +9,7 @@ class UsersAdminModule extends AdminModule {
 
 	public function __construct() {
 		$this->oListWidget	= new UserListWidgetModule();
+		$this->oListWidget->addPaging();
 		$this->oSidebarWidget = new ListWidgetModule();
 		$this->oSidebarWidget->setListTag(new TagWriter('ul'));
 		$this->oSidebarWidget->setDelegate(new CriteriaListWidgetDelegate($this, 'Group', 'name'));
@@ -17,24 +18,24 @@ class UsersAdminModule extends AdminModule {
 		}
 		$this->oSidebarWidget->setSetting('initial_selection', array('id' => $this->oListWidget->oDelegateProxy->getGroupId()));
 	}
-	
+
 	public function mainContent() {
 		return $this->oListWidget->doWidget();
 	}
-	
+
 	public function sidebarContent() {
 		return $this->oSidebarWidget->doWidget();
 	}
-	
+
 	public function getColumnIdentifiers() {
 		return array('id', 'name', 'magic_column');
 	}
-	
+
 	public function getMetadataForColumn($sColumnIdentifier) {
 		$aResult = array();
 		switch($sColumnIdentifier) {
 			case 'name':
-				$aResult['heading'] = StringPeer::getString('wns.users.sidebar_heading');
+				$aResult['heading'] = TranslationPeer::getString('wns.users.sidebar_heading');
 				$aResult['field_name'] = 'name';
 				break;
 			case 'magic_column':
@@ -49,10 +50,10 @@ class UsersAdminModule extends AdminModule {
 		if(GroupPeer::doCount(new Criteria()) > 0) {
 			return array(
 				array('id' => CriteriaListWidgetDelegate::SELECT_ALL,
-							'name' => StringPeer::getString('wns.users.select_all_title'),
+							'name' => TranslationPeer::getString('wns.users.select_all_title'),
 							'magic_column' => 'all'),
 				array('id' => CriteriaListWidgetDelegate::SELECT_WITHOUT,
-							'name' => StringPeer::getString('wns.users.select_without_title'),
+							'name' => TranslationPeer::getString('wns.users.select_without_title'),
 							'magic_column' => 'without'));
 		}
 		return array();

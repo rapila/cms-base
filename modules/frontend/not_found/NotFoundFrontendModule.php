@@ -7,12 +7,12 @@ class NotFoundFrontendModule extends DynamicFrontendModule {
 
 	public function renderFrontend() {
 		$oTemplate = $this->constructTemplate('detail');
-		$oTemplate->replaceIdentifier('request_uri', $_SERVER['REQUEST_URI']);
+		$oTemplate->replaceIdentifier('request_uri', Manager::getOriginalPath());
 		return $oTemplate;
 	}
 
 	public function renderBackend() {
-		return StringPeer::getString('frontend_module.save_to_activate');
+		return TranslationPeer::getString('frontend_module.save_to_activate');
 	}
 
 	public function getSaveData($aData) {

@@ -59,7 +59,7 @@ class LanguageTableMap extends TableMap
         $this->addRelation('PageString', 'PageString', RelationMap::ONE_TO_MANY, array('id' => 'language_id', ), 'CASCADE', null, 'PageStrings');
         $this->addRelation('LanguageObject', 'LanguageObject', RelationMap::ONE_TO_MANY, array('id' => 'language_id', ), 'CASCADE', null, 'LanguageObjects');
         $this->addRelation('LanguageObjectHistory', 'LanguageObjectHistory', RelationMap::ONE_TO_MANY, array('id' => 'language_id', ), null, null, 'LanguageObjectHistorys');
-        $this->addRelation('String', 'String', RelationMap::ONE_TO_MANY, array('id' => 'language_id', ), null, null, 'Strings');
+        $this->addRelation('Translation', 'Translation', RelationMap::ONE_TO_MANY, array('id' => 'language_id', ), null, null, 'Translations');
         $this->addRelation('UserRelatedByLanguageId', 'User', RelationMap::ONE_TO_MANY, array('id' => 'language_id', ), null, null, 'UsersRelatedByLanguageId');
         $this->addRelation('Document', 'Document', RelationMap::ONE_TO_MANY, array('id' => 'language_id', ), null, null, 'Documents');
         $this->addRelation('Link', 'Link', RelationMap::ONE_TO_MANY, array('id' => 'language_id', ), null, null, 'Links');

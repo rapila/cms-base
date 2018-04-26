@@ -71,7 +71,7 @@ class RoleTableMap extends TableMap
             'denyable' =>  array (
   'mode' => '',
   'role_key' => 'users',
-  'owner_allowed' => '',
+  'owner_allowed' => 'true',
 ),
             'extended_timestampable' =>  array (
   'create_column' => 'created_at',

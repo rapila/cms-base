@@ -9,7 +9,7 @@
 		<div class="hide_if_not_saved">
 			<label>{{writeString=wns.created_info}}:</label><span class="created_info status"></span><br />
 			<label>{{writeString=wns.updated.info}}:</label><span class="updated_info status"></span><br />
-			<label>{{writeString=wns.id}}</label><span class="detail_id">{{id}}</span>
+			<label>{{writeString=wns.id}}</label><span class="detail_id"></span>
 		</div>
 	</div>
 	<label for="first_name" class="validate-first_name_required">{{writeString=wns.first_name}}</label>
@@ -22,16 +22,18 @@
 	<input type="text" name="email" class="ui-widget-content" /><br />
 	<label for="language_id">{{writeString=wns.language}}</label>
 	<select name="language_id" class="ui-widget-content input_short" data-widget-type="language_input"></select><br />
-	<label for="timezone">{{writeString=wns.timezone}}</label>
+	<label for="timezone">{{writeString=wns.user.timezone}}</label>
 	<select name="timezone" class="ui-widget-content input_short" data-widget-type="timezone_input"></select><br />
-	<div class="hide_if_saved" style="padding-top:.3em;">
+	<div class="password_section" style="padding-top:.3em;">
 		<label for="old_password" class="validate-old_password_invalid validate-old_password_required old_password_elements">{{writeString=wns.old_password}}</label>
 		<input type="password" name="old_password" autocomplete="off" class="ui-widget-content old_password_elements" /><br />
 		<label for="password" class="validate-password_length validate-password_new">{{writeString=wns.password}}</label>
 		<input type="password" name="password" autocomplete="off" class="ui-widget-content" /><span title="{{writeString=wns.user.suggest_password}}" class="suggest_password ui-icon"> </span><input type="text" name="password_suggest" class="ui-widget-content autowidth" style="display:none;" /><br />
 		<label for="password_confirm" class="validate-password_confirm">{{writeString=wns.password_confirm}}</label>
-		<input type="password" name="password_confirm"  autocomplete="off" class="ui-widget-content" />
-	</div><br />
+		<input type="password" name="password_confirm"  autocomplete="off" class="ui-widget-content" /><br />
+		<input type="checkbox" name="force_password_reset" checked="checked" class="autowidth"/>
+		<label for="force_password_reset" style="display:inline;">{{writeString=wns.user.force_password_reset}}</label>
+	</div>
 	<div class="rights_section">
 		<div class="user_groups_section" data-widget-type="group_input">
 			<label>{{writeString=wns.user.groups}}</label><br />

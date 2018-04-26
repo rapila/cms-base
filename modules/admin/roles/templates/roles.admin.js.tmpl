@@ -1,17 +1,17 @@
 jQuery(document).ready(function() {
 
 	var handlers = [];
-	
+
 	var sidebar = null;
 	AdminInterface.sidebar.children('[data-widget-type]').prepareWidget(function(widget) {
 		sidebar = widget;
 	}.deferred(handlers));
-	
+
 	var content_list = null;
 	AdminInterface.content.children('[data-widget-type]').prepareWidget(function(widget) {
 		content_list = widget;
 	}.deferred(handlers));
-	
+
 	var info_bar = null;
 	AdminInterface.info_bar.prepareWidget(function(widget) {
 		info_bar = widget;
@@ -53,7 +53,7 @@ jQuery(document).ready(function() {
 				});
 			};
 		}).disable();
-		
+
 		var edit_item = info_bar.add_button('edit-item', function() {
 			Widget.create('group_detail', function(widget) {
 				widget.setGroupId(sidebar.active_row_datas()[0].group_id);
@@ -65,7 +65,7 @@ jQuery(document).ready(function() {
 				});
 			});
 		}).disable();
-		
+
 		// Sidebar
 		sidebar.settings.row_click_active_mode = 'activate';
 		sidebar.handle('list-selection_changed', function(event, selection) {
@@ -76,5 +76,8 @@ jQuery(document).ready(function() {
 			content_list.setOption('group_id', group_id);
 			content_list.reload();
 		});
+
+		// Search result notification
+		AdminInterface.strings.handle_strings_for_list_result('wns.roles.no_result', ['group_name'], content_list);
 	});
 });

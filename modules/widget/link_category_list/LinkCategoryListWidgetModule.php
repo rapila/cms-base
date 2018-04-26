@@ -2,35 +2,19 @@
 /**
  * @package modules.widget
  */
-class LinkCategoryListWidgetModule extends PersistentWidgetModule {
+class LinkCategoryListWidgetModule extends SpecializedListWidgetModule {
 
-	private $oListWidget;
 	private $oDelegateProxy;
 	private $oExternallyManagedInputFilter;
 	private $bExcludeExternallyManaged;
-	
-	public function __construct($sSessionKey = null) {
-		parent::__construct($sSessionKey);
-		$this->oListWidget = new ListWidgetModule();
+
+	protected function createListWidget() {
+		$oListWidget = new ListWidgetModule();
 		$this->oDelegateProxy = new CriteriaListWidgetDelegate($this, "LinkCategory", 'name');
-		$this->oListWidget->setDelegate($this->oDelegateProxy);
+		$oListWidget->setDelegate($this->oDelegateProxy);
 		$this->oExternallyManagedInputFilter = WidgetModule::getWidget('externally_managed_input', true);
 		$this->oDelegateProxy->setInternallyManagedOnly(true);
-	}
-
-	public function doWidget() {
-		$aTagAttributes = array('class' => 'link_category_list');
-		$oListTag = new TagWriter('table', $aTagAttributes);
-		$this->oListWidget->setListTag($oListTag);
-		return $this->oListWidget->doWidget();
-	}
-
-	public function toggleIsInactive($aRowData) {
-		$oLinkCategory = LinkCategoryQuery::create()->findPk($aRowData['id']);
-		if($oLinkCategory) {
-			$oLinkCategory->setIsInactive(!$oLinkCategory->getIsInactive());
-			$oLinkCategory->save();
-		}
+		return $oListWidget;
 	}
 
 	public function getColumnIdentifiers() {
@@ -41,15 +25,15 @@ class LinkCategoryListWidgetModule extends PersistentWidgetModule {
 		$aResult = array();
 		switch($sColumnIdentifier) {
 			case 'name':
-				$aResult['heading'] = StringPeer::getString('wns.name');
+				$aResult['heading'] = TranslationPeer::getString('wns.name');
 				$aResult['is_sortable'] = true;
 				break;
 			case 'link_to_link_data':
-				$aResult['heading'] = StringPeer::getString('wns.links_count');
+				$aResult['heading'] = TranslationPeer::getString('wns.links_count');
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_URL;
 				break;
 			case 'is_externally_managed':
-        $aResult['heading'] = StringPeer::getString('wns.internally_managed_only');
+        $aResult['heading'] = TranslationPeer::getString('wns.internally_managed_only');
 				$aResult['heading_filter'] = array('externally_managed_input', $this->oExternallyManagedInputFilter->getSessionKey());
 				break;
 			case 'delete':
@@ -64,11 +48,11 @@ class LinkCategoryListWidgetModule extends PersistentWidgetModule {
 	public function setIsExternallyManaged($bIsExternallyManaged) {
 		$this->oDelegateProxy->setInternallyManagedOnly($bIsExternallyManaged);
 	}
-	
+
 	public function setInternallyManagedOnly($bExcludeExternallyManaged) {
 	  $this->bExcludeExternallyManaged = $bExcludeExternallyManaged;
 	}
-	
+
 	public function getCriteria() {
 		$oQuery = LinkCategoryQuery::create()->distinct();
 		if($this->bExcludeExternallyManaged) {
@@ -76,5 +60,5 @@ class LinkCategoryListWidgetModule extends PersistentWidgetModule {
 		}
 		return $oQuery;
 	}
-	
+
 }

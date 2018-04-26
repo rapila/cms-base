@@ -497,12 +497,12 @@ abstract class BaseUserPeer
         // Invalidate objects in LanguagePeer instance pool,
         // since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
         LanguagePeer::clearInstancePool();
-        // Invalidate objects in StringPeer instance pool,
+        // Invalidate objects in TranslationPeer instance pool,
         // since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
-        StringPeer::clearInstancePool();
-        // Invalidate objects in StringPeer instance pool,
+        TranslationPeer::clearInstancePool();
+        // Invalidate objects in TranslationPeer instance pool,
         // since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
-        StringPeer::clearInstancePool();
+        TranslationPeer::clearInstancePool();
         // Invalidate objects in UserGroupPeer instance pool,
         // since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
         UserGroupPeer::clearInstancePool();
@@ -1324,19 +1324,19 @@ abstract class BaseUserPeer
 
             BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
-            // set fkey col in related String rows to null
+            // set fkey col in related Translation rows to null
             $selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
             $updateValues = new Criteria(UserPeer::DATABASE_NAME);
-            $selectCriteria->add(StringPeer::CREATED_BY, $obj->getId());
-            $updateValues->add(StringPeer::CREATED_BY, null);
+            $selectCriteria->add(TranslationPeer::CREATED_BY, $obj->getId());
+            $updateValues->add(TranslationPeer::CREATED_BY, null);
 
             BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
-            // set fkey col in related String rows to null
+            // set fkey col in related Translation rows to null
             $selectCriteria = new Criteria(UserPeer::DATABASE_NAME);
             $updateValues = new Criteria(UserPeer::DATABASE_NAME);
-            $selectCriteria->add(StringPeer::UPDATED_BY, $obj->getId());
-            $updateValues->add(StringPeer::UPDATED_BY, null);
+            $selectCriteria->add(TranslationPeer::UPDATED_BY, $obj->getId());
+            $updateValues->add(TranslationPeer::UPDATED_BY, null);
 
             BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 

@@ -93,7 +93,7 @@ class DocumentDetailWidgetModule extends PersistentWidgetModule {
 		if(isset($aDocumentData['is_protected'])) {
 			$oDocument->setIsProtected($aDocumentData['is_protected']);
 		}
-		$oDocument->setDescription($aDocumentData['description']);
+		$oDocument->setDescription($aDocumentData['description'] == null ? null : $aDocumentData['description']);
 		$oDocument->setAuthor($aDocumentData['author']);
 		$oDocument->setLicense($aDocumentData['license']);
 		$oDocument->setContentCreatedAt($aDocumentData['content_created_at'] == '' ? null : $aDocumentData['content_created_at']);

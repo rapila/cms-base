@@ -2,24 +2,35 @@
 
 class LocalJsLibraryFileModule extends FileModule {
 	private $aLibraryName;
-	
+	private $sVersion;
+	private $bUseCompression;
+
 	public function __construct($aRequestPath) {
 		parent::__construct($aRequestPath);
 		$this->aLibraryName = Manager::usePath();
+		$this->aVersion = Manager::usePath();
+		$sExtension = Manager::usePath();
+		$this->bUseCompression = $sExtension === 'min.js';
 	}
-	
+
 	public function renderFile() {
-		$oCache = new Cache($this->aLibraryName.''.serialize($_GET), DIRNAME_TEMPLATES);
-		header("Content-Type: text/javascript");
-		$oCache->sendCacheControlHeaders();
-		if($oCache->cacheFileExists(true)) {
+		$oCache = new Cache(implode('/', Manager::getUsedPath()), 'versioned');
+		header("Content-Type: text/javascript;charset=utf-8");
+		if($oCache->entryExists()) {
+			$oCache->sendCacheControlHeaders();
 			$oCache->passContents(); exit;
 		}
 		$oIncluder = new ResourceIncluder();
-		$sLibraryVersion = $_GET['version'];
-		$bUseCompression = BooleanParser::booleanForString($_GET['use_compression']);
-		//Don’t use SSL for downloads
-		$oIncluder->addJavaScriptLibrary($this->aLibraryName, $sLibraryVersion, $bUseCompression, false, false, ResourceIncluder::PRIORITY_NORMAL, false);
+		// Don’t use SSL for downloads
+		// Don’t include dependencies either
+		$oIncluder->addJavaScriptLibrary($this->aLibraryName, $this->aVersion, $this->bUseCompression, false, false, ResourceIncluder::PRIORITY_NORMAL, false);
+		$sContents = self::getResourceIncluderContents($oIncluder);
+		$oCache->setContents($sContents);
+		$oCache->sendCacheControlHeaders();
+		print($sContents);
+	}
+	
+	public static function getResourceIncluderContents($oIncluder) {
 		$sContents = '';
 		foreach($oIncluder->getResourceInfosForIncludedResourcesOfPriority() as $aInfo) {
 			if(isset($aInfo['file_resource'])) {
@@ -32,8 +43,6 @@ class LocalJsLibraryFileModule extends FileModule {
 				$sContents .= file_get_contents($sLocation);
 			}
 		}
-		$oCache->setContents($sContents);
-		$oCache->sendCacheControlHeaders();
-		print($sContents);
+		return $sContents;
 	}
 }

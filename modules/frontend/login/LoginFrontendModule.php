@@ -1,15 +1,15 @@
 <?php
 /**
  * @package modules.frontend
- * 
+ *
  * NOTE
- * if the login page is protected, then the origin redirect does not work 
+ * if the login page is protected, then the origin redirect does not work
  * if the login is called from an unprotected page, since origin will be overwritten
  * is there a reason to protect a login page?
  */
 
 class LoginFrontendModule extends DynamicFrontendModule {
-	
+
 	private $oPage;
 	private $oUser;
 
@@ -19,10 +19,10 @@ class LoginFrontendModule extends DynamicFrontendModule {
 		parent::__construct($oLanguageObject, $aRequestPath, $iId);
 		$this->oPage = FrontendManager::$CURRENT_PAGE;
 	}
-	
+
 	/**
 	* The render method for the login page type. When on a login page type, this is given the login action as determined by the page type. Can be either null (default), 'password_forgotten', or 'password_reset' (or any other string of which a template "$sLoginType_action_$sAction" exists).
-	* 
+	*
 	*/
 	public function renderFrontend($sAction = 'login') {
 		$aOptions = @unserialize($this->getData());
@@ -57,11 +57,11 @@ class LoginFrontendModule extends DynamicFrontendModule {
 				$oFlash->addMessage('login.logged_in_no_access');
 			}
 		}
-		
-		$oTemplate->replaceIdentifier('login_title', StringPeer::getString($sAction == 'password_forgotten' ? 'wns.login.password_reset' : 'wns.login'));
+
+		$oTemplate->replaceIdentifier('login_title', TranslationPeer::getString($sAction == 'password_forgotten' ? 'wns.login.password_reset' : 'wns.login'));
 		$sOrigin = isset($_REQUEST['origin']) ? $_REQUEST['origin'] : LinkUtil::linkToSelf();
 		$oTemplate->replaceIdentifier('origin', $sOrigin);
-		
+
 		if($sAction !== 'logout') {
 			$oLoginPage = $this->oPage ? $this->oPage->getLoginPage() : null;
 			$sLink = null;
@@ -72,7 +72,7 @@ class LoginFrontendModule extends DynamicFrontendModule {
 			}
 			$oTemplate->replaceIdentifier('action', $sLink);
 		}
-		
+
 		if($sAction === 'login') {
 			$oLoginPage = $this->oPage ? $this->oPage->getLoginPage() : null;
 			$sLink = null;
@@ -85,7 +85,7 @@ class LoginFrontendModule extends DynamicFrontendModule {
 		}
 		return $oTemplate;
 	}
-	
+
 	public function getUser() {
 		return $this->oUser;
 	}

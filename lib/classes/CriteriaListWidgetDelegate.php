@@ -13,7 +13,7 @@
  * - <code>getDatabaseColumnForColumn</code> for columns whose identifier or field_name does not correspond to a database field directly (you only need this if you wish to sort or filter by a column)
  * - <code>getFilterTypeForColumn</code> return one of the given FILTER_TYPE_* constants to allow filtering by a specific column (the column does not need to be displayed). Set the filters using ListWidgetModule::setOption() (also from JavaScript).
  */
-class CriteriaListWidgetDelegate {
+class CriteriaListWidgetDelegate implements ListWidgetDelegate {
 	private $oCriteriaDelegate;
 	private $sModelName;
 	private $sPeerClassName;
@@ -69,6 +69,10 @@ class CriteriaListWidgetDelegate {
 			$this->aFilterTypes[$sFilterColumn] = $sFilterType;
 		}
 		return $this->aFilterTypes[$sFilterColumn];
+	}
+
+	public function getColumnIdentifiers() {
+		return $this->oCriteriaDelegate->getColumnIdentifiers();
 	}
 
 	public function __call($sMethodName, $aArguments) {

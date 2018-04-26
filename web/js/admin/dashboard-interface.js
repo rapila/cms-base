@@ -4,11 +4,11 @@
  */
 
 var Dashboard = (function($) {
-	
+
 	return {
-	
+
 	jQuery : $,
-	
+
 	settings : {
 		columns : '.dashboard-column',
 		widgetSelector: '.dashboard-widget',
@@ -28,13 +28,13 @@ var Dashboard = (function($) {
 		this.addWidgetControls();
 		this.makeSortable();
 	},
-	
+
 	getWidgetSettings : function (id) {
 		var $ = this.jQuery,
 			settings = this.settings;
 		return (id&&settings.widgetIndividual&&settings.widgetIndividual[id]) ? $.extend({},settings.widgetDefault,settings.widgetIndividual[id]) : settings.widgetDefault;
 	},
-	
+
 	addWidgetControls : function () {
 		var _this = this,
 			$ = this.jQuery,
@@ -51,7 +51,7 @@ var Dashboard = (function($) {
 
 			var thisWidgetSettings = _this.getWidgetSettings(this.id);
 			if (thisWidgetSettings.removable) {
-				$('<a class="remove">✘</a>').mousedown(function (e) {
+				$('<a class="remove rapila-icon">✘</a>').mousedown(function (e) {
 					e.stopPropagation();
 				}).click(function () {
 					var widget = $(this).parents(settings.widgetSelector);
@@ -61,7 +61,7 @@ var Dashboard = (function($) {
 			}
 
 			if (thisWidgetSettings.editable) {
-				var widget_edit = $('<a class="edit">Edit</a>').mousedown(function (e) {
+				var widget_edit = $('<a class="edit rapila-icon">edit</a>').mousedown(function (e) {
 					e.stopPropagation();
 				}).on('click', function toggle() {
 					if(toggle.toggled = !toggle.toggled) {
@@ -79,7 +79,7 @@ var Dashboard = (function($) {
 					.children('ul')
 						.append('<li class="item"><label>'+AdminInterface.translations.dashboardChangeTitle+'</label><input value="' + $('h3',this).text() + '"/></li>')
 						.append((function(){
-							var colorList = '<li class="item"><label>'+AdminInterface.translations.dashboardAvailableColors+':</label><ul class="colors">';
+							var colorList = '<li class="item"><label>'+AdminInterface.translations.dashboardAvailableColors+'</label><ul class="colors">';
 							$(thisWidgetSettings.colors).each(function () {
 								colorList += '<li style="background-color: ' + this + ';"/>';
 							});
@@ -122,7 +122,7 @@ var Dashboard = (function($) {
 			});
 		});
 	},
-	
+
 	makeSortable : function () {
 		var _this = this,
 			$ = this.jQuery,

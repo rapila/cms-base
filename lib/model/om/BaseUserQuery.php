@@ -126,13 +126,13 @@
  * @method UserQuery rightJoinLanguageRelatedByUpdatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the LanguageRelatedByUpdatedBy relation
  * @method UserQuery innerJoinLanguageRelatedByUpdatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the LanguageRelatedByUpdatedBy relation
  *
- * @method UserQuery leftJoinStringRelatedByCreatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the StringRelatedByCreatedBy relation
- * @method UserQuery rightJoinStringRelatedByCreatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the StringRelatedByCreatedBy relation
- * @method UserQuery innerJoinStringRelatedByCreatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the StringRelatedByCreatedBy relation
+ * @method UserQuery leftJoinTranslationRelatedByCreatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the TranslationRelatedByCreatedBy relation
+ * @method UserQuery rightJoinTranslationRelatedByCreatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the TranslationRelatedByCreatedBy relation
+ * @method UserQuery innerJoinTranslationRelatedByCreatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the TranslationRelatedByCreatedBy relation
  *
- * @method UserQuery leftJoinStringRelatedByUpdatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the StringRelatedByUpdatedBy relation
- * @method UserQuery rightJoinStringRelatedByUpdatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the StringRelatedByUpdatedBy relation
- * @method UserQuery innerJoinStringRelatedByUpdatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the StringRelatedByUpdatedBy relation
+ * @method UserQuery leftJoinTranslationRelatedByUpdatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the TranslationRelatedByUpdatedBy relation
+ * @method UserQuery rightJoinTranslationRelatedByUpdatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the TranslationRelatedByUpdatedBy relation
+ * @method UserQuery innerJoinTranslationRelatedByUpdatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the TranslationRelatedByUpdatedBy relation
  *
  * @method UserQuery leftJoinUserGroupRelatedByCreatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the UserGroupRelatedByCreatedBy relation
  * @method UserQuery rightJoinUserGroupRelatedByCreatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UserGroupRelatedByCreatedBy relation
@@ -2503,41 +2503,41 @@ abstract class BaseUserQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related String object
+     * Filter the query by a related Translation object
      *
-     * @param   String|PropelObjectCollection $string  the related object to use as filter
+     * @param   Translation|PropelObjectCollection $translation  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return                 UserQuery The current query, for fluid interface
      * @throws PropelException - if the provided filter is invalid.
      */
-    public function filterByStringRelatedByCreatedBy($string, $comparison = null)
+    public function filterByTranslationRelatedByCreatedBy($translation, $comparison = null)
     {
-        if ($string instanceof String) {
+        if ($translation instanceof Translation) {
             return $this
-                ->addUsingAlias(UserPeer::ID, $string->getCreatedBy(), $comparison);
-        } elseif ($string instanceof PropelObjectCollection) {
+                ->addUsingAlias(UserPeer::ID, $translation->getCreatedBy(), $comparison);
+        } elseif ($translation instanceof PropelObjectCollection) {
             return $this
-                ->useStringRelatedByCreatedByQuery()
-                ->filterByPrimaryKeys($string->getPrimaryKeys())
+                ->useTranslationRelatedByCreatedByQuery()
+                ->filterByPrimaryKeys($translation->getPrimaryKeys())
                 ->endUse();
         } else {
-            throw new PropelException('filterByStringRelatedByCreatedBy() only accepts arguments of type String or PropelCollection');
+            throw new PropelException('filterByTranslationRelatedByCreatedBy() only accepts arguments of type Translation or PropelCollection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the StringRelatedByCreatedBy relation
+     * Adds a JOIN clause to the query using the TranslationRelatedByCreatedBy relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return UserQuery The current query, for fluid interface
      */
-    public function joinStringRelatedByCreatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function joinTranslationRelatedByCreatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('StringRelatedByCreatedBy');
+        $relationMap = $tableMap->getRelation('TranslationRelatedByCreatedBy');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -2552,14 +2552,14 @@ abstract class BaseUserQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'StringRelatedByCreatedBy');
+            $this->addJoinObject($join, 'TranslationRelatedByCreatedBy');
         }
 
         return $this;
     }
 
     /**
-     * Use the StringRelatedByCreatedBy relation String object
+     * Use the TranslationRelatedByCreatedBy relation Translation object
      *
      * @see       useQuery()
      *
@@ -2567,51 +2567,51 @@ abstract class BaseUserQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return   StringQuery A secondary query class using the current class as primary query
+     * @return   TranslationQuery A secondary query class using the current class as primary query
      */
-    public function useStringRelatedByCreatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function useTranslationRelatedByCreatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         return $this
-            ->joinStringRelatedByCreatedBy($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'StringRelatedByCreatedBy', 'StringQuery');
+            ->joinTranslationRelatedByCreatedBy($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'TranslationRelatedByCreatedBy', 'TranslationQuery');
     }
 
     /**
-     * Filter the query by a related String object
+     * Filter the query by a related Translation object
      *
-     * @param   String|PropelObjectCollection $string  the related object to use as filter
+     * @param   Translation|PropelObjectCollection $translation  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return                 UserQuery The current query, for fluid interface
      * @throws PropelException - if the provided filter is invalid.
      */
-    public function filterByStringRelatedByUpdatedBy($string, $comparison = null)
+    public function filterByTranslationRelatedByUpdatedBy($translation, $comparison = null)
     {
-        if ($string instanceof String) {
+        if ($translation instanceof Translation) {
             return $this
-                ->addUsingAlias(UserPeer::ID, $string->getUpdatedBy(), $comparison);
-        } elseif ($string instanceof PropelObjectCollection) {
+                ->addUsingAlias(UserPeer::ID, $translation->getUpdatedBy(), $comparison);
+        } elseif ($translation instanceof PropelObjectCollection) {
             return $this
-                ->useStringRelatedByUpdatedByQuery()
-                ->filterByPrimaryKeys($string->getPrimaryKeys())
+                ->useTranslationRelatedByUpdatedByQuery()
+                ->filterByPrimaryKeys($translation->getPrimaryKeys())
                 ->endUse();
         } else {
-            throw new PropelException('filterByStringRelatedByUpdatedBy() only accepts arguments of type String or PropelCollection');
+            throw new PropelException('filterByTranslationRelatedByUpdatedBy() only accepts arguments of type Translation or PropelCollection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the StringRelatedByUpdatedBy relation
+     * Adds a JOIN clause to the query using the TranslationRelatedByUpdatedBy relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return UserQuery The current query, for fluid interface
      */
-    public function joinStringRelatedByUpdatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function joinTranslationRelatedByUpdatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('StringRelatedByUpdatedBy');
+        $relationMap = $tableMap->getRelation('TranslationRelatedByUpdatedBy');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -2626,14 +2626,14 @@ abstract class BaseUserQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'StringRelatedByUpdatedBy');
+            $this->addJoinObject($join, 'TranslationRelatedByUpdatedBy');
         }
 
         return $this;
     }
 
     /**
-     * Use the StringRelatedByUpdatedBy relation String object
+     * Use the TranslationRelatedByUpdatedBy relation Translation object
      *
      * @see       useQuery()
      *
@@ -2641,13 +2641,13 @@ abstract class BaseUserQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return   StringQuery A secondary query class using the current class as primary query
+     * @return   TranslationQuery A secondary query class using the current class as primary query
      */
-    public function useStringRelatedByUpdatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function useTranslationRelatedByUpdatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         return $this
-            ->joinStringRelatedByUpdatedBy($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'StringRelatedByUpdatedBy', 'StringQuery');
+            ->joinTranslationRelatedByUpdatedBy($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'TranslationRelatedByUpdatedBy', 'TranslationQuery');
     }
 
     /**
@@ -5101,7 +5101,7 @@ abstract class BaseUserQuery extends ModelCriteria
     }
     public function findMostRecentUpdate($bAsTimestamp = false) {
         $oQuery = clone $this;
-        $sDate = $oQuery->lastUpdatedFirst()->select("UpdatedAt")->findOne();
+        $sDate = $oQuery->clearOrderByColumns()->lastUpdatedFirst()->select("UpdatedAt")->findOne();
         if($sDate === null) {
             return null;
         }

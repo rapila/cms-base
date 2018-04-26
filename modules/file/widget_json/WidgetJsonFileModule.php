@@ -56,8 +56,10 @@ class WidgetJsonFileModule extends FileModule {
 				}
 			}
 		} catch (LocalizedException $ex) {
+			LinkUtil::sendHTTPStatusCode(500, 'Server Error');
 			print json_encode(array('exception' => array('message' => $ex->getLocalizedMessage(), 'code' => $ex->getCode(), 'file' => $ex->getFile(), 'line' => $ex->getLine(), 'trace' => $ex->getTrace(), 'parameters' => $ex->getMessageParameters(), 'exception_type' => $ex->getExceptionType())));
 		} catch (Exception $ex) {
+			LinkUtil::sendHTTPStatusCode(500, 'Server Error');
 			ErrorHandler::handleException($ex, true);
 			print json_encode(array('exception' => array('message' => "Exception when trying to execute the last action {$ex->getMessage()}", 'code' => $ex->getCode(), 'file' => $ex->getFile(), 'line' => $ex->getLine(), 'trace' => $ex->getTrace(), 'exception_type' => get_class($ex))));
 		}
@@ -75,6 +77,11 @@ class WidgetJsonFileModule extends FileModule {
 			return;
 		}
 		$sWidgetClass = WidgetModule::getClassNameByName($this->sWidgetType);
+		$bIsPersistent = $sWidgetClass::isPersistent();
+		if(!$bIsPersistent) {
+			// Close session early on readonly calls
+			Session::close();
+		}
 
 		if($this->sAction == 'widgetInformation') {
 			$aInformation = array();
@@ -82,7 +89,7 @@ class WidgetJsonFileModule extends FileModule {
 			$aInformation['resources'] = ResourceIncluder::defaultIncluder()->getIncludes()->render();
 			$aInformation['methods'] = $sWidgetClass::getCustomMethods();
 			$aInformation['is_singleton'] = $sWidgetClass::isSingleton();
-			$aInformation['is_persistent'] = $sWidgetClass::isPersistent();
+			$aInformation['is_persistent'] = $bIsPersistent;
 			return $aInformation;
 		}
 		if($this->sAction == 'staticMethodCall') {
@@ -127,10 +134,15 @@ class WidgetJsonFileModule extends FileModule {
 			return;
 		}
 		$oUser = Session::getSession()->getUser();
-		if(Module::isModuleAllowed('widget', $this->sWidgetType, $oUser)) {
-			return;
+		if($oUser !== null) {
+			if(Module::isModuleAllowed('widget', $this->sWidgetType, $oUser)) {
+				return;
+			}
 		}
-		throw new LocalizedException('wns.file.widget_json.needs_login', null, 'needs_login');
+		if(!Session::getSession()->isAuthenticated()) {
+			throw new LocalizedException('wns.file.widget_json.needs_login', null, 'needs_login');
+		}
+		throw new LocalizedException("wns.file.widget_json.check_permissions", array('widget' => $this->sWidgetType));
 	}
 
 	public static function jsonOrderedObject($aObject) {

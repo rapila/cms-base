@@ -3,10 +3,10 @@
  * @package modules.admin
  */
 class PagesAdminModule extends AdminModule {
-	
+
 	private $oTreeWidget;
 	private $oRootPage;
-	
+
 	public function __construct() {
 		try {
 			$this->oRootPage = PagePeer::getRootPage();
@@ -35,14 +35,14 @@ class PagesAdminModule extends AdminModule {
 		$oResourceIncluder = ResourceIncluder::defaultIncluder();
 		$oResourceIncluder->addResource('admin/template.css', null, null, array(), ResourceIncluder::PRIORITY_NORMAL, null, true);
 	}
-	
+
 	private static function initializeRootPage() {
 		$oRootPage = new Page();
 		$oRootPage->makeRoot();
 		$oRootPage->setName('root');
 		$oRootPage->setIsInactive(false);
 		$oRootPage->setPageType('default');
-		$oRootPage->setTemplateName(Settings::getSetting('frontend', 'main_template', 'general'));
+		$oRootPage->setTemplateName(null);
 		$oFirstUser = UserQuery::create()->findOne();
 		$oFirstUserId = $oFirstUser !== null ? $oFirstUser->getId() : 0;
 		$oRootPage->setCreatedBy($oFirstUserId);
@@ -55,11 +55,11 @@ class PagesAdminModule extends AdminModule {
 		$oRootPage->save();
 		return $oRootPage;
 	}
-	
+
 	public function usedWidgets() {
 		return array($this->oTreeWidget);
 	}
-	
+
 	public function listChildren($iId) {
 		$aResult = array();
 		if($iId === null) {
@@ -75,11 +75,11 @@ class PagesAdminModule extends AdminModule {
 		}
 		return $aResult;
 	}
-	
+
 	public function getModelName() {
 		return 'Page';
 	}
-	
+
 	private static function propertiesFromPage($oPage) {
 		$oUser = Session::getSession()->getUser();
 		$aResult = $oPage->toArray();
@@ -87,11 +87,11 @@ class PagesAdminModule extends AdminModule {
 		$aResult['UserMayCreateSiblings'] = $oPage->getParent() !== null && $oUser->mayCreateChildren($oPage->getParent());
 		return $aResult;
 	}
-	
+
 	public function loadItem($iId) {
 		return self::propertiesFromPage(PageQuery::create()->findPk($iId));
 	}
-	
+
 	public function moveItem($iIdNew, $iIdRef, $sPosition) {
 		$oPage = PageQuery::create()->findPk($iIdNew);
 		$oRefPage = PageQuery::create()->findPk($iIdRef);

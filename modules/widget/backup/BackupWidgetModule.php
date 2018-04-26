@@ -5,7 +5,7 @@
 class BackupWidgetModule extends PersistentWidgetModule {
 	private $iFileSizeOfSiteDir;
 
-	public function __construct($sWidgetId) {
+	public function __construct($sWidgetId = null) {
 		parent::__construct($sWidgetId);
 		$this->setSetting('backup_storage_limit_warning', Settings::getSetting('admin', 'backup_storage_limit_warning', 1000000000));
 	}
@@ -107,7 +107,6 @@ class BackupWidgetModule extends PersistentWidgetModule {
 	}
 
 	private static function detectMysqldumpLocation() {
-		ini_set('open_basedir', '.');
 		// 1st: try config
 		$sMySqlDumpTool = Settings::getSetting('admin', 'mysql_dump_tool', null);
 		if($sMySqlDumpTool && self::is_executable($sMySqlDumpTool)) {

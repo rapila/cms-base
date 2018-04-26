@@ -99,7 +99,11 @@ class PreviewManager extends FrontendManager {
 		$oResourceIncluder->addCustomJs($oConstants);
 		$oResourceIncluder->addResource('preview/preview.js');
 
-		$this->oPageType->display($this->oTemplate, true);
+		return parent::fillContent();
+	}
+	
+	public function isPreview() {
+		return true;
 	}
 
 	private function addNamespacedCss($mLocation) {

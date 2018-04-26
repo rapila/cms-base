@@ -34,6 +34,13 @@ class Document extends BaseDocument {
 		return $this->getName().'.'.$this->getExtension();
 	}
 
+	public function getDescriptionOrName() {
+		if($this->getDescription()) {
+			return $this->getDescription();
+		}
+		return $this->getName();
+	}
+
 	public function isImage() {
 		return $this->getDocumentType()->isImageType();
 	}
@@ -80,6 +87,7 @@ class Document extends BaseDocument {
 			$oImage = $this->getImage();
 			$oTemplate->replaceIdentifier('dimension', $oImage->getOriginalWidth(), 'width');
 			$oTemplate->replaceIdentifier('dimension', $oImage->getOriginalHeight(), 'height');
+			$oTemplate->replaceIdentifier('orientation', $oImage->getOrientation());
 			$oImage->destroy();
 		}
 		$oDocument = $this;
@@ -97,6 +105,13 @@ class Document extends BaseDocument {
 			return $this->getDocumentCategory()->getName();
 		}
 		return null;
+	}
+
+	public function getPreviewForAdminList($iSize = 190) {
+		if($this->isImage()) {
+			return $this->getPreview($iSize);
+		}
+		return '<div><img src="'.LinkUtil::link(array('document_type_preview', $this->getDocumentTypeId()), 'FileManager', array('size' => $iSize)).'"/></div>';
 	}
 
 	public function getPreview($iSize = 190, $bRefresh = true, $bMayReturnTemplate = false) {
@@ -251,7 +266,7 @@ class Document extends BaseDocument {
 			'year' => $iYear,
 			'license' => $this->getLicense()
 		);
-		return StringPeer::getString("wns.license.disclaimer.$sDisclaimer", null, null, $aOptions);
+		return TranslationPeer::getString("wns.license.disclaimer.$sDisclaimer", null, null, $aOptions);
 	}
 
 	public function getDocumentCategory(PropelPDO $con = null, $doQuery = true) {
@@ -277,6 +292,10 @@ class Document extends BaseDocument {
 
 	public function getHasTags() {
 		return TagQuery::create()->filterByTagged($this)->count() > 0;
+	}
+
+	public function getHasDescription() {
+		return $this->getDescription() !== null;
 	}
 
 	public function hasReferees() {

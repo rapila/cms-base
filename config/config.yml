@@ -1,16 +1,24 @@
 general:
-  # for plugins that need to call php via cli
+  # For plugins that need to call php via cli
   php_path: 'php'
+  # Whether A language path part is mandatory.
   multilingual: true
-  # general caching of files like configuration yaml files and language ini files
+  # General caching of files like configuration yaml files and language ini files.
+  # Deprecated: use default->strategy:None in caching.yml
   caching: true
+  # Caching of template contents.
+  # Deprecated: use templates->strategy:None in caching.yml
   template_caching: true
   # @see http://www.php.net/manual/en/timezones.php
   timezone: "Europe/Zurich"
-  # those don’t work well in some environments
-  send_not_modified_headers: true
-  # whether to trust proxy headers for the following: Forwarded-For, SSL, Host, and Port
-  # TODO: Implement
+  # Whether to trust proxy headers for the following: Client Address, SSL, and Port
+  # Possible values:
+  #   false (default) → Do not trust proxy headers
+  #   'Forwarded' → Use the RFC 7239 standard header "Forwarded"
+  #   'X-Forwarded' → Use the non-standard "X-Forwarded-*" family of headers
+  #   true → same as "Forwarded"
+  # Warning: this is insecure if you are not actually behind a proxy that sets these headers
+  # Currently, only 'X-Forwarded' is implemented and it only works determining whether HTTPS is used.
   trust_http_proxy_headers: false
 
 linking:
@@ -21,22 +29,9 @@ linking:
   # Whether to always print absolute links (true) or only when really necessary (false)
   always_link_absolutely: false
 
-routing:
-  routes:
-    content:      'FrontendManager'
-    get_file:     'FileManager'
-    get_ajax:     'FileManager'
-    cms_login:    'LoginManager'
-    goto:         'GotoManager'
-    admin:        'AdminManager'
-    preview:      'PreviewManager'
-  default: 'content'
-
 # give the page name as value here (be sure not to have allocated the name to more than one page)
 error_pages:
   not_found: "error-404"
-  # server_error is ignored for the time being
-  server_error: "internal_server_error"
 
 domain_holder:
   domain: 'example.com'
@@ -52,8 +47,6 @@ admin:
   # set this to false if your containers overlap
   use_parsed_css_in_config: true
 
-  # document edit and delete can be restricted to owner only (if is not admin), defaults to false
-  document_delete_allow_from_creator_only: false
   list_allows_multiple_categories: false
 
   # hide externally managed categories
@@ -61,6 +54,8 @@ admin:
   hide_externally_managed_document_categories: true
 
   registered_user_languages: ['de', 'en']
+
+  tag_models: ['Tag']
 
 error_handling:
   should_stop_on_recoverable_errors: false
@@ -88,6 +83,8 @@ text_module:
       - ["HorizontalRule", "Smiley", "SpecialChar", "-", "RemoveFormat", "PasteText", "Scayt", "ShowBlocks"]
       - ["Source"]
   richtext_width: 700
+  # To output images larger than used (for retina displays and zooming), set this value to > 1
+  image_scale_factor: 1
 
 security:
   generate_digest_secrets: false
@@ -95,12 +92,13 @@ security:
 frontend:
   title: 'Site Title'
   main_template: general
-#possible values: strict, transitional, html4_strict, html4_transitional, none (which means the content type will always be text/html, the encoding will be default and the doctype has to be hardcoded in the template)
+#possible values: html5, xhtml5, strict, transitional, html4_strict, html4_transitional, none (the content type will always be text/html with a charset and the doctype has to be hardcoded in the template)
   doctype: strict
   protect_email_addresses: false
   display_string_keys: false #override this to see all used string keys directly in frontend
-  re_captcha_private_key: 'change-this'
-  re_captcha_public_key: 'change-this' #You can register for a key at https://www.google.com/recaptcha/admin/create
+  #You can register for a key at https://www.google.com/recaptcha/admin/create
+  re_captcha_public_key: '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'
+  re_captcha_private_key: '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe'
   re_captcha_theme: 'white'
 
 encoding:
@@ -109,7 +107,7 @@ encoding:
   #possible values: full, xml_only. xml_only is much faster and results in smaller file sizes, however, full encoding may help if you have encoding issues with certain browsers
   entities: xml_only
 
-# for overwriting in site/config both parameters have to be copied, otherwise content_language will defer from language
+# for overwriting in site/config both parameters have to be copied, otherwise content_language will differ from language
 session_default:
   language: en &fe_language
   content_language: *fe_language

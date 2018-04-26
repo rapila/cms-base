@@ -8,11 +8,17 @@ class Page extends BasePage {
 
 	const DELETE_NOT_ALLOWED_CODE = 11;
 	const REFERENCE_EXISTS_CODE = 44;
+	
+	private $aStrings = array();
 
 	private $aFullPathArray = null;
 
 	///Stores the “old” parent (before move operations)
 	private $oOldParent = null;
+
+	public function setName($sName) {
+		parent::setName(StringUtil::normalizePath($sName, false));
+	}
 
 	public function getChildByName($sName) {
 		$oPage = PageQuery::create()->childrenOf($this)->filterByName($sName)->findOne();
@@ -46,7 +52,7 @@ class Page extends BasePage {
 		if($sLocalDescription = $this->getActivePageString($sLanguageId)->getMetaDescription()) {
 			return $sLocalDescription;
 		}
-		return StringPeer::getString('meta.description', $sLanguageId, '');
+		return TranslationPeer::getString('meta.description', $sLanguageId, '');
 	}
 
 	public function getConsolidatedKeywords($sLanguageId = null, $bReturnArray = false) {
@@ -55,7 +61,7 @@ class Page extends BasePage {
 		}
 
 		$aKeywords = array();
-		$aKeywords[] = StringPeer::getString('meta.keywords', null, '');
+		$aKeywords[] = TranslationPeer::getString('meta.keywords', null, '');
 		$aTags = TagPeer::tagInstancesForObject($this);
 		foreach($aTags as $iKey => $oTag) {
 			$aTags[$iKey] = $oTag->getTag()->getName();
@@ -86,15 +92,21 @@ class Page extends BasePage {
 	}
 
 	public function getPageStringByLanguage($sLanguageId) {
-		return PageStringQuery::create()->filterByPage($this)->filterByLanguageId($sLanguageId)->findOne();
+		if(!isset($this->aStrings[$sLanguageId])) {
+			$this->aStrings[$sLanguageId] = PageStringQuery::create()->filterByPage($this)->filterByLanguageId($sLanguageId)->findOne();
+		}
+		return $this->aStrings[$sLanguageId];
 	}
 
 	public function hasPageStringByLanguage($sLanguageId, $bOnlyActive = true) {
-		$oQuery = PageStringQuery::create()->filterByPage($this)->filterByLanguageId($sLanguageId);
-		if($bOnlyActive) {
-			$oQuery->filterByIsInactive(false);
+		$oString = $this->getPageStringByLanguage($sLanguageId);
+		if(!$oString) {
+			return false;
 		}
-		return $oQuery->count() > 0;
+		if($bOnlyActive && $oString->getIsInactive()) {
+			return false;
+		}
+		return true;
 	}
 
 	/**

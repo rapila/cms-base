@@ -26,6 +26,29 @@ String.prototype.escapeSelector = function() {
 	return this.replace(/([#;&,\.+\*~':"!\^\$\[\]\(\)=>|\/])/g, "\\$1");
 };
 
+// Override jQuery UI dialog to support CKEDITOR Pop-Ups
+jQuery.widget("ui.dialog", jQuery.ui.dialog, {
+	// Take implementation from jQuery UI 1.11.2. FIXME: Remove when upgrading jQuery UI to that or a later version
+	_moveToTop: function( event, silent ) {
+		var moved = false,
+			zIndicies = this.uiDialog.siblings( ".ui-front:visible" ).map(function() {
+				return +$( this ).css( "z-index" );
+			}).get(),
+			zIndexMax = Math.max.apply( null, zIndicies );
+
+		if ( zIndexMax >= +this.uiDialog.css( "z-index" ) ) {
+			this.uiDialog.css( "z-index", zIndexMax + 1 );
+			moved = true;
+		}
+
+		if ( moved && !silent ) {
+			this._trigger( "focus", event );
+		}
+		return moved;
+	}
+});
+
+
 (function() {
 	//Widget class
 	var Widget = function() {
@@ -460,7 +483,7 @@ String.prototype.escapeSelector = function() {
 			} else {
 				display = Widget.parseHTML('<div class="ui-widget ui-notify search_info"><div class="ui-state-'+highlight+' ui-corner-all"><div class="ui-badge">1</div><div><span class="ui-icon ui-icon-'+severity+'"></span><span class="message"></span></div></div></div>');
 			}
-			display.hide().appendTo(notification_area).data('identifier', options.identifier);
+			display.hide().appendTo(notification_area).data('identifier', options.identifier).addClass(severity);
 
 			var badge = display.find('.ui-badge').hide();
 			var close_button = display.find('.close-handle').hide();
@@ -641,6 +664,27 @@ String.prototype.escapeSelector = function() {
 			if(options.callback_handles_error === null && callback) {
 				options.callback_handles_error = !!callback.resolveWith || callback.length>=2;
 			}
+			function handleResponse(error, result) {
+				if(error) {
+					var exception_handler = Widget.exception_type_handlers[error.exception_type] || Widget.exception_type_handlers.fallback;
+					action.shift();
+					var call_callback = options.callback_handles_error || exception_handler(error, widgetType, widgetOrId, action, callback, options, attributes);
+					if(options.call_callback === null) {
+						options.call_callback = call_callback;
+					}
+				}
+				if(options.call_callback === null || options.call_callback) {
+					if(callback.resolveWith) {
+						if(error) {
+							callback.rejectWith(this, [error]);
+						} else if(result !== undefined) {
+							callback.resolveWith(this, [result]);
+						}
+					} else {
+						callback.call(this, result || {}, error);
+					}
+				}
+			}
 			var ajaxOpts = {
 				url: url,
 				data: attr_str,
@@ -668,47 +712,21 @@ String.prototype.escapeSelector = function() {
 				},
 				success: function(result) {
 					callback = (callback || Widget.defaultJSONHandler);
-					var error = null;
+					var error = undefined;
 					if(result && result.exception) {
 						error = result.exception;
-						var exception_handler = Widget.exception_type_handlers[error.exception_type] || Widget.exception_type_handlers.fallback;
-						action.shift();
-						var call_callback = options.callback_handles_error || exception_handler(error, widgetType, widgetOrId, action, callback, options, attributes);
-						if(options.call_callback === null) {
-							options.call_callback = call_callback;
-						}
 					}
-					if(options.call_callback === null || options.call_callback) {
-						if(callback.resolveWith) {
-							if(error) {
-								callback.rejectWith(this, [error]);
-							} else {
-								callback.resolveWith(this, [result]);
-							}
-						} else {
-							callback.call(this, result, error);
-						}
-					}
+					handleResponse(error, result);
 				},
 				error: function(request, statusCode, error) {
-					var error_object = {message: error, exception_type: statusCode};
-					if(statusCode === 'parsererror') {
+					var error = {message: error, exception_type: statusCode};
+					if(request.responseJSON && request.responseJSON.exception) {
+						error = request.responseJSON.exception;
+					} else if(statusCode === 'parsererror') {
 						var text = jQuery.trim(request.responseText);
-						error_object.message = Widget.parseHTML(text);
+						error.message = Widget.parseHTML(text);
 					}
-					var exception_handler = Widget.exception_type_handlers[error_object.exception_type] || Widget.exception_type_handlers.fallback;
-					action.shift();
-					var call_callback = options.callback_handles_error || exception_handler(error_object, widgetType, widgetOrId, action, callback, options, attributes);
-					if(options.call_callback === null) {
-						options.call_callback = call_callback;
-					}
-					if(options.call_callback) {
-						if(callback.resolveWith) {
-							callback.rejectWith(this, [error_object]);
-						} else {
-							callback.call(this, {}, error_object);
-						}
-					}
+					handleResponse(error, undefined);
 				},
 				complete: function() {
 					Widget.end_activity();
@@ -945,7 +963,14 @@ String.prototype.escapeSelector = function() {
 			///TODO: handle arrays (keys ending in “[]”), checkboxes and radios (.attr)
 			var _this = this;
 			jQuery.each(data, function(key, item) {
-				_this.find('[name='+key.escapeSelector()+']').val(item);
+				var formItem = _this.find('[name='+key.escapeSelector()+']');
+				if(formItem.is(':checkbox')) {
+					formItem.prop('checked', !!item);
+				} else if(formItem.is(':radio')) {
+					formItem.prop('checked', formItem.value === item);
+				} else {
+					formItem.val(item);
+				}
 			});
 			return this;
 		},

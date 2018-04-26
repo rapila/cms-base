@@ -128,11 +128,16 @@ class RichTextWidgetModule extends PersistentWidgetModule {
 		if(isset($this->aModuleSettings['insertable_parts'])) {
 			foreach($this->aModuleSettings['insertable_parts'] as &$aPartSpec) {
 				if(isset($aPartSpec['tooltip_string_key'])) {
-					$aPartSpec['tooltip'] = StringPeer::getString($aPartSpec['tooltip_string_key']);
+					$aPartSpec['tooltip'] = TranslationPeer::getString($aPartSpec['tooltip_string_key']);
 					unset($aPartSpec['tooltip_string_key']);
 				}
 				if(!isset($aPartSpec['template'])) {
 					continue;
+				}
+				if(isset($aPartSpec['icon'])) {
+					$oIncluder = new ResourceIncluder();
+					$oIncluder->addResource($aPartSpec['icon'], null, null, array('template' => 'location_only'));
+					$aPartSpec['icon'] = $oIncluder->getIncludes(false, false)->render();
 				}
 				$oTemplate = new Template($aPartSpec['template']);
 				$aPartSpec['content'] = $oTemplate->render();

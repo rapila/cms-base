@@ -1,0 +1,4 @@
+# Options set here apply to all strategies (unless overridden)
+options:
+  # Do not respect shift-reloads on production
+  respect_cache_control_headers: false

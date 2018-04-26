@@ -24,7 +24,7 @@ class LicenseImageFileModule extends FileModule {
 			$sMimeType = $oDocumentType->getMimetype();
 		}
 		header('Content-Type: '.$sMimeType);
-		if($oCache->cacheFileExists()) {
+		if($oCache->entryExists()) {
 			$oCache->sendCacheControlHeaders();
 			$oCache->passContents(true);
 		} else {

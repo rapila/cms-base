@@ -15,4 +15,9 @@ class DocumentationDisplayWidgetModule extends WidgetModule {
 		$oResult->url = $aData['url'];
 		return $oResult;
 	}
+	
+	public static function needsLogin() {
+		// Documentaion does not need login (no private information in documentation parts)
+		return false;
+	}
 }

@@ -6,9 +6,9 @@ class TagWriter {
 	private $sTagName;
 	private $aParameters;
 	private $sContent;
-	
+
 	private static $SELF_CLOSING_TAGS = array("img", "br", "hr", "meta", "link", "input");
-	
+
 	public function __construct($sTagName, $aParameters = array(), $sContent = "") {
 		if(!is_array($aParameters)) {
 			$aParameters = array();
@@ -20,7 +20,7 @@ class TagWriter {
 		}
 		$this->sContent = $sContent;
 	}
-	
+
 	public function setParameter($sName, $sValue) {
 		if($sValue === null) {
 			unset($this->aParameters[$sName]);
@@ -28,15 +28,15 @@ class TagWriter {
 		}
 		$this->aParameters[$sName] = $sValue;
 	}
-	
+
 	public function getParameter($sName) {
 		return @$this->aParameters[$sName];
 	}
-	
+
 	public function hasParameter($sName) {
 		return isset($this->aParameters[$sName]);
 	}
-	
+
 	public function addToParameter($sName, $sValue) {
 		if($this->hasParameter($sName)) {
 			if($sValue === '' || $sValue === null) {
@@ -47,7 +47,7 @@ class TagWriter {
 			$this->setParameter($sName, $sValue);
 		}
 	}
-	
+
 	public function parse($bContentIsEscaped=false) {
 		$sTemplateText = "<".TemplateIdentifier::constructIdentifier('tag_name');
 		foreach($this->aParameters as $sName => $sValue) {
@@ -74,11 +74,11 @@ class TagWriter {
 		$oTemplate->replaceIdentifier("tag_contents", $this->sContent, null, $iFlags);
 		return $oTemplate;
 	}
-	
+
 	public function __toString() {
 		return $this->parse()->render();
 	}
-	
+
 	public static function quickTag($sTagName = 'div', $aParameters = array(), $sContent = '') {
 		$oTagWriter = new TagWriter($sTagName, $aParameters, $sContent);
 		return $oTagWriter->parse();
@@ -86,7 +86,7 @@ class TagWriter {
 
 	public static function getEmailLinkWriter($sLinkUrl, $sText=null, $sQuery='') {
 		if($sText === null) {
-			$sText = StringPeer::getString("email");
+			$sText = TranslationPeer::getString("wns.email");
 		} else if(Settings::getSetting("frontend", "protect_email_addresses", false)) {
 			$sText = str_replace("@", " [at] ", $sText);
 		}
@@ -104,7 +104,7 @@ class TagWriter {
 	public static function writeEmailLink($sLinkUrl, $sText) {
 		return self::getEmailLinkWriter($sLinkUrl, $sText)->parse();
 	}
-	
+
 /**
  * Helper method to generate the HTML for a <select> element using the values from an array.
  * @param array $aKeyValues Assoc array (optionvalue => optiondisplayname)
@@ -128,7 +128,7 @@ class TagWriter {
 		$aKeyValuesToRender = is_array($aCustomOptions) ? $aCustomOptions : array();
 		$aKeyValuesToRender = $aKeyValuesToRender+$aKeyValues;
 		$aKeys = array_keys($aKeyValuesToRender);
-		
+
 		foreach($aKeys as $iCounter => $mKey) {
 			$mValue = $aKeyValuesToRender[$mKey];
 			$sIndented = '';
@@ -177,7 +177,7 @@ class TagWriter {
 			}
 		}
 		$aSelected = array();
-		
+
 		foreach ($aObjects as $oObject) {
 			$sKey = null;
 			$sValue = null;

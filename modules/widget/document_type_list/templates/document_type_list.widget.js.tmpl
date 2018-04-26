@@ -1,20 +1,18 @@
-jQuery(document).ready(function() {
-	jQuery('table.document_type_list').each(function() {
-		jQuery(this).prepareWidget(function(widget) {
-			Widget.callStatic('detail', 'connect_detail_with_list', 'document_type', widget, 'setTypeId');
-			widget.handle('list-cell_click', function(event, rowIndex, col, row, cell) {
-				if(col.identifier === 'delete') {
-					var file_name = widget.cell_for_identifier('extension', row).text();
-					var delete_message = AdminInterface.strings.get_string('wns.document_type.delete_warning', { detail_name: file_name});
-					Widget.confirm("{{writeString=wns.delete_warning_title}}", delete_message, function(confirmed) {
-						if(confirmed) {
-							this.delete_row(row);
-						}
-					}.bind(this));
-					event.stopPropagation();
-				}
-			});
-			AdminInterface.strings.handle_strings_for_list_result('wns.document_type.no_result', ['document_kind_name'], widget);
+Widget.types.document_type_list = {
+	prepare: function() {
+		var widget = this._list;
+		Widget.callStatic('detail', 'connect_detail_with_list', 'document_type', widget, 'setTypeId');
+		widget.handle('list-cell_click', function(event, rowIndex, col, row, cell) {
+			if(col.identifier === 'delete') {
+				var file_name = widget.cell_for_identifier('extension', row).text();
+				var delete_message = AdminInterface.strings.get_string('wns.document_type.delete_warning', { detail_name: file_name});
+				Widget.confirm("{{writeString=wns.delete_warning_title}}", delete_message, function(confirmed) {
+					if(confirmed) {
+						this.delete_row(row);
+					}
+				}.bind(this));
+				event.stopPropagation();
+			}
 		});
-	});
-});
+	}
+};

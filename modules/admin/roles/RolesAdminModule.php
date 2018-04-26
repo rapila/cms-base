@@ -37,7 +37,7 @@ class RolesAdminModule extends AdminModule {
 				$aResult['field_name'] = 'id';
 				break;
 			case 'name':
-				$aResult['heading'] = StringPeer::getString('wns.roles.sidebar_heading');
+				$aResult['heading'] = TranslationPeer::getString('wns.roles.sidebar_heading');
 				$aResult['field_name'] = 'name';
 				break;
 			case 'magic_column':
@@ -52,10 +52,10 @@ class RolesAdminModule extends AdminModule {
 		if(GroupPeer::doCount(new Criteria()) > 0) {
 			return array(
 				array('group_id' => CriteriaListWidgetDelegate::SELECT_ALL,
-							'name' => StringPeer::getString('wns.roles.select_all_title'),
+							'name' => TranslationPeer::getString('wns.roles.select_all_title'),
 							'magic_column' => 'all'),
 				array('group_id' => CriteriaListWidgetDelegate::SELECT_WITHOUT,
-							'name' => StringPeer::getString('wns.roles.select_without_group_title'),
+							'name' => TranslationPeer::getString('wns.roles.select_without_group_title'),
 							'magic_column' => 'without'));
 		}
 		return array();

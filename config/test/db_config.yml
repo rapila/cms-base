@@ -1,0 +1,4 @@
+connection:
+  dsn:        'sqlite:./test-db.sqlite'
+database:
+  adapter:  'sqlite'

@@ -30,7 +30,7 @@ class Navigation {
 	private $bExcludeDuplicates;
 	private $bPrintNewline;
 	private $sLanguageId;
-	
+
 	/**
 	 * @param string|array $mConfig navigation name/navigation config
 	 * each navigation part needs configuration in section called 'navigation' in the site/config/config.yml
@@ -72,11 +72,11 @@ class Navigation {
 
 	/**
 	 * parse()
-	 */	 
+	 */
 	public function parse(NavigationItem $oNavigationItem) {
 		return $this->parseTree(array($oNavigationItem), 0);
 	} // parse()
-	
+
 	/**
 	 * @param array $aNavigationItems array of Page objects
 	 * @param int $iLevel level of navigation
@@ -90,7 +90,7 @@ class Navigation {
 		$bNoPagesDisplayed = true;
 		foreach($aNavigationItems as $oNavigationItem) {
 			$oBooleanParser = new BooleanParser(self::$BOOLEAN_PARSER_DEFAULT_VALUES);
-			
+
 			if($this->bExcludeDuplicates && $oNavigationItem->getCanonical()) {
 				continue;
 			}
@@ -132,44 +132,57 @@ class Navigation {
 			if($oNavigationItem->isVirtual()) {
 					$oBooleanParser->is_virtual = true;
 			}
-			
+
 			$aConfig = $this->getConfigForPage($iLevel, $oBooleanParser, $oNavigationItem);
-			
+
 			//Don’t show page (and subpages) in navigation if show===false
 			if(@$aConfig['show'] === false) {
 				continue;
 			}
-			
+
 			$sTemplateName = @$aConfig['template'];
 			$sInlineTemplate = @$aConfig['template_inline'];
-			
+
 			if($sTemplateName === null && $sInlineTemplate === null && ($this->iMaxLevel !== null && $iLevel+1 > $this->iMaxLevel)) {
 				continue;
 			}
-			
+
 			$bNoPagesDisplayed = false;
-			
+
 			if(!$sTemplateName && $sInlineTemplate) {
 				$oTemplate = new Template($sInlineTemplate, null, true);
 			} else {
 				$oTemplate = $this->getTemplate($sTemplateName);
 			}
-			
+
+			$oPageNavigationItem = $oNavigationItem;
+			while(!($oPageNavigationItem instanceof PageNavigationItem)) {
+				$oPageNavigationItem = $oPageNavigationItem->getParent();
+			}
+
+			$oTemplate->replaceIdentifier("link_text", $oNavigationItem->getLinkText());
+			$oTemplate->replaceIdentifier("navigation_name", $oNavigationItem->getName());
+			$oTemplate->replaceIdentifier("navigation_title", $oNavigationItem->getTitle());
+			$oTemplate->replaceIdentifier("page_link_text", $oPageNavigationItem->getLinkText());
+			$oTemplate->replaceIdentifier("page_name", $oPageNavigationItem->getName());
+			$oTemplate->replaceIdentifier("page_title", $oPageNavigationItem->getTitle());
+
 			$oTemplate->replaceIdentifier('name', $oNavigationItem->getName());
-			$oTemplate->replaceIdentifier('page_title', $oNavigationItem->getTitle());
 			$oTemplate->replaceIdentifier('title', $oNavigationItem->getLinkText());
+
+			$oTemplate->replaceIdentifier('link_text', $oNavigationItem->getLinkText());
 			$oTemplate->replaceIdentifier('description', $oNavigationItem->getDescription());
-			
+
 			$oTemplate->replaceIdentifier('link_prefix', $this->sLinkPrefix);
 			$oTemplate->replaceIdentifier('link_without_prefix', implode('/', $oNavigationItem->getLink()));
-			
+
 			$oTemplate->replaceIdentifier('link', $this->sLinkPrefix.implode('/', $oNavigationItem->getLink()));
 			$oTemplate->replaceIdentifier('level', $iLevel);
-			
+
 			foreach($oBooleanParser->getItems() as $aNavigationAttributeName => $aNavigationAttributeValue) {
 				$oTemplate->replaceIdentifier($aNavigationAttributeName, $aNavigationAttributeValue);
 			}
-			
+
 			if($oBooleanParser->is_current) {
 				$oTemplate->replaceIdentifier('status', "current");
 			} else if($oBooleanParser->is_active) {
@@ -185,7 +198,7 @@ class Navigation {
 			} else {
 				$oTemplate->replaceIdentifier('status', "default");
 			}
-			
+
 			if($oTemplate->hasIdentifier('children')) {
 				$bHasChildren = $oBooleanParser->has_children;
 				$bHasChildren = is_callable($bHasChildren) ? $bHasChildren() : $bHasChildren;
@@ -194,7 +207,7 @@ class Navigation {
 					$oTemplate->replaceIdentifier('children', $this->parseTree($aChildren, $iLevel+1));
 				}
 			}
-			
+
 			$sResult->replaceIdentifierMultiple("content", $oTemplate, null, ($this->bPrintNewline ? 0 : Template::NO_NEWLINE));
 		}
 		if($bNoPagesDisplayed) {
@@ -202,7 +215,7 @@ class Navigation {
 		}
 		return $sResult;
 	} // parseTree()
-	
+
 	private function getTemplate($sTemplateName) {
 		if(!isset(self::$TEMPLATES[$sTemplateName])) {
 			if($sTemplateName === null) {
@@ -213,13 +226,13 @@ class Navigation {
 		}
 		return clone self::$TEMPLATES[$sTemplateName];
 	}
-	
+
 	/**
 	 * @param int $iLevel level of current NavigationItem (expensive to calculate from the NavigationItem alone)
 	 * @param BooleanParser $oBooleanParser the BooleanParser instance holding information about the current NavigationItem’s properties]
 	 * @param NavigationItem $oNavigationItem the current navigation item
 	 * @return string parsed navigation
-	 */	 
+	 */
 	private function getConfigForPage($iLevel, $oBooleanParser, $oNavigationItem) {
 		$aConfigToCheck = @$this->aConfig[$iLevel];
 		if($aConfigToCheck === null) {
@@ -244,23 +257,23 @@ class Navigation {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * @param main template
-	 * description: 
+	 * description:
 	 * - @see config.yml section language_chooser
 	 * - use parameter replaced in method
 	 * @return Template The rendered language chooser
-	 */		
+	 */
 	public static function getLanguageChooser($oMainTemplate) {
 		$oTemplate = new Template(TemplateIdentifier::constructIdentifier('languages'), null, true);
 		$oLanguageTemplate = new Template(Settings::getSetting("language_chooser", 'template', 'language'), array(DIRNAME_TEMPLATES, DIRNAME_NAVIGATION));
 		$sLinkSeparator = Settings::getSetting("language_chooser", 'link_separator', ' | ');
 		$oLanguageActiveTemplate = null;
 		$bShowActiveLanguage = Settings::getSetting("language_chooser", 'show_active_language', false);
-		
+
 		$bIsPreview = Manager::getCurrentManager() instanceof PreviewManager;
-		
+
 		if($bShowActiveLanguage) {
 			if(Settings::getSetting("language_chooser", 'template_active', false) !== false) {
 				$oLanguageActiveTemplate = new Template(Settings::getSetting("language_chooser", 'template_active', 'language_active'), array(DIRNAME_TEMPLATES, DIRNAME_NAVIGATION));
@@ -268,12 +281,12 @@ class Navigation {
 				$oLanguageActiveTemplate = clone $oLanguageTemplate;
 			}
 		}
-		
+
 		// Find request variables
 		$aParameters = array_diff_assoc($_REQUEST, $_COOKIE);
 		unset($aParameters['path']);
 		unset($aParameters['content_language']);
-		
+
 		// Check whether manager needs language to be included
 		$bCurrentPathIncludesLanguage = call_user_func(array(Manager::getManagerClassNormalized(null), 'shouldIncludeLanguageInLink'));
 		$aRequestPath = explode("/", Manager::getRequestedPath());
@@ -291,7 +304,7 @@ class Navigation {
 					continue;
 				}
 				$oLangTemplate = clone $oLanguageTemplate;
-				
+
 			}
 			// If language is included, replace it by language id and set include_language param to false
 			if($bCurrentPathIncludesLanguage) {
@@ -301,7 +314,7 @@ class Navigation {
 				$sLink = LinkUtil::link($aRequestPath, null, array_merge($aParameters, array('content_language' => $oLanguage->getId())));
 			}
 			$oLangTemplate->replaceIdentifier('link', $sLink);
-			
+
 			// Add alternate language links
 			if($oPageString) {
 				ResourceIncluder::metaIncluder()->addCustomResource(array('template' => 'link', 'rel' => 'alternate', 'lang' => $oLanguage->getId(), 'location' =>  $sLink, 'title' => $oPageString->getPageTitle()));
@@ -316,5 +329,5 @@ class Navigation {
 		}
 		return $oTemplate;
 	}
-	
+
 } // end class Navigation

@@ -25,14 +25,6 @@ class LinkListWidgetModule extends SpecializedListWidgetModule {
 		return TagInstanceQuery::create()->filterByModelName('Link')->count() > 0;
 	}
 
-	public function toggleIsInactive($aRowData) {
-		$oLink = LinkQuery::create()->findPk($aRowData['id']);
-		if($oLink) {
-			$oLink->setIsInactive(!$oLink->getIsInactive());
-			$oLink->save();
-		}
-	}
-
 	public function getColumnIdentifiers() {
 		$aResult = array('id', 'name_truncated', 'sort', 'url');
 		if(LinkCategoryQuery::create()->count() > 0) {
@@ -53,14 +45,14 @@ class LinkListWidgetModule extends SpecializedListWidgetModule {
 		$aResult = array('is_sortable' => true);
 		switch($sColumnIdentifier) {
 			case 'sort':
-				$aResult['heading'] = StringPeer::getString('wns.sort');
+				$aResult['heading'] = TranslationPeer::getString('wns.sort');
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_REORDERABLE;
 				break;
 			case 'name_truncated':
-				$aResult['heading'] = StringPeer::getString('wns.name');
+				$aResult['heading'] = TranslationPeer::getString('wns.name');
 				break;
 			case 'url':
-				$aResult['heading'] = StringPeer::getString('wns.url');
+				$aResult['heading'] = TranslationPeer::getString('wns.url');
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_URL;
 				break;
 			case 'has_tags':
@@ -69,7 +61,7 @@ class LinkListWidgetModule extends SpecializedListWidgetModule {
 				$aResult['is_sortable'] = false;
 				break;
 			case 'category_name':
-				$aResult['heading'] = StringPeer::getString('wns.link_category_list');
+				$aResult['heading'] = TranslationPeer::getString('wns.link_category_list');
 				break;
 			case 'language_id':
 				$aResult['heading'] = '';
@@ -78,7 +70,7 @@ class LinkListWidgetModule extends SpecializedListWidgetModule {
 				$aResult['field_name'] = 'language_name';
 				break;
 			case 'updated_at_formatted':
-				$aResult['heading'] = StringPeer::getString('wns.updated_at');
+				$aResult['heading'] = TranslationPeer::getString('wns.updated_at');
 				break;
 			case 'delete':
 				$aResult['heading'] = ' ';
@@ -124,7 +116,7 @@ class LinkListWidgetModule extends SpecializedListWidgetModule {
 	}
 
 	public function getLanguageName() {
-		return StringPeer::getString('language.'.$this->oDelegateProxy->getLanguageId(), null, $this->oDelegateProxy->getLanguageId());
+		return TranslationPeer::getString('language.'.$this->oDelegateProxy->getLanguageId(), null, $this->oDelegateProxy->getLanguageId());
 	}
 
 	public function getLinkCategoryName() {
@@ -133,9 +125,16 @@ class LinkListWidgetModule extends SpecializedListWidgetModule {
 			return $oLinkCategory->getName();
 		}
 		if($this->oDelegateProxy->getLinkCategoryId() === CriteriaListWidgetDelegate::SELECT_WITHOUT) {
-			return StringPeer::getString('wns.links.without_category');
+			return TranslationPeer::getString('wns.links.without_category');
 		}
 		return $this->oDelegateProxy->getLinkCategoryId();
+	}
+
+	public function getTagName() {
+		if($iTagId = $this->oDelegateProxy->getListSettings()->getFilterColumnValue('has_tags')) {
+			return TagQuery::create()->filterById($iTagId)->select('Name')->findOne();
+		}
+		return null;
 	}
 
   public function allowSort($sSortColumn) {

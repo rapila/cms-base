@@ -48,7 +48,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 				$aResult['page_properties'] = $mAvailableProperties;
 			}
 		} catch(Exception $e) {
-			ErrorHandler::handleException($e);
+			ErrorHandler::handleException($e, true);
 		}
 		// page references are displayed if exist
 		$mReferences = AdminModule::getReferences(ReferencePeer::getReferences($oPage));
@@ -106,7 +106,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		}
 		$aResult[$i+1]['value'] = "";
 		$aResult[$i+1]['is_default'] = true;
-		$aResult[$i+1]['name'] = StringPeer::getString('wns.default');
+		$aResult[$i+1]['name'] = TranslationPeer::getString('wns.default');
 
 		krsort($aResult);
 		return $aResult;
@@ -122,7 +122,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		$aResult = array();
 		foreach(Module::listModulesByType(PageTypeModule::getType()) as $sKey => $aValues) {
 			$aResult[$sKey]['value'] = $sKey;
-			$aResult[$sKey]['name'] = StringPeer::getString('page_type.'.$aValues['name'], null, StringUtil::makeReadableName($aValues['name']));
+			$aResult[$sKey]['name'] = TranslationPeer::getString('page_type.'.$aValues['name'], null, StringUtil::makeReadableName($aValues['name']));
 		}
 		return $aResult;
 	}
@@ -157,7 +157,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		$aResult['page_identifier'] = array('value' => $oPage->getIdentifier(), 'defaultValue' => null, 'type' => null);
 
 		foreach($aResult as $sName => &$aValues) {
-			$aValues['display_name'] = StringPeer::getString("page_property.$sName", null, StringUtil::makeReadableName($sName));
+			$aValues['display_name'] = TranslationPeer::getString("page_property.$sName", null, StringUtil::makeReadableName($sName));
 		}
 
 		return $aResult;
@@ -178,7 +178,12 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 			$oParentPage = PagePeer::getRootPage();
 		}
 		$sPageTitle = $sPageName;
-		$sPageName = StringUtil::normalize($sPageName);
+		$sPageName = StringUtil::normalizeToASCII($sPageName);
+		if(!$sPageName) {
+			// If all we have are special chars, leave the page name as is and only normalize minimally
+			$sPageName = $sPageTitle;
+		}
+		$sPageName = StringUtil::normalizePath($sPageName);
 		if(PagePeer::pageIsNotUnique($sPageName, $oParentPage)) {
 			$oFlash = Flash::getFlash();
 			$oFlash->addMessage('page.name_unique_required');
@@ -195,7 +200,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		$oPage->addPageString($oPageString);
 		$oPage->setPageType('default');
 		$oPage->setTemplateName($oParentPage->getTemplateName());
-		$oPage->setIsInactive(false);
+		$oPage->setIsInactive(true);
 		$oPage->insertAsLastChildOf($oParentPage);
 		return $oPage->save();
 	}
@@ -245,7 +250,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 			throw new ValidationException();
 		}
 
-		$this->oPage->setName(StringUtil::normalize($aPageData['name']));
+		$this->oPage->setName($aPageData['name']);
 		$this->oPage->setIsInactive(!$aPageData['global_is_active']);
 		$this->oPage->setIsHidden($aPageData['is_hidden']);
 		$this->oPage->setIsFolder($aPageData['is_folder']);

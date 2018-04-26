@@ -39,8 +39,16 @@ class AdminMenuWidgetModule extends PersistentWidgetModule {
 		foreach($aSettings as $iKey => &$mValue) {
 			if(is_array($mValue)) {
 				$aRes = array();
+				$sType = 'select';
+				if($mValue[0] && strpos($mValue[0], 'type.') === 0) {
+					$sType = substr(strstr(array_shift($mValue), '.'), 1);
+				}
+				$sIcon = null;
+				if($mValue[0] && strpos($mValue[0], 'icon.') === 0) {
+					$sIcon = substr(strstr(array_shift($mValue), '.'), 1);
+				}
 				$this->cleanModules($mValue, $aRes, true);
-				$aResult[] = array('type' => 'menu', 'args' => array($aRes));
+				$aResult[] = array('type' => $sType, 'args' => array($aRes, $sIcon));
 			} else if(is_string($mValue)) {
 				if($mValue === 'edit') {
 					$mValue = "module.pages";
@@ -102,12 +110,28 @@ class AdminMenuWidgetModule extends PersistentWidgetModule {
 	}
 
 	public function documentationExists($sDocumentationName) {
-		$aMetadata = DocumentationProviderTypeModule::dataForPart($sDocumentationName, Session::language());
-		return $aMetadata !== null;
+		return DocumentationProviderTypeModule::dataForPart($sDocumentationName, Session::language()) !== null;
 	}
 
 	public function documentationData($sDocumentationName) {
-		return DocumentationProviderTypeModule::dataForPart($sDocumentationName, Session::language());
+		$sPart = DocumentationProviderTypeModule::dataForPart($sDocumentationName, Session::language());
+		$sOpenBrowserInfo = '<p>'.TranslationPeer::getString('documentation.link_click_tip').'</p>';
+		$sPart['content'] .= $sOpenBrowserInfo;
+		return $sPart;
+	}
+
+	public function clearCaches() {
+		Cache::clearAllCaches();
+	}
+
+	public function resetUserSettings() {
+		$oUser = Session::user();
+		if($oUser) {
+			$oUser->resetBackendSettings();
+			$oUser->save();
+			return true;
+		}
+		return false;
 	}
 
 	private static function getPageFullPathArray() {

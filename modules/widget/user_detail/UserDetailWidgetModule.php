@@ -23,6 +23,7 @@ class UserDetailWidgetModule extends PersistentWidgetModule {
 			$aResult['CreatedInfo'] = Util::formatCreatedInfo($oUser);
 			$aResult['UpdatedInfo'] = Util::formatUpdatedInfo($oUser);
 			$aResult['IsSessionUser'] = $oUser->isSessionUser();
+			$aResult['ForcePasswordReset'] = $oUser->getPassword() === null || $oUser->getPassword() === '' || $oUser->getPassword() === '*';
 			return $aResult;
 		}
 	}
@@ -32,6 +33,15 @@ class UserDetailWidgetModule extends PersistentWidgetModule {
 		if($oUser) {
 			$oUser->resetBackendSettings();
 			$oUser->save();
+			return $this->iUserId;
+		}
+		return false;
+	}
+
+	public function sendPasswordHint() {
+		$oUser = UserQuery::create()->findPk($this->iUserId);
+		if($oUser) {
+			LoginManager::sendResetMail($oUser, true, LinkUtil::link(array(), 'LoginManager'));
 			return $this->iUserId;
 		}
 		return false;
@@ -50,7 +60,9 @@ class UserDetailWidgetModule extends PersistentWidgetModule {
 				$oFlash->addMessage('username_exists');
 			}
 		}
-		if(($aUserData['password']) !== '') {
+		if($aUserData['force_password_reset']) {
+			// Nothing to validate, pass
+		} else if(($aUserData['password']) !== '') {
 			if($oUser->isSessionUser() && $oUser->getPassword() != null) {
 				if($aUserData['old_password'] == '') {
 					$oFlash->addMessage('old_password_required');
@@ -86,11 +98,13 @@ class UserDetailWidgetModule extends PersistentWidgetModule {
 		$oUser->setFirstName($aUserData['first_name']);
 		$oUser->setLastName($aUserData['last_name']);
 		$oUser->setEmail($aUserData['email']);
-		$oUser->setLanguageId($aUserData['language_id']); 
-		$oUser->setTimezone($aUserData['timezone']); 
+		$oUser->setLanguageId($aUserData['language_id']);
+		$oUser->setTimezone($aUserData['timezone']);
 
 		//Password
-		if($aUserData['password'] !== '') {
+		if($aUserData['force_password_reset']) {
+			$oUser->forcePasswordReset();
+		} else if($aUserData['password'] !== '') {
 			$oUser->setPassword($aUserData['password']);
 			$oUser->setPasswordRecoverHint(null);
 		}

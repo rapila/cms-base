@@ -8,18 +8,18 @@
  *
  * @package    propel.generator.model.om
  */
-abstract class BaseString extends BaseObject implements Persistent
+abstract class BaseTranslation extends BaseObject implements Persistent
 {
     /**
      * Peer class name
      */
-    const PEER = 'StringPeer';
+    const PEER = 'TranslationPeer';
 
     /**
      * The Peer class.
      * Instance provides a convenient way of calling static methods on a class
      * that calling code may not be able to identify.
-     * @var        StringPeer
+     * @var        TranslationPeer
      */
     protected static $peer;
 
@@ -245,7 +245,7 @@ abstract class BaseString extends BaseObject implements Persistent
      * Set the value of [language_id] column.
      *
      * @param  string $v new value
-     * @return String The current object (for fluent API support)
+     * @return Translation The current object (for fluent API support)
      */
     public function setLanguageId($v)
     {
@@ -255,7 +255,7 @@ abstract class BaseString extends BaseObject implements Persistent
 
         if ($this->language_id !== $v) {
             $this->language_id = $v;
-            $this->modifiedColumns[] = StringPeer::LANGUAGE_ID;
+            $this->modifiedColumns[] = TranslationPeer::LANGUAGE_ID;
         }
 
         if ($this->aLanguage !== null && $this->aLanguage->getId() !== $v) {
@@ -270,7 +270,7 @@ abstract class BaseString extends BaseObject implements Persistent
      * Set the value of [string_key] column.
      *
      * @param  string $v new value
-     * @return String The current object (for fluent API support)
+     * @return Translation The current object (for fluent API support)
      */
     public function setStringKey($v)
     {
@@ -280,7 +280,7 @@ abstract class BaseString extends BaseObject implements Persistent
 
         if ($this->string_key !== $v) {
             $this->string_key = $v;
-            $this->modifiedColumns[] = StringPeer::STRING_KEY;
+            $this->modifiedColumns[] = TranslationPeer::STRING_KEY;
         }
 
 
@@ -291,7 +291,7 @@ abstract class BaseString extends BaseObject implements Persistent
      * Set the value of [text] column.
      *
      * @param  string $v new value
-     * @return String The current object (for fluent API support)
+     * @return Translation The current object (for fluent API support)
      */
     public function setText($v)
     {
@@ -301,7 +301,7 @@ abstract class BaseString extends BaseObject implements Persistent
 
         if ($this->text !== $v) {
             $this->text = $v;
-            $this->modifiedColumns[] = StringPeer::TEXT;
+            $this->modifiedColumns[] = TranslationPeer::TEXT;
         }
 
 
@@ -313,7 +313,7 @@ abstract class BaseString extends BaseObject implements Persistent
      *
      * @param mixed $v string, integer (timestamp), or DateTime value.
      *               Empty strings are treated as null.
-     * @return String The current object (for fluent API support)
+     * @return Translation The current object (for fluent API support)
      */
     public function setCreatedAt($v)
     {
@@ -323,7 +323,7 @@ abstract class BaseString extends BaseObject implements Persistent
             $newDateAsString = $dt ? $dt->format('Y-m-d H:i:s') : null;
             if ($currentDateAsString !== $newDateAsString) {
                 $this->created_at = $newDateAsString;
-                $this->modifiedColumns[] = StringPeer::CREATED_AT;
+                $this->modifiedColumns[] = TranslationPeer::CREATED_AT;
             }
         } // if either are not null
 
@@ -336,7 +336,7 @@ abstract class BaseString extends BaseObject implements Persistent
      *
      * @param mixed $v string, integer (timestamp), or DateTime value.
      *               Empty strings are treated as null.
-     * @return String The current object (for fluent API support)
+     * @return Translation The current object (for fluent API support)
      */
     public function setUpdatedAt($v)
     {
@@ -346,7 +346,7 @@ abstract class BaseString extends BaseObject implements Persistent
             $newDateAsString = $dt ? $dt->format('Y-m-d H:i:s') : null;
             if ($currentDateAsString !== $newDateAsString) {
                 $this->updated_at = $newDateAsString;
-                $this->modifiedColumns[] = StringPeer::UPDATED_AT;
+                $this->modifiedColumns[] = TranslationPeer::UPDATED_AT;
             }
         } // if either are not null
 
@@ -358,7 +358,7 @@ abstract class BaseString extends BaseObject implements Persistent
      * Set the value of [created_by] column.
      *
      * @param  int $v new value
-     * @return String The current object (for fluent API support)
+     * @return Translation The current object (for fluent API support)
      */
     public function setCreatedBy($v)
     {
@@ -368,7 +368,7 @@ abstract class BaseString extends BaseObject implements Persistent
 
         if ($this->created_by !== $v) {
             $this->created_by = $v;
-            $this->modifiedColumns[] = StringPeer::CREATED_BY;
+            $this->modifiedColumns[] = TranslationPeer::CREATED_BY;
         }
 
         if ($this->aUserRelatedByCreatedBy !== null && $this->aUserRelatedByCreatedBy->getId() !== $v) {
@@ -383,7 +383,7 @@ abstract class BaseString extends BaseObject implements Persistent
      * Set the value of [updated_by] column.
      *
      * @param  int $v new value
-     * @return String The current object (for fluent API support)
+     * @return Translation The current object (for fluent API support)
      */
     public function setUpdatedBy($v)
     {
@@ -393,7 +393,7 @@ abstract class BaseString extends BaseObject implements Persistent
 
         if ($this->updated_by !== $v) {
             $this->updated_by = $v;
-            $this->modifiedColumns[] = StringPeer::UPDATED_BY;
+            $this->modifiedColumns[] = TranslationPeer::UPDATED_BY;
         }
 
         if ($this->aUserRelatedByUpdatedBy !== null && $this->aUserRelatedByUpdatedBy->getId() !== $v) {
@@ -452,10 +452,10 @@ abstract class BaseString extends BaseObject implements Persistent
             }
             $this->postHydrate($row, $startcol, $rehydrate);
 
-            return $startcol + 7; // 7 = StringPeer::NUM_HYDRATE_COLUMNS.
+            return $startcol + 7; // 7 = TranslationPeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException("Error populating String object", $e);
+            throw new PropelException("Error populating Translation object", $e);
         }
     }
 
@@ -507,13 +507,13 @@ abstract class BaseString extends BaseObject implements Persistent
         }
 
         if ($con === null) {
-            $con = Propel::getConnection(StringPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+            $con = Propel::getConnection(TranslationPeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $stmt = StringPeer::doSelectStmt($this->buildPkeyCriteria(), $con);
+        $stmt = TranslationPeer::doSelectStmt($this->buildPkeyCriteria(), $con);
         $row = $stmt->fetch(PDO::FETCH_NUM);
         $stmt->closeCursor();
         if (!$row) {
@@ -546,16 +546,16 @@ abstract class BaseString extends BaseObject implements Persistent
         }
 
         if ($con === null) {
-            $con = Propel::getConnection(StringPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+            $con = Propel::getConnection(TranslationPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
         }
 
         $con->beginTransaction();
         try {
-            $deleteQuery = StringQuery::create()
+            $deleteQuery = TranslationQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             // denyable behavior
-            if(!(StringPeer::isIgnoringRights() || $this->mayOperate("delete"))) {
+            if(!(TranslationPeer::isIgnoringRights() || $this->mayOperate("delete"))) {
                 throw new PropelException(new NotPermittedException("delete.by_role", array("role_key" => "languages")));
             }
 
@@ -594,7 +594,7 @@ abstract class BaseString extends BaseObject implements Persistent
         }
 
         if ($con === null) {
-            $con = Propel::getConnection(StringPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+            $con = Propel::getConnection(TranslationPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
         }
 
         $con->beginTransaction();
@@ -604,24 +604,24 @@ abstract class BaseString extends BaseObject implements Persistent
             if ($isInsert) {
                 $ret = $ret && $this->preInsert($con);
                 // denyable behavior
-                if(!(StringPeer::isIgnoringRights() || $this->mayOperate("insert"))) {
+                if(!(TranslationPeer::isIgnoringRights() || $this->mayOperate("insert"))) {
                     throw new PropelException(new NotPermittedException("insert.by_role", array("role_key" => "languages")));
                 }
 
                 // extended_timestampable behavior
-                if (!$this->isColumnModified(StringPeer::CREATED_AT)) {
+                if (!$this->isColumnModified(TranslationPeer::CREATED_AT)) {
                     $this->setCreatedAt(time());
                 }
-                if (!$this->isColumnModified(StringPeer::UPDATED_AT)) {
+                if (!$this->isColumnModified(TranslationPeer::UPDATED_AT)) {
                     $this->setUpdatedAt(time());
                 }
                 // attributable behavior
 
                 if(Session::getSession()->isAuthenticated()) {
-                    if (!$this->isColumnModified(StringPeer::CREATED_BY)) {
+                    if (!$this->isColumnModified(TranslationPeer::CREATED_BY)) {
                         $this->setCreatedBy(Session::getSession()->getUser()->getId());
                     }
-                    if (!$this->isColumnModified(StringPeer::UPDATED_BY)) {
+                    if (!$this->isColumnModified(TranslationPeer::UPDATED_BY)) {
                         $this->setUpdatedBy(Session::getSession()->getUser()->getId());
                     }
                 }
@@ -629,18 +629,18 @@ abstract class BaseString extends BaseObject implements Persistent
             } else {
                 $ret = $ret && $this->preUpdate($con);
                 // denyable behavior
-                if(!(StringPeer::isIgnoringRights() || $this->mayOperate("update"))) {
+                if(!(TranslationPeer::isIgnoringRights() || $this->mayOperate("update"))) {
                     throw new PropelException(new NotPermittedException("update.by_role", array("role_key" => "languages")));
                 }
 
                 // extended_timestampable behavior
-                if ($this->isModified() && !$this->isColumnModified(StringPeer::UPDATED_AT)) {
+                if ($this->isModified() && !$this->isColumnModified(TranslationPeer::UPDATED_AT)) {
                     $this->setUpdatedAt(time());
                 }
                 // attributable behavior
 
                 if(Session::getSession()->isAuthenticated()) {
-                    if ($this->isModified() && !$this->isColumnModified(StringPeer::UPDATED_BY)) {
+                    if ($this->isModified() && !$this->isColumnModified(TranslationPeer::UPDATED_BY)) {
                         $this->setUpdatedBy(Session::getSession()->getUser()->getId());
                     }
                 }
@@ -653,7 +653,7 @@ abstract class BaseString extends BaseObject implements Persistent
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                StringPeer::addInstanceToPool($this);
+                TranslationPeer::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -742,25 +742,25 @@ abstract class BaseString extends BaseObject implements Persistent
 
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(StringPeer::LANGUAGE_ID)) {
+        if ($this->isColumnModified(TranslationPeer::LANGUAGE_ID)) {
             $modifiedColumns[':p' . $index++]  = '`language_id`';
         }
-        if ($this->isColumnModified(StringPeer::STRING_KEY)) {
+        if ($this->isColumnModified(TranslationPeer::STRING_KEY)) {
             $modifiedColumns[':p' . $index++]  = '`string_key`';
         }
-        if ($this->isColumnModified(StringPeer::TEXT)) {
+        if ($this->isColumnModified(TranslationPeer::TEXT)) {
             $modifiedColumns[':p' . $index++]  = '`text`';
         }
-        if ($this->isColumnModified(StringPeer::CREATED_AT)) {
+        if ($this->isColumnModified(TranslationPeer::CREATED_AT)) {
             $modifiedColumns[':p' . $index++]  = '`created_at`';
         }
-        if ($this->isColumnModified(StringPeer::UPDATED_AT)) {
+        if ($this->isColumnModified(TranslationPeer::UPDATED_AT)) {
             $modifiedColumns[':p' . $index++]  = '`updated_at`';
         }
-        if ($this->isColumnModified(StringPeer::CREATED_BY)) {
+        if ($this->isColumnModified(TranslationPeer::CREATED_BY)) {
             $modifiedColumns[':p' . $index++]  = '`created_by`';
         }
-        if ($this->isColumnModified(StringPeer::UPDATED_BY)) {
+        if ($this->isColumnModified(TranslationPeer::UPDATED_BY)) {
             $modifiedColumns[':p' . $index++]  = '`updated_by`';
         }
 
@@ -906,7 +906,7 @@ abstract class BaseString extends BaseObject implements Persistent
             }
 
 
-            if (($retval = StringPeer::doValidate($this, $columns)) !== true) {
+            if (($retval = TranslationPeer::doValidate($this, $columns)) !== true) {
                 $failureMap = array_merge($failureMap, $retval);
             }
 
@@ -930,7 +930,7 @@ abstract class BaseString extends BaseObject implements Persistent
      */
     public function getByName($name, $type = BasePeer::TYPE_PHPNAME)
     {
-        $pos = StringPeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
+        $pos = TranslationPeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -990,11 +990,11 @@ abstract class BaseString extends BaseObject implements Persistent
      */
     public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
-        if (isset($alreadyDumpedObjects['String'][serialize($this->getPrimaryKey())])) {
+        if (isset($alreadyDumpedObjects['Translation'][serialize($this->getPrimaryKey())])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['String'][serialize($this->getPrimaryKey())] = true;
-        $keys = StringPeer::getFieldNames($keyType);
+        $alreadyDumpedObjects['Translation'][serialize($this->getPrimaryKey())] = true;
+        $keys = TranslationPeer::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getLanguageId(),
             $keys[1] => $this->getStringKey(),
@@ -1037,7 +1037,7 @@ abstract class BaseString extends BaseObject implements Persistent
      */
     public function setByName($name, $value, $type = BasePeer::TYPE_PHPNAME)
     {
-        $pos = StringPeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
+        $pos = TranslationPeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
 
         $this->setByPosition($pos, $value);
     }
@@ -1096,7 +1096,7 @@ abstract class BaseString extends BaseObject implements Persistent
      */
     public function fromArray($arr, $keyType = BasePeer::TYPE_PHPNAME)
     {
-        $keys = StringPeer::getFieldNames($keyType);
+        $keys = TranslationPeer::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) $this->setLanguageId($arr[$keys[0]]);
         if (array_key_exists($keys[1], $arr)) $this->setStringKey($arr[$keys[1]]);
@@ -1114,15 +1114,15 @@ abstract class BaseString extends BaseObject implements Persistent
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(StringPeer::DATABASE_NAME);
+        $criteria = new Criteria(TranslationPeer::DATABASE_NAME);
 
-        if ($this->isColumnModified(StringPeer::LANGUAGE_ID)) $criteria->add(StringPeer::LANGUAGE_ID, $this->language_id);
-        if ($this->isColumnModified(StringPeer::STRING_KEY)) $criteria->add(StringPeer::STRING_KEY, $this->string_key);
-        if ($this->isColumnModified(StringPeer::TEXT)) $criteria->add(StringPeer::TEXT, $this->text);
-        if ($this->isColumnModified(StringPeer::CREATED_AT)) $criteria->add(StringPeer::CREATED_AT, $this->created_at);
-        if ($this->isColumnModified(StringPeer::UPDATED_AT)) $criteria->add(StringPeer::UPDATED_AT, $this->updated_at);
-        if ($this->isColumnModified(StringPeer::CREATED_BY)) $criteria->add(StringPeer::CREATED_BY, $this->created_by);
-        if ($this->isColumnModified(StringPeer::UPDATED_BY)) $criteria->add(StringPeer::UPDATED_BY, $this->updated_by);
+        if ($this->isColumnModified(TranslationPeer::LANGUAGE_ID)) $criteria->add(TranslationPeer::LANGUAGE_ID, $this->language_id);
+        if ($this->isColumnModified(TranslationPeer::STRING_KEY)) $criteria->add(TranslationPeer::STRING_KEY, $this->string_key);
+        if ($this->isColumnModified(TranslationPeer::TEXT)) $criteria->add(TranslationPeer::TEXT, $this->text);
+        if ($this->isColumnModified(TranslationPeer::CREATED_AT)) $criteria->add(TranslationPeer::CREATED_AT, $this->created_at);
+        if ($this->isColumnModified(TranslationPeer::UPDATED_AT)) $criteria->add(TranslationPeer::UPDATED_AT, $this->updated_at);
+        if ($this->isColumnModified(TranslationPeer::CREATED_BY)) $criteria->add(TranslationPeer::CREATED_BY, $this->created_by);
+        if ($this->isColumnModified(TranslationPeer::UPDATED_BY)) $criteria->add(TranslationPeer::UPDATED_BY, $this->updated_by);
 
         return $criteria;
     }
@@ -1137,9 +1137,9 @@ abstract class BaseString extends BaseObject implements Persistent
      */
     public function buildPkeyCriteria()
     {
-        $criteria = new Criteria(StringPeer::DATABASE_NAME);
-        $criteria->add(StringPeer::LANGUAGE_ID, $this->language_id);
-        $criteria->add(StringPeer::STRING_KEY, $this->string_key);
+        $criteria = new Criteria(TranslationPeer::DATABASE_NAME);
+        $criteria->add(TranslationPeer::LANGUAGE_ID, $this->language_id);
+        $criteria->add(TranslationPeer::STRING_KEY, $this->string_key);
 
         return $criteria;
     }
@@ -1186,7 +1186,7 @@ abstract class BaseString extends BaseObject implements Persistent
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param object $copyObj An object of String (or compatible) type.
+     * @param object $copyObj An object of Translation (or compatible) type.
      * @param boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
@@ -1226,7 +1226,7 @@ abstract class BaseString extends BaseObject implements Persistent
      * objects.
      *
      * @param boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return String Clone of current object.
+     * @return Translation Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1246,12 +1246,12 @@ abstract class BaseString extends BaseObject implements Persistent
      * same instance for all member of this class. The method could therefore
      * be static, but this would prevent one from overriding the behavior.
      *
-     * @return StringPeer
+     * @return TranslationPeer
      */
     public function getPeer()
     {
         if (self::$peer === null) {
-            self::$peer = new StringPeer();
+            self::$peer = new TranslationPeer();
         }
 
         return self::$peer;
@@ -1261,7 +1261,7 @@ abstract class BaseString extends BaseObject implements Persistent
      * Declares an association between this object and a Language object.
      *
      * @param                  Language $v
-     * @return String The current object (for fluent API support)
+     * @return Translation The current object (for fluent API support)
      * @throws PropelException
      */
     public function setLanguage(Language $v = null)
@@ -1277,7 +1277,7 @@ abstract class BaseString extends BaseObject implements Persistent
         // Add binding for other direction of this n:n relationship.
         // If this object has already been added to the Language object, it will not be re-added.
         if ($v !== null) {
-            $v->addString($this);
+            $v->addTranslation($this);
         }
 
 
@@ -1302,7 +1302,7 @@ abstract class BaseString extends BaseObject implements Persistent
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aLanguage->addStrings($this);
+                $this->aLanguage->addTranslations($this);
              */
         }
 
@@ -1313,7 +1313,7 @@ abstract class BaseString extends BaseObject implements Persistent
      * Declares an association between this object and a User object.
      *
      * @param                  User $v
-     * @return String The current object (for fluent API support)
+     * @return Translation The current object (for fluent API support)
      * @throws PropelException
      */
     public function setUserRelatedByCreatedBy(User $v = null)
@@ -1329,7 +1329,7 @@ abstract class BaseString extends BaseObject implements Persistent
         // Add binding for other direction of this n:n relationship.
         // If this object has already been added to the User object, it will not be re-added.
         if ($v !== null) {
-            $v->addStringRelatedByCreatedBy($this);
+            $v->addTranslationRelatedByCreatedBy($this);
         }
 
 
@@ -1354,7 +1354,7 @@ abstract class BaseString extends BaseObject implements Persistent
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aUserRelatedByCreatedBy->addStringsRelatedByCreatedBy($this);
+                $this->aUserRelatedByCreatedBy->addTranslationsRelatedByCreatedBy($this);
              */
         }
 
@@ -1365,7 +1365,7 @@ abstract class BaseString extends BaseObject implements Persistent
      * Declares an association between this object and a User object.
      *
      * @param                  User $v
-     * @return String The current object (for fluent API support)
+     * @return Translation The current object (for fluent API support)
      * @throws PropelException
      */
     public function setUserRelatedByUpdatedBy(User $v = null)
@@ -1381,7 +1381,7 @@ abstract class BaseString extends BaseObject implements Persistent
         // Add binding for other direction of this n:n relationship.
         // If this object has already been added to the User object, it will not be re-added.
         if ($v !== null) {
-            $v->addStringRelatedByUpdatedBy($this);
+            $v->addTranslationRelatedByUpdatedBy($this);
         }
 
 
@@ -1406,7 +1406,7 @@ abstract class BaseString extends BaseObject implements Persistent
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aUserRelatedByUpdatedBy->addStringsRelatedByUpdatedBy($this);
+                $this->aUserRelatedByUpdatedBy->addTranslationsRelatedByUpdatedBy($this);
              */
         }
 
@@ -1472,7 +1472,7 @@ abstract class BaseString extends BaseObject implements Persistent
      */
     public function __toString()
     {
-        return (string) $this->exportTo(StringPeer::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(TranslationPeer::DEFAULT_STRING_FORMAT);
     }
 
     /**
@@ -1487,14 +1487,14 @@ abstract class BaseString extends BaseObject implements Persistent
 
     // denyable behavior
     public function mayOperate($sOperation, $oUser = false) {
-        $oUser = StringPeer::getRightsUser($oUser);
+        $oUser = TranslationPeer::getRightsUser($oUser);
         $bIsAllowed = false;
-        if($oUser && ($this->isNew() || $this->getCreatedBy() === $oUser->getId()) && StringPeer::mayOperateOnOwn($oUser, $this, $sOperation)) {
+        if($oUser && ($this->isNew() || $this->getCreatedBy() === $oUser->getId()) && TranslationPeer::mayOperateOnOwn($oUser, $this, $sOperation)) {
             $bIsAllowed = true;
-        } else if(StringPeer::mayOperateOn($oUser, $this, $sOperation)) {
+        } else if(TranslationPeer::mayOperateOn($oUser, $this, $sOperation)) {
             $bIsAllowed = true;
         }
-        FilterModule::getFilters()->handleStringOperationCheck($sOperation, $this, $oUser, array(&$bIsAllowed));
+        FilterModule::getFilters()->handleTranslationOperationCheck($sOperation, $this, $oUser, array(&$bIsAllowed));
         return $bIsAllowed;
     }
     public function mayBeInserted($oUser = false) {
@@ -1530,11 +1530,11 @@ abstract class BaseString extends BaseObject implements Persistent
     /**
      * Mark the current object so that the update date doesn't get updated during next save
      *
-     * @return     String The current object (for fluent API support)
+     * @return     Translation The current object (for fluent API support)
      */
     public function keepUpdateDateUnchanged()
     {
-        $this->modifiedColumns[] = StringPeer::UPDATED_AT;
+        $this->modifiedColumns[] = TranslationPeer::UPDATED_AT;
 
         return $this;
     }
@@ -1582,11 +1582,11 @@ abstract class BaseString extends BaseObject implements Persistent
     /**
      * Mark the current object so that the updated user doesn't get updated during next save
      *
-     * @return     String The current object (for fluent API support)
+     * @return     Translation The current object (for fluent API support)
      */
     public function keepUpdateUserUnchanged()
     {
-        $this->modifiedColumns[] = StringPeer::UPDATED_BY;
+        $this->modifiedColumns[] = TranslationPeer::UPDATED_BY;
         return $this;
     }
 

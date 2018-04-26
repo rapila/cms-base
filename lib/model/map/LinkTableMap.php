@@ -78,6 +78,8 @@ class LinkTableMap extends TableMap
             'referenceable' =>  array (
 ),
             'taggable' =>  array (
+  'tag_model' => 'Tag',
+  'tag_instance_model' => '',
 ),
             'denyable' =>  array (
   'mode' => 'by_role',

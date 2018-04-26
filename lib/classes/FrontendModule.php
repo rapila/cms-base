@@ -1,12 +1,12 @@
 <?php
 abstract class FrontendModule extends Module {
 	protected static $MODULE_TYPE = 'frontend';
-	
+
 	protected $oLanguageObject;
 	protected $oData;
 	protected $aPath;
 	protected $iId;
-	
+
 	public function __construct($oLanguageObject = null, $aPath = null, $iId = 1) {
 		if($oLanguageObject instanceof LanguageObject || $oLanguageObject instanceof LanguageObjectHistory) {
 			$this->oLanguageObject = $oLanguageObject;
@@ -18,7 +18,7 @@ abstract class FrontendModule extends Module {
 	}
 
 	public abstract function renderFrontend();
-	
+
 	public function cachedFrontend($bIsPreview = false) {
 		$oCacheKey = $this->cacheKey();
 		$oCache = null;
@@ -26,13 +26,9 @@ abstract class FrontendModule extends Module {
 			$sPrefix = 'frontend_module_'.$this->getModuleName().'_' . ($this->oLanguageObject ? $this->oLanguageObject->getPKString() : 'data_'.$this->oData);
 			$oCache = new Cache($oCacheKey->render($sPrefix), DIRNAME_FULL_PAGE);
 
-			$bIsCached = $oCache->cacheFileExists();
-			$bIsOutdated = false;
-
+			$bIsCached = $oCache->entryExists();
 			if($bIsCached) {
-				if($this->oLanguageObject) {
-					$bIsOutdated = $oCache->isOlderThan($this->oLanguageObject);
-				}
+				$bIsOutdated = $this->isOutdated($oCache);
 				if(!$bIsOutdated) {
 					return $oCache->getContentsAsString();
 				}
@@ -42,18 +38,29 @@ abstract class FrontendModule extends Module {
 		if($sResult instanceof Template) {
 			$sResult = $sResult->render();
 		}
+		if(!$sResult) {
+			$sResult = '';
+		}
 		if($oCache) {
 			$oCache->setContents($sResult);
 		}
 		return $sResult;
 	}
-	
+
 	public static function acceptedRequestParams() {
 		return array();
 	}
 
 	public function cacheKey() {
 		return CacheKey::create()->dependOnPath()->dependOnRequestParameter(self::acceptedRequestParams());
+	}
+
+	public function isOutdated($oCache) {
+		if($this->oLanguageObject) {
+			return $oCache->isOlderThan($this->oLanguageObject);
+		}
+
+		return false;
 	}
 
 	/**
@@ -94,7 +101,7 @@ abstract class FrontendModule extends Module {
 	public function renderBackend() {
 		return null;
 	}
-	
+
 	/**
 	 * Returns the widget used to configure this particular frontend module. Default implementation outputs the contents of renderBackend as form and serializes that on save. If renderBackend returns a falsish value, the default widget is the one that’s named the same as this frontend module plus a suffix of “_frontend_config” and whose constructor, in addition to the session key, takes but one argument: the frontend module instance $this.
 	 * @return WidgetModule|string The configured widget or its bare name
@@ -106,21 +113,21 @@ abstract class FrontendModule extends Module {
 		}
 		return WidgetModule::getWidget($this->getModuleName().'_frontend_config', null, $this);
 	}
-	
+
 	/**
 	* Returns the words for which this module should be listed in the site’s search index
 	*/
 	public function getWords() {
 		return StringUtil::getWords($this->renderFrontend(), true);
 	}
-	
+
 	/**
 	* Convenience constructTemplate that can be used without any arguments, yielding 'main' as the template’s name.
 	*/
 	protected function constructTemplate($sTemplateName = "main", $bUseGlobalTemplatesDir = false) {
 		return self::constructTemplateForModuleAndType($this->getType(), $this->getModuleName(), $sTemplateName, $bUseGlobalTemplatesDir);
 	}
-	
+
 	/**
 	* Gets the raw form of the data currently associated with this frontendmodule instance. Use widgetData for the transformed data.
 	*/
@@ -130,7 +137,7 @@ abstract class FrontendModule extends Module {
 		}
 		return $this->oData;
 	}
-	
+
 	public static function listContentModules($bIncludeEmpty = false) {
 		$aResult = array();
 		$aModules = self::listModules();
@@ -146,33 +153,33 @@ abstract class FrontendModule extends Module {
 		asort($aResult);
 		return $aResult;
 	}
-	
+
 	protected function getModuleSetting($sName, $sDefaultValue) {
 		return Settings::getSetting($this->getModuleName(), $sName, $sDefaultValue, 'modules');
 	}
-	
+
 	public static function getDirectoryForModule($sModuleName) {
 		$aModules = FrontendModule::listModules();
 		$sPath = $aModules[$sModuleName];
 		return $sPath;
 	}
-	
+
 	public static function getConfigDirectoryForModule($sModuleName) {
 		return self::getDirectoryForModule($sModuleName)."/config";
 	}
-	
+
 	public static function isDynamic() {
 		return false;
 	}
-	
+
 	public function getLanguageObject() {
 		return $this->oLanguageObject;
 	}
-	
+
 	public function setLanguageObject($oLanguageObject) {
 		$this->oLanguageObject = $oLanguageObject;
 	}
-	
+
 	/**
 	 * @param LanguageObject $oLanguageObject The language object with the data whose content info you want
 	 * description: should return some helpful information in page_detail filled_module, displaying filtered unserialized language object data
@@ -196,7 +203,7 @@ abstract class FrontendModule extends Module {
 		}
 		return array_keys(get_object_vars($this));
 	}
-	
+
 	public function __wakeup() {
 		if($this->oLanguageObject !== null) {
 			$sId = explode('_', $this->oLanguageObject);

@@ -167,7 +167,7 @@
 				connectToSortable: filled_modules_containers
 			};
 			jQuery.each(this.possible_frontend_modules, function(object_type, module_name) {
-				var element = _this.filled_module_li.clone(true).find('.module_name').text(module_name).end().attr({'data-object-type': object_type, 'data-language-id': language_id}).draggable(dragOptions).sortable();
+				var element = _this.filled_module_li.clone(true).find('.module_name').text(module_name).end().attr({'data-object-type': object_type, 'data-language-id': language_id}).draggable(dragOptions);
 				element.appendTo(available_modules);
 			});
 		},

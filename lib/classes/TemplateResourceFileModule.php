@@ -31,14 +31,17 @@ abstract class TemplateResourceFileModule extends FileModule {
 		} else {
 			header("Content-Type: text/html;charset=utf-8");
 		}
-		$oCache = new Cache('template_resource-'.$sFileName.'-'.Session::language(), DIRNAME_TEMPLATES);
+		$oCache = new Cache('template_resource-'.$sFileName.'-'.Session::language(), 'resource');
 		$oTemplate = null;
-		if($oCache->cacheFileExists() && !$oCache->isOutdated($oResourceFinder)) {
+		if($oCache->entryExists() && !$oCache->isOutdated($oResourceFinder)) {
 			$oCache->sendCacheControlHeaders();
 			$oTemplate = $oCache->getContentsAsVariable();
 		} else {
 			$oTemplate = new Template(TemplateIdentifier::constructIdentifier('contents'), null, true, false, null, $sFileName);
 			$aResources = $oResourceFinder->find();
+			if(!$aResources) {
+				$aResources = array();
+			}
 			if($aResources instanceof FileResource) {
 				$aResources = array($aResources);
 			}
@@ -58,15 +61,15 @@ abstract class TemplateResourceFileModule extends FileModule {
 		if($aParameters === null) {
 			$aParameters = array_fill_keys(self::$RESOURCE_TYPES, array());
 		}
-		$sModuleName;
-		$sModuleType;
+		$sModuleName = null;
+		$sModuleType = null;
 	  if($mModule instanceof Module) {
-  		$sModuleName = $mModule->getModuleName();
-  		$sModuleType = $mModule->getType();
-	  } else {
-      $sModuleName = $mModule::getNameByClassName($mModule);
-      $sModuleType = $mModule::getType();
-	  }
+			$sModuleName = $mModule->getModuleName();
+			$sModuleType = $mModule->getType();
+		} else {
+			$sModuleName = $mModule::getNameByClassName($mModule);
+			$sModuleType = $mModule::getType();
+		}
 		if($oResourceIncluder === null) {
 			$oResourceIncluder = ResourceIncluder::defaultIncluder();
 		}

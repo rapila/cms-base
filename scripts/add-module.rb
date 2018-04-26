@@ -281,7 +281,7 @@ write_file(:php, "#{class_name}.php") do
 		php_methods.push php_method('sidebarContent', 'return false;') if $aspects.include? 'single_screen'
 		php_methods.push php_method('usedWidgets', "return array(#{widgets.values.join(', ')});")
 	elsif $options[:type] == :filter then
-		php_methods.push unboxing_php_filter_method('onAnyError', ['aError'], '', ['bNeverPrint', 'bNeverNotifyDeveloper'])
+		php_methods.push unboxing_php_filter_method('onAnyError', ['aError'], '', ['bNeverPrint', 'bNeverNotifyDeveloper', 'aContainer'])
 		php_methods.push unboxing_php_filter_method('onErrorEmailSend', ['sAddress'])
 		php_methods.push unboxing_php_filter_method('onErrorLog', ['sLogFilePath', 'aError', 'sErrorMessage', 'iMode', 'sDestination'])
 		php_methods.push unboxing_php_filter_method('onErrorPrint', ['aError'])
@@ -293,7 +293,8 @@ write_file(:php, "#{class_name}.php") do
 		php_methods.push unboxing_php_filter_method('onRequestFinished', ['oCurrentPage', 'bIsDynamic', 'bIsAjaxRequest', 'bIsCached'])
 		php_methods.push php_method('onFillPageAttributes', '', ['oCurrentPage', 'oTemplate'])
 		php_methods.push php_method('onFillPageAttributesFinished', '', ['oCurrentPage', 'oTemplate'])
-		php_methods.push php_method('onNavigationItemChildrenRequested', '', ['oNavigationItem'])
+		php_methods.push unboxing_php_filter_method('onNavigationItemChildrenRequested', [], '', ['oNavigationItem', 'aContainer'])
+		php_methods.push unboxing_php_filter_method('onNavigationItemChildrenCacheDetectOutdated', ['bIsOutdated'], '', ['oNavigationItem', 'oCache', 'aContainer'])
 		php_methods.push unboxing_php_filter_method('onRichtextWriteTagForIdentifier', ['aParameters'], '', ['sTagName', 'aContainer', 'oIdentifier', 'sTagContent', 'mCallbackContext'])
 		php_methods.push unboxing_php_filter_method('onUserLoggedIn', ['iUserLoginBitmap'], '', ['oUser', 'aContainer'])
 		php_methods.push php_method('onDefaultPageTypeFilledContainer', '', ['oContainer', 'oPage', '$oTemplate', 'oFrontendTemplate', 'iModuleId'])

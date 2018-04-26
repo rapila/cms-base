@@ -19,14 +19,14 @@ class XHTMLOutput {
 	const SETTING_HTML_5 = 'html5';
 	const SETTING_XHTML_5 = 'xhtml5';
 	const SETTING_NONE = 'none';
-	
+
 	private $sCharset;
 	private $sContentType;
 	private $sLanguage;
 	private $sSetting;
 	private $bPrintDoctype;
 	private $sClassName;
-	
+
 	public function __construct($sSetting = null, $bPrintDoctype = true, $sClassName = null, $sLanguage = null) {
 		$this->sContentType = "text/html";
 		if($sLanguage === null) {
@@ -57,7 +57,7 @@ class XHTMLOutput {
 			}
 		}
 	}
-	
+
 	public function render() {
 		if($this->sSetting === self::SETTING_NONE) {
 			return;
@@ -99,7 +99,7 @@ class XHTMLOutput {
 			$this->renderDoctype($sDoctype);
 		}
 	}
-	
+
 	private function renderDoctype($sDoctype) {
 		$oTemplate = new Template($sDoctype, null, true, true);
 		$oTemplate->replaceIdentifier('language', $this->sLanguage);
@@ -107,14 +107,18 @@ class XHTMLOutput {
 		$oTemplate->replaceIdentifier('className', $this->sClassName);
 		$oTemplate->render();
 	}
-	
+
 	public function fixCodeForHtml($sBuffer) {
 		$sBuffer = preg_replace("!\\s*/>!", ">", $sBuffer);
 		$sBuffer = preg_replace("!(<[^<>]*)xml:lang\s*=\s*(['\"]\w*['\"])([^<>]*>)!", '$1lang=$2$3', $sBuffer);
 		return $sBuffer;
 	}
-	
+
 	public function fixCodeForXhtml5($sBuffer) {
 		return str_replace("&nbsp;", '&#160;', $sBuffer);
+	}
+
+	public function getContentType() {
+		return $this->sContentType;
 	}
 }

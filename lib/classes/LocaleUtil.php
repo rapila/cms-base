@@ -2,8 +2,11 @@
 /**
  * @package utils
  */
- 
+
 class LocaleUtil {
+
+	/// @VisibleForTesting
+	public static $ACCEPT_LOCALE_LISTS = array();
 
 	//Gets the user's locale for the current language
 	public static function getLocaleId($sLanguageId = null) {
@@ -16,10 +19,13 @@ class LocaleUtil {
 		}
 		return $sLanguageId."_".strtoupper($sLanguageId);
 	}
-	
+
 	public static function acceptLocales($sLanguageId = false) {
 		if($sLanguageId === null) {
 			$sLanguageId = Session::language();
+		}
+		if(isset(self::$ACCEPT_LOCALE_LISTS[$sLanguageId])) {
+			return self::$ACCEPT_LOCALE_LISTS[$sLanguageId];
 		}
 		$fQSlantAmount = 0.0001;
 		$aResult = array();
@@ -51,6 +57,7 @@ class LocaleUtil {
 				});
 			}
 		}
+		self::$ACCEPT_LOCALE_LISTS[$sLanguageId] = $aResult;
 		return $aResult;
 	}
 
@@ -108,16 +115,21 @@ class LocaleUtil {
 			}
 			date_default_timezone_set($sTimeZone);
 		}
-		// add % only if not already set, double % are displayed differently on different server environment
-		$sPrefix = '';
-		if(strlen($sFormat) === 1) {
-			$sPrefix = '%';
+		if($sLanguageId === '_') {
+			// Special case: Use the date function instead of strftime (it offers more formats for locale-independent stuff)
+			$sResult =  date($sFormat, $iTimestamp);
+		} else {
+			// add % only if not already set, double % are displayed differently on different server environment
+			$sPrefix = '';
+			if(strlen($sFormat) === 1) {
+				$sPrefix = '%';
+			}
+			$sResult = strftime("$sPrefix$sFormat", $iTimestamp);
 		}
-		$sResult = strftime("$sPrefix$sFormat", $iTimestamp);
 		date_default_timezone_set($sPrevTimeZone);
 		return $sResult;
 	}
-	
+
 	public static function parseLocalizedDate($sDate, $sLanguageId, $sFormat="x") {
 		if($sLanguageId === null) {
 			$sLanguageId = Session::language();
@@ -169,7 +181,7 @@ class LocaleUtil {
 		$iTimestamp = mktime(0, 0, 0, 01, $iWeekday, 1973);
 		return self::localizeDate($iTimestamp, $sLanguageId, $bIsLong ? 'A' : 'a');
 	}
-	
+
 	public static function getPreferredUserLanguage() {
 		if(Session::getSession()->hasAttribute("preferred_user_language")) {
 			return Session::getSession()->getAttribute("preferred_user_language");

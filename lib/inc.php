@@ -27,6 +27,7 @@ define('FILENAME_INFO',         'info.yml');
 
 // main dir constants
 define('MAIN_DIR' ,             dirname(dirname(dirname(__FILE__))));
+chdir(MAIN_DIR); // Move to the main directory (for relative paths)
 define('SITE_DIR',              MAIN_DIR.'/'.DIRNAME_SITE);
 define('BASE_DIR',              MAIN_DIR.'/'.DIRNAME_BASE);
 define('PLUGINS_DIR',           MAIN_DIR.'/'.DIRNAME_PLUGINS);
@@ -41,7 +42,7 @@ $aLibDirs = ResourceFinder::create()->addPath(DIRNAME_LIB)->addOptionalPath(DIRN
 
 set_include_path(MAIN_DIR.'/'.DIRNAME_GENERATED.PATH_SEPARATOR.implode(PATH_SEPARATOR, $aLibDirs).PATH_SEPARATOR.get_include_path());
 
-$sPathInfo = isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '';
+$sPathInfo = isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : null;
 
 // frontend dir constants
 define('MAIN_DIR_FE',        PHP_SAPI === 'cli' ? Settings::getSetting('domain_holder', 'root_url', '/') : preg_replace("/^(.*)index\.php(\/.*)?$/", '$1', $_SERVER['PHP_SELF']));
@@ -61,7 +62,12 @@ define('INT_IMAGES_DIR_FE',  INT_WEB_DIR_FE.'/images');       /**< @deprecated *
 define('EXT_IMAGES_DIR_FE',  EXT_WEB_DIR_FE.'/images');       /**< @deprecated */
 
 if(!isset($_REQUEST['path'])) {
-	$_REQUEST['path'] = $sPathInfo;
+	if($sPathInfo !== null) {
+		$_REQUEST['path'] = $sPathInfo;
+	} else {
+		// This is for a HHVM-proxygen set-up
+		$_REQUEST['path'] = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
+	}
 }
 if(StringUtil::startsWith($_REQUEST['path'], '/')) {
 	$_REQUEST['path'] = substr($_REQUEST['path'], 1);
@@ -83,16 +89,21 @@ if(!isset($aConnectionSettings['settings'])) {
 }
 
 $sAdapter = Settings::getSetting('database', 'adapter', 'mysql', 'db_config');
+$aAdditionalDataSources = Settings::getSetting('additional_datasources', null, array(), 'db_config');
 
 $oCharset = null;
 if(version_compare(PHP_VERSION, '5.3.6', '<') && StringUtil::startsWith($sAdapter, 'mysql')) {
 	$oCharset = new LegacySQLCharset();
 } else {
-	$aConnectionSettings['settings']['charset'] = array('value' => LegacySQLCharset::convertEncodingNameToSQL(Settings::getSetting("encoding", "db", "utf-8")));
+	$aCharset = array('value' => LegacySQLCharset::convertEncodingNameToSQL(Settings::getSetting("encoding", "db", "utf-8")));
+	$aConnectionSettings['settings']['charset'] = $aCharset;
+	foreach($aAdditionalDataSources as &$aSource) {
+		$aSource['connection']['settings']['charset'] = $aCharset;
+	}
 }
 
 $aDbSettings = array('connection' => &$aConnectionSettings, 'adapter' => $sAdapter);
-$aDataSources = array_merge(array('rapila' => &$aDbSettings), Settings::getSetting('additional_datasources', null, array(), 'db_config'));
+$aDataSources = array_merge(array('rapila' => &$aDbSettings), $aAdditionalDataSources);
 $aDataSources['default'] = 'rapila';
 $aPropelSettings = array('datasources' => &$aDataSources);
 $aPropelSettings['log'] = Settings::getSetting('log', null, array(), 'db_config');
@@ -102,4 +113,7 @@ Propel::initialize();
 
 if($oCharset) {
 	$oCharset->setConnectionCharsetToDefault($sAdapter, Propel::getConnection());
+	foreach($aAdditionalDataSources as $sName => &$aSource) {
+		$oCharset->setConnectionCharsetToDefault($sAdapter, Propel::getConnection($sName));
+	}
 }

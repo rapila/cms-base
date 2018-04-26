@@ -1,19 +1,22 @@
-<script type="text/javascript" src="http://www.google.com/recaptcha/api/js/recaptcha_ajax.js"></script>
-  <script type="text/javascript">
-<!--//--><![CDATA[//><!--
-  jQuery(document).ready(function() {
-    jQuery('noscript#{{id}}_noscript').remove();
-    Recaptcha.create("{{key}}",
-    "{{id}}", {
-       theme: "{{writeSettingValue=re_captcha_theme;section=frontend;defaultValue=red}}",
-       lang: '{{writeSessionAttribute=language}}'
-    });
-  });
-//--><!]]>
-</script>
-<span id="{{id}}"></span>
-<noscript id="{{id}}_noscript">
-  <iframe src="{{server}}/noscript?k={{key}}" height="300" width="500" frameborder="0"></iframe><br />
-  <textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea>
-  <input type="hidden" name="recaptcha_response_field" value="manual_challenge" />
+<div class="g-recaptcha" data-sitekey="{{key}}" data-size="compact"></div>
+<noscript>
+	<div style="width: 302px; height: 482px;">
+		<div style="width: 302px; height: 422px; position: relative;">
+			<div style="width: 302px; height: 422px;">
+				<iframe src="https://www.google.com/recaptcha/api/fallback?k={{key}}"
+								frameborder="0" scrolling="no"
+								style="width: 302px; height:422px; border-style: none;">
+				</iframe>
+			</div>
+			<div style="width: 300px; height: 60px; border-style: none;
+									bottom: 12px; left: 25px; margin: 0px; padding: 0px; right: 25px;
+									background: #f9f9f9; border: 1px solid #c1c1c1; border-radius: 3px;">
+				<textarea id="g-recaptcha-response" name="g-recaptcha-noscript-response"
+									class="g-recaptcha-response"
+									style="width: 250px; height: 40px; border: 1px solid #c1c1c1;
+												 margin: 10px 25px; padding: 0px; resize: none;" >
+				</textarea>
+			</div>
+		</div>
+	</div>
 </noscript>

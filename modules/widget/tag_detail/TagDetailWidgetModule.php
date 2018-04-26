@@ -16,7 +16,7 @@ class TagDetailWidgetModule extends PersistentWidgetModule {
 			return null;
 		}
 		$sTagName = $oTag->getName();
-		return StringPeer::getString("tag.$sTagName", $sLanguageId, '');
+		return TranslationPeer::getString("tag.$sTagName", $sLanguageId, '');
 	}
 	
 	public function tagData() {
@@ -81,11 +81,11 @@ class TagDetailWidgetModule extends PersistentWidgetModule {
 		if($oTag->getName() !== $aTagData['name']) {
 			//Rename Strings for the tag
 			$sOldStringName = "tag.{$oTag->getName()}";
-			foreach(StringQuery::create()->filterByStringKey($sOldStringName)->find() as $oString) {
+			foreach(TranslationQuery::create()->filterByStringKey($sOldStringName)->find() as $oString) {
 				$sLanguageId = $oString->getLanguageId();
 				//You can’t technically rename strings because string_key is the PKEY so we delete it and re-generate
 				$oString->delete();
-				$oString = new String();
+				$oString = new Translation();
 				$oString->setStringKey($sStringName);
 				$oString->setLanguageId($sLanguageId);
 				$oString->save();
@@ -93,7 +93,7 @@ class TagDetailWidgetModule extends PersistentWidgetModule {
 			$oTag->setName($aTagData['name']);
 		}
 		foreach($aTagData['edited_languages'] as $iIndex => $sLanguageId) {
-			StringPeer::addOrUpdateString($sStringName, $aTagData['text'][$iIndex], $sLanguageId);
+			TranslationPeer::addOrUpdateString($sStringName, $aTagData['text'][$iIndex], $sLanguageId);
 		}
 		$oTag->save();
 	}

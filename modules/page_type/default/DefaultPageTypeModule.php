@@ -27,20 +27,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 		}
 		$this->oFrontendTemplate = $oTemplate;
 		$this->iModuleId = 1;
-		$this->oFrontendTemplate->replaceIdentifierCallback("autofill", $this, "fillAutofill", Template::NO_HTML_ESCAPE);
 		$this->oFrontendTemplate->replaceIdentifierCallback("container", $this, "fillContainer", Template::NO_HTML_ESCAPE);
-	}
-
-	public function fillAutofill($oTemplateIdentifier, $iFlags) {
-		$oModule = FrontendModule::getModuleInstance($oTemplateIdentifier->getValue(), $oTemplateIdentifier->getParameter('data'));
-		$mResult = $oModule->cachedFrontend($this->bIsPreview);
-		if(($sCss = $oModule->getCssForFrontend()) !== null) {
-			ResourceIncluder::defaultIncluder()->addCustomCss($sCss);
-		}
-		if(($sJs = $oModule->getJsForFrontend()) !== null) {
-			ResourceIncluder::defaultIncluder()->addCustomJs($sJs);
-		}
-		return $mResult;
 	}
 
 	public function getWords() {
@@ -120,6 +107,16 @@ class DefaultPageTypeModule extends PageTypeModule {
 				return false;
 			}
 		}
+		$sObjectType = $oContentObject->getObjectType();
+		if(!Module::moduleExists($sObjectType, FrontendModule::getType()) || !Module::isModuleEnabled(FrontendModule::getType(), $sObjectType)) {
+			$sLink = implode('/', $this->oNavigationItem->getLink());
+			ErrorHandler::handleError(E_WARNING, "Disabled or non-existing frontend module $sObjectType in use on page $sLink ($this->sLanguageId)", __FILE__, __LINE__, null, debug_backtrace(), true);
+			if($this->bIsPreview) {
+				$oTemplate->replaceIdentifierMultiple("container", "<strong>Disabled or non-existing frontend module $sObjectType in use!</strong>", null, Template::NO_HTML_ESCAPE);
+				return true;
+			}
+			return false;
+		}
 		if($this->bIsPreview) {
 			$oModule = FrontendModule::getModuleInstance($oContentObject->getObjectType(), $oPageContents->getDraft(), $iModuleId);
 		} else {
@@ -166,7 +163,9 @@ class DefaultPageTypeModule extends PageTypeModule {
 				continue;
 			}
 			$sModuleName = Module::getClassNameByTypeAndName(FrontendModule::getType(), $oContentObject->getObjectType());
-			$aResult = array_merge($aResult, $sModuleName::acceptedRequestParams());
+			if(class_exists($sModuleName, true)) {
+				$aResult = array_merge($aResult, $sModuleName::acceptedRequestParams());
+			}
 		}
 		return $aResult;
 	}
@@ -245,7 +244,11 @@ class DefaultPageTypeModule extends PageTypeModule {
 			}
 			if($oLanguageObject !== null) {
 				$sFrontendModuleClass = FrontendModule::getClassNameByName($oObject->getObjectType());
-				$mContentInfo = $sFrontendModuleClass::getContentInfo($oLanguageObject);
+				if(class_exists($sFrontendModuleClass, true)) {
+					$mContentInfo = $sFrontendModuleClass::getContentInfo($oLanguageObject);
+				} else {
+					$mContentInfo = null;
+				}
 				$aLanguageInfo['content_info'] = $mContentInfo;
 			} else {
 				$aLanguageInfo['content_info'] = null;
@@ -381,14 +384,14 @@ class DefaultPageTypeModule extends PageTypeModule {
 			}
 			$sInheritedFrom = $oInheritedFrom ? $oInheritedFrom->getName() : '';
 
-			$aTagParams = array('class' => 'template-container template-container-'.$sContainerName, 'data-container-name' => $sContainerName, 'data-container-string' => StringPeer::getString('container_name.'.$sContainerName, null, $sContainerName), 'data-inherited-from' => $sInheritedFrom);
+			$aTagParams = array('class' => 'template-container template-container-'.$sContainerName, 'data-container-name' => $sContainerName, 'data-container-string' => TranslationPeer::getString('container_name.'.$sContainerName, null, $sContainerName), 'data-inherited-from' => $sInheritedFrom);
 			$oContainerTag = TagWriter::quickTag('ol', $aTagParams);
 
 			$mInnerTemplate = new Template(TemplateIdentifier::constructIdentifier('content'), null, true);
 
 			//Replace container info
 			//…name
-			$mInnerTemplate->replaceIdentifierMultiple('content', TagWriter::quickTag('div', array('class' => 'template-container-description'), StringPeer::getString('wns.page.template_container', null, null, array('container' => StringPeer::getString('template_container.'.$sContainerName, null, $sContainerName)), true)));
+			$mInnerTemplate->replaceIdentifierMultiple('content', TagWriter::quickTag('div', array('class' => 'template-container-description'), TranslationPeer::getString('wns.page.template_container', null, null, array('container' => TranslationPeer::getString('template_container.'.$sContainerName, null, $sContainerName)), true)));
 			//…additional info
 			$mInnerTemplate->replaceIdentifierMultiple('content', TagWriter::quickTag('div', array('class' => 'template-container-info')));
 			//…tag
@@ -400,13 +403,14 @@ class DefaultPageTypeModule extends PageTypeModule {
 
 		$bUseParsedCss = Settings::getSetting('admin', 'use_parsed_css_in_config', true);
 		$oStyle = null;
+
 		if($bUseParsedCss) {
 			$sTemplateName = $this->oPage->getTemplateNameUsed().Template::$SUFFIX;
 			$sCacheKey = 'parsed-css-'.$sTemplateName;
 			$oCssCache = new Cache($sCacheKey, DIRNAME_PRELOAD);
 
 			$sCssContents = "";
-			if(!$oCssCache->cacheFileExists() || $oCssCache->isOutdated(ResourceFinder::create(array(DIRNAME_TEMPLATES, $sTemplateName)))) {
+			if(!$oCssCache->entryExists() || $oCssCache->isOutdated(ResourceFinder::create(array(DIRNAME_TEMPLATES, $sTemplateName)))) {
 				$oIncluder = new ResourceIncluder();
 				foreach($oTemplate->identifiersMatching('addResourceInclude', Template::$ANY_VALUE) as $oIdentifier) {
 					$oIncluder->addResourceFromTemplateIdentifier($oIdentifier);
@@ -487,7 +491,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 	private function cleanupCSS($oCss) {
 		//Change selectors
 		$sContainerClass = '.filled_modules';
-		$aMatches;
+		$aMatches = null;
 		foreach($oCss->getAllDeclarationBlocks() as $oBlock) {
 			$aSelectors = $oBlock->getSelectors();
 			foreach($aSelectors as $iKey => $oSelector) {

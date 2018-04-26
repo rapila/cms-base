@@ -206,7 +206,7 @@ class FrontendManager extends Manager {
 				$oPage = PageQuery::create()->findOneByName($sErrorPageName);
 			}
 			if($oPage === null) {
-				die(StringPeer::getString('wns.page.not_found'));
+				die(TranslationPeer::getString('wns.page.not_found'));
 			}
 			self::$CURRENT_PAGE = $oPage;
 			self::$CURRENT_NAVIGATION_ITEM = PageNavigationItem::navigationItemForPage($oPage);
@@ -243,6 +243,7 @@ class FrontendManager extends Manager {
 		if(!$bIsLegacyAjaxRequest) {
 			$this->fillAttributes();
 			$this->fillNavigation();
+			$this->fillAutofill();
 		}
 		$this->fillContent();
 
@@ -280,7 +281,11 @@ class FrontendManager extends Manager {
 	}
 
 	protected function fillContent() {
-		$this->oPageType->display($this->oTemplate, false);
+		$this->oPageType->display($this->oTemplate, $this->isPreview());
+	}
+
+	public function isPreview() {
+		return false;
 	}
 
 	protected function fillAttributes() {
@@ -297,11 +302,16 @@ class FrontendManager extends Manager {
 		$this->oTemplate->replaceIdentifier("meta_description", $sDescription);
 
 		$this->oTemplate->replaceIdentifier("description", self::$CURRENT_NAVIGATION_ITEM->getDescription());
-		$this->oTemplate->replaceIdentifier("link_text", self::$CURRENT_NAVIGATION_ITEM->getLinkText());
 		$this->oTemplate->replaceIdentifier("title", self::$CURRENT_NAVIGATION_ITEM->getTitle());
 		$this->oTemplate->replaceIdentifier("level", self::$CURRENT_NAVIGATION_ITEM->getLevel());
-		$this->oTemplate->replaceIdentifier("page_name", self::$CURRENT_NAVIGATION_ITEM->getName());
+
+		$this->oTemplate->replaceIdentifier("link_text", self::$CURRENT_NAVIGATION_ITEM->getLinkText());
+		$this->oTemplate->replaceIdentifier("navigation_name", self::$CURRENT_NAVIGATION_ITEM->getName());
+		$this->oTemplate->replaceIdentifier("navigation_title", self::$CURRENT_NAVIGATION_ITEM->getTitle());
+		$this->oTemplate->replaceIdentifier("page_link_text", self::$CURRENT_PAGE->getLinkText());
+		$this->oTemplate->replaceIdentifier("page_name", self::$CURRENT_PAGE->getName());
 		$this->oTemplate->replaceIdentifier("page_title", self::$CURRENT_PAGE->getPageTitle());
+
 		foreach(self::$CURRENT_PAGE->getPageProperties() as $oPageProperty) {
 			$this->oTemplate->replaceIdentifier('pageProperty', $oPageProperty->getValue(), $oPageProperty->getName());
 		}
@@ -313,6 +323,21 @@ class FrontendManager extends Manager {
 			$this->oTemplate->replaceIdentifier("language_chooser", Navigation::getLanguageChooser($this->oTemplate), null, Template::NO_HTML_ESCAPE);
 		}
 		FilterModule::getFilters()->handleFillAttributesFinished(self::$CURRENT_PAGE, $this->oTemplate);
+	}
+
+	public function fillAutofill() {
+		$bIsPreview = $this->isPreview();
+		$this->oTemplate->replaceIdentifierCallback("autofill", function($oTemplateIdentifier, $iFlags) use ($bIsPreview) {
+			$oModule = FrontendModule::getModuleInstance($oTemplateIdentifier->getValue(), $oTemplateIdentifier->getParameter('data'));
+			$mResult = $oModule->cachedFrontend($bIsPreview);
+			if(($sCss = $oModule->getCssForFrontend()) !== null) {
+				ResourceIncluder::defaultIncluder()->addCustomCss($sCss);
+			}
+			if(($sJs = $oModule->getJsForFrontend()) !== null) {
+				ResourceIncluder::defaultIncluder()->addCustomJs($sJs);
+			}
+			return $mResult;
+		}, null, Template::NO_HTML_ESCAPE);
 	}
 
 	/**

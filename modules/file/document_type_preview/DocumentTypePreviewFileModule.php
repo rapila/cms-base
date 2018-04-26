@@ -28,8 +28,8 @@ class DocumentTypePreviewFileModule extends FileModule {
 		$sCacheString = 'preview_'.$this->oDocumentType->getId().'_'.$this->iSize;
 		$oCache = new Cache($sCacheString, DIRNAME_IMAGES);
 		
-		if($oCache->cacheFileExists() && !$oCache->isOlderThan($this->oDocumentType)) {
-			$oCache->sendCacheControlHeaders($this->oDocumentType->getUpdatedAtTimestamp());
+		LinkUtil::sendCacheControlHeaders($this->oDocumentType, $oCache);
+		if($oCache->entryExists() && !$oCache->isOlderThan($this->oDocumentType)) {
 			header("Content-Type: ".self::MIME_TYPE);
 			$oCache->passContents(true);exit;
 		}

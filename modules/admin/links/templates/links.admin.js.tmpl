@@ -3,9 +3,9 @@ jQuery(document).ready(function() {
 	var sidebar = AdminInterface.sidebar;
 	var content_list = AdminInterface.content;
 	var info_bar = AdminInterface.info_bar;
-	
+
 	var handlers = [];
-	
+
 	sidebar.children('[data-widget-type]').prepareWidget(function(widget) {
 		sidebar = widget;
 	}.deferred(handlers));
@@ -15,10 +15,10 @@ jQuery(document).ready(function() {
 	info_bar.prepareWidget(function(widget) {
 		info_bar = widget;
 	}.deferred(handlers));
-	
+
 	jQuery.when.apply(jQuery, handlers).then(function() {
-		AdminInterface.strings.handle_strings_for_list_result('wns.links.no_result', ['link_category_name', 'language_name'], content_list);
-		
+		AdminInterface.strings.handle_strings_for_list_result('wns.links.no_result', ['link_category_name', 'language_name', 'tag_name'], content_list);
+
 		// add buttons and search_input
 		info_bar.add_button('add-new-item', function() {
 			Widget.create('link_detail', function(widget) {
@@ -36,8 +36,8 @@ jQuery(document).ready(function() {
 			if(content_list.setSearch(search)) {
 				content_list.reload();
 			}
-		}).add_row_count_info_for_list(content_list);
-		
+		}).add_row_count_info_for_list(content_list).add_pager_for_list(content_list);
+
 		// tag remove and drop handlers
 		Widget.handle('rapila-tag-removed-from-Link', function(event, result) {
 			if(result.was_last_of_model) {
@@ -58,10 +58,10 @@ jQuery(document).ready(function() {
 			var row = sidebar.active_row();
 			var rowData = sidebar.collect_row_data(row);
 			if(rowData.link_category_id) {
-				function remove_active_category() {
+				var remove_active_category = function remove_active_category() {
 					sidebar.delete_row(row);
 					Widget.fire('rapila-link_category_changed', {removed: true, id: rowData.link_category_id});
-				}
+				};
 				content_list.getOption('categoryHasLinks', rowData.link_category_id, function(has_links) {
 					if(has_links) {
 						Widget.confirm("{{writeString=wns.rapila_alert.information}}", "{{writeString=wns.link_category.delete_information}}", function(confirmed) {
@@ -77,7 +77,7 @@ jQuery(document).ready(function() {
 				});
 			}
 		}).disable();
-		
+
 		var edit_item = info_bar.add_button('edit-item', function() {
 			Widget.create('link_category_detail', function(widget) {
 				widget.setLinkCategoryId(sidebar.active_row_datas()[0].link_category_id);
@@ -96,7 +96,7 @@ jQuery(document).ready(function() {
 				}
 			}
 		});
-		
+
 		// sidebar selection change handler
 		sidebar.settings.row_click_active_mode = 'activate';
 		sidebar.handle('list-selection_changed', function(event, selection) {
@@ -106,6 +106,6 @@ jQuery(document).ready(function() {
 			edit_item[has_detail ? 'enable' : 'disable']();
 			content_list.setOption('link_category_id', link_category_id);
 			content_list.reload();
-		});	
+		});
 	});
 });

@@ -4,9 +4,9 @@
  * @package manager
  */
 class FileManager extends Manager {
-	
+
 	private $oModule;
-	
+
 	/**
 	 * __construct()
 	 */

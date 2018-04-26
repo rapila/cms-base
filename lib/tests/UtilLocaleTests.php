@@ -3,6 +3,10 @@
  * @package test
  */
 class UtilLocaleTests extends PHPUnit_Framework_TestCase {
+	public function setUp() {
+		LocaleUtil::$ACCEPT_LOCALE_LISTS = array();
+	}
+
 	public function testGetPreferredLanguage() {
 		Session::getSession()->resetAttribute("preferred_user_language");
 		$_SERVER['HTTP_ACCEPT_LANGUAGE'] = "de-ch,en-us;q=0.7,en;q=0.3";

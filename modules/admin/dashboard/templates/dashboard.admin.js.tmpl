@@ -108,7 +108,18 @@ jQuery(document).ready(function() {
 					skeleton.content.append(element);
 				});
 
-				//Config area
+				// Add help button if a documentation-key is set
+				var header = skeleton.container.find('.dashboard-widget-head');
+				if(widget.settings.documentation_key) {
+					dashboard_control.documentationData(widget.settings.documentation_key, function(data) {
+						if(data) {
+							var button_title = "{{writeParameterizedString=documentation_icon.button_title;title=$\{title\}}}".replace('${title}', data.title);
+							header.append(jQuery('<a/>').addClass('rapila-icon').text('info').attr({href: data.url, title: button_title}));
+						}
+					});
+				}
+
+				// Config area
 				var form = (widget.dashboard_config_form ? widget.dashboard_config_form() : jQuery('<form/>')).unserialize(widget.settings.dashboard);
 				Widget.callStatic('detail', 'clickable_labels_for', form);
 				skeleton.config_form = form;
@@ -121,7 +132,7 @@ jQuery(document).ready(function() {
 		};
 
 		function reload() {
-			dashboard_control.template(function(template) {
+			dashboard_control.layoutTemplate(function(template) {
 				//Clear elements and bound handlers
 				db.find('.dashboard-widget').unbind('.dashboard').empty();
 
@@ -154,6 +165,28 @@ jQuery(document).ready(function() {
 
 
 		AdminInterface.info_bar.prepareWidget(function(info_bar) {
+			dashboard_control.possibleTemplates(function(templates) {
+				var template_chooser = jQuery('<select/>');
+				template_chooser.populate(templates);
+				var options = template_chooser.find('option');
+				options.each(function() {
+					var option = jQuery(this);
+					if(option.val() in dashboard_layout_icons) {
+						option.text(dashboard_layout_icons[option.val()]);
+						option.addClass('rapila-icon');
+					}
+				});
+				template_chooser.val(dashboard_control.getLayoutName());
+				template_chooser.change(function() {
+					var is_icon = options.filter('[value='+template_chooser.val()+']').hasClass('rapila-icon');
+					template_chooser[is_icon ? 'addClass' : 'removeClass']('rapila-icon');
+					dashboard_control.setLayoutName(template_chooser.val());
+					reload();
+				});
+				template_chooser.change();
+				info_bar.add_element(template_chooser, true, false, 't', {documentation: 'dashboard/template-chooser'});
+			});
+
 			dashboard_control.listDashboardModules(true, function(modules) {
 				info_bar.add_button('add-new-item', function() {
 					var dialog = Widget.parseHTML('{{includeTemplate=add_dialog}}');
@@ -199,28 +232,6 @@ jQuery(document).ready(function() {
 						buttons: buttons
 					});
 				}, 'n', true, false, "{{writeString=wns.dashboard.create_widget}}", {documentation: 'admin.dashboard/add-new-item'});
-			});
-
-			dashboard_control.possibleTemplates(function(templates) {
-				var template_chooser = jQuery('<select/>');
-				template_chooser.populate(templates);
-				var options = template_chooser.find('option');
-				options.each(function() {
-					var option = jQuery(this);
-					if(option.val() in dashboard_layout_icons) {
-						option.text(dashboard_layout_icons[option.val()]);
-						option.addClass('rapila-icon');
-					}
-				});
-				template_chooser.val(dashboard_control.getLayoutName());
-				template_chooser.change(function() {
-					var is_icon = options.filter('[value='+template_chooser.val()+']').hasClass('rapila-icon');
-					template_chooser[is_icon ? 'addClass' : 'removeClass']('rapila-icon');
-					dashboard_control.setLayoutName(template_chooser.val());
-					reload();
-				});
-				template_chooser.change();
-				info_bar.add_element(template_chooser, true, false, 't', {documentation: 'dashboard/template-chooser'});
 			});
 		});
 	});

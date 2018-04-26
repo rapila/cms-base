@@ -3,6 +3,10 @@
  * @package test
  */
 class UtilDateFunctionTests extends PHPUnit_Framework_TestCase {
+	public function setUp() {
+		LocaleUtil::$ACCEPT_LOCALE_LISTS = array();
+	}
+
 	public function testDateParserDE() {
 		$_SERVER['HTTP_ACCEPT_LANGUAGE'] = "";
 		$iDate = 0;
@@ -26,7 +30,8 @@ class UtilDateFunctionTests extends PHPUnit_Framework_TestCase {
 	public function testDateParserNegativeENGB() {
 		$_SERVER['HTTP_ACCEPT_LANGUAGE'] = "en-GB";
 		$iDate = -1202299952;
-		$this->assertSame("26/11/1931", LocaleUtil::localizeDate($iDate, "en"));
+		$this->assertContains("26/11/", LocaleUtil::localizeDate($iDate, "en"));
+		$this->assertContains("31", LocaleUtil::localizeDate($iDate, "en"));
 	}
 	public function testGetLocaleIdEN() {
 		$_SERVER['HTTP_ACCEPT_LANGUAGE'] = "en-US,de-DE,de-AT,en_GB";
@@ -47,7 +52,7 @@ class UtilDateFunctionTests extends PHPUnit_Framework_TestCase {
 	public function testParseBack() {
 		$_SERVER['HTTP_ACCEPT_LANGUAGE'] = "";
 		$sDate = "01.01.1970";
-		$this->assertSame(-3600, LocaleUtil::parseLocalizedDate($sDate, "de"));
+		$this->assertSame(0, LocaleUtil::parseLocalizedDate($sDate, "de"));
 	}
 	// public function testParseBackLongDate() {
 	//	 $_SERVER['HTTP_ACCEPT_LANGUAGE'] = "";
@@ -58,7 +63,7 @@ class UtilDateFunctionTests extends PHPUnit_Framework_TestCase {
 		$_SERVER['HTTP_ACCEPT_LANGUAGE'] = "en-gb,en;q=0.8,de-de;q=0.5,de-ch;q=0.3";
 		$sDate = "10.03.2008";
 		$iTimestamp = LocaleUtil::parseLocalizedDate($sDate, "de");
-		$this->assertSame(1205103600, $iTimestamp);
+		$this->assertSame(1205107200, $iTimestamp);
 		$this->assertSame($sDate, LocaleUtil::localizeDate($iTimestamp, "de"));
 	}
 	

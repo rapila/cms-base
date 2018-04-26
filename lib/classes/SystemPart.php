@@ -31,6 +31,9 @@ abstract class SystemPart {
 			if(!isset($this->aInfo['dependencies'])) {
 				$this->aInfo['dependencies'] = array();
 			}
+			if(!isset($this->aInfo['optional_dependencies'])) {
+				$this->aInfo['optional_dependencies'] = array();
+			}
 		}
 		return $this->aInfo;
 	}
@@ -117,8 +120,8 @@ abstract class SystemPart {
 	}
 	
 	public static function allParts() {
-		$oCache = new Cache("system_parts", DIRNAME_CONFIG);
-		if($oCache->cacheFileExists()) {
+		$oCache = new Cache("system_parts", DIRNAME_CONFIG, CachingStrategyFile::create());
+		if($oCache->entryExists()) {
 			return $oCache->getContentsAsVariable();
 		}
 		$oBasePart = new BasePart();
@@ -143,6 +146,11 @@ abstract class SystemPart {
 					$oPart->dependOn($aParts[$sDependencyPrefix]);
 				} else {
 					throw new Exception("Dependency of {$oPart->getPrefix()} on $sDependencyPrefix can not be satisfied");
+				}
+			}
+			foreach($aInfo['optional_dependencies'] as $sDependencyPrefix => $sVersion) {
+				if(isset($aParts[$sDependencyPrefix])) {
+					$oPart->dependOn($aParts[$sDependencyPrefix]);
 				}
 			}
 		}

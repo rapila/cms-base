@@ -14,7 +14,7 @@ CREATE TABLE `pages`
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(50) NOT NULL,
     `identifier` VARCHAR(50),
-    `page_type` VARCHAR(15),
+    `page_type` VARCHAR(50),
     `template_name` VARCHAR(50),
     `is_inactive` TINYINT(1) DEFAULT 1,
     `is_folder` TINYINT(1) DEFAULT 0,

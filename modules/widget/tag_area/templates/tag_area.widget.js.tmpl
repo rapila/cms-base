@@ -24,21 +24,21 @@ Widget.types.tag_area = {
 		}
 		Widget.handle('tag-saved', this.reload_tags.bind(this));
 	},
-	
+
 	reload_tags: function() {
 		var _this = this;
 		this.listTags(function(all_tags) {
 			this._element.find('.tag').remove();
 			this._element.removeClass('has_tags');
 			jQuery.each(all_tags, function(i, tag) {
-				_this.append_tag(tag.Name);
+				_this.append_tag(tag);
 			});
 		});
 		if(this.settings.drop_zone) {
 			this.dnd.init_dnd(this._element, this.settings.drop_zone, this.getTaggedItemId(), true);
 		}
 	},
-	
+
 	append_tag: function(name, display_name) {
 		var _this = this;
 		if(!display_name) {
@@ -74,7 +74,7 @@ Widget.types.tag_area = {
 		this._element.append(document.createTextNode(' '));
 		this._element.addClass('has_tags');
 	},
-	
+
 	delete_tag: function(tag) {
 		var name = tag.data('tagName');
 		this.deleteTag(name, function(result) {
@@ -89,7 +89,7 @@ Widget.types.tag_area = {
 		});
 		return false;
 	},
-	
+
 	settings: {
 		auto_load: true,
 		dnd: true,

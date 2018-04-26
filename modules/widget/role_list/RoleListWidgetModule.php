@@ -2,23 +2,14 @@
 /**
  * @package modules.widget
  */
-class RoleListWidgetModule extends WidgetModule {
-
-	private $oListWidget;
-	private $iGroupId;
+class RoleListWidgetModule extends SpecializedListWidgetModule {
 	public $oDelegateProxy;
 
-	public function __construct() {
-		$this->oListWidget = new ListWidgetModule();
+	protected function createListWidget() {
+		$oListWidget = new ListWidgetModule();
 		$this->oDelegateProxy = new CriteriaListWidgetDelegate($this, "Role", "role_key");
-		$this->oListWidget->setDelegate($this->oDelegateProxy);
-	}
-
-	public function doWidget() {
-		$aTagAttributes = array('class' => 'role_list');
-		$oListTag = new TagWriter('table', $aTagAttributes);
-		$this->oListWidget->setListTag($oListTag);
-		return $this->oListWidget->doWidget();
+		$oListWidget->setDelegate($this->oDelegateProxy);
+		return $oListWidget;
 	}
 
 	public function getColumnIdentifiers() {
@@ -34,20 +25,20 @@ class RoleListWidgetModule extends WidgetModule {
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_DATA;
 				break;
 			case 'role_key':
-				$aResult['heading'] = StringPeer::getString('wns.role.role_key');
+				$aResult['heading'] = TranslationPeer::getString('wns.role.role_key');
 				$aResult['is_sortable'] = true;
 				break;
 			case 'description':
-				$aResult['heading'] = StringPeer::getString('wns.role.description');
+				$aResult['heading'] = TranslationPeer::getString('wns.role.description');
 				$aResult['is_sortable'] = true;
 				break;
 			case 'user_id':
-				$aResult['heading'] = StringPeer::getString('wns.role.user_with_role_count');
+				$aResult['heading'] = TranslationPeer::getString('wns.role.user_with_role_count');
 				$aResult['field_name'] = 'user_with_role_count';
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_NUMERIC;
 				break;
 			case 'group_id':
-				$aResult['heading'] = StringPeer::getString('wns.role.group_with_role_count');
+				$aResult['heading'] = TranslationPeer::getString('wns.role.group_with_role_count');
 				$aResult['field_name'] = 'group_with_role_count';
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_NUMERIC;
 				break;
@@ -87,17 +78,18 @@ class RoleListWidgetModule extends WidgetModule {
 
 	public function getCriteria() {
 		// select all
+		$oQuery = RoleQuery::create()->distinct();
 		if($this->oDelegateProxy->getGroupId() === CriteriaListWidgetDelegate::SELECT_ALL) {
-			return RoleQuery::create()->joinGroupRole(null, Criteria::LEFT_JOIN);
+			return $oQuery->joinGroupRole(null, Criteria::LEFT_JOIN);
 		}
 		// select specific group
 		if(is_numeric($this->oDelegateProxy->getGroupId())) {
-			return RoleQuery::create()->useGroupRoleQuery(null, Criteria::LEFT_JOIN)
+			return $oQuery->useGroupRoleQuery(null, Criteria::LEFT_JOIN)
 				->useGroupQuery(null, Criteria::LEFT_JOIN)->filterById($this->oDelegateProxy->getGroupId())->endUse()
 			->endUse();
 		}
 		// select roles not included in a group
-		return RoleQuery::create()->useGroupRoleQuery(null, Criteria::LEFT_JOIN)
+		return $oQuery->useGroupRoleQuery(null, Criteria::LEFT_JOIN)
 			->useGroupQuery(null, Criteria::LEFT_JOIN)->filterById(null, Criteria::ISNULL)->endUse()
 		->endUse();
 	}

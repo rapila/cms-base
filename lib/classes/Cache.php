@@ -3,65 +3,88 @@
  * Represents one file in the cache, identified by the dirname and the key (generated/caches/<dir>/<md5(key)>.cache).
 */
 class Cache {
+	private $oStrategy;
+	private $sKey;
+	private $sModule;
 	
-	const CACHE_EXTENSION = '.cache';
-	
-	const FLAG_FILE_DIRECT = 1;
-	
-	private $bCacheIsNeverOff;
-	private $sFileName;
-	private $sFilePath;
-	
-	public function __construct($sKey, $mPath=null, $iFlags = 0) {
+	public function __construct($sKey, $sModule, $oStrategy=null) {
+		if(is_int($oStrategy)) {
+			throw new Exception('Cache flags are not supported anymore. Use an option to the caching strategy.');
+		}
+
 		if($sKey instanceof CacheKey) {
 			$sKey = $sKey->render();
 		}
-		$this->bCacheIsNeverOff = $mPath === DIRNAME_CONFIG || $mPath === 'resource_finder';
+		$this->sKey = $sKey;
 
-		$mPath = ResourceFinder::parsePathArguments(DIRNAME_GENERATED, DIRNAME_CACHES, $mPath);
-		$sPath = MAIN_DIR.'/'.implode('/', $mPath);
-		if(!is_dir($sPath)) {
-			if(!@mkdir($sPath, 0775, true)) {
-				throw new Exception("Error in Cache->__construct(): Cache folder $sPath does not exist and we do not have rights to create it");
-			}
+		if(!($oStrategy instanceof CachingStrategy)) {
+			$oStrategy = CachingStrategy::forModule($sModule);
 		}
+		$this->oStrategy = $oStrategy;
 
-		$this->sFileName = $sKey;
-		if(($iFlags&self::FLAG_FILE_DIRECT) !== self::FLAG_FILE_DIRECT) {
-			$this->sFileName = md5($this->sFileName);
-		}
-		$this->sFilePath = $sPath.'/'.$this->sFileName.self::CACHE_EXTENSION;
+		$this->sModule = $sModule;
 	}
 	
 	/**
 	* Returns true if a file representing this cache entry already exists, false otherwise
+	* @deprecated use cacheEntryExists
 	*/
 	public function cacheFileExists($bTakeOffStatusIntoAccount = true) {
+		return $this->entryExists($bTakeOffStatusIntoAccount);
+	}
+	
+	/**
+	* Returns true if this cache entry already exists, false otherwise
+	*/
+	public function entryExists($bTakeOffStatusIntoAccount = true) {
 		if($bTakeOffStatusIntoAccount && $this->cacheIsOff()) {
 			return false;
 		}
-		return file_exists($this->sFilePath);
+		return $this->oStrategy->exists($this);
 	}
 	
 	/**
 	 * Returns the full path to the cache file. Note that this file may not yet exist
+	 * @deprecated only works if caching strategy is CachingStrategyFile. Use $oCache->getStrategy()->getFilePath($oCache)
 	 */
 	public function getFilePath() {
-		return $this->sFilePath;
+		return $this->oStrategy->getFilePath($this);
 	}
 	
 	/**
 	 * Returns the md5()’ed cache key.
+	 * @deprecated use md5(getKey()) or $oCache->getStrategy()->encodedKey($oCache)
 	 */
 	public function getFileName() {
-		return $this->sFileName;
+		return md5($this->getKey());
 	}
 	
 	/**
-	 * Returns the cached content's modification date. Note that this will result in an error if the cache file does not (yet) exist
+	* Returns the cache key.
+	*/
+	public function getKey() {
+		return $this->sKey;
+	}
+	
+	/**
+	* Returns the cache module.
+	*/
+	public function getModule() {
+		return $this->sModule;
+	}
+	
+	/**
+	* Returns the caching strategy used.
+	*/
+	public function getStrategy() {
+		return $this->oStrategy;
+	}
+	
+	/**
+	 * Returns the cached content's modification date. Note that this will possibly result in an error if the cache entry does not (yet) exist
 	 */
 	public function getModificationDate() {
-		return filemtime($this->sFilePath);
+		return $this->oStrategy->date($this);
 	}
 	
 	/**
@@ -77,7 +100,7 @@ class Cache {
 	 * @param string|array|ResourceFinder $mOriginalFilePath
 	 */
 	public function isOutdated($mOriginalFilePath) {
-		if(ErrorHandler::getEnvironment() === 'production') {
+		if(ErrorHandler::isProduction()) {
 			//Files are never out of date in production (clear the cache manually when deploying)… no need to check
 			return false;
 		}
@@ -112,8 +135,14 @@ class Cache {
 		if($iTimestamp instanceof BaseObject) {
 			$iTimestamp = $iTimestamp->getUpdatedAtTimestamp();
 		}
+		if($iTimestamp instanceof ModelCriteria) {
+			$iTimestamp = $iTimestamp->findMostRecentUpdate(true);
+		}
 		if(is_string($iTimestamp)) {
 			$iTimestamp = strtotime($iTimestamp);
+		}
+		if($iTimestamp instanceof DateTime) {
+			$iTimestamp = $iTimestamp->getTimestamp();
 		}
 		return $iTimestamp > $this->getModificationDate();
 	}
@@ -125,22 +154,23 @@ class Cache {
 		$iHours += $iDays * 24;
 		$iMinutes += $iHours * 60;
 		$iSeconds += $iMinutes * 60;
-		
+
 		return $this->isOlderThan(time() - $iSeconds);
 	}
 	
 	/**
-	* Gets the raw (possibly binary) contents of the cache file
+	* Gets the size of the cache file without reading the contents
+	* @deprecated use size()
 	*/
-	public function getContentsAsString() {
-		return file_get_contents($this->sFilePath);
+	public function fileSize() {
+		return $this->size();
 	}
 	
 	/**
-	* Gets the size of the cache file without reading the contents
+	* Gets the size of the cache contents without reading the contents. May return null if unknown.
 	*/
-	public function fileSize() {
-		return filesize($this->sFilePath);
+	public function size() {
+		return $this->oStrategy->size($this);
 	}
 	
 	/**
@@ -148,16 +178,26 @@ class Cache {
 	*/
 	public function passContents($bOutputContentLength=false) {
 		if($bOutputContentLength) {
-			header("Content-Length: ".$this->fileSize());
+			$iSize = $this->size();
+			if($iSize !== null) {
+				header("Content-Length: ".$iSize);
+			}
 		}
-		return readfile($this->sFilePath);
+		return $this->oStrategy->pass($this);
+	}
+	
+	/**
+	* Gets the raw (possibly binary) contents of the cache file
+	*/
+	public function getContentsAsString() {
+		return $this->oStrategy->read($this);
 	}
 
 	/**
 	* Returns the cached contents if they were not a string when saving
 	*/
 	public function getContentsAsVariable() {
-		return unserialize(file_get_contents($this->sFilePath));
+		return $this->oStrategy->readData($this);
 	}
 	
 	/**
@@ -168,9 +208,9 @@ class Cache {
 			return;
 		}
 		if(!$bForceSerialize && is_string($mContents)) {
-			return file_put_contents($this->sFilePath, $mContents, $bAppend ? FILE_APPEND : 0);
+			return $this->oStrategy->write($this, $mContents, $bAppend);
 		}
-		return file_put_contents($this->sFilePath, serialize($mContents));
+		return $this->oStrategy->writeData($this, $mContents);
 	}
 	
 	/**
@@ -181,22 +221,20 @@ class Cache {
 	* @param $iTimestamp deprecated: to use this method without a cache file, call LinkUtil::sendCacheControlHeaders directly
 	*/
 	public function sendCacheControlHeaders($iTimestamp = null) {
-		if($iTimestamp === null) {
-			if(!$this->cacheFileExists(false)) {
-				return;
-			}
-			$iTimestamp = $this->getModificationDate();
+		if($iTimestamp !== null) {
+			LinkUtil::sendCacheControlHeaders($iTimestamp);
+		} else {
+			LinkUtil::sendCacheControlHeadersForCache($this);
 		}
-		LinkUtil::sendCacheControlHeaders($iTimestamp);
 	}
 	
 	/**
 	* Returns true if, for whatever reason, no data should be written to the cache.
 	* This can be triggered by the general->caching boolean setting in config.yml
-	* Caching of config files is always on
+	* Caching of config files is always on (because it is there that this setting is defined)
 	*/
 	public function cacheIsOffForWriting() {
-		return (!$this->bCacheIsNeverOff && !Settings::getSetting('general', 'caching', true));
+		return $this->oStrategy->cacheIsOffForWriting();
 	}
 	
 	/**
@@ -207,25 +245,15 @@ class Cache {
 	* The cache-control headers are set to no-cache (i.e. the user forced a-super reload in the browser)
 	*/
 	public function cacheIsOff() {
-		if($this->cacheIsOffForWriting()) {
-			return true;
-		}
-		if(isset($_REQUEST['nocache'])) {
-			return true;
-		}
-		if(isset($_SERVER['HTTP_CACHE_CONTROL']) && stristr($_SERVER['HTTP_CACHE_CONTROL'], "no-cache") !== FALSE && $_SERVER['REQUEST_METHOD'] !== 'POST') {
-			return true;
-		}
-		return false;
+		return $this->oStrategy->cacheIsOff();
 	}
 	
 	/**
 	* Removes all cache files but not their parent directories.
 	*/
 	public static function clearAllCaches() {
-		$oFinder = ResourceFinder::create()->addPath(DIRNAME_GENERATED, DIRNAME_CACHES)->addDirPath(true)->addPath('/^.*\\.cache$/')->searchMainOnly()->noCache();
-		foreach($oFinder->find() as $sCachesFile) {
-			unlink($sCachesFile);
+		foreach(CachingStrategy::configuredStrategies() as $oStrategy) {
+			$oStrategy->clearCaches();
 		}
-	} //clearAllCaches()
+	}
 }

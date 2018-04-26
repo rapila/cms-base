@@ -75,29 +75,54 @@ class StringUtil {
 		return $sText;
 	}
 
-	// implement preg_replace with		 
-	// $aUmlaut = array('/Ä/', '/ä/', '/Ö/', '/ö/', '/Ü/', '/ü/') 
+	// implement preg_replace with
+	// $aUmlaut = array('/Ä/', '/ä/', '/Ö/', '/ö/', '/Ü/', '/ü/')
 	// $aReplace = array('ae', 'ae', 'oe', 'oe', 'ue', 'ue');
-	public static function normalize($sInput, $sReplaceSpaceWith = '-', $sReplaceNonWordsWith = '') {
+	public static function normalizeToASCII($sInput, $sReplaceSpaceWith = '-', $sReplaceNonWordsWith = '') {
 		if($sInput === null || $sInput === '') {
 			return null;
 		}
 		$sInput = str_replace(array('ä', 'ö', 'ü'), array('ae', 'oe', 'ue'), mb_strtolower($sInput));
-		$sInput = @iconv(Settings::getSetting('encoding', 'browser', 'utf-8'), 'US-ASCII//TRANSLIT', $sInput);
-		$sInput = mb_ereg_replace('-|–|—|_|\.', '-', $sInput);
+		$sInput = mb_ereg_replace('–|—|_', '-', $sInput);
+		$sEncoded = @iconv(Settings::getSetting('encoding', 'browser', 'utf-8'), 'US-ASCII//TRANSLIT//IGNORE', $sInput);
+		if($sEncoded !== false) {
+			// ICONV error
+			$sInput = $sEncoded;
+		} else {
+			$sInput = strtolower(preg_replace("/([^\\w\\d\-_]+)/", $sReplaceNonWordsWith, $sInput));
+		}
 		$sInput = mb_ereg_replace('\s+', $sReplaceSpaceWith, $sInput);
-		$sNewName = strtolower(preg_replace("/([^\\w\\d\-_]+)/u", $sReplaceNonWordsWith, $sInput));
-		$sNewName = trim($sNewName, $sReplaceSpaceWith);
-		if($sNewName !== "") {
-			return $sNewName;
+		$sInput = strtolower(preg_replace("/([^\\w\\d\-_]+)/u", $sReplaceNonWordsWith, $sInput));
+		$sInput = preg_replace("/$sReplaceSpaceWith{2,}/", $sReplaceSpaceWith, $sInput);
+		$sInput = trim($sInput, $sReplaceSpaceWith);
+		if($sInput !== "") {
+			return $sInput;
 		} else {
 			return null;
 		}
 	}
-	
-	public static function normalizePath($sInput, $sReplaceSpaceWith = '-', $sReplaceNonWordsWith = '') {
-		$sPath = self::normalize($sInput, $sReplaceSpaceWith, $sReplaceNonWordsWith);
-		return preg_replace("/$sReplaceSpaceWith{2,}/", $sReplaceSpaceWith, $sPath);
+
+	public static function normalize($sInput) {
+		return self::normalizeMinimally(mb_strtolower($sInput));
+	}
+
+	public static function normalizeMinimally($sInput, $sReplaceSpaceWith = '-') {
+		$sInput = mb_ereg_replace('–|—', '-', $sInput);
+		$sInput = mb_ereg_replace('\s+', $sReplaceSpaceWith, $sInput);
+		$sInput = preg_replace("/$sReplaceSpaceWith{2,}/", $sReplaceSpaceWith, $sInput);
+		$sInput = trim($sInput, $sReplaceSpaceWith);
+		return $sInput;
+	}
+
+	public static function normalizePath($sInput, $bToLowerCase = true) {
+		$aPathSpecials = array('/', '#', '?', '+');
+		$sFillIn = '-';
+		$sInput = self::normalizeMinimally($sInput, $sFillIn);
+		$sInput = str_replace($aPathSpecials, $sFillIn, $sInput);
+		if($bToLowerCase) {
+			$sInput = mb_strtolower($sInput);
+		}
+		return $sInput;
 	}
 
 	public static function getWords($sString, $bFromHtml=false, $sReplaceNonWordsWith = '') {
@@ -114,7 +139,7 @@ class StringUtil {
 		$aWords = mb_split("[\s\-–—.@]+", $sString);
 		$aResult = array();
 		foreach($aWords as $sWord) {
-			$sWord = self::normalize($sWord, '-', $sReplaceNonWordsWith);
+			$sWord = self::normalizeToASCII($sWord, '-', $sReplaceNonWordsWith);
 			if($sWord !== null) {
 				$aResult[] = $sWord;
 			}

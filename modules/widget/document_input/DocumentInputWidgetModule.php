@@ -12,17 +12,15 @@ class DocumentInputWidgetModule extends PersistentWidgetModule {
 			}
 		}
 		if(count($aCustomFiles) > 0) {
-			$sCustomFiles = StringPeer::getString('wns.documents.custom_files');
+			$sCustomFiles = TranslationPeer::getString('wns.documents.custom_files');
 			$aResult[$sCustomFiles] = array_flip($aCustomFiles);
 		}
 		// find files in database ordered by category
-		foreach(DocumentCategoryQuery::create()->filterByIsExternallyManaged(false)->orderByName()->find() as $oCategory) {
-			$aDocuments = DocumentQuery::create()->useDocumentCategoryQuery()->filterByIsExternallyManaged(false)->endUse()->orderByDocumentCategoryId()->orderByName()->select(array('Id', 'Name'))->find();
-			foreach($aDocuments as $aDocument) {
-				$aResult[$oCategory->getName()][$aDocument['Id']] = $aDocument['Name'];
-			}
+		$oDocuments = DocumentQuery::create()->join('DocumentCategory')->select(array('Id', 'Name', 'DocumentCategory.Name'))->useDocumentCategoryQuery()->filterByIsExternallyManaged(false)->endUse()->orderBy('DocumentCategory.Name')->orderByName()->find();
+		foreach($oDocuments as $aDocument) {
+			$aResult[$aDocument['DocumentCategory.Name']][$aDocument['Id']] = $aDocument['Name'];
 		}
-		$sWithoutCategory = StringPeer::getString('wns.documents.select_without_title');
+		$sWithoutCategory = TranslationPeer::getString('wns.documents.select_without_title');
 		foreach(self::getDocumentsWithoutCategoryId() as $iId => $sName) {
 			$aResult[$sWithoutCategory][$iId] = $sName;
 		}

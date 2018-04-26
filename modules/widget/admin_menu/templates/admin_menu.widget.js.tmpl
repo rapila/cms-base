@@ -103,7 +103,7 @@ Widget.types.admin_menu = {
 			return {element: this.activity_indicator};
 		},
 
-		menu: function(items) {
+		select: function(items) {
 			var _this = this;
 			var result = {};
 			result.element = jQuery('<select/>');
@@ -215,17 +215,81 @@ Widget.types.admin_menu = {
 			}};
 		},
 
-		action: function() {
-			var element = jQuery('<button/>').addClass('open-action rapila-icon').text('action');
+		user: function(user_info) {
+			var _this = this;
+			return {text: user_info.FullName+"{{writeString=wns.admin_menu.my_profile_postfix}}", callback: function() {
+				var _element = this;
+				Widget.create('user_detail', function(widget) {
+					widget.setUserId(user_info.Id);
+					widget.fill_data();
+					widget.open();
+					widget.save_callback = function() {
+						jQuery(_element).find('.ui-button-text').text(_this.getUserInfo()['FullName']);
+					};
+				});
+			}};
+		},
+
+		clear_caches: function() {
+			var _this = this;
+			return {text: "{{writeString=wns.admin_menu.clear_caches}}", callback: function() {
+				_this.clearCaches();
+			}};
+		},
+
+		reset_user_settings: function() {
+			var _this = this;
+			return {text: "{{writeString=wns.admin_menu.reset_user_settings}}", callback: function() {
+				_this.resetUserSettings();
+			}};
+		},
+
+		menu: function(items, icon) {
+			var _this = this;
+			var menu = jQuery('<ul/>');
+			jQuery.each(items, function(i, item) {
+				if(item.type === 'spacer') {
+					return;
+				}
+				var item_contents = _this.predefined_elements[item.type].apply(_this, item.args);
+				if(!item_contents) {
+					return;
+				}
+				// FIXME: When upgrading to jQuery UI 1.11 or later, lose the <a> tag. Also in admin-ui.styl
+				menu.append(jQuery('<li/>').append(jQuery('<a/>').addClass('ui-menu-item').text(item_contents.text)).data('callback', item_contents.callback));
+			});
+			menu.appendTo(document.body).css({
+				zIndex: 101,
+				position: 'absolute',
+				display: 'table'
+			}).menu({
+				select: function(event, ui) {
+					menu.hide();
+					ui.item.data('callback')(event);
+				}
+			}).hide();
+			var element = jQuery('<button/>').addClass('open-action rapila-icon').text(icon);
 			element.button();
 			return {element: element, callback: function(event) {
-				// do what
+				if(menu.is(':visible')) {
+					menu.hide();
+				} else {
+					menu.css({
+						display: 'table'
+					}).position({
+						my: "right top",
+						at: "center bottom",
+						of: element
+					});
+				}
 			}};
 		},
 
 		documentation: function() {
 			var _this = this;
 			var element = jQuery('<button/>').addClass('open-documentation rapila-icon').text('info');
+			var title = "{{writeString=documentation_icon.button_title}}"
+			if(title) element.attr('title', title);
 			element.button();
 			var key;
 			if(window.PreviewInterface && window.PreviewInterface.page_type) {
@@ -238,21 +302,14 @@ Widget.types.admin_menu = {
 			});
 			return {element: element, callback: function(event) {
 				_this.documentationData(key, function(data) {
-					Widget.notifyUser(Widget.logSeverity.DOCUMENTATION, data.content, {
+					var content = data.content;
+					content = '<h2><a href="'+data.url+'">' + data.title + '</a></h2>' + content;
+					Widget.notifyUser(Widget.logSeverity.DOCUMENTATION, content, {
 						closeDelay: null,
 						identifier: 'documentation-'+key,
 						closable: true,
 						hideIcon: true,
 						isHTML: true,
-						buttons: {
-							link: {
-								click: function(event) {
-									jQuery.openLink(data.url, event);
-								},
-								rapilaIcon: 'externallink',
-								title: '{{writeString=wns.go_to_documentation}}'
-							}
-						}
 					});
 				});
 			}};
@@ -263,9 +320,11 @@ Widget.types.admin_menu = {
 		},
 
 		preview: function() {
-			var result = {text: "{{writeString=wns.page.preview_linktext}}"};
 			var _this = this;
+			var result = {};
 			result.is_active = !!window.PreviewInterface;
+			result.text = 'preview';
+			result.element = this.button_prototype.clone().addClass('preview rapila-icon').attr('title', '{{writeString=wns.page.preview_linktext}}');
 			result.callback = function(event) {
 				jQuery.openLink(_this.getPreviewLink(), event);
 			};
@@ -286,21 +345,6 @@ Widget.types.admin_menu = {
 			result.text = 'power';
 			result.element = this.button_prototype.clone().addClass('logout_link rapila-icon').attr('title', '{{writeString=wns.logout}}');
 			return result;
-		},
-
-		user: function(user_info) {
-			var _this = this;
-			return {text: user_info.FullName, callback: function() {
-				var _element = this;
-				Widget.create('user_detail', function(widget) {
-					widget.setUserId(user_info.Id);
-					widget.fill_data();
-					widget.open();
-					widget.save_callback = function() {
-						jQuery(_element).find('.ui-button-text').text(_this.getUserInfo()['FullName']);
-					};
-				});
-			}};
 		}
 	}
 };

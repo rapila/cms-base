@@ -2,8 +2,9 @@
 /**
  * @package modules.file
  */
-class DisplayDocumentFileModule extends FileModule {	
+class DisplayDocumentFileModule extends FileModule {
 	protected $oDocument;
+	protected $oSession;
 	
 	public function __construct($aRequestPath) {
 		parent::__construct($aRequestPath);
@@ -11,6 +12,7 @@ class DisplayDocumentFileModule extends FileModule {
 			// Exceptions thrown in a file module’s constructor yield a UserError but that’s OK.
 			throw new Exception("Error in DisplayDocumentFileModule->__construct: no key given");
 		}
+		$this->oSession = Session::close();
 		$this->oDocument = DocumentQuery::create()->findPk(intval($this->aPath[0]));
 		if($this->oDocument === null || ($this->oDocument->getIsProtected() && !$this->isAuthenticated())) {
 			$oErrorPage = PageQuery::create()->findOneByName(Settings::getSetting('error_pages', 'not_found', 'error_404'));
@@ -19,12 +21,12 @@ class DisplayDocumentFileModule extends FileModule {
 			} else {
 				print "Not found";exit;
 			}
-			break;
 		}
+		Session::close();
 	}
 	
 	protected function isAuthenticated() {
-		return Session::getSession()->isAuthenticated();
+		return $this->oSession->isAuthenticated();
 	}
 
 	public function renderFile() {
@@ -44,8 +46,10 @@ class DisplayDocumentFileModule extends FileModule {
 		}
 		header('Content-Disposition: '.$sDisplay.';filename="'.$this->oDocument->getFullName().'"');
 
-		if($oCache->cacheFileExists() && !$oCache->isOlderThan($this->oDocument)) {
-			$oCache->sendCacheControlHeaders($this->oDocument->getUpdatedAtTimestamp());
+		//Don’t base the last-modified off the cache but rather off the document’s updated-at.
+		LinkUtil::sendCacheControlHeaders($this->oDocument, $oCache);
+
+		if($oCache->entryExists() && !$oCache->isOlderThan($this->oDocument)) {
 			header("Content-Type: ".$this->oDocument->getDocumentType()->getMimetype());
 			$oCache->passContents(true);exit;
 		}
@@ -77,7 +81,6 @@ class DisplayDocumentFileModule extends FileModule {
 		header("Content-Type: ".$this->oDocument->getDocumentType()->getMimetype());
 		header("Content-Length: ".$this->oDocument->getDataSize());
 		$oCache->setContents(stream_get_contents($rDataStream));
-		$oCache->sendCacheControlHeaders();
 		rewind($rDataStream);
 		fpassthru($rDataStream);
 	}

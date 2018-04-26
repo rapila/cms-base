@@ -84,8 +84,8 @@ class UserTableMap extends TableMap
         $this->addRelation('LanguageObjectHistoryRelatedByUpdatedBy', 'LanguageObjectHistory', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null, 'LanguageObjectHistorysRelatedByUpdatedBy');
         $this->addRelation('LanguageRelatedByCreatedBy', 'Language', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null, 'LanguagesRelatedByCreatedBy');
         $this->addRelation('LanguageRelatedByUpdatedBy', 'Language', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null, 'LanguagesRelatedByUpdatedBy');
-        $this->addRelation('StringRelatedByCreatedBy', 'String', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null, 'StringsRelatedByCreatedBy');
-        $this->addRelation('StringRelatedByUpdatedBy', 'String', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null, 'StringsRelatedByUpdatedBy');
+        $this->addRelation('TranslationRelatedByCreatedBy', 'Translation', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null, 'TranslationsRelatedByCreatedBy');
+        $this->addRelation('TranslationRelatedByUpdatedBy', 'Translation', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null, 'TranslationsRelatedByUpdatedBy');
         $this->addRelation('UserGroupRelatedByCreatedBy', 'UserGroup', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null, 'UserGroupsRelatedByCreatedBy');
         $this->addRelation('UserGroupRelatedByUpdatedBy', 'UserGroup', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null, 'UserGroupsRelatedByUpdatedBy');
         $this->addRelation('GroupRelatedByCreatedBy', 'Group', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null, 'GroupsRelatedByCreatedBy');
@@ -130,6 +130,8 @@ class UserTableMap extends TableMap
     {
         return array(
             'taggable' =>  array (
+  'tag_model' => 'Tag',
+  'tag_instance_model' => '',
 ),
             'denyable' =>  array (
   'mode' => '',

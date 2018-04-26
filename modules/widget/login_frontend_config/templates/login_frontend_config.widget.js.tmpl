@@ -6,7 +6,7 @@ Widget.types.login_frontend_config = {
 		mode_dropdown.populate({'': "{{writeString=wns.choose}}"});
 		mode_dropdown.populate(this.getDisplayOptions(), this.getLoginDisplayMode());
 	},
-	
+
 	save: function() {
 		return this._element.serializeArrayKV();
 	}

@@ -18,7 +18,7 @@ jQuery(document).ready(function() {
 
 	jQuery.when.apply(jQuery, handlers).then(function() {
 
-		AdminInterface.strings.handle_strings_for_list_result('wns.strings.no_result', ['name_space'], widget);
+		AdminInterface.strings.handle_strings_for_list_result('wns.strings.no_result', ['name_space'], content_list);
 
 		// Add new string button, search_input and list count
 		info_bar.add_button('add-new-item', function() {
@@ -35,7 +35,7 @@ jQuery(document).ready(function() {
 			if(content_list.setSearch(search)) {
 				content_list.reload();
 			}
-		}).add_row_count_info_for_list(content_list);
+		}).add_row_count_info_for_list(content_list).add_pager_for_list(content_list);
 
 		// Sidebar selection change handler
 		Widget.handle('strings-namespaces-changed', sidebar.reload.bind(sidebar));

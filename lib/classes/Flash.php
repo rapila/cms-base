@@ -209,7 +209,7 @@ class Flash {
 		if(isset($aMessageAttribs[self::TAG_NAME_KEY])) {
 			$sTagName = $aMessageAttribs[self::TAG_NAME_KEY];
 		}
-		$oTag = new TagWriter($sTagName, array('class' => $sClassName), StringPeer::getString($sStringKey, null, null, $aParameters));
+		$oTag = new TagWriter($sTagName, array('class' => $sClassName), TranslationPeer::getString($sStringKey, null, null, $aParameters));
 		return $oTag->parse();
 	}
 	

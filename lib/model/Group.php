@@ -15,7 +15,7 @@ class Group extends BaseGroup {
 		}
 		return false;
 	}
-	
+
 	public function mayEditPageDetails($mPage) {
 		return $this->may($mPage, 'edit_page_details');
 	}
@@ -39,7 +39,7 @@ class Group extends BaseGroup {
 	public function mayViewPage($mPage) {
 		return $this->may($mPage, 'view_page');
 	}
-	
+
 	public function getRoles($bReturnNamesOnly = false) {
 		$aResult = array();
 		$aGroupRoles = $bReturnNamesOnly ? $this->getGroupRoles() : $this->getGroupRolesJoinRole();
@@ -52,7 +52,17 @@ class Group extends BaseGroup {
 		}
 		return $aResult;
 	}
-	
+
+	public function addRole($sRoleName) {
+		$aRoles = func_get_args();
+		foreach($aRoles as $mRole) {
+			if(!($mRole instanceof Role)) {
+				$mRole = RoleQuery::create()->createOrFindPk($mRole);
+			}
+			GroupRoleQuery::create()->createOrFind($this, $mRole);
+		}
+	}
+
 	public function getRolesInfo() {
 		$aRoles = self::getRoles(true);
 		if(count($aRoles) > 0) {
@@ -60,7 +70,7 @@ class Group extends BaseGroup {
 		}
 		return null;
 	}
-	
+
 	public function addUser($oUser) {
 		if($this->containsUser($oUser)) {
 			return;
@@ -69,7 +79,7 @@ class Group extends BaseGroup {
 		$oUserGroup->setUser($oUser);
 		$this->addUserGroup($oUserGroup);
 	}
-	
+
 	public function getUsers() {
 		$aResult = array();
 		foreach($this->getUserGroupsJoinUser() as $oGroupUser) {
@@ -77,11 +87,11 @@ class Group extends BaseGroup {
 		}
 		return $aResult;
 	}
-	
+
 	public function getUserCount() {
 		return $this->countUserGroups();
 	}
-	
+
 	public function containsUser($oUser) {
 		if($oUser instanceof User) {
 			$oUser = $oUser->getId();
@@ -93,7 +103,7 @@ class Group extends BaseGroup {
 
 	public function getUserLinkData() {
 		$aArray = array();
-		$aArray[] = $this->getUserCount().' '.StringPeer::getString('wns.user');
+		$aArray[] = $this->getUserCount().' '.TranslationPeer::getString('wns.user');
 		$aArray[] = LinkUtil::link(array('users'), 'AdminManager', array('group_id' => $this->getId()));
 		return $aArray;
 	}

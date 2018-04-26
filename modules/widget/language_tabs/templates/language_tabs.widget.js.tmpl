@@ -26,7 +26,7 @@ Widget.types.language_tabs = {
 				_this.tab_list.append(tab);
 				_this._element.append(panel);
 
-				if((window.AdminInterface.content_language && language_id === window.AdminInterface.content_language) || (!window.AdminInterface.content_language && index === 0)) {
+				if((window.AdminInterface.content_language && language_id === window.AdminInterface.content_language) || ((!window.AdminInterface.content_language || jQuery.inArray(language_id, window.AdminInterface.content_language) == -1) && index === 0)) {
 					//Configure initial tab (makes sure that the active handler is called)
 					_this._activated(tab, panel);
 					initialIndex = index;

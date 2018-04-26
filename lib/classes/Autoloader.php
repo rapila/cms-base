@@ -2,6 +2,8 @@
 
 require_once(BASE_DIR."/".DIRNAME_LIB."/".DIRNAME_CLASSES."/ResourceFinder.php");
 require_once(BASE_DIR."/".DIRNAME_LIB."/".DIRNAME_CLASSES."/Cache.php");
+require_once(BASE_DIR."/".DIRNAME_LIB."/".DIRNAME_CLASSES."/CachingStrategy.php");
+require_once(BASE_DIR."/".DIRNAME_LIB."/".DIRNAME_CLASSES."/CachingStrategyFile.php");
 
 class Autoloader {
 	const CACHE_KEY = 'AUTOLOAD_CLASS_MAPPING';
@@ -11,9 +13,10 @@ class Autoloader {
 	public static $MAPPING_HAS_BEEN_MODIFIED;
 	
 	public static function loadIncludeCache() {
-		self::$INCLUDE_CACHE = new Cache(self::CACHE_KEY, DIRNAME_PRELOAD);
+		$oStrategy = CachingStrategyFile::create();
+		self::$INCLUDE_CACHE = new Cache(self::CACHE_KEY, DIRNAME_PRELOAD, $oStrategy);
 		self::$MAPPING_HAS_BEEN_MODIFIED = false;
-		if(!self::$INCLUDE_CACHE->cacheFileExists(false)) {
+		if(!self::$INCLUDE_CACHE->entryExists()) {
 			self::$CLASS_MAPPING = array();
 			return;
 		}
@@ -62,29 +65,30 @@ class Autoloader {
 	
 	private static function findRapilaClass($sClassName) {
 		$sFileName = "$sClassName.php";
+		$aFileName = explode('\\', $sFileName);
 
 		//Standard Classes
-		$sPath = ResourceFinder::create()->addPath(DIRNAME_LIB, DIRNAME_CLASSES, $sFileName)->find();
+		$sPath = ResourceFinder::create()->addPath(DIRNAME_LIB, DIRNAME_CLASSES)->addPaths($aFileName)->find();
 		if($sPath) {
 			return $sPath;
 		}
 	
 		//Generated Model classes
-		$sPath = ResourceFinder::create()->addPath(DIRNAME_GENERATED, DIRNAME_MODEL, $sFileName)->searchMainOnly()->find();
+		$sPath = ResourceFinder::create()->addPath(DIRNAME_GENERATED, DIRNAME_MODEL)->addPaths($aFileName)->searchMainOnly()->find();
 		if($sPath) {
 			return $sPath;
 		}
-		$sPath = ResourceFinder::create()->addPath(DIRNAME_GENERATED, DIRNAME_MODEL, false, $sFileName)->byExpressions()->searchMainOnly()->find();
+		$sPath = ResourceFinder::create()->addPath(DIRNAME_GENERATED, DIRNAME_MODEL, false)->addPaths($aFileName)->byExpressions()->searchMainOnly()->find();
 		if(($sPath = ArrayUtil::assocPeek($sPath)) !== null) {
 			return $sPath;
 		}
 	
 		//Model classes
-		$sPath = ResourceFinder::create()->addPath(DIRNAME_LIB, DIRNAME_MODEL, $sFileName)->find();
+		$sPath = ResourceFinder::create()->addPath(DIRNAME_LIB, DIRNAME_MODEL)->addPaths($aFileName)->find();
 		if($sPath) {
 			return $sPath;
 		}
-		$sPath = ResourceFinder::create()->addPath(DIRNAME_LIB, DIRNAME_MODEL, false, $sFileName)->byExpressions()->find();
+		$sPath = ResourceFinder::create()->addPath(DIRNAME_LIB, DIRNAME_MODEL, false)->addPaths($aFileName)->byExpressions()->find();
 		if(($sPath = ArrayUtil::assocPeek($sPath)) !== null) {
 			return $sPath;
 		}
@@ -97,7 +101,7 @@ class Autoloader {
 				}
 
 				if($sModuleBaseClass::isValidModuleClassName($sClassName)) {
-					$sPath = ResourceFinder::create(array(DIRNAME_MODULES, $sModuleType, $sModuleBaseClass::getNameByClassName($sClassName), $sFileName))->find();
+					$sPath = ResourceFinder::create()->addPath(DIRNAME_MODULES, $sModuleType, $sModuleBaseClass::getNameByClassName($sClassName))->addPaths($aFileName)->find();
 					if($sPath) {
 						return $sPath;
 					}
@@ -126,5 +130,9 @@ class Autoloader {
 	
 	private static function findVendorLibClass($sClassName) {
 		return 'lib/'.self::findVendorClass($sClassName);
+	}
+	
+	private static function findVendorSrcClass($sClassName) {
+		return 'src/'.self::findVendorClass($sClassName);
 	}
 }

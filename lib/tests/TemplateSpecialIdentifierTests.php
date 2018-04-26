@@ -61,7 +61,7 @@ EOT;
 		$sTemplateText = <<<EOT
 {{quoteString=\{\{test\;defaultValue=default\}\}}}
 EOT;
-		$oTemplate = new Template($sTemplateText, null, true);		
+		$oTemplate = new Template($sTemplateText, null, true);
 
 		$this->assertSame("“default”", $oTemplate->render());
 	}
@@ -71,9 +71,51 @@ EOT;
 		$sTemplateText = <<<EOT
 {{quoteString=\{\{test\}\};defaultValue=default}}
 EOT;
-		$oTemplate = new Template($sTemplateText, null, true);		
+		$oTemplate = new Template($sTemplateText, null, true);
 
 		$this->assertSame("default", $oTemplate->render());
+	}
+
+	public function validCalculations() {
+		return array(
+			array('0.1 + 0.2', 0.3),
+			array('1 + 2', 3),
+
+			array('0.1 - 0.2', -0.1),
+			array('1 - 2', -1),
+
+			array('0.1 * 2', 0.2),
+			array('1 * 2', 2),
+
+			array('0.1 / 0.2', 0.5),
+			array('1 / 2', 0.5),
+
+			array('2 * 2 + 3 * 3', 13),
+
+			array('1 + 0.6 - 3 * 2 / 50', 1.48),
+
+			array('(5 + 3) * -1', -8),
+
+			array('2+2*2', 6),
+			array('(2+2)*2', 8),
+			array('(2+2)*-2', -8),
+			array('(2+-2)*2'),
+
+			array('sin(10) * cos(50) / min(10, 20/2)', (sin(10) * cos(50) / min(10, 20/2))),
+
+			array('100500 * 3.5E5', 100500 * 3.5E5),
+			array('100500 * 3.5E-5', 100500 * 3.5E-5)
+		);
+	}
+
+  /**
+   * @dataProvider validCalculations
+   */
+	public function testCalculations($sCalculation, $sExpectedResult = '0') {
+		$oTemplate = new Template(TemplateIdentifier::constructIdentifier('doCalculation', $sCalculation), null, true);
+		$oExpected = new Template(TemplateIdentifier::constructIdentifier('result'), null, true);
+		$oExpected->replaceIdentifier('result', $sExpectedResult);
+		$this->assertSame($oExpected->render(), $oTemplate->render());
 	}
 	
 	public function testWriteResourceIncludes() {
@@ -84,11 +126,11 @@ EOT;
 		$oIncluder = ResourceIncluder::defaultIncluder();
 		$oIncluder->clearIncludedResources();
 		$oIncluder->addResource('admin/accept.png', null, null, array('template' => 'icons'));
-		$oIncluder->addResource(array('web', 'js', 'widget', 'ckeditor', 'skins', 'kama', 'editor.css'));
+		$oIncluder->addResource(array('web', 'js', 'widget', 'ckeditor', 'skins', 'moono', 'editor.css'));
 		$oIncluder->addJavaScriptLibrary('jqueryui', 1);
 		$oIncluder->addResource('admin/admin-ui.css');
 		$oIncluder->addResource('widget/ckeditor/ckeditor.js');
-		$this->assertSame('<link rel="icon" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/images/admin/accept.png" />'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/widget/ckeditor/skins/kama/editor.css" />'."\n".'<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>'."\n".'<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/css/admin/admin-ui.css" />'."\n".'<script type="text/javascript" src="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/widget/ckeditor/ckeditor.js"></script>'."\n", $oTemplate->render());
+		$this->assertSame('<link rel="icon" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/images/admin/accept.png" />'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/widget/ckeditor/skins/moono/editor.css" />'."\n".'<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>'."\n".'<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/css/admin/admin-ui.css" />'."\n".'<script type="text/javascript" src="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/widget/ckeditor/ckeditor.js"></script>'."\n", $oTemplate->render());
 	}
 	
 	public function testWriteNamedResourceIncludes() {
@@ -99,11 +141,11 @@ EOT;
 		$oIncluder = ResourceIncluder::namedIncluder('myIncluder');
 		$oIncluder->clearIncludedResources();
 		$oIncluder->addResource('admin/accept.png', null, null, array('template' => 'icons'));
-		$oIncluder->addResource(array('web', 'js', 'widget', 'ckeditor', 'skins', 'kama', 'editor.css'));
+		$oIncluder->addResource(array('web', 'js', 'widget', 'ckeditor', 'skins', 'moono', 'editor.css'));
 		$oIncluder->addJavaScriptLibrary('jqueryui', 1);
 		$oIncluder->addResource('admin/admin-ui.css');
 		$oIncluder->addResource('widget/ckeditor/ckeditor.js');
-		$this->assertSame('<link rel="icon" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/images/admin/accept.png" />'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/widget/ckeditor/skins/kama/editor.css" />'."\n".'<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>'."\n".'<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/css/admin/admin-ui.css" />'."\n".'<script type="text/javascript" src="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/widget/ckeditor/ckeditor.js"></script>'."\n", $oTemplate->render());
+		$this->assertSame('<link rel="icon" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/images/admin/accept.png" />'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/widget/ckeditor/skins/moono/editor.css" />'."\n".'<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>'."\n".'<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/css/admin/admin-ui.css" />'."\n".'<script type="text/javascript" src="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/widget/ckeditor/ckeditor.js"></script>'."\n", $oTemplate->render());
 	}
 
 	public function testStringReplace() {

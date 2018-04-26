@@ -20,9 +20,12 @@ if [ "$1" = "migrate-all" ]; then
 	plugin_migrations="plugins/*"
 	for plugin in $plugin_migrations; do
 		plugin=${plugin/plugins\//}
+		echo "Migrating plugin $plugin"
 		("$0" -p "$plugin" migrate)
 	done
+	echo "Migrating base"
 	("$0" -b migrate)
+	echo "Migrating site"
 	("$0" -s migrate)
 	exit 0
 fi
@@ -70,13 +73,15 @@ if [ ! -r "$path_to_buildfile" ]; then
 	exit 1
 fi
 
-SUDO="sudo -u $owner -E"
+if [ "b$MIGRATION_SUDO" = "b" ]; then
+	MIGRATION_SUDO="sudo -u $owner -E"
+fi
 
 mkdir -p "./generated/migrations"
 
 cp base/build.properties generated/ && \
-$SUDO "$PHP_PATH" -r "require_once('base/lib/inc.php');BuildHelper::preMigrate();BuildHelper::consolidateMigrations('$context');" && \
-$SUDO "$PHP_PATH" ./base/lib/vendor/phing/bin/phing -f "$path_to_buildfile" -Dproject.dir=generated/ "-Dpropel.migration.table=_migration_${context/\//_}" "$action" && \
-$SUDO "$PHP_PATH" -r "require_once('base/lib/inc.php');BuildHelper::postMigrate();" && \
+$MIGRATION_SUDO "$PHP_PATH" -r "require_once('base/lib/inc.php');BuildHelper::preMigrate();BuildHelper::consolidateMigrations('$context');" && \
+$MIGRATION_SUDO "$PHP_PATH" ./base/lib/vendor/phing/bin/phing -f "$path_to_buildfile" -Dproject.dir=generated/ "-Dpropel.migration.table=_migration_${context/\//_}" "$action" && \
+$MIGRATION_SUDO "$PHP_PATH" -r "require_once('base/lib/inc.php');BuildHelper::postMigrate();" && \
 rm "./generated/migrations/"*.php 2> /dev/null
 

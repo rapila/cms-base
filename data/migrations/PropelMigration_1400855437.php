@@ -17,24 +17,17 @@ class PropelMigration_1400855437
     {
         // add the post-migration code here
         require_once $_SERVER['PWD'].'/base/lib/inc.php';
+
+        $oConnection = Propel::getConnection(DocumentPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+
         Propel::disableInstancePooling();
-        foreach(DocumentQuery::create()->find() as $oDocument) {
-            $stmt = DocumentPeer::doSelectStmt($oDocument->buildPkeyCriteria()->addSelectColumn('documents.data'));
-            $row = $stmt->fetch(PDO::FETCH_NUM);
-            $stmt->closeCursor();
-            $sData = $row[0];
-            $sHash = sha1($sData);
-            $oDocument->setHash($sHash);
-            $oDocument->save();
-            $oDocumentData = $oDocument->getDocumentData();
-            if($oDocumentData) {
-                continue;
-            }
-            $oDocumentData = new DocumentData();
-            $oDocumentData->setHash($sHash);
-            $oDocumentData->setData($sData);
-            $oDocumentData->save();
+        $stmt = DocumentPeer::doSelectStmt(DocumentQuery::create()->clearSelectColumns()->addSelectColumn('documents.id')->addSelectColumn('documents.hash'));
+        foreach($stmt->fetchAll(PDO::FETCH_NUM) as $row) {
+            $iId = $row[0];
+            $sHash = $row[1];
+            $oConnection->exec('INSERT IGNORE INTO `document_data` (`hash`, `data`, `created_at`, `updated_at`, `created_by`, `updated_by`) VALUES ("'.$sHash.'", (SELECT `data` FROM `documents` WHERE `id` = '.$iId.'), (SELECT `created_at` FROM `documents` WHERE `id` = '.$iId.'), (SELECT `updated_at` FROM `documents` WHERE `id` = '.$iId.'), (SELECT `created_by` FROM `documents` WHERE `id` = '.$iId.'), (SELECT `updated_by` FROM `documents` WHERE `id` = '.$iId.'))');
         }
+        $stmt->closeCursor();
     }
 
     public function preDown($manager)
@@ -67,6 +60,8 @@ DROP INDEX `documents_FI_6` ON `documents`;
 
 ALTER TABLE `documents`
     ADD `hash` VARCHAR(40) AFTER `data`;
+
+UPDATE `documents` SET `hash` = SHA1(`data`) WHERE 1;
 
 CREATE INDEX `documents_FI_5` ON `documents` (`hash`);
 

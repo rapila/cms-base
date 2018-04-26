@@ -5,7 +5,7 @@
  * @package		 propel.generator.model
  */
 class DocumentCategoryQuery extends BaseDocumentCategoryQuery {
-	
+
 	public function filterByDocumentKind($sDocumentKind = 'image') {
 		$this->setDistinct();
 		$this->joinDocument();

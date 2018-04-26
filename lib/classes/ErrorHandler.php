@@ -1,10 +1,13 @@
 <?php
 class ErrorHandler {
 	private static $ENVIRONMENT = null;
-	
+
 	public static function handleError($iErrorNumber, $sErrorString, $sErrorFile, $iErrorLine, $aContext = null, $aTrace = null, $bNeverPrint = false, $bIsUserError = false) {
 		if(error_reporting() === 0 || $iErrorNumber === E_STRICT) {
 			return false;
+		}
+		if(function_exists('xdebug_break')) {
+			xdebug_break();
 		}
 		if($aTrace === null) {
 			$aTrace = debug_backtrace();
@@ -22,22 +25,23 @@ class ErrorHandler {
 		}
 		self::displayErrorMessage($aError, $bIsUserError);
 	}
-	
+
 	public static function handleException($oException, $bNeverPrint = false) {
 		self::handleError($oException->getCode(), $oException->getMessage(), $oException->getFile(), $oException->getLine(), null, $oException->getTrace(), $bNeverPrint, $oException instanceof UserError);
 	}
-	
+
 	/**
 	* if possible, reads the file php_error.php in the site/lib directory and outputs it as an error message.
 	* This is called from the handleError and handleException methods if the error was not output directly to screen (like in the test environment) and could not be recovered from. If the file does not exist, it will output the text "An Error occured, exiting"
 	*/
-	private static function displayErrorMessage($aError, $bMayPrintDetailedMessage = false) {
+	public static function displayErrorMessage($aError, $bMayPrintDetailedMessage = false) {
 		while(ob_get_level() > 0) {
 			ob_end_clean();
 		}
-		$sErrorFileName = SITE_DIR.'/'.DIRNAME_LIB.'/php_error.php';
+		$sErrorFilePath = ResourceFinder::create(DIRNAME_LIB.'/php_error.php')->noCache()->find();
 		header('HTTP/1.0 500 Internal Server Error');
-		if(!file_exists($sErrorFileName)) {
+		header('Expires: 0');
+		if(!$sErrorFilePath || !file_exists($sErrorFilePath)) {
 			header('Content-Type: text/plain;charset=utf-8');
 			$sMessage = $aError['message'];
 			if(!$bMayPrintDetailedMessage) {
@@ -46,10 +50,10 @@ class ErrorHandler {
 			die($sMessage);
 		}
 		header('Content-Type: text/html;charset=utf-8');
-		include($sErrorFileName);
+		include($sErrorFilePath);
 		exit;
 	}
-	
+
 	public static function getEnvironment() {
 		if(self::$ENVIRONMENT === null) {
 			self::$ENVIRONMENT = getenv('RAPILA_ENVIRONMENT');
@@ -64,6 +68,10 @@ class ErrorHandler {
 		return self::$ENVIRONMENT;
 	}
 	
+	public static function isProduction() {
+		return self::getEnvironment() === 'production';
+	}
+
 	// To avoid leaking error messages, production enivronments MUST always specify RAPILA_ENVIRONMENT explicitly and SHOULD never rely on autodetection.
 	private static function autoEnvironment() {
 		if(php_sapi_name() === 'cli') {
@@ -107,19 +115,19 @@ class ErrorHandler {
 		ErrorHandler::log("WARNING: RAPILA_ENVIRONMENT autodetection found “production”. Please configure manually if really a production environment.");
 		return 'production';
 	}
-	
+
 	public static function shouldPrintErrors() {
 		return Settings::getSetting('error_handling', 'print_errors', false);
 	}
-	
+
 	public static function shouldLogErrors() {
 		return Settings::getSetting('error_handling', 'log_errors', false);
 	}
-	
+
 	public static function shouldMailErrors() {
 		return Settings::getSetting('error_handling', 'mail_errors', false);
 	}
-	
+
 	private static function shouldContinue($iErrorNumber) {
 		if(Settings::getSetting('error_handling', 'should_stop_on_recoverable_errors', false)) {
 			return false;
@@ -133,9 +141,9 @@ class ErrorHandler {
 		}
 		error_log(self::readableDump($mMessage));
 	}
-	
+
 	private static function readableDump($mToDump, $iMaxLevel = 5, $sVariableSeparationString = ', ', $iCurrentLevel = 1, &$aReferenceChain = array()) {
-		if ($iCurrentLevel > $iMaxLevel) { 
+		if ($iCurrentLevel > $iMaxLevel) {
 			return "[...]";
 		}
 		$sResult = '';
@@ -185,21 +193,24 @@ class ErrorHandler {
 		}
 		return $sResult;
 	}
-	
+
 	private static function cleanTrace(&$aTrace) {
 		foreach($aTrace as &$aTraceInfo) {
 			$sFile = '';
 			if(isset($aTraceInfo['file'])) {
 				$sFile = ' in '.$aTraceInfo['file'].' ('.$aTraceInfo['line'].')';
 			}
-			$sFunction = $aTraceInfo['function'].'()'.$sFile;
+			$sFunction = '';
+			if(isset($aTraceInfo['function'])) {
+				$aTraceInfo['function'].'()'.$sFile;
+			}
 			if(isset($aTraceInfo['class'])) {
 				$sFunction = $aTraceInfo['class'].$aTraceInfo['type'].$sFunction;
 			}
 			$aTraceInfo = $sFunction;
 		}
 	}
-	
+
 	public static function trace($bClean = true, $aTrace = null) {
 		if($aTrace === null) {
 			$aTrace = debug_backtrace();
@@ -210,7 +221,7 @@ class ErrorHandler {
 		}
 		self::log($aTrace);
 	}
-	
+
 	public static function setEnvironment($sEnvironment) {
 		self::$ENVIRONMENT = $sEnvironment;
 	}
@@ -222,7 +233,7 @@ class ErrorHandler {
 		$aError['path'] = @$_SERVER['REQUEST_URI'];
 		$aError['request'] = @$_REQUEST;
 		$aError['cookies'] = @$_COOKIE;
-		
+
 		FilterModule::getFilters()->handleAnyError(array(&$aError), $bNeverPrint, $bNeverNotifyDeveloper);
 		if(!$bNeverNotifyDeveloper && self::shouldMailErrors()) {
 			$sAddress = Settings::getSetting('developer', 'email', false);

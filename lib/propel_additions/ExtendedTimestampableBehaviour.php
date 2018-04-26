@@ -1,7 +1,7 @@
 <?php
 require_once('behavior/TimestampableBehavior.php');
 class ExtendedTimestampableBehaviour extends TimestampableBehavior {
-	public function objectMethods($builder) {
+	public function objectMethods(PHP5ObjectBuilder $builder) {
 		$sMethods = parent::objectMethods($builder);
 		$sMethods .= "
 /**
@@ -48,14 +48,14 @@ public function get".$this->getColumnForParameter('update_column')->getPhpName()
 
 		return $sMethods;
 	}
-	
-  public function queryMethods($builder) {
+
+  public function queryMethods(QueryBuilder $builder) {
 		$sMethods = parent::queryMethods($builder);
 		if($this->withUpdatedAt()) {
 			$sMethods .= '
 public function findMostRecentUpdate($bAsTimestamp = false) {
 	$oQuery = clone $this;
-	$sDate = $oQuery->lastUpdatedFirst()->select("'.$this->getColumnForParameter('update_column')->getPhpName().'")->findOne();
+	$sDate = $oQuery->clearOrderByColumns()->lastUpdatedFirst()->select("'.$this->getColumnForParameter('update_column')->getPhpName().'")->findOne();
 	if($sDate === null) {
 		return null;
 	}

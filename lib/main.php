@@ -12,5 +12,9 @@ try {
 	$oManager->render();
 	Autoloader::saveIncludeCache();
 } catch (Exception $oException) {
-	ErrorHandler::handleException($oException);
+	if(!class_exists('ErrorHandler')) {
+		var_dump($oException);
+	} else {
+		ErrorHandler::handleException($oException);
+	}
 }

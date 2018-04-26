@@ -41,7 +41,7 @@ class PageTableMap extends TableMap
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
         $this->addColumn('name', 'Name', 'VARCHAR', true, 50, null);
         $this->addColumn('identifier', 'Identifier', 'VARCHAR', false, 50, null);
-        $this->addColumn('page_type', 'PageType', 'VARCHAR', false, 15, null);
+        $this->addColumn('page_type', 'PageType', 'VARCHAR', false, 50, null);
         $this->addColumn('template_name', 'TemplateName', 'VARCHAR', false, 50, null);
         $this->addColumn('is_inactive', 'IsInactive', 'BOOLEAN', false, 1, true);
         $this->addColumn('is_folder', 'IsFolder', 'BOOLEAN', false, 1, false);
@@ -85,6 +85,8 @@ class PageTableMap extends TableMap
             'referenceable' =>  array (
 ),
             'taggable' =>  array (
+  'tag_model' => 'Tag',
+  'tag_instance_model' => '',
 ),
             'denyable' =>  array (
   'mode' => 'allow',

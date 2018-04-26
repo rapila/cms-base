@@ -2,7 +2,7 @@
 
 class FormFrontendConfigWidgetModule extends FrontendConfigWidgetModule {
 	public function getTypeOptions() {
-		return array('email' => StringPeer::getString('wns.form_type.email'), 'external' => StringPeer::getString('wns.form_type.external'), 'manager' => StringPeer::getString('wns.form_type.manager'));
+		return array('email' => TranslationPeer::getString('wns.form_type.email'), 'external' => TranslationPeer::getString('wns.form_type.external'), 'manager' => TranslationPeer::getString('wns.form_type.manager'));
 	}
 	
 	public function getMethodOptions() {

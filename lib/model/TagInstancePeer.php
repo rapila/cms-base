@@ -84,7 +84,7 @@ class TagInstancePeer extends BaseTagInstancePeer {
 		$aResult = array();
 		foreach(TagInstancePeer::doSelectStmt(self::getTaggedModelsCriteria())->fetchAll(PDO::FETCH_ASSOC) as $aTag) {
 			$sTableName = constant($aTag['model_name'].'Peer::TABLE_NAME');
-			$sName = StringPeer::getString('model.'.$sTableName, null, $sTableName);
+			$sName = TranslationPeer::getString('model.'.$sTableName, null, $sTableName);
 			$aResult[$aTag['model_name']] = $sName;
 		}
 		return $aResult;

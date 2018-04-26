@@ -43,7 +43,7 @@ class DocumentKindInputWidgetModule extends PersistentWidgetModule {
 	}
 
 	public static function getDocumentKindName($sKey) {
-		return StringPeer::getString('wns.document_kind.'.$sKey);
+		return TranslationPeer::getString('wns.document_kind.'.$sKey);
 	}
 	
 }

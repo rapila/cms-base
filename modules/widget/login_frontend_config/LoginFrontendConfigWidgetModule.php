@@ -7,9 +7,9 @@ class LoginFrontendConfigWidgetModule extends FrontendConfigWidgetModule {
 			if(strpos($sFileName, '_action_') !== false) {
 				continue;
 			}
-			$aResult[] = $sFileName;
+			$aResult[$sFileName] = StringUtil::makeReadableName($sFileName);
 		}
-		
+
 		return $aResult;
 	}
 

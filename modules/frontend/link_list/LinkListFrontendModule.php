@@ -52,7 +52,7 @@ class LinkListFrontendModule extends DynamicFrontendModule {
 
 		// Tags
 		$aTags = isset($aOptions['tags']) ? (is_array($aOptions['tags']) ? $aOptions['tags'] : array($aOptions['tags'])) : array();
-		$bHasTags = count($aTags) > 0;
+		$bHasTags = count($aTags) > 0 && $aTags[0] !== null;
 		if($bHasTags) {
 			$oQuery->filterByTagId($aTags);
 		}
@@ -69,8 +69,8 @@ class LinkListFrontendModule extends DynamicFrontendModule {
 	}
 
 	public static function getSortOptions() {
-		$aResult[self::SORT_BY_NAME] = StringPeer::getString('wns.order.by_name');
-		$aResult[self::SORT_BY_SORT] = StringPeer::getString('wns.order.by_sort');
+		$aResult[self::SORT_BY_NAME] = TranslationPeer::getString('wns.order.by_name');
+		$aResult[self::SORT_BY_SORT] = TranslationPeer::getString('wns.order.by_sort');
 		return $aResult;
 	}
 
@@ -91,6 +91,9 @@ class LinkListFrontendModule extends DynamicFrontendModule {
 		if(count($aResult) > 0 && !Settings::getSetting('admin', 'list_allows_multiple_categories', true)) {
 			$aResult = array('' => ' ---- ')+$aResult;
 		}
+		if(count($aResult) === 0) {
+			$aResult = array('' => TranslationPeer::getString('wns.link_list.no_tags_available'));
+		}
 		return $aResult;
 	}
 
@@ -108,7 +111,7 @@ class LinkListFrontendModule extends DynamicFrontendModule {
 				}
 			}
 			if(count($aResult) > 0) {
-				$aOutput[] = StringPeer::getString('wns.link_category').': '.implode(', ', $aResult);
+				$aOutput[] = TranslationPeer::getString('wns.link_category').': '.implode(', ', $aResult);
 			}
 		}
 		if(isset($aData['tags']) && is_array($aData['tags'])) {
@@ -119,7 +122,7 @@ class LinkListFrontendModule extends DynamicFrontendModule {
 				}
 			}
 			if(count($aResult) > 0) {
-				$aOutput[] = StringPeer::getString('wns.tags').': '.implode(', ', $aResult);
+				$aOutput[] = TranslationPeer::getString('wns.tags').': '.implode(', ', $aResult);
 			}
 		}
 		return implode("\n", $aOutput);

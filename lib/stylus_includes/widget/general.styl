@@ -24,8 +24,8 @@ body .cke_dialog .ui-state-droppable
 
 .ui-state-droppable-hover,
 .ui-dialog.document_detail .ui-state-droppable-hover .preview.ui-state-droppable
-	background-color #eff4cc !important
-	background-image url('../../images/admin/drag_and_drop.png')
+	background-color #e5f671 !important
+	background-image url('../../images/admin/drag_and_drop-hover.png')
 	background-repeat no-repeat
 	background-position bottom right
 
@@ -61,9 +61,22 @@ button.rapila-icon
 	font-family 'Rapila-Icons', Arial
 	line-height 24px
 	cursor pointer
+	-ms-font-feature-settings "liga" 1, "dlig" 1
+	-moz-font-feature-settings "liga=1", "dlig=1"
+	-moz-font-feature-settings "liga" 1, "dlig" 1
+	font-feature-settings "liga" 1, "dlig" 1
 	font-variant-ligatures common-ligatures
+	-webkit-font-smoothing antialiased
+	-moz-osx-font-smoothing grayscale
+
 	.ui-button-text
 		vertical-align middle
+	&.disabled
+		opacity 0.3
+		cursor default
+.pager
+	.rapila-icon
+		margin 0 4px
 
 option.rapila-icon
 	font-size 3em

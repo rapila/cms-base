@@ -18,6 +18,7 @@ class Session {
 	const USER_IS_DEFAULT_USER = 2;
 	const USER_IS_INACTIVE = 4;
 	const USER_IS_FRONTEND_ONLY = 8;
+	const USER_NEEDS_PASSWORD_RESET = 16;
 
 	public function __construct() {
 		$_SESSION[self::SESSION_OBJECT_KEY] = $this;
@@ -25,8 +26,7 @@ class Session {
 	}
 
 	public function __sleep() {
-		$this->oUser = null;
-		return array_keys(get_object_vars($this));
+		return array_diff(array_keys(get_object_vars($this)), array('oUser'));
 	}
 
 	public function __wakeup() {
@@ -38,6 +38,17 @@ class Session {
 			return;
 		}
 		$this->oUser = UserQuery::create()->findPk($this->iUserId);
+	}
+
+	/**
+	 * Closes the session.
+	 * Changes on objects in the session made after the call to close will not be persisted across page loads.
+	 * @return the read-only session
+	 */
+	public static function close() {
+		$oSession = Session::getSession();
+		session_write_close();
+		return $oSession;
 	}
 
 	public function isAuthenticated() {
@@ -64,6 +75,9 @@ class Session {
 				UserPeer::ignoreRights(true);
 				$oUser->save();
 				return $this->login($sUsername, $sPassword);
+			}
+			if($oUser->getPassword() === '*') {
+				return self::USER_NEEDS_PASSWORD_RESET;
 			}
 			return 0;
 		}
@@ -266,6 +280,7 @@ class Session {
 }
 
 if(php_sapi_name() !== 'cli') {
+	session_cache_limiter(false);
 	session_name("Session".Session::getRealm());
 	$aCookieParams = session_get_cookie_params();
 	session_set_cookie_params($aCookieParams['lifetime'], MAIN_DIR_FE, $aCookieParams['domain'], false, true);

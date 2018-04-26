@@ -19,3 +19,6 @@
 [submodule "web/js/widget/ckeditor-plugins/youtube"]
 	path = web/js/widget/ckeditor-plugins/youtube
 	url = git://github.com/fonini/ckeditor-youtube-plugin.git
+[submodule "lib/vendor/MathExecutor"]
+	path = lib/vendor/MathExecutor
+	url = git://github.com/rapila/MathExecutor.git

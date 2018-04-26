@@ -38,7 +38,7 @@ class AdminModule extends Module {
 				$oReferencedFromObject = $oReference->getFrom();
 				if($oReferencedFromObject) {
 					$oContentObject = $oReferencedFromObject->getContentObject();
-					$aResult[$oReferencedFromObject->getId()]['title'] = StringPeer::getString('reference.used_in_page');
+					$aResult[$oReferencedFromObject->getId()]['title'] = TranslationPeer::getString('reference.used_in_page');
 					$aResult[$oReferencedFromObject->getId()]['page_name'] = $oContentObject->getPage()->getName();
 					$aResult[$oReferencedFromObject->getId()]['container_name'] = $oContentObject->getContainerName();
 					$aResult[$oReferencedFromObject->getId()]['edit_link'] = TagWriter::quickTag('a', array('href' => LinkUtil::link(array('content', $oContentObject->getPageId(), 'edit', $oContentObject->getId()), 'AdminManager')), 'edit')->render();
@@ -47,7 +47,7 @@ class AdminModule extends Module {
 					$oReference->delete();
 				}
 			} else {
-				$aResult[$oReference->getFromId()]['title'] = StringPeer::getString('reference.used_in_object');
+				$aResult[$oReference->getFromId()]['title'] = TranslationPeer::getString('reference.used_in_object');
 				$aResult[$oReference->getFromId()]['object_class'] = $oReference->getFromModelName();
 				$aResult[$oReference->getFromId()]['object_id'] = $oReference->getFromId();
 			}

@@ -2,24 +2,16 @@
 /**
  * @package modules.widget
  */
-class LanguageListWidgetModule extends WidgetModule {
-	
-	private $oListWidget;
+class LanguageListWidgetModule extends SpecializedListWidgetModule {
 	private $oDelegateProxy;
-	
-	public function __construct() {
-		$this->oListWidget = new ListWidgetModule();
+
+	protected function createListWidget() {
+		$oListWidget = new ListWidgetModule();
 		$this->oDelegateProxy = new CriteriaListWidgetDelegate($this, "Language", 'language_id', 'asc');
-		$this->oListWidget->setDelegate($this->oDelegateProxy);
+		$oListWidget->setDelegate($this->oDelegateProxy);
+		return $oListWidget;
 	}
-	
-	public function doWidget() {
-		$aTagAttributes = array('class' => 'language_list');
-		$oListTag = new TagWriter('table', $aTagAttributes);
-		$this->oListWidget->setListTag($oListTag);
-		return $this->oListWidget->doWidget();
-	}
-	
+
 	public function toggleIsActive($aRowData) {
 		$oLanguage = LanguageQuery::create()->findPk($aRowData['id']);
 		if($oLanguage) {
@@ -31,7 +23,7 @@ class LanguageListWidgetModule extends WidgetModule {
 	public function allowSort($sSortColumn) {
 		return true;
 	}
-	
+
 	public function doSort($sColumnIdentifier, $oLanguageToSort, $oRelatedLanguage, $sPosition = 'before') {
 		$iNewPosition = $oRelatedLanguage->getSort() + ($sPosition === 'before' ? 0 : 1);
 		if($oLanguageToSort->getSort() < $oRelatedLanguage->getSort()) {
@@ -78,11 +70,11 @@ class LanguageListWidgetModule extends WidgetModule {
 			Session::getSession()->setLanguage(Settings::getSetting("session_default", Session::SESSION_LANGUAGE_KEY, $oReplacementLanguage->getId()));
 		}
 	}
-	
+
 	public function getColumnIdentifiers() {
 		return array('id', 'language_id', 'name', 'path_prefix', 'is_default', 'is_default_edit', 'is_active', 'sort', 'delete');
 	}
-	
+
 	public function getMetadataForColumn($sColumnIdentifier) {
 		$aResult = array();
 		switch($sColumnIdentifier) {
@@ -90,29 +82,29 @@ class LanguageListWidgetModule extends WidgetModule {
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_DATA;
 				break;
 			case 'language_id':
-				$aResult['heading'] = StringPeer::getString('wns.language_id');
+				$aResult['heading'] = TranslationPeer::getString('wns.language_id');
 				$aResult['field_name'] = 'id';
 				$aResult['is_sortable'] = true;
 				break;
 			case 'name':
-				$aResult['heading'] = StringPeer::getString('wns.name');
+				$aResult['heading'] = TranslationPeer::getString('wns.name');
 				$aResult['field_name'] = 'language_name';
 				break;
 			case 'path_prefix':
-				$aResult['heading'] = StringPeer::getString('wns.language.path_prefix');
+				$aResult['heading'] = TranslationPeer::getString('wns.language.path_prefix');
 				break;
 			case 'is_default':
-				$aResult['heading'] = StringPeer::getString('wns.language.is_default');
+				$aResult['heading'] = TranslationPeer::getString('wns.language.is_default');
 				break;
 			case 'is_default_edit':
-				$aResult['heading'] = StringPeer::getString('wns.language.is_default_edit');
+				$aResult['heading'] = TranslationPeer::getString('wns.language.is_default_edit');
 				break;
 			case 'sort':
-				$aResult['heading'] = StringPeer::getString('wns.sort');
+				$aResult['heading'] = TranslationPeer::getString('wns.sort');
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_REORDERABLE;
 				break;
 			case 'is_active':
-				$aResult['heading'] = StringPeer::getString('wns.is_active');
+				$aResult['heading'] = TranslationPeer::getString('wns.is_active');
 				$aResult['is_sortable'] = true;
 				break;
 			case 'delete':
@@ -122,9 +114,5 @@ class LanguageListWidgetModule extends WidgetModule {
 				break;
 		}
 		return $aResult;
-	}
-	
-	public function getCriteria() {
-		return LanguageQuery::create();
 	}
 }

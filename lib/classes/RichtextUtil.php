@@ -4,41 +4,23 @@
  */
 class RichtextUtil {
 
-	private static $RICHTEXT_INDEX = 0;
-
 	public static $USE_ABSOLUTE_LINKS = 'default';
 
-	private $sAreaName;
 	private $aSettings;
 
 	private $mTrackReferences = null;
 
-	public function __construct($sAreaName=null, $aSettings=null) {
-		if($sAreaName === null) {
-			$sAreaName = "richtext_area_";
-		}
-		$this->sAreaName = $sAreaName.self::$RICHTEXT_INDEX;
-		self::$RICHTEXT_INDEX++;
-
+	public function __construct($aSettings=null) {
 		if($aSettings === null) {
 			$aSettings = Settings::getSetting('admin', 'text_module', array());
 		}
 		$this->aSettings = $aSettings;
 	}
 
-	public static function parseInputFromEditorForStorage($sInput) {
-		$oRichtextUtil = new RichtextUtil();
-		$_POST[$oRichtextUtil->sAreaName] = $sInput;
-		return $oRichtextUtil->parseInputFromEditor();
-	}
-
 	/**
 	* Returns a TagParser instance all the handlers set correctly to parse text coming from a richtext area.
 	*/
-	public function getTagParser($sInput = null) {
-		if($sInput === null) {
-			$sInput = $_POST[$this->sAreaName];
-		}
+	public function getTagParser($sInput) {
 		$oTagParser = new TagParser("<text>".$sInput."</text>");
 		$oTagParser->getTag()->setParseCallback(array($this, 'textTagParseCallback'));
 		return $oTagParser;
@@ -109,9 +91,9 @@ class RichtextUtil {
 		if($oDocument !== null && $oDocument->isImage()) {
 			$oWriter = new TagWriter('img', $oIdentifier->getParameters());
 			$aParameters = array();
-			if($oIdentifier->hasParameter('max_width')) {
-				$aParameters['max_width'] = $oIdentifier->getParameter('max_width');
-				$oWriter->setParameter('max_width', null);
+			if($oIdentifier->hasParameter('width')) {
+				$aParameters['max_width'] = $oIdentifier->getParameter('width');
+				$aParameters['max_width'] = (int) ($aParameters['max_width'] * Settings::getSetting('text_module', 'image_scale_factor', 1.0));
 			}
 			$oWriter->setParameter('src', self::link($oDocument->getDisplayUrl($aParameters)));
 			$oWriter->setParameter('alt', $oDocument->getDescription());
@@ -128,9 +110,6 @@ class RichtextUtil {
 			$oWriter->setParameter('src', self::link($oDocument->getDisplayUrl()));
 			$oWriter->setParameter('alt', $oDocument->getDescription());
 			$oWriter->setParameter('title', $oDocument->getDescription());
-			if($oIdentifier->hasParameter('max_width')) {
-				$oWriter->setParameter('width', $oIdentifier->getParameter('max_width'));
-			}
 			return $oWriter->parse();
 		}
 	}
@@ -215,15 +194,11 @@ class RichtextUtil {
 	}
 
 	private static function link($sLocation) {
-		if(self::$USE_ABSOLUTE_LINKS !== null) {
-			return LinkUtil::absoluteLink($sLocation, null, self::$USE_ABSOLUTE_LINKS);
+		if(self::$USE_ABSOLUTE_LINKS !== false) {
+			return LinkUtil::absoluteLink($sLocation, null, self::$USE_ABSOLUTE_LINKS, true);
 		} else {
 			return $sLocation;
 		}
-	}
-
-	public function getAreaName() {
-		return $this->sAreaName;
 	}
 
 	public function setTrackReferences($mTrackReferences) {
@@ -252,18 +227,13 @@ class RichtextUtil {
 		if($oHtmlTag->getName() === 'img') {
 			if(preg_match("%display_document/(\\d+)%", $oHtmlTag->getParameter('src'), $aMatches)) {
 				$aParameters = $oHtmlTag->getParameters();
-				if($oHtmlTag->hasParameter('width')) {
-					$aParameters['max_width'] = $oHtmlTag->getParameter('width');
-					unset($aParameters['width']);
-					unset($aParameters['height']);
-				}
 				$this->addTrackReference($aMatches[1], "Document");
 				return TemplateIdentifier::constructIdentifier('image', $aMatches[1], $aParameters);
 			}
 		}
 		if($oHtmlTag->getName() === 'a') {
 			if($sParsedChildren === '') return '';
-			$bHasMatched = preg_match("%/".preg_quote(Manager::getPrefixForManager('FileManager'), "%")."/([^/]+)/(\\d+)((/.+)*)$%", $oHtmlTag->getParameter('href'), $aMatches) === 1;
+			$bHasMatched = preg_match("%/".preg_quote(Manager::getPrefixForManager('FileManager'), "%")."/([^/]+)/(\\d+)((\\D.+)?)$%", $oHtmlTag->getParameter('href'), $aMatches) === 1;
 			if($bHasMatched) {
 				$sFileMethod = $aMatches[1];
 				$iId = $aMatches[2];

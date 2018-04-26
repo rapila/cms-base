@@ -11,7 +11,7 @@ label
 
 .status_section
 	.hide_if_not_saved
-		display inline-block
+		display block
 		padding-right 0.5em
 		label
 			width 6em
@@ -29,8 +29,12 @@ label
 		fieldset
 			border 1px dotted #c0c0c0
 			padding 0
-		select
-			width 16.5em
+		select,
+		input,
+		textarea
+			width 100%
+		input[type=checkbox]
+			width auto
 
 .hide_if_not_saved
 	margin-top 0.8em
@@ -87,7 +91,6 @@ fieldset
 		border 1px #dfdfdf solid
 		margin-top -1px
 		margin-left 0
-		padding 0.75em
 		&:first-child
 			margin-left 0
 			margin-top 0.1em

@@ -23,7 +23,7 @@ class User extends BaseUser {
 	}
 
 	public function getFullNameInverted($sSeparator=', ') {
-		return implode($sSeparator=', ', array_reverse($this->getFullNameArray()));
+		return implode(', ', array_reverse($this->getFullNameArray()));
 	}
 
 	public function getFullNameArray() {
@@ -34,11 +34,17 @@ class User extends BaseUser {
 		if($this->getLastName()) {
 			$aResult[] = $this->getLastName();
 		}
+		// Use user name if no other names set
+		if(count($aResult) === 0) {
+			$aResult[] = $this->getUsername();
+		}
 		return $aResult;
 	}
 
 	public function getInitials() {
-		return strtolower(substr($this->getFirstName(),0,1).substr($this->getLastName(),0,1));
+		return implode('', array_map(function($sNamePart) {
+			return strtolower(substr($sNamePart,0,1));
+		}, $this->getFullNameArray()));
 	}
 
 	public function getUserKind() {
@@ -136,7 +142,7 @@ class User extends BaseUser {
 				return true;
 			}
 		}
-		//Case 6: Access is restricted to certain roles: allow if roles with page_rights grant limited access
+		//Case 6: Access is restricted to certain rights: allow if roles with page_rights grant limited access
 		if($sModuleName === 'pages') {
 			foreach($aUserRoles as $oRole) {
 				if($oRole->countRights() > 0) {
@@ -194,7 +200,7 @@ class User extends BaseUser {
 		}
 		return unserialize($mSettings);
 	}
-	
+
 	public function getTimezone($bAsObject = false) {
 		$sTimezone = parent::getTimezone();
 		if($sTimezone === null) {
@@ -205,7 +211,7 @@ class User extends BaseUser {
 		}
 		return $sTimezone;
 	}
-	
+
 	public function dateInUserTimezone(DateTime $oDate) {
 		$oResult = clone $oDate;
 		$oDate->setTimezone($this->getTimezone(true));
@@ -250,6 +256,28 @@ class User extends BaseUser {
 			}
 		}
 		return self::$ALL_ROLES;
+	}
+
+	public function addRole($sRoleName) {
+		$aRoles = func_get_args();
+		foreach($aRoles as $mRole) {
+			if(!($mRole instanceof Role)) {
+				$mRole = RoleQuery::create()->createOrFindPk($mRole);
+			}
+			UserRoleQuery::create()->createOrFind($this, $mRole);
+		}
+	}
+
+	public function addGroup($mGroup) {
+		if(!($mGroup instanceof Group)) {
+			$mGroup = GroupQuery::create()->createOrFindByName($mGroup);
+		}
+		if(!$this->hasGroup($mGroup)) {
+			$oUserGroup = new UserGroup();
+			$oUserGroup->setUserRelatedByUserId($this);
+			$oUserGroup->setGroup($mGroup);
+		}
+		return $mGroup;
 	}
 
 	public function mayEditUser($oUser = null) {
@@ -315,7 +343,12 @@ class User extends BaseUser {
 		return parent::setPassword($sPassword);
 	}
 
+	public function forcePasswordReset() {
+		$this->setDigestHA1(null);
+		return parent::setPassword('*');
+	}
+
 	public function getLanguageName() {
-		return StringPeer::getString('language.'.$this->getLanguageId(), null, $this->getLanguageId());
+		return TranslationPeer::getString('language.'.$this->getLanguageId(), null, $this->getLanguageId());
 	}
 }

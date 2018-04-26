@@ -8,12 +8,14 @@ class DocumentListFrontendModule extends DynamicFrontendModule {
 	const LIST_ITEM_POSTFIX = '_item';
 	const SORT_BY_NAME = 'by_name';
 	const SORT_BY_SORT = 'by_sort';
+	const SORT_BY_CREATEDAT = 'by_createdat';
 
 	public function renderFrontend() {
 		$aOptions = @unserialize($this->getData());
 		try {
 			$oListTemplate = new Template($aOptions['list_template']);
 			$oItemPrototype = new Template($aOptions['list_template'].self::LIST_ITEM_POSTFIX);
+
 			foreach(self::listQuery($aOptions)->find() as $i => $oDocument) {
 				$oItemTemplate = clone $oItemPrototype;
 				$oDocument->renderListItem($oItemTemplate);
@@ -40,7 +42,7 @@ class DocumentListFrontendModule extends DynamicFrontendModule {
 
 		// Tags
 		$aTags = isset($aOptions['tags']) ? (is_array($aOptions['tags']) ? $aOptions['tags'] : array($aOptions['tags'])) : array();
-		$bHasTags = count($aTags) > 0;
+		$bHasTags = count($aTags) > 0 && $aTags[0] !== null;
 		if($bHasTags) {
 			$oQuery->filterByTagId($aTags);
 		}
@@ -50,11 +52,21 @@ class DocumentListFrontendModule extends DynamicFrontendModule {
 			$oQuery->filterByDocumentKind($aOptions['document_kind']);
 		}
 
+		$sSortOrder = @$aOptions['sort_order'] === 'desc' ? 'desc' : 'asc';
 		// Sort order only in case of one category and no tags
-		if($iCountCategories === 1 && $bHasTags === false && $aOptions['sort_by'] === self::SORT_BY_SORT) {
-			$oQuery->orderBySort();
+		if($iCountCategories === 1 && $bHasTags === false) {
+			if($aOptions['sort_by'] === self::SORT_BY_SORT) {
+				$oQuery->orderBySort($sSortOrder);
+			}
 		}
-		return $oQuery->orderByName();
+		if($aOptions['sort_by'] === self::SORT_BY_CREATEDAT) {
+			$oQuery->orderByCreatedAt($sSortOrder);
+		}
+		// order all entries by name, asc after priority order, this is a fallback that probably never applies
+		if($aOptions['sort_by'] !== self::SORT_BY_NAME) {
+			$sSortOrder = 'asc';
+		}
+		return $oQuery->orderByName($sSortOrder);
 	}
 
 	public static function getCategoryOptions() {
@@ -74,6 +86,9 @@ class DocumentListFrontendModule extends DynamicFrontendModule {
 		if(count($aResult) > 0 && !Settings::getSetting('admin', 'list_allows_multiple_categories', true)) {
 			$aResult = array('' => ' ---- ')+$aResult;
 		}
+		if(count($aResult) === 0) {
+			$aResult = array('' => TranslationPeer::getString('wns.document_list.no_tags_available'));
+		}
 		return $aResult;
 	}
 
@@ -82,8 +97,15 @@ class DocumentListFrontendModule extends DynamicFrontendModule {
 	}
 
 	public static function getSortOptions() {
-		$aResult[self::SORT_BY_NAME] = StringPeer::getString('wns.order.by_name');
-		$aResult[self::SORT_BY_SORT] = StringPeer::getString('wns.order.by_sort');
+		$aResult[self::SORT_BY_NAME] = TranslationPeer::getString('wns.order.by_name');
+		$aResult[self::SORT_BY_SORT] = TranslationPeer::getString('wns.order.by_sort');
+		$aResult[self::SORT_BY_CREATEDAT] = TranslationPeer::getString('wns.order.by_createdat');
+		return $aResult;
+	}
+
+	public static function getSortOrders() {
+		$aResult['asc'] = TranslationPeer::getString('wns.order.asc');
+		$aResult['desc'] = TranslationPeer::getString('wns.order.desc');
 		return $aResult;
 	}
 
@@ -113,7 +135,7 @@ class DocumentListFrontendModule extends DynamicFrontendModule {
 				}
 			}
 			if(count($aResult) > 0) {
-				$aOutput[] = StringPeer::getString('wns.document_category').': '.implode(', ', $aResult);
+				$aOutput[] = TranslationPeer::getString('wns.document_category').': '.implode(', ', $aResult);
 			}
 		}
 		if(isset($aData['tags']) && is_array($aData['tags'])) {
@@ -124,7 +146,7 @@ class DocumentListFrontendModule extends DynamicFrontendModule {
 				}
 			}
 			if(count($aResult) > 0) {
-				$aOutput[] = StringPeer::getString('wns.tags').': '.implode(', ', $aResult);
+				$aOutput[] = TranslationPeer::getString('wns.tags').': '.implode(', ', $aResult);
 			}
 		}
 		return implode("\n", $aOutput);

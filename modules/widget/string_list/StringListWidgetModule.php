@@ -2,28 +2,21 @@
 /**
  * @package modules.widget
  */
-class StringListWidgetModule extends WidgetModule {
-	private $oListWidget;
-	private $sNameSpace;
+class StringListWidgetModule extends SpecializedListWidgetModule {
+
 	public $oDelegateProxy;
-	
-	public function __construct() {
-		$this->oListWidget = new ListWidgetModule();
-		$this->oDelegateProxy = new CriteriaListWidgetDelegate($this, "String", 'string_key');
-		$this->oListWidget->setDelegate($this->oDelegateProxy);
+
+	protected function createListWidget() {
+		$oListWidget = new ListWidgetModule();
+		$this->oDelegateProxy = new CriteriaListWidgetDelegate($this, "Translation", 'string_key');
+		$oListWidget->setDelegate($this->oDelegateProxy);
+		return $oListWidget;
 	}
-	
-	public function doWidget() {
-		$aTagAttributes = array('class' => 'string_list');
-		$oListTag = new TagWriter('table', $aTagAttributes);
-		$this->oListWidget->setListTag($oListTag);
-		return $this->oListWidget->doWidget();
-	}
-	
+
 	public function getColumnIdentifiers() {
 		return array('id', 'string_key', 'text_truncated_current', 'languages_available', 'delete');
 	}
-	
+
 	public function getMetadataForColumn($sColumnIdentifier) {
 		$aResult = array('is_sortable' => true);
 		switch($sColumnIdentifier) {
@@ -33,13 +26,13 @@ class StringListWidgetModule extends WidgetModule {
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_DATA;
 				break;
 			case 'string_key':
-				$aResult['heading'] = StringPeer::getString('wns.string.string_key');
+				$aResult['heading'] = TranslationPeer::getString('wns.string.string_key');
 				break;
 			case 'text_truncated_current':
-				$aResult['heading'] = StringPeer::getString('wns.string.string_text.heading', null, 'Text', array('language_id' => AdminManager::getContentLanguage()));
+				$aResult['heading'] = TranslationPeer::getString('wns.string.string_text.heading', null, 'Text', array('language_id' => AdminManager::getContentLanguage()));
 				break;
 			case 'languages_available':
-				$aResult['heading'] = StringPeer::getString('wns.languages_filled');
+				$aResult['heading'] = TranslationPeer::getString('wns.languages_filled');
 				$aResult['is_sortable'] = false;
 				break;
 			case 'delete':
@@ -51,26 +44,26 @@ class StringListWidgetModule extends WidgetModule {
 		}
 		return $aResult;
 	}
-	
+
 	public function deleteRow($aRowData, $oCriteria) {
 		$bResult = false;
-		$sNameSpace = StringPeer::getNameSpaceFromStringKey($aRowData['id']);
-		if(StringPeer::doDelete($oCriteria) && $sNameSpace !== null) {
-			$bResult = !StringPeer::nameSpaceExists($sNameSpace);
+		$sNameSpace = TranslationPeer::getNameSpaceFromStringKey($aRowData['id']);
+		if(TranslationPeer::doDelete($oCriteria) && $sNameSpace !== null) {
+			$bResult = !TranslationPeer::nameSpaceExists($sNameSpace);
 		}
 		return array(StringDetailWidgetModule::SIDEBAR_CHANGED => $bResult);
 	}
-	
+
 	public function getDatabaseColumnForColumn($sColumnIdentifier) {
 		if($sColumnIdentifier === 'name_space') {
-			return StringPeer::STRING_KEY;
+			return TranslationPeer::STRING_KEY;
 		}
 		if($sColumnIdentifier === 'text_truncated_current') {
-			return StringPeer::TEXT;
+			return TranslationPeer::TEXT;
 		}
 		return null;
 	}
-	
+
 	public function getFilterTypeForColumn($sColumnIdentifier) {
 		if($sColumnIdentifier === 'name_space') {
 			return CriteriaListWidgetDelegate::FILTER_TYPE_MANUAL;
@@ -79,7 +72,7 @@ class StringListWidgetModule extends WidgetModule {
 	}
 
 	public function getCriteria() {
-		$oQuery = StringQuery::create();
+		$oQuery = TranslationQuery::create();
 		if($this->oDelegateProxy->getNameSpace() === CriteriaListWidgetDelegate::SELECT_WITHOUT) {
 			return $oQuery->filterByKeysWithoutNamespace();
 		} elseif($this->oDelegateProxy->getNameSpace() !== CriteriaListWidgetDelegate::SELECT_ALL) {

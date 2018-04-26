@@ -10,6 +10,7 @@ class DocumentsAdminModule extends AdminModule {
 
 	public function __construct() {
 		$this->oListWidget = new DocumentListWidgetModule();
+		$this->oListWidget->addPaging();
 		if(isset($_REQUEST['document_category_id'])) {
 			$this->oListWidget->setDocumentCategoryId($_REQUEST['document_category_id']);
 		}
@@ -37,7 +38,7 @@ class DocumentsAdminModule extends AdminModule {
 		$aResult = array();
 		switch($sColumnIdentifier) {
 			case 'name_with_externally_managed_state':
-				$aResult['heading'] = StringPeer::getString('wns.documents.sidebar_heading');
+				$aResult['heading'] = TranslationPeer::getString('wns.documents.sidebar_heading');
 				break;
 			case 'document_category_id':
 				$aResult['display_type'] = ListWidgetModule::DISPLAY_TYPE_DATA;
@@ -62,10 +63,10 @@ class DocumentsAdminModule extends AdminModule {
 		if($this->getCriteria()->count() > 0) {
 			return array(
 				array('document_category_id' => CriteriaListWidgetDelegate::SELECT_ALL,
-							'name_with_externally_managed_state' => StringPeer::getString('wns.documents.select_all_title'),
+							'name_with_externally_managed_state' => TranslationPeer::getString('wns.documents.select_all_title'),
 							'magic_column' => 'all'),
 				array('document_category_id' => CriteriaListWidgetDelegate::SELECT_WITHOUT,
-							'name_with_externally_managed_state' => StringPeer::getString('wns.documents.select_without_title'),
+							'name_with_externally_managed_state' => TranslationPeer::getString('wns.documents.select_without_title'),
 							'magic_column' => 'without'));
 		}
 		return array();

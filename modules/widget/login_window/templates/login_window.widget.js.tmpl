@@ -2,17 +2,21 @@ Widget.types.login_window = {
 	initialize: function() {
 		this.login_markup = jQuery('<div class="rapila_alert"><form/></div>');
 		var _this = this;
-		this.login_markup.children('form').append(Widget.parseHTML("{{includeTemplate=login_window.incl}}")).bind('submit', function(event) {
+		this.login_markup.children('form').append(Widget.parseHTML("{{includeTemplate=login_window.incl}}")).on('submit', function(event) {
 			event.preventDefault();
 			event.stopPropagation();
 			var form = jQuery(this);
 			var attributes = form.serializeArrayKV();
 			_this.login(attributes.user_name, attributes.password, function(result, error) {
 				if(error) {
-					_this.login_markup.find('.error').text(error.message).parents('.ui-alert').show();
-				} else {
-					_this.login_markup.dialog('close');
+					this.login_markup.find('.error').text(error.message).parents('.ui-alert').show();
+				} else if(result.is_valid) {
+					this.login_markup.dialog('close');
 					Widget.fire('rapila-logged_in');
+				} else if(result.needs_password_reset) {
+					this.resetRequest(attributes.user_name, true, function(result) {
+						this.login_markup.find('.error').text('{{writeString=wns.login.force_reset.sent}}').parents('.ui-alert').show();
+					});
 				}
 			});
 		}).find('.password_forgotten').click(function(event) {
@@ -25,24 +29,27 @@ Widget.types.login_window = {
 			_this.login_markup.find('.ui-notify').hide();
 
 			var forgotten_alert = jQuery('<div class="rapila_alert"><form/></div>');
-			forgotten_alert.children('form').append(Widget.parseHTML("{{includeTemplate=password_forgotten_window.incl}}")).one('submit', function(event) {
+			var form = forgotten_alert.children('form').append(Widget.parseHTML("{{includeTemplate=password_forgotten_window.incl}}"));
+			var error_element = forgotten_alert.find('.ui-notify');
+			var input_field = forgotten_alert.find('input[name="user_name_or_email"]').on('input', function() {
+				if(jQuery(this).val() != '') {
+					error_element.hide();
+				}
+			});
+			form.on('submit', function(event) {
 				event.preventDefault();
 				event.stopPropagation();
-				var input_field = forgotten_alert.find('input[name="user_name_or_email"]').keyup(function() {
-					if(jQuery(this).val() != '') {
-						forgotten_alert.find('.ui-notify').hide();
-					}
-				});
-				_this.resetRequest(input_field.val(), function(result, error) {
-					var error_element = forgotten_alert.find('.ui-notify');
-					if(error) { 
+				_this.resetRequest(input_field.val(), false, function(result, error) {
+					if(error) {
 						error_element.show().find('.error').text(error.message);
 					} else {
 						error_element.hide();
+						var win = forgotten_alert.parents('.reset_window');
 						var sent_text = "{{writeString=wns.request.sent_info}}";
 						forgotten_alert.find('div.password_forgotten_info').text(sent_text);
+						win.find(':input').prop('disabled', true).filter(':button').button('refresh');
 						setTimeout(function() {
-							forgotten_alert.parents('.reset_window').slideUp(function() {forgotten_alert.dialog('destroy');});
+							win.slideUp(function() {forgotten_alert.dialog('destroy');});
 						}, 2000);
 					}
 				});
@@ -58,7 +65,7 @@ Widget.types.login_window = {
 					text: "{{writeString=wns.request.send}}",
 					'class': 'primary ui-state-highlight',
 					click: function() {
-						forgotten_alert.children('form').submit();
+						form.submit();
 					}
 				}]
 			});
@@ -111,7 +118,7 @@ Widget.types.login_window = {
 			}
 		});
 	},
-	
+
 	show: function() {
 		this.login_markup.dialog('open');
 	}

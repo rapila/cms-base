@@ -29,7 +29,7 @@ class DashboardControlWidgetModule extends WidgetModule {
 		return $aResult;
 	}
 
-	public function template() {
+	public function layoutTemplate() {
 		$sLayoutName = self::getLayoutName();
 		if(isset($aDashboardConfig['layout'])) {
 			$sLayoutName = $aDashboardConfig['layout'];
@@ -49,6 +49,9 @@ class DashboardControlWidgetModule extends WidgetModule {
 		$oUser = Session::getSession()->getUser();
 		$aDashboardConfig = $oUser->getAdminSettings('dashboard');
 		if($sNewLayoutName !== null) {
+			if($aDashboardConfig['layout'] === $sNewLayoutName) {
+				return true;
+			}
 			$aDashboardConfig['layout'] = $sNewLayoutName;
 			$oUser->setAdminSettings('dashboard', $aDashboardConfig);
 			return $oUser->save();
@@ -165,6 +168,10 @@ class DashboardControlWidgetModule extends WidgetModule {
 			}
 		}
 		return array();
+	}
+
+	public function documentationData($sDocumentationName) {
+		return DocumentationProviderTypeModule::dataForPart($sDocumentationName, Session::language());
 	}
 
 	private static function saveModuleSettings($sUid, $aSettings) {

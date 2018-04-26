@@ -5,11 +5,11 @@
 
 class FileResourceTests extends PHPUnit_Framework_TestCase {
 	
-	public function setUp() {
+	protected function setUp() {
 		exec('mkdir -p "'.MAIN_DIR.'/plugins/test_only/test"');
 	}
-	public function tearDown() {
-		exec('rm -r "'.MAIN_DIR.'/plugins/test_only"');
+	protected function tearDown() {
+		exec('rm -R "'.MAIN_DIR.'/plugins/test_only/test"');
 	}
 	
 	public function testIndexFileFullPathOnly() {

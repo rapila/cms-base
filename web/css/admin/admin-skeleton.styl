@@ -9,7 +9,7 @@ body
 	margin 0 side_window_distance
 	&.login h1
 		text-align center
-		font-size 5em
+		font-size 3em
 		color #C2C2C2
 
 #admin_area, #admin_info_bar, #viewscreen_loader
@@ -123,10 +123,14 @@ body
 		border-right border
 		line-height info_bar_height
 		vertical-align middle
-		&.row_count_info
-			padding-left 1em
-			color #888
+		padding-right 0.5em
+		&:last-child
+			padding-right 0
 			border-right 0
+		&.row_count_info
+			color #888
+			min-width 95px
+			text-align right
 		&.rapila-icon
 			font-size 1.2em
 		&.rapila-icon,
@@ -143,6 +147,13 @@ body
 		padding 4px 0 2px
 		&.rapila-icon
 			padding 0
+	input.info-bar-element
+		border-color #E4E4E4
+		border-right-style dotted
+		vertical-align middle
+		padding-right 0
+		&.default_state
+			background-color transparent
 	.info-bar-button
 		width info_bar_height
 		background-color transparent
@@ -150,16 +161,17 @@ body
 		background-position center center
 		padding-right 1px
 		cursor pointer
-	input.info-bar-element
-		border-color #E4E4E4
-		border-right-style dotted
-		vertical-align middle
-		&.default_state
-			background-color transparent
-	span.info-bar-element
+	span.info-bar-element,
+	div.info-bar-element
 		display block
 		line-height info_bar_height
 		vertical-align middle
+		margin-left 0.5em
+		&:first-child
+			margin-left 0
+		> span
+			display block
+			float left
 	.search_field
 		padding 0 4px
 	.search_button

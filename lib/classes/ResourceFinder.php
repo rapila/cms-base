@@ -15,6 +15,10 @@ class ResourceFinder {
 	const SEARCH_SITE_FIRST = 4;
 	const SEARCH_PLUGINS_FIRST = 6;
 	
+	const WILDCARD_ANY = null;
+	const WILDCARD_DIR = false;
+	const WILDCARD_FILE = true;
+	
 	const ANY_NAME_OR_TYPE_PATTERN = '/^[\\w_]+$/';
 	
 	private $aPath;
@@ -178,6 +182,12 @@ class ResourceFinder {
 		return $this;
 	}
 
+	public function addPaths($aPaths) {
+		$this->aPath = array_merge($this->aPath, $aPaths);
+		$this->mResult = false;
+		return $this;
+	}
+
 	public function addExpression() {
 		$this->aPath = array_merge($this->aPath, func_get_args());
 		$this->mResult = false;
@@ -197,15 +207,15 @@ class ResourceFinder {
 	}
 
 	public function addAnyPath($bOptional = false) {
-		return $bOptional ? $this->addOptionalPath(null) : $this->addExpression(null);
+		return $bOptional ? $this->addOptionalPath(self::WILDCARD_ANY) : $this->addExpression(self::WILDCARD_ANY);
 	}
 
 	public function addDirPath($bOptional = false) {
-		return $bOptional ? $this->addOptionalPath(false) : $this->addExpression(false);
+		return $bOptional ? $this->addOptionalPath(self::WILDCARD_DIR) : $this->addExpression(self::WILDCARD_DIR);
 	}
 
 	public function addFilePath($bOptional = false) {
-		return $bOptional ? $this->addOptionalPath(true) : $this->addExpression(true);
+		return $bOptional ? $this->addOptionalPath(self::WILDCARD_FILE) : $this->addExpression(self::WILDCARD_FILE);
 	}
 	
 	/**
@@ -221,9 +231,9 @@ class ResourceFinder {
 	 */
 	public function find() {
 		if($this->mResult === false) {
-			if(!$this->bNoCache && ErrorHandler::getEnvironment() !== 'development') {
-				$oCache = new Cache(serialize($this), 'resource_finder');
-				if($oCache->cacheFileExists()) {
+			if(!$this->bNoCache && ErrorHandler::isProduction()) {
+				$oCache = new Cache(serialize($this), 'resource_finder', CachingStrategyFile::create());
+				if($oCache->entryExists()) {
 					$this->mResult = $oCache->getContentsAsVariable();
 				} else {
 					$this->mResult = $this->doFind();
@@ -425,9 +435,9 @@ class ResourceFinder {
 		if(count($aExpressions) === 0) {
 			return;
 		}
-		
+
 		$sPathExpression = array_shift($aExpressions);
-		
+
 		$bAllowPathItemToBeSkipped = is_array($sPathExpression);
 		if($bAllowPathItemToBeSkipped) {
 			if(count($aExpressions) === 0) {
@@ -449,11 +459,15 @@ class ResourceFinder {
 			}
 		}
 
+		if(!is_dir($sPath)) {
+			return;
+		}
+
 		if($sParentName !== null && is_string($sPathExpression)) {
 			$sPathExpression = str_replace('${parent_name}', $sParentName, $sPathExpression);
 			$sPathExpression = str_replace('${parent_name_camelized}', StringUtil::camelize($sParentName, true), $sPathExpression);
 		}
-		
+
 		if(is_string($sPathExpression) && !StringUtil::startsWith($sPathExpression, "/")) {
 			//Take the shortcut when only dealing with a static file name
 			$sFilePath = "$sPath/$sPathExpression";
@@ -471,7 +485,7 @@ class ResourceFinder {
 			}
 		} else {
 			foreach(ResourceFinder::getFolderContents($sPath) as $sFileName => $sFilePath) {
-				if($sPathExpression === null || ($sPathExpression === true && is_file($sFilePath)) || ($sPathExpression === false && is_dir($sFilePath)) || (is_string($sPathExpression) && preg_match($sPathExpression, $sFileName) !== 0)) {
+				if($sPathExpression === self::WILDCARD_ANY || ($sPathExpression === self::WILDCARD_FILE && is_file($sFilePath)) || ($sPathExpression === self::WILDCARD_DIR && is_dir($sFilePath)) || (is_string($sPathExpression) && preg_match($sPathExpression, $sFileName) !== 0)) {
 					$sNextRelativePath = $sFileName;
 					if($sRelativePath !== null) {
 						$sNextRelativePath = "$sRelativePath/$sFileName";
@@ -503,22 +517,24 @@ class ResourceFinder {
 		return self::$PLUGINS;
 	}
 	
-	///Helper function for classes that are given a filename, base path and path name
+	/**
+	* Helper function for classes that are given a filename, base path and path name.
+	*/
 	public static function parsePathArguments($sBaseDirname = null, $mPath = null, $sFileName = null) {
 		if($mPath === null) {
 			$mPath = array();
 		} else if(is_string($mPath)) {
 			$mPath = explode("/", $mPath);
 		}
-		
+
 		if($sBaseDirname !== null) {
 			array_unshift($mPath, $sBaseDirname);
 		}
-		
+
 		if($sFileName !== null) {
 			$mPath = array_merge($mPath, explode('/', $sFileName));
 		}
-		
+
 		return $mPath;
 	}
 	
