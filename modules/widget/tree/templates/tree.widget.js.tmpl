@@ -55,6 +55,9 @@ Widget.types.tree = {
 						return false;
 					}
 					var dest_data = parent.data;
+					if(!dest_data) {
+						return false;
+					}
 					return _this.settings.may_create_child(dest_data);
 				},
 				multiple: false,
