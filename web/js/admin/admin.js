@@ -30,7 +30,7 @@ jQuery.extend(Widget, {
 	tooltip: function(element, text) {
 		jQuery(element).tooltip(text);
 	},
-	
+
 	confirm: function(title, message, callback, cancelButtonText, okButtonText) {
 		if(cancelButtonText === undefined) {
 			cancelButtonText = AdminInterface.translations.cancelButtonText;
@@ -47,6 +47,7 @@ jQuery.extend(Widget, {
 			resizable: false,
 			modal: true,
 			buttons: [],
+			appendTo: document.body,
 			close: destroy.bind(dialog, false)
 		};
 		if(okButtonText) {
@@ -65,27 +66,27 @@ jQuery.extend(Widget, {
 		}
 		dialog.dialog(dialog_opts);
 	},
-	
+
 	load: function() {
 		window.AdminInterface.loader.data('loadCount', (window.AdminInterface.loader.data('loadCount')||0)+1).show();
 	},
-	
+
 	end_load: function() {
 		window.AdminInterface.loader.data('loadCount', (window.AdminInterface.loader.data('loadCount')||0)-1);
 		if(window.AdminInterface.loader.data('loadCount') <= 0) {
 			window.AdminInterface.loader.hide();
 		}
 	},
-	
+
 	activity: function() {
 		if(Widget.singletons.admin_menu !== undefined) {
 			Widget.singletons.admin_menu.activity();
 		}
-	}, 
-	
+	},
+
 	end_activity: function() {
 		if(Widget.singletons.admin_menu !== undefined) {
 			Widget.singletons.admin_menu.end_activity();
 		}
-	}	
+	}
 });
