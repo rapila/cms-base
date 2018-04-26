@@ -14,7 +14,7 @@
  * @package    propel.generator.model
  */
 class ScheduledAction extends BaseScheduledAction {
-	const ACTION_METHOD_PREFIX = 'executeScheduled';
+	const ACTION_METHOD_PREFIX = 'executeAction';
 	
 	/**
 	* Returns the object affected by the action
@@ -33,6 +33,22 @@ class ScheduledAction extends BaseScheduledAction {
 	*/
 	public function getExecutionUser() {
 		return $this->getUserRelatedByCreatedBy();
+	}
+	
+	public function getExecutionDateFormatted($sLanguageId = null, $sFormatString = '%x %H:%M') {
+		return LocaleUtil::localizeDate($this->getExecutionDate(null), $sLanguageId, $sFormatString);
+	}
+	
+	public function getScheduleDateFormatted($sLanguageId = null, $sFormatString = '%x %H:%M') {
+		return LocaleUtil::localizeDate($this->getScheduleDate(null), $sLanguageId, $sFormatString);
+	}
+
+	public function getActionName() {
+		$oDescription = ActionDescription::fromAction($this->getModelName(), $this->getAction());
+	}
+	
+	public function getCreatedUserName() {
+		return $this->getUserRelatedByCreatedBy()->getFullName();
 	}
 	
 	/**
@@ -72,18 +88,6 @@ class ScheduledAction extends BaseScheduledAction {
 		$sPeerClass::setRightsUser($oUser);
 		call_user_func_array(array($oObject, $sMethodName), $aParams);
 		$sPeerClass::setRightsUser();
-	}
-	
-	public function getExecutionDateFormatted($sLanguageId = null, $sFormatString = '%x %H:%M') {
-		return LocaleUtil::localizeDate($this->getExecutionDate(null), $sLanguageId, $sFormatString);
-	}
-	
-	public function getScheduleDateFormatted($sLanguageId = null, $sFormatString = '%x %H:%M') {
-		return LocaleUtil::localizeDate($this->getScheduleDate(null), $sLanguageId, $sFormatString);
-	}
-	
-	public function getCreatedUserName() {
-		return $this->getUserRelatedByCreatedBy()->getFullName();
 	}
 	
 	/**

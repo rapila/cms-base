@@ -415,8 +415,32 @@ class Page extends BasePage {
 		return $this->oOldParent;
 	}
 	
-	public function executeScheduledActivate() {
+	public function executeActionActivate() {
 		$this->setIsInactive(false);
 		$this->save();
+	}
+
+	public static function describeActionActivate() {
+		return ActionDescription::create('page.activate');
+	}
+	
+	public function executeActionActivateLanguage($sLanguageId = null) {
+		$oQuery = PageStringQuery::create()->filterByPageId($this->getId());
+		if($sLanguageId) {
+			$oQuery->filterByLanguageId($sLanguageId);
+		}
+		foreach($oQuery->find() as $oPageString) {
+			$oPageString->setIsInactive(false);
+			$oPageString->save();
+		}
+	}
+
+	public static function describeActionActivateLanguage() {
+		$oLanguageChoices = ActionParameterChoiceType::create();
+		foreach(LanguagePeer::getLanguagesAssoc(true, true) as $sLanguageId => $sLanguageName) {
+			$oLanguageChoices->addChoice($sLanguageName, $sLanguageId);
+		}
+		return ActionDescription::create('page.activate_language')
+			->addParameter(ActionParameterDescription::create($oLanguageChoices, 'language_id'));
 	}
 }

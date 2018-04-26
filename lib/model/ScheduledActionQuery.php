@@ -42,55 +42,12 @@ class ScheduledActionQuery extends BaseScheduledActionQuery {
 			if(!StringUtil::startsWith($sMethodName, ScheduledAction::ACTION_METHOD_PREFIX)) {
 				continue;
 			}
-			$oReflect = new ReflectionMethod($sModelName, $sMethodName);
-
 			$sActionName = substr($sMethodName, strlen(ScheduledAction::ACTION_METHOD_PREFIX));
 			$sActionName = StringUtil::deCamelize($sActionName);
-			$sActionString = StringPeer::getString('wns.action.'.StringUtil::deCamelize($sModelName).'.'.$sActionName, null, $sActionName);
 
-			$aParams = array();
-			foreach($oReflect->getParameters() as $iCount => $oParameter) {
-				if($iCount === 0) {
-					// First param is always the action itself
-					continue;
-				}
-				$sName = $oParameter->getName();
-				$sPrefix = substr($sName, 0, 1);
-				$sName = substr($sName, 1);
-				$sName = StringPeer::getString('wns.action.'.StringUtil::deCamelize($sModelName).'.'.$sActionName.'.'.StringUtil::deCamelize($sName), null, $sName);
-				$mDefault = null;
-				$sType = null;
-				$bIsOptional = false;
-				if($oParameter->isDefaultValueAvailable()) {
-					$mDefault = $oParameter->getDefaultValue();
-					$bIsOptional = true;
-					$sType = gettype($mDefault);
-				} else {
-					if($sPrefix === 'b') {
-						$sType = 'boolean';
-					}
-					if($sPrefix === 'i') {
-						$sType = 'integer';
-					}
-					if($sPrefix === 'f') {
-						$sType = 'double';
-					}
-					if($sPrefix === 's') {
-						$sType = 'string';
-					}
-				}
-				$oParam = new stdClass();
-				$oParam->name = $sName;
-				$oParam->optional = $bIsOptional;
-				$oParam->default = $mDefault;
-				$oParam->type = $sType;
-				$aParams[] = $oParam;
-			}
+			$oActionDescription = ActionDescription::fromAction($sModelName, $sActionName);
 
-			$oAction = new stdClass();
-			$oAction->string = $sActionString;
-			$oAction->params = $aParams;
-			$aResult[$sActionName] = $oAction;
+			$aResult[$sActionName] = $oActionDescription->toJson();
 		}
 		return $aResult;
 	}

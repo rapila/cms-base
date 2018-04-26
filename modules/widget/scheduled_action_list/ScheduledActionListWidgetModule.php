@@ -41,6 +41,9 @@ class ScheduledActionListWidgetModule extends SpecializedListWidgetModule {
 	public function getMetadataForColumn($sColumnIdentifier) {
 		$aResult = array();
 		switch($sColumnIdentifier) {
+			case "action":
+				$aResult['field_name'] = 'action_name';
+				break;
 			case "schedule_date":
 				$aResult['field_name'] = 'schedule_date_formatted';
 				break;

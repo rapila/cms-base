@@ -69,7 +69,7 @@ Widget.types['scheduler'] = {
 			this.availableActions(function(actions) {
 				var result = {};
 				for(var name in actions) {
-					result[name] = actions[name].string;
+					result[name] = actions[name].name;
 				}
 				this.dialog.find('select[name="action"]').populate(result);
 			});
