@@ -139,7 +139,7 @@ Widget.types.file_upload = {
 		});
 		this[accepts_method].apply(this, accepts_params);
 	},
-	
+
 	upload_file: function(file, options) {
 		options = jQuery.extend({}, this.settings.default_options, {name: file.name, type: file.type}, options || {});
 		this.upload(file, options, 'accepts', [file.name, file.type], 'do_upload_file');
@@ -150,7 +150,7 @@ Widget.types.file_upload = {
 		options = jQuery.extend({}, this.settings.default_options, {name: name}, options || {});
 		this.upload(url, options, 'acceptsURL', [url], 'do_upload_url');
 	},
-	
+
 	do_upload_file: function(file, options, create_type) {
 		var _this = this;
 		var size = file.size;
