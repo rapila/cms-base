@@ -96,6 +96,11 @@ Widget.types.file_upload = {
 						options.error(error);
 					} : jQuery.noop;
 					var dialog;
+					function cancel() {
+						dialog.element.dialog("destroy");
+						jQuery.each(dialog.errors, function(i, err) {err();});
+						delete _this.open_type_callbacks[dialog_key];
+					}
 					//Make sure only one dialog is ever displayed for each type. Dismissing it (with either success or failure), continues or aborts all uploads depending on said decision.
 					if(!_this.open_type_callbacks[dialog_key]) {
 						dialog = {};
@@ -108,13 +113,10 @@ Widget.types.file_upload = {
 									jQuery.each(dialog.successes, function(i, succ) {succ();});
 									delete _this.open_type_callbacks[dialog_key];
 								},
-								"{{writeString=wns.cancel}}": function() {
-									dialog.element.dialog("destroy");
-									jQuery.each(dialog.errors, function(i, err) {err();});
-									delete _this.open_type_callbacks[dialog_key];
-								}
+								"{{writeString=wns.cancel}}": cancel
 							},
-							dialogClass: 'file_upload_error'
+							dialogClass: 'file_upload_error',
+							close: cancel
 						});
 						dialog.successes = [];
 						dialog.errors = [];
