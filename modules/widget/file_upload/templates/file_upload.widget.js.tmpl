@@ -14,7 +14,7 @@ Widget.types.file_upload = {
 		if(!selector) {
 			element.addClass('ui-state-droppable');
 		}
-		
+
 		var _this = this;
 		var current_drag_is_file = false;
 		element.on('dragenter', function(event) {
@@ -65,7 +65,7 @@ Widget.types.file_upload = {
 				}
 				return;
 			}
-			
+
 			var i = 0;
 			for(i=0;i<event.dataTransfer.files.length;i++) {
 				var file = event.dataTransfer.files.item(i);
@@ -74,14 +74,14 @@ Widget.types.file_upload = {
 					_this.upload_file(file, callback_result);
 				}
 			}
-			
+
 			current_drag_is_file = false;
 			return;
 		});
 	},
-	
+
 	open_type_callbacks: {},
-	
+
 	upload: function(obj, options, accepts_method, accepts_params, do_method) {
 		accepts_params.splice(accepts_params.length, 0, function(result, error) {
 			if(error && error.exception_type === 'LocalizedException') {
