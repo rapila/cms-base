@@ -16,6 +16,7 @@ Widget.types.tag_panel = {
 		var to_admin = jQuery('<button/>')
 			.attr('type', 'button')
 			.text('wrench')
+			.attr('title', "{{writeString=tags.do_admin}}")
 			.addClass('rapila-icon rapila-button')
 			.appendTo(this.admin_area)
 			.click(jQuery.openLink.bind(jQuery, '{{writeLink=tags;manager=AdminManager}}'));
