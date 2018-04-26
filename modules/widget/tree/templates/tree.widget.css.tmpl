@@ -1,22 +1,39 @@
 [data-widget-type='tree'] div.ui-tree {
 	font-size: 1.2em;
 }
+
 [data-widget-type='tree'] i.jstree-themeicon.rapila-icon {
 	font-style: normal;
 }
-[data-widget-type='tree'] li.jstree-node a {
-	display: inline-block;
-	width: 100%;
-	padding: 1px;
+
+[data-widget-type='tree'] li {
+	display: flex;
+	flex-wrap: wrap;
 }
+
 [data-widget-type='tree'] li.ui-state-active {
 	background-color: #728697 !important;
 }
 
-/*[data-widget-type='tree'] li.jstree-node a span.rapila-icon {
-	float: right;
+[data-widget-type='tree'] li ul.jstree-children {
+	flex-basis: 100%;
 }
-*/
+
+[data-widget-type='tree'] li.jstree-node a.jstree-anchor {
+	display: flex;
+	flex-grow: 1;
+	padding: 1px;
+}
+
+[data-widget-type='tree'] li.jstree-node a.jstree-anchor > .title {
+	flex-grow: 1;
+}
+
+[data-widget-type='tree'] li.jstree-node a.jstree-anchor > .rapila-icon.status {
+	margin-right: 6px;
+	font-size: 85%;
+}
+
 [data-widget-type='tree'] li.jstree-node a.jstree-clicked {
 	background-color: #728697;
 	color: #fff;

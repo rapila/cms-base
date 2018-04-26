@@ -14,12 +14,15 @@ $.jstree.plugins.tree_widget = function(options, parent) {
 			widget.dnd.init_dnd($obj, widget.settings.model_name, node.id, true);
 		}
 		var primary_icon = widget.settings.primary_icon_from_item(node.data);
-		$obj.find('> .jstree-anchor > i.jstree-themeicon').text(primary_icon);
+		var $primary_icon = $obj.find('> .jstree-anchor > i.jstree-themeicon').text(primary_icon);
 		var icons = widget.settings.icons_from_item(node.data)
 			.map(function(icon) {
-				return jQuery('<span/>').addClass('rapila-icon').text(icon);
+				return jQuery('<span/>').addClass('rapila-icon status').text(icon||'');
 			});
 		$obj.children('.jstree-anchor').append(icons);
+		var title = $primary_icon[0].nextSibling;
+		var $title = jQuery('<span/>').addClass('title').text(title.textContent||'');
+		title.parentNode.replaceChild($title[0], title);
 		return obj;
 	};
 };

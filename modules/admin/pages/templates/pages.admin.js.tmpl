@@ -95,18 +95,18 @@ jQuery(document).ready(function() {
 				}
 			},
 			primary_icon_from_item: function(item) {
+				if(item.IsInactive) {
+					return item.IsFolder ? 'hidden-files' : 'hidden-file';
+				}
 				return item.IsFolder ? 'files' : 'file';
 			},
 			icons_from_item: function(item) {
 				var result = [];
 				if(item.IsProtected) {
-					result.push('lock');
+					result.push('locked');
 				}
 				if(item.IsHidden) {
 					result.push('hidden');
-				}
-				if(item.IsInactive) {
-					result.push('close');
 				}
 				return result;
 			}
