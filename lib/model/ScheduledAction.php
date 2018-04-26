@@ -45,6 +45,7 @@ class ScheduledAction extends BaseScheduledAction {
 
 	public function getActionName() {
 		$oDescription = ActionDescription::fromAction($this->getModelName(), $this->getAction());
+		return $oDescription->getName();
 	}
 	
 	public function getCreatedUserName() {
@@ -86,12 +87,12 @@ class ScheduledAction extends BaseScheduledAction {
 		$sPeerClass = "{$sModel}Peer";
 
 		$sPeerClass::setRightsUser($oUser);
-		call_user_func_array(array($oObject, $sMethodName), $aParams);
+		$oObject->$sMethodName(...$aParams);
 		$sPeerClass::setRightsUser();
 	}
 	
 	/**
-	* Processes this action. Checks for prior execution (but not if the date matches).
+	* Processes this action. Always assumes the due date is reached, but checks for prior execution.
 	* Does not throw exceptions but prints them.
 	* Executes it, then either marks the execution as successful by adding a timestamp or deletes the action if it’s redundant (or points to an invalid object).
 	*/
@@ -109,6 +110,7 @@ class ScheduledAction extends BaseScheduledAction {
 			$this->save();
 		} catch(Exception $ex) {
 			ErrorHandler::handleException($ex, true);
+			// FIXME: Maybe we should add the exception to a field in the DB and not delete the action.
 			$this->delete();
 			$aResult = false;
 		}

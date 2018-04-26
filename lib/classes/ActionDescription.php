@@ -64,6 +64,10 @@ class ActionDescription {
 		return $oContents;
 	}
 
+	public function getName() {
+		return $this->sName;
+	}
+
 }
 
 class ActionParameterDescription {
