@@ -51,6 +51,22 @@ class ScheduledAction extends BaseScheduledAction {
 	public function getCreatedUserName() {
 		return $this->getUserRelatedByCreatedBy()->getFullName();
 	}
+
+	public function getParameters() {
+		$aParams = $this->getParams();
+		if($aParams !== null) {
+			$aParams = json_decode($aParams);
+		}
+		if(!is_array($aParams)) {
+			$aParams = array();
+		}
+
+		return $aParams;
+	}
+
+	public function getParameterCount() {
+		return count($this->getParameters());
+	}
 	
 	/**
 	* Tries to execute the specified action.

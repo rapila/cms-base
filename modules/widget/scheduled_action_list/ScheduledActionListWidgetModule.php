@@ -13,7 +13,7 @@ class ScheduledActionListWidgetModule extends SpecializedListWidgetModule {
 	}
 
 	public function getColumnIdentifiers() {
-		return array('action', 'schedule_date', 'execution_date', 'created_by', 'delete');
+		return array('action', 'parameters', 'schedule_date', 'execution_date', 'created_by', 'delete');
 	}
 
 	public function getCriteria() {
@@ -43,6 +43,9 @@ class ScheduledActionListWidgetModule extends SpecializedListWidgetModule {
 		switch($sColumnIdentifier) {
 			case "action":
 				$aResult['field_name'] = 'action_name';
+				break;
+			case "parameters":
+				$aResult['field_name'] = 'parameter_count';
 				break;
 			case "schedule_date":
 				$aResult['field_name'] = 'schedule_date_formatted';
