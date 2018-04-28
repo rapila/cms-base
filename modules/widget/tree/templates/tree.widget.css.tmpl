@@ -1,7 +1,17 @@
 [data-widget-type='tree'] div.ui-tree {
 	font-size: 1.2em;
 }
-
+[data-widget-type='tree']  ul.jstree-container-ul {
+	margin-left: -15px;
+}
+[data-widget-type='tree'] ul.jstree-container-ul > li.jstree-node:first-child > i {
+	background: none !important;
+	width: 0;
+}
+[data-widget-type='tree'] ul.jstree-container-ul > li.jstree-node:first-child > .jstree-anchor {
+	margin-left: -10px;
+	padding-left: 10px;
+}
 [data-widget-type='tree'] i.jstree-themeicon.rapila-icon {
 	font-style: normal;
 }
@@ -9,11 +19,15 @@
 [data-widget-type='tree'] li.jstree-node {
 	display: grid;
 	grid-template-columns: 20px 1fr;
-	
+	margin-left:19px;
 }
 
 [data-widget-type='tree'] li.jstree-node.ui-state-active {
 	background-color: #728697 !important;
+}
+[data-widget-type='tree'] li .jstree-hovered {
+/*	background-color: rgba(#e3ef99, 0.2);*/
+	background-color: #e3ef99;
 }
 
 [data-widget-type='tree'] li.jstree-node ul.jstree-children {
@@ -31,6 +45,11 @@
 	grid-column: 2;
 	display: flex;
 	padding: 1px;
+/*	background-color: #d8dde1;*/
+}
+
+[data-widget-type='tree'] li.jstree-node a.jstree-anchor i:first-child {
+	font-size: 90%;
 }
 
 [data-widget-type='tree'] li.jstree-node a.jstree-anchor > .title {
