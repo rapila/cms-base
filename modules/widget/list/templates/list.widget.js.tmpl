@@ -166,13 +166,18 @@ Widget.types.list = {
 			return;
 		}
 		var hash = window.location.hash || '#';
-		hash = hash.replace(this.hash_finder, '$1');
+		hash = hash.replace(this.hash_finder, '');
 		const id = this.schema.find(function(schema) {
 			return schema.display_type === 'data';
 		}).identifier;
 		hash = hash + '&' + selection.map(function(data) {
 			return hash_key + '=' + data[id];
 		}).join('&');
+		// Sanitize
+		hash = hash.replace(/&&+/g, '&');
+		if(hash[0] !== '#') {
+			hash = '#' + hash;
+		}
 		if(hash.indexOf('#&') === 0) {
 			hash = '#' + hash.substring(2);
 		}
