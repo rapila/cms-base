@@ -424,7 +424,7 @@ class Page extends BasePage {
 		return ActionDescriptor::create('page.activate');
 	}
 	
-	public function executeActionActivateLanguage(ScheduledAction $oAction, $sLanguageId = null) {
+	public function executeActionActivateLanguage(ScheduledAction $oAction, $sLanguageId = null, $bActivatePageAsWell) {
 		$oQuery = PageStringQuery::create()->filterByPageId($this->getId());
 		if($sLanguageId) {
 			$oQuery->filterByLanguageId($sLanguageId);
@@ -432,6 +432,9 @@ class Page extends BasePage {
 		foreach($oQuery->find() as $oPageString) {
 			$oPageString->setIsInactive(false);
 			$oPageString->save();
+		}
+		if($bActivatePageAsWell) {
+			$this->executeActionActivate($oAction);
 		}
 	}
 
@@ -441,6 +444,7 @@ class Page extends BasePage {
 			$oLanguageChoices->addChoice($sLanguageName, $sLanguageId);
 		}
 		return ActionDescriptor::create('page.activate_language')
-			->addParameter(ActionParameterDescriptor::create($oLanguageChoices, 'page.activate_language.language')->allowNull());
+			->addParameter(ActionParameterDescriptor::create($oLanguageChoices, 'page.activate_language.language')->allowNull())
+			->addParameter(ActionParameterDescriptor::create(ActionParameterBooleanType::create(), 'page.activate_language.page_too')->withDefaultValue(true));
 	}
 }
