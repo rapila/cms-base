@@ -43,9 +43,12 @@ class ScheduledAction extends BaseScheduledAction {
 		return LocaleUtil::localizeDate($this->getScheduleDate(null), $sLanguageId, $sFormatString);
 	}
 
+	public function getActionDescriptor() {
+		return ActionDescriptor::fromAction($this->getModelName(), $this->getAction());
+	}
+
 	public function getActionName() {
-		$oDescription = ActionDescription::fromAction($this->getModelName(), $this->getAction());
-		return $oDescription->getName();
+		return $this->getActionDescriptor()->getName();
 	}
 	
 	public function getCreatedUserName() {

@@ -3,7 +3,7 @@
 /**
  * Describes a (schedulable) action
  */
-class ActionDescription {
+class ActionDescriptor {
 	const ACTION_DESCRIPTION_METHOD_PREFIX = 'describeAction';
 
 	private $sName = null;
@@ -13,7 +13,7 @@ class ActionDescription {
 	private function __construct() {}
 
 	public static function create($sKey = null) {
-		$result = new ActionDescription();
+		$result = new ActionDescriptor();
 		if($sKey) {
 			$result->withKeyedName($sKey)->withKeyedDescription($sKey);
 		}
@@ -49,7 +49,7 @@ class ActionDescription {
 		return $this;
 	}
 
-	public function addParameter(ActionParameterDescription ...$oParameters) {
+	public function addParameter(ActionParameterDescriptor ...$oParameters) {
 		array_push($this->aParameters, ...$oParameters);
 		return $this;
 	}
@@ -70,7 +70,7 @@ class ActionDescription {
 
 }
 
-class ActionParameterDescription {
+class ActionParameterDescriptor {
 	private $oType;
 	private $mDefaultValue;
 	private $bAllowsNull = false;
@@ -83,7 +83,7 @@ class ActionParameterDescription {
 	}
 
 	public static function create(ActionParameterType $oType, $sKey = null) {
-		$result = new ActionParameterDescription($oType);
+		$result = new ActionParameterDescriptor($oType);
 		if($sKey) {
 			$result->withKeyedName($sKey)->withKeyedDescription($sKey);
 		}

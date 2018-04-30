@@ -45,9 +45,9 @@ class ScheduledActionQuery extends BaseScheduledActionQuery {
 			$sActionName = substr($sMethodName, strlen(ScheduledAction::ACTION_METHOD_PREFIX));
 			$sActionName = StringUtil::deCamelize($sActionName);
 
-			$oActionDescription = ActionDescription::fromAction($sModelName, $sActionName);
+			$oActionDescriptor = ActionDescriptor::fromAction($sModelName, $sActionName);
 
-			$aResult[$sActionName] = $oActionDescription->toJson();
+			$aResult[$sActionName] = $oActionDescriptor->toJson();
 		}
 		return $aResult;
 	}

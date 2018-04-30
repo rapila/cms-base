@@ -421,7 +421,7 @@ class Page extends BasePage {
 	}
 
 	public static function describeActionActivate() {
-		return ActionDescription::create('page.activate');
+		return ActionDescriptor::create('page.activate');
 	}
 	
 	public function executeActionActivateLanguage(ScheduledAction $oAction, $sLanguageId = null) {
@@ -440,7 +440,7 @@ class Page extends BasePage {
 		foreach(LanguagePeer::getLanguagesAssoc(true, true) as $sLanguageId => $sLanguageName) {
 			$oLanguageChoices->addChoice($sLanguageName, $sLanguageId);
 		}
-		return ActionDescription::create('page.activate_language')
-			->addParameter(ActionParameterDescription::create($oLanguageChoices, 'language_id'));
+		return ActionDescriptor::create('page.activate_language')
+			->addParameter(ActionParameterDescriptor::create($oLanguageChoices, 'page.activate_language.language')->allowNull());
 	}
 }
