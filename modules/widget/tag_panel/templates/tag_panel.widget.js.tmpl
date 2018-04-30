@@ -19,7 +19,7 @@ Widget.types.tag_panel = {
 			.addClass('rapila-icon rapila-button')
 			.appendTo(this.admin_area)
 			.click(jQuery.openLink.bind(jQuery, '{{writeLink=tags;manager=AdminManager}}'));
-		var new_tag = jQuery('<input/>').addClass('ui-widget-content').attr('type', 'text').appendTo(this.admin_area);
+		var new_tag = this.new_tag = jQuery('<input/>').addClass('ui-widget-content').attr('type', 'text').appendTo(this.admin_area);
 		var create_new_tag = jQuery('<button/>').text('{{writeString=wns.tag.add}}').appendTo(this.admin_area).button({disabled: true});
 		new_tag.bind('keyup', function(event) {
 			if(jQuery.trim(new_tag.val())) {
@@ -93,6 +93,7 @@ Widget.types.tag_panel = {
 		this.panel.show();
 		var destination = jQuery.extend({opacity: 1}, origin);
 		this.panel.animate(destination);
+		this.new_tag.focus();
 	},
 
 	toggle_at: function(origin, from) {
