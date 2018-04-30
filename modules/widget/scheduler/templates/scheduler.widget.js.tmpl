@@ -75,7 +75,7 @@ Widget.types['scheduler'] = {
 
 		var list = _this.dialog.find('.list');
 		Widget.createWithElement('list', function(list) {
-			_this.dialog.find('.list').append(list._element);
+			_this.dialog.find('.list').replaceWith(list._element);
 			_this.list = list;
 			_this.list.handle('row-deleted', _this.refresh.bind(_this, true));
 		}, this.settings.list_widget_session);
