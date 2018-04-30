@@ -58,6 +58,9 @@ class ScheduledAction extends BaseScheduledAction {
 	public function getParameters() {
 		$aParams = $this->getParams();
 		if($aParams !== null) {
+			if(is_resource($aParams)) {
+				$aParams = stream_get_contents($aParams);
+			}
 			$aParams = json_decode($aParams);
 		}
 		if(!is_array($aParams)) {
@@ -91,14 +94,7 @@ class ScheduledAction extends BaseScheduledAction {
 			throw new Exception("Action $sAction is not valid for $sModel");
 		}
 
-		$aParams = $this->getParams();
-		if($aParams !== null) {
-			$aParams = json_decode($aParams);
-		}
-		if(!is_array($aParams)) {
-			$aParams = array();
-		}
-
+		$aParams = $this->getParameters();
 		array_unshift($aParams, $this);
 
 		$oUser = $this->getExecutionUser();
