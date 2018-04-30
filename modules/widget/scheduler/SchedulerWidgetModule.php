@@ -36,7 +36,7 @@ class SchedulerWidgetModule extends PersistentWidgetModule {
 	public function countScheduled() {
 		return ScheduledActionQuery::create()->scheduled()->filterByModelName($this->sModelName)->filterByModelId($this->sModelId)->count();
 	}
-	
+
 	public function addSchedule($aData) {
 		$oSchedule = new ScheduledAction();
 		$oDate = DateTime::createFromFormat('Y-m-d H:i:s', $aData['date'].' '.$aData['time'], new DateTimeZone($aData['timezone']));
@@ -44,6 +44,10 @@ class SchedulerWidgetModule extends PersistentWidgetModule {
 		$oSchedule->setAction($aData['action']);
 		$oSchedule->setModelName($this->sModelName);
 		$oSchedule->setModelId($this->sModelId);
+		$aParams = isset($aData['param']) ? $aData['param'] : null;
+		if($aParams && !empty($aParams)) {
+			$oSchedule->setParams(json_encode($aParams));
+		}
 		$oSchedule->save();
 	}
 	
