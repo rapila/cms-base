@@ -72,12 +72,11 @@ Widget.types.page_detail = {
 			});
 			return false;
 		});
-		Widget.createWithElement('scheduler', function(scheduler) {
+		
+		this._element.find('[data-widget-type="scheduler"]').prepareWidget(function(scheduler) {
 			_this.scheduler = scheduler;
 			scheduler.setModelName('Page');
-		}, function(scheduler) {
-			buttons.append(scheduler._element);
-		});
+		}, jQuery.noop);
 
 		this.description_has_been_loaded = false;
 		this.configuration_has_been_loaded = false;
