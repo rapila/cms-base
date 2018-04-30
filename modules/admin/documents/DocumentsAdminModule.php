@@ -21,6 +21,7 @@ class DocumentsAdminModule extends AdminModule {
 		$this->oSidebarWidget->setListTag(new TagWriter('ul'));
 		$this->oSidebarWidget->setDelegate(new CriteriaListWidgetDelegate($this, 'DocumentCategory', 'name'));
 		$this->oSidebarWidget->setSetting('initial_selection', array('document_category_id' => $this->oListWidget->getDocumentCategoryId()));
+		$this->oSidebarWidget->setSetting('row_click_active_mode', 'activate');
 	}
 
 	public static function getPrincipalModel() {

@@ -3,6 +3,10 @@ Widget.types.list = {
 	 * Sets up the element: adds heading and content wrappers and adds event listeners.
 	 */
 	prepare: function() {
+		if(this.settings.hash_key) {
+			this.hash_finder = new RegExp('([#&])('+this.settings.hash_key+'(=([^&]+))?)', 'g');
+		}
+
 		this.row_prototype = jQuery(this._element.is('table') ? '<tr/>' : '<li/>').addClass('ui-list-row');
 
 		if(!this._element.is('table')) {
@@ -78,6 +82,8 @@ Widget.types.list = {
 		}
 
 		this.reload(true);
+
+		$(window).on('hashchange', this.load_from_hash.bind(this));
 
 		// Specialized list widget handling
 		if(this._element.data('listWidgetType')) {
@@ -160,8 +166,7 @@ Widget.types.list = {
 			return;
 		}
 		var hash = window.location.hash || '#';
-		var finder = new RegExp('([#&])('+this.settings.hash_key+'(=[^&]+)?)', 'g');
-		hash = hash.replace(finder, '$1');
+		hash = hash.replace(this.hash_finder, '$1');
 		const id = this.schema.find(function(schema) {
 			return schema.display_type === 'data';
 		}).identifier;
@@ -171,11 +176,30 @@ Widget.types.list = {
 		if(hash.indexOf('#&') === 0) {
 			hash = '#' + hash.substring(2);
 		}
-		window.location.hash = hash;
+		window.location.replace(hash);
 	},
 
-	load_from_hash: function() {
+	load_from_hash: function(event) {
+		if(!this.settings.hash_key) {
+			return;
+		}
+		var hash = window.location.hash || '#';
+		var matches = this.hash_finder.exec(hash);
+		const id = this.schema.find(function(schema) {
+			return schema.display_type === 'data';
+		}).identifier;
+		if(!matches || !matches[4]) {
+			return;
+		}
 
+		var data = {};
+		data[id] = matches[4];
+		if(!event) {
+			// Data has not yet been loaded, only schema
+			this.settings.initial_selection = [data];
+			return;
+		}
+		this.activate_row(this.row_from_row_data(data));
 	},
 
 	/**
@@ -542,6 +566,8 @@ Widget.types.list = {
 		this.sort = this.getOrderColumnSort();
 		if(load_heading) {
 			this.schema = this.getSchema(load_heading === 'force');
+			this.load_from_hash(false);
+
 			if(this._element.is('table')) {
 				var col = jQuery('<col/>');
 				jQuery.each(this.schema, function(i, column) {
