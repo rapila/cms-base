@@ -2,10 +2,10 @@
 
 /**
  * Data object containing the SQL and PHP code to migrate the database
- * up to version 1412286128.
+ * up to version 1525074231.
  * Generated on 2014-10-02 23:42:08 by rafi
  */
-class PropelMigration_1412286128
+class PropelMigration_1525074231
 {
 
     public function preUp($manager)
