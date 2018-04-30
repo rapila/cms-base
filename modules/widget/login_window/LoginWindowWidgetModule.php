@@ -43,6 +43,8 @@ class LoginWindowWidgetModule extends PersistentWidgetModule {
 	}
 
 	public function logout() {
+		// Clear all widgets
+		Session::getSession()->setAttribute(WidgetModule::WIDGET_SESSION_KEY, null);
 		Session::getSession()->logout();
 		Cache::clearAllCaches();
 		return array('success' => true);
