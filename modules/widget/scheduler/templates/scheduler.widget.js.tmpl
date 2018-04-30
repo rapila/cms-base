@@ -17,7 +17,7 @@ Widget.types['scheduler'] = {
 					this.dialog.unserialize(newDate);
 				});
 				_this.updateTimeZone(current_time_zone, function() {
-					_this.refresh(true);
+					_this.refresh();
 				});
 			});
 		});
@@ -25,7 +25,7 @@ Widget.types['scheduler'] = {
 		this.dialog.submit(function(event) {
 			event.preventDefault();
 			_this.addSchedule(_this.dialog.serializeArrayKV(), function() {
-				_this.refresh(true);
+				_this.refresh();
 			});
 		});
 
@@ -44,35 +44,46 @@ Widget.types['scheduler'] = {
 			_this.dialog.find('.list').append(list._element);
 			_this.list = list;
 		}, this.settings.list_widget_session);
+
+		this.dialog.dialog({
+			autoOpen: false,
+			title: "{{writeString=wns.scheduler.title}}",
+			open: function() {
+				_this.availableActions(function(actions) {
+					var result = {};
+					for(var name in actions) {
+						result[name] = actions[name].name;
+					}
+					_this.dialog.find('select[name="action"]').populate(result);
+				});
+				if(_this.needs_list_reload) {
+					_this.needs_list_reload = false;
+					_this.list.reload();
+				}
+			},
+			width: 680
+		});
 	},
 
 	//called when this._element is available
 	prepare: function() {
 		var _this = this;
 		this._element.click(function() {
-			_this.dialog.dialog({
-				autoOpen: true,
-				title: "{{writeString=wns.scheduler.title}}",
-				width: 680
-			});
+			_this.dialog.dialog('open');
 		});
 	},
 	
-	refresh: function(timezone_only) {
+	refresh: function(from_list) {
 		this.countScheduled(function(count) {
 			this._element[0].dataset.badgeCount = count;
 		});
-		if(this.list) {
-			this.list.reload();
+		if(!this.dialog.dialog('isOpen')) {
+			this.needs_list_reload = true;
+			return;
 		}
-		if(!timezone_only) {
-			this.availableActions(function(actions) {
-				var result = {};
-				for(var name in actions) {
-					result[name] = actions[name].name;
-				}
-				this.dialog.find('select[name="action"]').populate(result);
-			});
+		this.needs_list_reload = false;
+		if(this.list && !from_list) {
+			this.list.reload();
 		}
 	},
 	
