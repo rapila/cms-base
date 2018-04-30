@@ -38,6 +38,13 @@ jQuery(document).ready(function() {
 
 		Widget.handle('tag-models-changed', sidebar.reload.bind(sidebar));
 
+		// Add handlers for changed sidebar
+		content_list.handle('row-deleted', function(event, returnedResult) {
+			if(returnedResult.sidebar_changed) {
+				sidebar.reload();
+			}
+		});
+
 		// Search result notification
 		AdminInterface.strings.handle_strings_for_list_result('wns.tags.no_result', ['tag_model_name'], content_list, "{{writeString=wns.tags.no_result.default_message}}");
 
