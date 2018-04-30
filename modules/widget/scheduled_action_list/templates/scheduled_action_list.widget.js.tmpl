@@ -1,12 +1,19 @@
 Widget.types['scheduled_action_list'] = {
-	initialize: function() {
-		//called before this._element is available
-		
-	},
-
 	prepare: function() {
 		//called when this._element is available
-		
+		var widget = this._list;
+		widget.handle('list-cell_click', function(event, rowIndex, col, row, cell) {
+			if(col.identifier === 'delete') {
+				var action = widget.cell_for_identifier('action', row).text();
+				var delete_message = AdminInterface.strings.get_string('wns.scheduled_action.delete_warning', {action: action});
+				Widget.confirm("{{writeString=wns.delete_warning_title}}", delete_message, function(confirmed) {
+					if(confirmed) {
+						this.delete_row(row);
+					}
+				}.bind(this));
+				event.stopPropagation();
+			}
+		});
 	},
 	
 	settings: {}

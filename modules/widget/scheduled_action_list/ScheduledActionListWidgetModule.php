@@ -13,7 +13,7 @@ class ScheduledActionListWidgetModule extends SpecializedListWidgetModule {
 	}
 
 	public function getColumnIdentifiers() {
-		return array('action', 'parameters', 'schedule_date', 'execution_date', 'created_by', 'delete');
+		return array('id', 'action', 'parameters', 'schedule_date', 'execution_date', 'created_by', 'delete');
 	}
 
 	public function getCriteria() {
@@ -33,6 +33,11 @@ class ScheduledActionListWidgetModule extends SpecializedListWidgetModule {
 
 	public function setModelId($sModelId) {
 		$this->sModelId = $sModelId;
+	}
+
+	public function deleteRow($aRowData, $oCriteria) {
+		$oScheduledAction = ScheduledActionQuery::create()->findPk($aRowData['id']);
+		if($oScheduledAction) return $oScheduledAction->delete();
 	}
 
 	public function getDatabaseColumnForColumn($sColumnIdentifier) {
