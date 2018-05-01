@@ -8,6 +8,9 @@ class ConsolidatedResourceFileModule extends FileModule {
 	}
 
 	public function renderFile() {
+		if(!$this->sType) {
+			throw new UserError("No type given.");
+		}
 		//Send Content-Type
 		$sCharset = Settings::getSetting('encoding', 'browser', 'utf-8');
 		if($this->sType === ResourceIncluder::RESOURCE_TYPE_CSS) {
@@ -21,6 +24,9 @@ class ConsolidatedResourceFileModule extends FileModule {
 		while(Manager::hasNextPathItem()) {
 			$aKeys[] = Manager::usePath();
 		}
+		if(empty($aKeys)) {
+			throw new UserError("No items requested.");
+		}
 		$sKey = 'consolidated-output-'.$this->sType.'-'.implode('|', $aKeys);
 		$oCachingStrategy = clone CachingStrategy::fromConfig('file');
 		$oCache = new Cache($sKey, 'resource', $oCachingStrategy);
@@ -29,12 +35,12 @@ class ConsolidatedResourceFileModule extends FileModule {
 		$oCache->sendCacheControlHeaders();
 		if(!$oCache->entryExists(false)) {
 			foreach($aKeys as $sItemKey) {
+				if(!preg_match('/^[0-9a-f]+$/', $sItemKey)) {
+					// User tried to load resource with a string that is not a cache key
+					throw new UserError("Consolidated resource $sItemKey does not exist.");
+				}
 				$oItemCache = new Cache($sItemKey, DIRNAME_PRELOAD, $oItemCachingStrategy);
 				if(!$oItemCache->entryExists(false)) {
-					if(StringUtil::endsWith($sItemKey, '.map')) {
-						// Browser tried to load source map referenced in concatenated file, don’t notify developers
-						throw new UserError("Consolidated resource $sItemKey does not exist.");
-					}
 					throw new Exception("Consolidated resource $sItemKey does not exist.");
 				}
 				$oCache->setContents($oItemCache->getContentsAsString()."\n", false, true);
