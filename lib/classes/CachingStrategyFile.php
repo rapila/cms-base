@@ -49,6 +49,15 @@ class CachingStrategyFile extends CachingStrategy {
 		}
 	}
 
+	public function pass(Cache $oCache) {
+		$sPath = $this->getFilePath($oCache);
+		$rFile = fopen($sPath, 'rb');
+		@flock($rFile, LOCK_SH);
+		fpassthru($rFile);
+		@flock($rFile, LOCK_UN);
+		fclose($rFile);
+	}
+
 	public function write(Cache $oCache, $sEntry, $bAppend = false) {
 		$sPath = $this->prepareFilePath($oCache);
 		return file_put_contents($this->getFilePath($oCache), $sEntry, $bAppend ? FILE_APPEND | LOCK_EX : LOCK_EX);
