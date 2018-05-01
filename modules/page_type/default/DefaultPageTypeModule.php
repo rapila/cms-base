@@ -180,8 +180,12 @@ class DefaultPageTypeModule extends PageTypeModule {
 		return $this->aContentObjects[$iObjectId];
 	}
 
-	private function backendModuleInstanceByLanguageObject($oLanguageObject) {
-		return FrontendModule::getModuleInstance($oLanguageObject->getContentObject()->getObjectType(), $oLanguageObject->getDraft());
+	private function backendModuleInstanceByLanguageObject(ContentObject $oContentObject, LanguageObject $oLanguageObject = null) {
+		$oVersion = $oLanguageObject;
+		if($oLanguageObject) {
+			$oVersion = $oLanguageObject->getDraft();
+		}
+		return FrontendModule::getModuleInstance($oContentObject->getObjectType(), $oVersion);
 	}
 
 	public function adminListPossibleFrontendModules() {
@@ -286,7 +290,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 			$oCurrentLanguageObject->setData(null);
 		}
 
-		$oModuleInstance = $this->backendModuleInstanceByLanguageObject($oCurrentLanguageObject);
+		$oModuleInstance = $this->backendModuleInstanceByLanguageObject($oCurrentContentObject, $oCurrentLanguageObject);
 		$oWidget = WidgetModule::getWidget('language_object_control', null, $oCurrentLanguageObject, $oModuleInstance);
 		$oResult = new stdClass();
 		$oResult->control_session_key = $oWidget->getSessionKey();
@@ -301,17 +305,17 @@ class DefaultPageTypeModule extends PageTypeModule {
 		$oCurrentContentObject = $this->contentObjectById($iObjectId);
 		$oCurrentLanguageObject = $oCurrentContentObject->getLanguageObject($this->sLanguageId);
 
-		//Some frontend modules use this
+		// Some frontend modules use this
 		FrontendManager::$CURRENT_PAGE = $oCurrentContentObject->getPage();
-		//Some frontend modules generate links into the current manager – those need to be correct
+		// Some frontend modules generate links into the current manager – those need to be correct
 		PreviewManager::setTemporaryManager();
-		$oModuleInstance = $this->backendModuleInstanceByLanguageObject($oCurrentLanguageObject);
+		$oModuleInstance = $this->backendModuleInstanceByLanguageObject($oCurrentContentObject, $oCurrentLanguageObject);
 		$aResult = array('preview_contents' => $this->getModuleContents($oModuleInstance, false));
 		PreviewManager::revertTemporaryManager();
 		return $aResult;
 	}
 
-	public function adminMoveObject($iObjectId, $iSort, $sNewContainerName=null) {
+	public function adminMoveObject($iObjectId, $iSort, $sNewContainerName = null) {
 		$iSort = (int) $iSort;
 		$oContentObject = ContentObjectQuery::create()->findPk((int) $iObjectId);
 		// fix if content object is deleted in trash, it is moved at the same time but not found anymore!
