@@ -1,0 +1,168 @@
+Widget.types['scheduler'] = {
+	//called before this._element is available
+	initialize: function() {
+		var _this = this;
+		this.dialog = Widget.parseHTML("{{includeTemplate=dialog}}");
+		this.create_dialog = Widget.parseHTML("{{includeTemplate=create}}");
+
+		this.param_prototype = Widget.parseHTML("{{includeTemplate=param}}");
+
+		// Time zone input
+		var current_time_zone, time_zone_select, time_zone_widget;
+
+		time_zone_select = this.dialog.find('select[name="timezone"]');
+		time_zone_select.prepareWidget(function(widget) {
+			time_zone_widget = widget;
+			time_zone_widget.handle('value-changed', function(event, tz) {
+				var prev_time_zone = current_time_zone;
+				current_time_zone = tz;
+				_this.recalcDate(_this.serialize_all(), prev_time_zone, function(newDate) {
+					_this.create_dialog.unserialize(newDate);
+				});
+				_this.updateTimeZone(current_time_zone, function() {
+					_this.refresh();
+				});
+			});
+		});
+
+		this.create_dialog.find('input[name="date"]').datepicker({
+			dateFormat: 'yy-mm-dd'
+		})
+
+		var action_chooser = this.dialog.find('select[name="action"]');
+		this.dialog.find('button').button().click(function() {
+			// Find the supported params for the selected action
+			var action_name = action_chooser.val();
+			var action = (_this.actions||{})[action_name];
+			if(!action) {
+				console.error('Action', action, 'not defined');
+				return;
+			}
+			var params = (action.parameters || [])
+				.map(_this.param_template.bind(_this))
+				.filter(Boolean);
+
+			_this.create_dialog.find('.description').text(action.description||'');
+			_this.create_dialog.find('.params').empty().append(params);
+			Widget.callStatic('detail', 'clickable_labels_for', _this.create_dialog);
+			_this.create_dialog.dialog({
+				appendTo: document.body,
+				autoOpen: true,
+				title: action.name,
+				buttons: [
+					{
+						text: '{{writeString=wns.save}}',
+						click: function() {
+							_this.addSchedule(_this.serialize_all(), function() {
+								_this.refresh();
+							});
+							_this.create_dialog.dialog('destroy');
+						}
+					}
+				]
+			});
+		});
+
+		this.timeZone(function(tz) {
+			current_time_zone = tz;
+			time_zone_select.ensureWidget(function(time_zone_widget) {
+				time_zone_widget.val(tz);
+			});
+			_this.initDate(tz, function(newDate) {
+				this.create_dialog.unserialize(newDate);
+			});
+		});
+
+		var list = _this.dialog.find('.list');
+		Widget.createWithElement('list', function(list) {
+			_this.dialog.find('.list').replaceWith(list._element);
+			_this.list = list;
+			_this.list.handle('row-deleted', _this.refresh.bind(_this, true));
+		}, this.settings.list_widget_session);
+
+		this.dialog.dialog({
+			autoOpen: false,
+			title: "{{writeString=wns.scheduler.title}}",
+			open: function() {
+				if(!_this.actions) {
+					_this.actions = true;
+					_this.availableActions(function(actions) {
+						_this.actions = actions;
+						var result = {};
+						for(var name in actions) {
+							result[name] = actions[name].name;
+						}
+						action_chooser.populate(result);
+					});
+				}
+				if(_this.needs_list_reload) {
+					_this.needs_list_reload = false;
+					_this.list.reload();
+				}
+			},
+			width: 680
+		});
+	},
+
+	//called when this._element is available
+	prepare: function() {
+		var _this = this;
+		this._element.click(function() {
+			_this.dialog.dialog('open');
+		});
+	},
+	
+	refresh: function(from_list) {
+		this.countScheduled(function(count) {
+			this._element[0].dataset.badgeCount = count;
+		});
+		if(!this.dialog.dialog('isOpen')) {
+			this.needs_list_reload = true;
+			return;
+		}
+		this.needs_list_reload = false;
+		if(this.list && !from_list) {
+			this.list.reload();
+		}
+	},
+
+	serialize_all: function() {
+		return Object.assign({}, this.dialog.serializeArrayKV(), this.create_dialog.serializeArrayKV());
+	},
+
+	actions: null,
+
+	param_types: {
+		string: function(param) {
+			return jQuery('<input />').prop({type: 'text'}).val(param.defaultValue);
+		},
+		number: function(param) {
+			return jQuery('<input />').prop({type: 'number', max: param.type.max, min: param.type.min}).val(param.defaultValue);
+		},
+		boolean: function(param) {
+			return jQuery('<input />').prop({type: 'checkbox', checked: !!param.defaultValue});
+		},
+		choice: function(param) {
+			var values = param.type.choice.map(function(v) {
+				return {key: v.value, value: v.name};
+			})
+			return jQuery('<select />').populate(values, param.defaultValue, false);
+		},
+	},
+
+	param_template: function(param, i) {
+		var type_creator = this.param_types[param.type.type];
+		if(!type_creator) {
+			console.error('No param type creator for', param.type, 'exists');
+			return;
+		}
+		var element = this.param_prototype.clone();
+		element.find('label').text(param.name);
+		var field = type_creator(param, element);
+		field.attr('name', 'param[]');
+		element.find('placeholder-field').replaceWith(field);
+		return element;
+	},
+
+	settings: {}
+};

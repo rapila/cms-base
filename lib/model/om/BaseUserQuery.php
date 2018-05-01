@@ -254,6 +254,14 @@
  * @method UserQuery rightJoinReferenceRelatedByUpdatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ReferenceRelatedByUpdatedBy relation
  * @method UserQuery innerJoinReferenceRelatedByUpdatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the ReferenceRelatedByUpdatedBy relation
  *
+ * @method UserQuery leftJoinScheduledActionRelatedByCreatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the ScheduledActionRelatedByCreatedBy relation
+ * @method UserQuery rightJoinScheduledActionRelatedByCreatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ScheduledActionRelatedByCreatedBy relation
+ * @method UserQuery innerJoinScheduledActionRelatedByCreatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the ScheduledActionRelatedByCreatedBy relation
+ *
+ * @method UserQuery leftJoinScheduledActionRelatedByUpdatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the ScheduledActionRelatedByUpdatedBy relation
+ * @method UserQuery rightJoinScheduledActionRelatedByUpdatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ScheduledActionRelatedByUpdatedBy relation
+ * @method UserQuery innerJoinScheduledActionRelatedByUpdatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the ScheduledActionRelatedByUpdatedBy relation
+ *
  * @method User findOne(PropelPDO $con = null) Return the first User matching the query
  * @method User findOneOrCreate(PropelPDO $con = null) Return the first User matching the query, or a new User object populated from the query conditions when no match is found
  *
@@ -4860,6 +4868,154 @@ abstract class BaseUserQuery extends ModelCriteria
         return $this
             ->joinReferenceRelatedByUpdatedBy($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'ReferenceRelatedByUpdatedBy', 'ReferenceQuery');
+    }
+
+    /**
+     * Filter the query by a related ScheduledAction object
+     *
+     * @param   ScheduledAction|PropelObjectCollection $scheduledAction  the related object to use as filter
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return                 UserQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
+     */
+    public function filterByScheduledActionRelatedByCreatedBy($scheduledAction, $comparison = null)
+    {
+        if ($scheduledAction instanceof ScheduledAction) {
+            return $this
+                ->addUsingAlias(UserPeer::ID, $scheduledAction->getCreatedBy(), $comparison);
+        } elseif ($scheduledAction instanceof PropelObjectCollection) {
+            return $this
+                ->useScheduledActionRelatedByCreatedByQuery()
+                ->filterByPrimaryKeys($scheduledAction->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByScheduledActionRelatedByCreatedBy() only accepts arguments of type ScheduledAction or PropelCollection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the ScheduledActionRelatedByCreatedBy relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return UserQuery The current query, for fluid interface
+     */
+    public function joinScheduledActionRelatedByCreatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('ScheduledActionRelatedByCreatedBy');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'ScheduledActionRelatedByCreatedBy');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the ScheduledActionRelatedByCreatedBy relation ScheduledAction object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   ScheduledActionQuery A secondary query class using the current class as primary query
+     */
+    public function useScheduledActionRelatedByCreatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinScheduledActionRelatedByCreatedBy($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'ScheduledActionRelatedByCreatedBy', 'ScheduledActionQuery');
+    }
+
+    /**
+     * Filter the query by a related ScheduledAction object
+     *
+     * @param   ScheduledAction|PropelObjectCollection $scheduledAction  the related object to use as filter
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return                 UserQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
+     */
+    public function filterByScheduledActionRelatedByUpdatedBy($scheduledAction, $comparison = null)
+    {
+        if ($scheduledAction instanceof ScheduledAction) {
+            return $this
+                ->addUsingAlias(UserPeer::ID, $scheduledAction->getUpdatedBy(), $comparison);
+        } elseif ($scheduledAction instanceof PropelObjectCollection) {
+            return $this
+                ->useScheduledActionRelatedByUpdatedByQuery()
+                ->filterByPrimaryKeys($scheduledAction->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByScheduledActionRelatedByUpdatedBy() only accepts arguments of type ScheduledAction or PropelCollection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the ScheduledActionRelatedByUpdatedBy relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return UserQuery The current query, for fluid interface
+     */
+    public function joinScheduledActionRelatedByUpdatedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('ScheduledActionRelatedByUpdatedBy');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'ScheduledActionRelatedByUpdatedBy');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the ScheduledActionRelatedByUpdatedBy relation ScheduledAction object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   ScheduledActionQuery A secondary query class using the current class as primary query
+     */
+    public function useScheduledActionRelatedByUpdatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinScheduledActionRelatedByUpdatedBy($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'ScheduledActionRelatedByUpdatedBy', 'ScheduledActionQuery');
     }
 
     /**

@@ -565,5 +565,29 @@ CREATE TABLE `indirect_references`
     INDEX `indirect_references_FI_2` (`updated_by`)
 ) ENGINE=MyISAM;
 
+-- ---------------------------------------------------------------------
+-- scheduled_actions
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `scheduled_actions`;
+
+CREATE TABLE `scheduled_actions`
+(
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `model_id` VARCHAR(20) NOT NULL,
+    `model_name` VARCHAR(80) NOT NULL,
+    `schedule_date` DATETIME NOT NULL,
+    `execution_date` DATETIME,
+    `action` VARCHAR(80) NOT NULL,
+    `params` LONGBLOB,
+    `created_at` DATETIME,
+    `updated_at` DATETIME,
+    `created_by` INTEGER,
+    `updated_by` INTEGER,
+    PRIMARY KEY (`id`),
+    INDEX `scheduled_actions_FI_1` (`created_by`),
+    INDEX `scheduled_actions_FI_2` (`updated_by`)
+) ENGINE=MyISAM;
+
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;

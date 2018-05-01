@@ -453,6 +453,18 @@ abstract class BaseUser extends BaseObject implements Persistent
     protected $collReferencesRelatedByUpdatedByPartial;
 
     /**
+     * @var        PropelObjectCollection|ScheduledAction[] Collection to store aggregation of ScheduledAction objects.
+     */
+    protected $collScheduledActionsRelatedByCreatedBy;
+    protected $collScheduledActionsRelatedByCreatedByPartial;
+
+    /**
+     * @var        PropelObjectCollection|ScheduledAction[] Collection to store aggregation of ScheduledAction objects.
+     */
+    protected $collScheduledActionsRelatedByUpdatedBy;
+    protected $collScheduledActionsRelatedByUpdatedByPartial;
+
+    /**
      * Flag to prevent endless save loop, if this object is referenced
      * by another object which falls in this transaction.
      * @var        boolean
@@ -771,6 +783,18 @@ abstract class BaseUser extends BaseObject implements Persistent
      * @var		PropelObjectCollection
      */
     protected $referencesRelatedByUpdatedByScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var		PropelObjectCollection
+     */
+    protected $scheduledActionsRelatedByCreatedByScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var		PropelObjectCollection
+     */
+    protected $scheduledActionsRelatedByUpdatedByScheduledForDeletion = null;
 
     /**
      * Applies default values to this object.
@@ -1752,6 +1776,10 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->collReferencesRelatedByCreatedBy = null;
 
             $this->collReferencesRelatedByUpdatedBy = null;
+
+            $this->collScheduledActionsRelatedByCreatedBy = null;
+
+            $this->collScheduledActionsRelatedByUpdatedBy = null;
 
         } // if (deep)
     }
@@ -2835,6 +2863,42 @@ abstract class BaseUser extends BaseObject implements Persistent
                 }
             }
 
+            if ($this->scheduledActionsRelatedByCreatedByScheduledForDeletion !== null) {
+                if (!$this->scheduledActionsRelatedByCreatedByScheduledForDeletion->isEmpty()) {
+                    foreach ($this->scheduledActionsRelatedByCreatedByScheduledForDeletion as $scheduledActionRelatedByCreatedBy) {
+                        // need to save related object because we set the relation to null
+                        $scheduledActionRelatedByCreatedBy->save($con);
+                    }
+                    $this->scheduledActionsRelatedByCreatedByScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collScheduledActionsRelatedByCreatedBy !== null) {
+                foreach ($this->collScheduledActionsRelatedByCreatedBy as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->scheduledActionsRelatedByUpdatedByScheduledForDeletion !== null) {
+                if (!$this->scheduledActionsRelatedByUpdatedByScheduledForDeletion->isEmpty()) {
+                    foreach ($this->scheduledActionsRelatedByUpdatedByScheduledForDeletion as $scheduledActionRelatedByUpdatedBy) {
+                        // need to save related object because we set the relation to null
+                        $scheduledActionRelatedByUpdatedBy->save($con);
+                    }
+                    $this->scheduledActionsRelatedByUpdatedByScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collScheduledActionsRelatedByUpdatedBy !== null) {
+                foreach ($this->collScheduledActionsRelatedByUpdatedBy as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
             $this->alreadyInSave = false;
 
         }
@@ -3500,6 +3564,22 @@ abstract class BaseUser extends BaseObject implements Persistent
                     }
                 }
 
+                if ($this->collScheduledActionsRelatedByCreatedBy !== null) {
+                    foreach ($this->collScheduledActionsRelatedByCreatedBy as $referrerFK) {
+                        if (!$referrerFK->validate($columns)) {
+                            $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+                        }
+                    }
+                }
+
+                if ($this->collScheduledActionsRelatedByUpdatedBy !== null) {
+                    foreach ($this->collScheduledActionsRelatedByUpdatedBy as $referrerFK) {
+                        if (!$referrerFK->validate($columns)) {
+                            $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+                        }
+                    }
+                }
+
 
             $this->alreadyInValidation = false;
         }
@@ -3799,6 +3879,12 @@ abstract class BaseUser extends BaseObject implements Persistent
             }
             if (null !== $this->collReferencesRelatedByUpdatedBy) {
                 $result['ReferencesRelatedByUpdatedBy'] = $this->collReferencesRelatedByUpdatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collScheduledActionsRelatedByCreatedBy) {
+                $result['ScheduledActionsRelatedByCreatedBy'] = $this->collScheduledActionsRelatedByCreatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collScheduledActionsRelatedByUpdatedBy) {
+                $result['ScheduledActionsRelatedByUpdatedBy'] = $this->collScheduledActionsRelatedByUpdatedBy->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -4353,6 +4439,18 @@ abstract class BaseUser extends BaseObject implements Persistent
                 }
             }
 
+            foreach ($this->getScheduledActionsRelatedByCreatedBy() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addScheduledActionRelatedByCreatedBy($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getScheduledActionsRelatedByUpdatedBy() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addScheduledActionRelatedByUpdatedBy($relObj->copy($deepCopy));
+                }
+            }
+
             //unflag object copy
             $this->startCopy = false;
         } // if ($deepCopy)
@@ -4615,6 +4713,12 @@ abstract class BaseUser extends BaseObject implements Persistent
         }
         if ('ReferenceRelatedByUpdatedBy' == $relationName) {
             $this->initReferencesRelatedByUpdatedBy();
+        }
+        if ('ScheduledActionRelatedByCreatedBy' == $relationName) {
+            $this->initScheduledActionsRelatedByCreatedBy();
+        }
+        if ('ScheduledActionRelatedByUpdatedBy' == $relationName) {
+            $this->initScheduledActionsRelatedByUpdatedBy();
         }
     }
 
@@ -17225,6 +17329,456 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
+     * Clears out the collScheduledActionsRelatedByCreatedBy collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return User The current object (for fluent API support)
+     * @see        addScheduledActionsRelatedByCreatedBy()
+     */
+    public function clearScheduledActionsRelatedByCreatedBy()
+    {
+        $this->collScheduledActionsRelatedByCreatedBy = null; // important to set this to null since that means it is uninitialized
+        $this->collScheduledActionsRelatedByCreatedByPartial = null;
+
+        return $this;
+    }
+
+    /**
+     * reset is the collScheduledActionsRelatedByCreatedBy collection loaded partially
+     *
+     * @return void
+     */
+    public function resetPartialScheduledActionsRelatedByCreatedBy($v = true)
+    {
+        $this->collScheduledActionsRelatedByCreatedByPartial = $v;
+    }
+
+    /**
+     * Initializes the collScheduledActionsRelatedByCreatedBy collection.
+     *
+     * By default this just sets the collScheduledActionsRelatedByCreatedBy collection to an empty array (like clearcollScheduledActionsRelatedByCreatedBy());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initScheduledActionsRelatedByCreatedBy($overrideExisting = true)
+    {
+        if (null !== $this->collScheduledActionsRelatedByCreatedBy && !$overrideExisting) {
+            return;
+        }
+        $this->collScheduledActionsRelatedByCreatedBy = new PropelObjectCollection();
+        $this->collScheduledActionsRelatedByCreatedBy->setModel('ScheduledAction');
+    }
+
+    /**
+     * Gets an array of ScheduledAction objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this User is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @return PropelObjectCollection|ScheduledAction[] List of ScheduledAction objects
+     * @throws PropelException
+     */
+    public function getScheduledActionsRelatedByCreatedBy($criteria = null, PropelPDO $con = null)
+    {
+        $partial = $this->collScheduledActionsRelatedByCreatedByPartial && !$this->isNew();
+        if (null === $this->collScheduledActionsRelatedByCreatedBy || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collScheduledActionsRelatedByCreatedBy) {
+                // return empty collection
+                $this->initScheduledActionsRelatedByCreatedBy();
+            } else {
+                $collScheduledActionsRelatedByCreatedBy = ScheduledActionQuery::create(null, $criteria)
+                    ->filterByUserRelatedByCreatedBy($this)
+                    ->find($con);
+                if (null !== $criteria) {
+                    if (false !== $this->collScheduledActionsRelatedByCreatedByPartial && count($collScheduledActionsRelatedByCreatedBy)) {
+                      $this->initScheduledActionsRelatedByCreatedBy(false);
+
+                      foreach ($collScheduledActionsRelatedByCreatedBy as $obj) {
+                        if (false == $this->collScheduledActionsRelatedByCreatedBy->contains($obj)) {
+                          $this->collScheduledActionsRelatedByCreatedBy->append($obj);
+                        }
+                      }
+
+                      $this->collScheduledActionsRelatedByCreatedByPartial = true;
+                    }
+
+                    $collScheduledActionsRelatedByCreatedBy->getInternalIterator()->rewind();
+
+                    return $collScheduledActionsRelatedByCreatedBy;
+                }
+
+                if ($partial && $this->collScheduledActionsRelatedByCreatedBy) {
+                    foreach ($this->collScheduledActionsRelatedByCreatedBy as $obj) {
+                        if ($obj->isNew()) {
+                            $collScheduledActionsRelatedByCreatedBy[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collScheduledActionsRelatedByCreatedBy = $collScheduledActionsRelatedByCreatedBy;
+                $this->collScheduledActionsRelatedByCreatedByPartial = false;
+            }
+        }
+
+        return $this->collScheduledActionsRelatedByCreatedBy;
+    }
+
+    /**
+     * Sets a collection of ScheduledActionRelatedByCreatedBy objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param PropelCollection $scheduledActionsRelatedByCreatedBy A Propel collection.
+     * @param PropelPDO $con Optional connection object
+     * @return User The current object (for fluent API support)
+     */
+    public function setScheduledActionsRelatedByCreatedBy(PropelCollection $scheduledActionsRelatedByCreatedBy, PropelPDO $con = null)
+    {
+        $scheduledActionsRelatedByCreatedByToDelete = $this->getScheduledActionsRelatedByCreatedBy(new Criteria(), $con)->diff($scheduledActionsRelatedByCreatedBy);
+
+
+        $this->scheduledActionsRelatedByCreatedByScheduledForDeletion = $scheduledActionsRelatedByCreatedByToDelete;
+
+        foreach ($scheduledActionsRelatedByCreatedByToDelete as $scheduledActionRelatedByCreatedByRemoved) {
+            $scheduledActionRelatedByCreatedByRemoved->setUserRelatedByCreatedBy(null);
+        }
+
+        $this->collScheduledActionsRelatedByCreatedBy = null;
+        foreach ($scheduledActionsRelatedByCreatedBy as $scheduledActionRelatedByCreatedBy) {
+            $this->addScheduledActionRelatedByCreatedBy($scheduledActionRelatedByCreatedBy);
+        }
+
+        $this->collScheduledActionsRelatedByCreatedBy = $scheduledActionsRelatedByCreatedBy;
+        $this->collScheduledActionsRelatedByCreatedByPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related ScheduledAction objects.
+     *
+     * @param Criteria $criteria
+     * @param boolean $distinct
+     * @param PropelPDO $con
+     * @return int             Count of related ScheduledAction objects.
+     * @throws PropelException
+     */
+    public function countScheduledActionsRelatedByCreatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+    {
+        $partial = $this->collScheduledActionsRelatedByCreatedByPartial && !$this->isNew();
+        if (null === $this->collScheduledActionsRelatedByCreatedBy || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collScheduledActionsRelatedByCreatedBy) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getScheduledActionsRelatedByCreatedBy());
+            }
+            $query = ScheduledActionQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByUserRelatedByCreatedBy($this)
+                ->count($con);
+        }
+
+        return count($this->collScheduledActionsRelatedByCreatedBy);
+    }
+
+    /**
+     * Method called to associate a ScheduledAction object to this object
+     * through the ScheduledAction foreign key attribute.
+     *
+     * @param    ScheduledAction $l ScheduledAction
+     * @return User The current object (for fluent API support)
+     */
+    public function addScheduledActionRelatedByCreatedBy(ScheduledAction $l)
+    {
+        if ($this->collScheduledActionsRelatedByCreatedBy === null) {
+            $this->initScheduledActionsRelatedByCreatedBy();
+            $this->collScheduledActionsRelatedByCreatedByPartial = true;
+        }
+
+        if (!in_array($l, $this->collScheduledActionsRelatedByCreatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddScheduledActionRelatedByCreatedBy($l);
+
+            if ($this->scheduledActionsRelatedByCreatedByScheduledForDeletion and $this->scheduledActionsRelatedByCreatedByScheduledForDeletion->contains($l)) {
+                $this->scheduledActionsRelatedByCreatedByScheduledForDeletion->remove($this->scheduledActionsRelatedByCreatedByScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param	ScheduledActionRelatedByCreatedBy $scheduledActionRelatedByCreatedBy The scheduledActionRelatedByCreatedBy object to add.
+     */
+    protected function doAddScheduledActionRelatedByCreatedBy($scheduledActionRelatedByCreatedBy)
+    {
+        $this->collScheduledActionsRelatedByCreatedBy[]= $scheduledActionRelatedByCreatedBy;
+        $scheduledActionRelatedByCreatedBy->setUserRelatedByCreatedBy($this);
+    }
+
+    /**
+     * @param	ScheduledActionRelatedByCreatedBy $scheduledActionRelatedByCreatedBy The scheduledActionRelatedByCreatedBy object to remove.
+     * @return User The current object (for fluent API support)
+     */
+    public function removeScheduledActionRelatedByCreatedBy($scheduledActionRelatedByCreatedBy)
+    {
+        if ($this->getScheduledActionsRelatedByCreatedBy()->contains($scheduledActionRelatedByCreatedBy)) {
+            $this->collScheduledActionsRelatedByCreatedBy->remove($this->collScheduledActionsRelatedByCreatedBy->search($scheduledActionRelatedByCreatedBy));
+            if (null === $this->scheduledActionsRelatedByCreatedByScheduledForDeletion) {
+                $this->scheduledActionsRelatedByCreatedByScheduledForDeletion = clone $this->collScheduledActionsRelatedByCreatedBy;
+                $this->scheduledActionsRelatedByCreatedByScheduledForDeletion->clear();
+            }
+            $this->scheduledActionsRelatedByCreatedByScheduledForDeletion[]= $scheduledActionRelatedByCreatedBy;
+            $scheduledActionRelatedByCreatedBy->setUserRelatedByCreatedBy(null);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Clears out the collScheduledActionsRelatedByUpdatedBy collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return User The current object (for fluent API support)
+     * @see        addScheduledActionsRelatedByUpdatedBy()
+     */
+    public function clearScheduledActionsRelatedByUpdatedBy()
+    {
+        $this->collScheduledActionsRelatedByUpdatedBy = null; // important to set this to null since that means it is uninitialized
+        $this->collScheduledActionsRelatedByUpdatedByPartial = null;
+
+        return $this;
+    }
+
+    /**
+     * reset is the collScheduledActionsRelatedByUpdatedBy collection loaded partially
+     *
+     * @return void
+     */
+    public function resetPartialScheduledActionsRelatedByUpdatedBy($v = true)
+    {
+        $this->collScheduledActionsRelatedByUpdatedByPartial = $v;
+    }
+
+    /**
+     * Initializes the collScheduledActionsRelatedByUpdatedBy collection.
+     *
+     * By default this just sets the collScheduledActionsRelatedByUpdatedBy collection to an empty array (like clearcollScheduledActionsRelatedByUpdatedBy());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initScheduledActionsRelatedByUpdatedBy($overrideExisting = true)
+    {
+        if (null !== $this->collScheduledActionsRelatedByUpdatedBy && !$overrideExisting) {
+            return;
+        }
+        $this->collScheduledActionsRelatedByUpdatedBy = new PropelObjectCollection();
+        $this->collScheduledActionsRelatedByUpdatedBy->setModel('ScheduledAction');
+    }
+
+    /**
+     * Gets an array of ScheduledAction objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this User is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @return PropelObjectCollection|ScheduledAction[] List of ScheduledAction objects
+     * @throws PropelException
+     */
+    public function getScheduledActionsRelatedByUpdatedBy($criteria = null, PropelPDO $con = null)
+    {
+        $partial = $this->collScheduledActionsRelatedByUpdatedByPartial && !$this->isNew();
+        if (null === $this->collScheduledActionsRelatedByUpdatedBy || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collScheduledActionsRelatedByUpdatedBy) {
+                // return empty collection
+                $this->initScheduledActionsRelatedByUpdatedBy();
+            } else {
+                $collScheduledActionsRelatedByUpdatedBy = ScheduledActionQuery::create(null, $criteria)
+                    ->filterByUserRelatedByUpdatedBy($this)
+                    ->find($con);
+                if (null !== $criteria) {
+                    if (false !== $this->collScheduledActionsRelatedByUpdatedByPartial && count($collScheduledActionsRelatedByUpdatedBy)) {
+                      $this->initScheduledActionsRelatedByUpdatedBy(false);
+
+                      foreach ($collScheduledActionsRelatedByUpdatedBy as $obj) {
+                        if (false == $this->collScheduledActionsRelatedByUpdatedBy->contains($obj)) {
+                          $this->collScheduledActionsRelatedByUpdatedBy->append($obj);
+                        }
+                      }
+
+                      $this->collScheduledActionsRelatedByUpdatedByPartial = true;
+                    }
+
+                    $collScheduledActionsRelatedByUpdatedBy->getInternalIterator()->rewind();
+
+                    return $collScheduledActionsRelatedByUpdatedBy;
+                }
+
+                if ($partial && $this->collScheduledActionsRelatedByUpdatedBy) {
+                    foreach ($this->collScheduledActionsRelatedByUpdatedBy as $obj) {
+                        if ($obj->isNew()) {
+                            $collScheduledActionsRelatedByUpdatedBy[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collScheduledActionsRelatedByUpdatedBy = $collScheduledActionsRelatedByUpdatedBy;
+                $this->collScheduledActionsRelatedByUpdatedByPartial = false;
+            }
+        }
+
+        return $this->collScheduledActionsRelatedByUpdatedBy;
+    }
+
+    /**
+     * Sets a collection of ScheduledActionRelatedByUpdatedBy objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param PropelCollection $scheduledActionsRelatedByUpdatedBy A Propel collection.
+     * @param PropelPDO $con Optional connection object
+     * @return User The current object (for fluent API support)
+     */
+    public function setScheduledActionsRelatedByUpdatedBy(PropelCollection $scheduledActionsRelatedByUpdatedBy, PropelPDO $con = null)
+    {
+        $scheduledActionsRelatedByUpdatedByToDelete = $this->getScheduledActionsRelatedByUpdatedBy(new Criteria(), $con)->diff($scheduledActionsRelatedByUpdatedBy);
+
+
+        $this->scheduledActionsRelatedByUpdatedByScheduledForDeletion = $scheduledActionsRelatedByUpdatedByToDelete;
+
+        foreach ($scheduledActionsRelatedByUpdatedByToDelete as $scheduledActionRelatedByUpdatedByRemoved) {
+            $scheduledActionRelatedByUpdatedByRemoved->setUserRelatedByUpdatedBy(null);
+        }
+
+        $this->collScheduledActionsRelatedByUpdatedBy = null;
+        foreach ($scheduledActionsRelatedByUpdatedBy as $scheduledActionRelatedByUpdatedBy) {
+            $this->addScheduledActionRelatedByUpdatedBy($scheduledActionRelatedByUpdatedBy);
+        }
+
+        $this->collScheduledActionsRelatedByUpdatedBy = $scheduledActionsRelatedByUpdatedBy;
+        $this->collScheduledActionsRelatedByUpdatedByPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related ScheduledAction objects.
+     *
+     * @param Criteria $criteria
+     * @param boolean $distinct
+     * @param PropelPDO $con
+     * @return int             Count of related ScheduledAction objects.
+     * @throws PropelException
+     */
+    public function countScheduledActionsRelatedByUpdatedBy(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+    {
+        $partial = $this->collScheduledActionsRelatedByUpdatedByPartial && !$this->isNew();
+        if (null === $this->collScheduledActionsRelatedByUpdatedBy || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collScheduledActionsRelatedByUpdatedBy) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getScheduledActionsRelatedByUpdatedBy());
+            }
+            $query = ScheduledActionQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByUserRelatedByUpdatedBy($this)
+                ->count($con);
+        }
+
+        return count($this->collScheduledActionsRelatedByUpdatedBy);
+    }
+
+    /**
+     * Method called to associate a ScheduledAction object to this object
+     * through the ScheduledAction foreign key attribute.
+     *
+     * @param    ScheduledAction $l ScheduledAction
+     * @return User The current object (for fluent API support)
+     */
+    public function addScheduledActionRelatedByUpdatedBy(ScheduledAction $l)
+    {
+        if ($this->collScheduledActionsRelatedByUpdatedBy === null) {
+            $this->initScheduledActionsRelatedByUpdatedBy();
+            $this->collScheduledActionsRelatedByUpdatedByPartial = true;
+        }
+
+        if (!in_array($l, $this->collScheduledActionsRelatedByUpdatedBy->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddScheduledActionRelatedByUpdatedBy($l);
+
+            if ($this->scheduledActionsRelatedByUpdatedByScheduledForDeletion and $this->scheduledActionsRelatedByUpdatedByScheduledForDeletion->contains($l)) {
+                $this->scheduledActionsRelatedByUpdatedByScheduledForDeletion->remove($this->scheduledActionsRelatedByUpdatedByScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param	ScheduledActionRelatedByUpdatedBy $scheduledActionRelatedByUpdatedBy The scheduledActionRelatedByUpdatedBy object to add.
+     */
+    protected function doAddScheduledActionRelatedByUpdatedBy($scheduledActionRelatedByUpdatedBy)
+    {
+        $this->collScheduledActionsRelatedByUpdatedBy[]= $scheduledActionRelatedByUpdatedBy;
+        $scheduledActionRelatedByUpdatedBy->setUserRelatedByUpdatedBy($this);
+    }
+
+    /**
+     * @param	ScheduledActionRelatedByUpdatedBy $scheduledActionRelatedByUpdatedBy The scheduledActionRelatedByUpdatedBy object to remove.
+     * @return User The current object (for fluent API support)
+     */
+    public function removeScheduledActionRelatedByUpdatedBy($scheduledActionRelatedByUpdatedBy)
+    {
+        if ($this->getScheduledActionsRelatedByUpdatedBy()->contains($scheduledActionRelatedByUpdatedBy)) {
+            $this->collScheduledActionsRelatedByUpdatedBy->remove($this->collScheduledActionsRelatedByUpdatedBy->search($scheduledActionRelatedByUpdatedBy));
+            if (null === $this->scheduledActionsRelatedByUpdatedByScheduledForDeletion) {
+                $this->scheduledActionsRelatedByUpdatedByScheduledForDeletion = clone $this->collScheduledActionsRelatedByUpdatedBy;
+                $this->scheduledActionsRelatedByUpdatedByScheduledForDeletion->clear();
+            }
+            $this->scheduledActionsRelatedByUpdatedByScheduledForDeletion[]= $scheduledActionRelatedByUpdatedBy;
+            $scheduledActionRelatedByUpdatedBy->setUserRelatedByUpdatedBy(null);
+        }
+
+        return $this;
+    }
+
+    /**
      * Clears the current object and sets all attributes to their default values
      */
     public function clear()
@@ -17521,6 +18075,16 @@ abstract class BaseUser extends BaseObject implements Persistent
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collScheduledActionsRelatedByCreatedBy) {
+                foreach ($this->collScheduledActionsRelatedByCreatedBy as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collScheduledActionsRelatedByUpdatedBy) {
+                foreach ($this->collScheduledActionsRelatedByUpdatedBy as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
             if ($this->aLanguageRelatedByLanguageId instanceof Persistent) {
               $this->aLanguageRelatedByLanguageId->clearAllReferences($deep);
             }
@@ -17728,6 +18292,14 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->collReferencesRelatedByUpdatedBy->clearIterator();
         }
         $this->collReferencesRelatedByUpdatedBy = null;
+        if ($this->collScheduledActionsRelatedByCreatedBy instanceof PropelCollection) {
+            $this->collScheduledActionsRelatedByCreatedBy->clearIterator();
+        }
+        $this->collScheduledActionsRelatedByCreatedBy = null;
+        if ($this->collScheduledActionsRelatedByUpdatedBy instanceof PropelCollection) {
+            $this->collScheduledActionsRelatedByUpdatedBy->clearIterator();
+        }
+        $this->collScheduledActionsRelatedByUpdatedBy = null;
         $this->aLanguageRelatedByLanguageId = null;
     }
 
