@@ -244,6 +244,14 @@ h3.status
 				margin 3px
 				padding 5px 6px
 				min-height 15.6px
+				min-width: 16px;
+				height: 12px;
+				display: flex
+				align-items: center
+				.rapila-icon
+					cursor pointer
+					font-size 1.2em
+					margin-right 0.5em
 				&.language_object_empty
 					background #e3ef99 url("../../images/admin/filled_object_bg_gradient_empty.png") repeat-x right bottom
 					.remove_button
@@ -254,7 +262,10 @@ h3.status
 				&.has_condition
 					.edit_condition_button
 						opacity 1
-
+				.module_name
+					flex-grow 1
+					overflow hidden
+					text-overflow ellipsis
 				.draft_status
 					display none
 				&.is_draft .draft_status

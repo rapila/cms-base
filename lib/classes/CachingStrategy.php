@@ -43,7 +43,7 @@ abstract class CachingStrategy {
 	public function encodedKey(Cache $oCache) {
 		$sKey = $oCache->getKey();
 		if($this->key_encode) {
-			$sKey = call_user_func($this->key_encode, $sKey);
+			$sKey = hash($this->key_encode, $sKey);
 		}
 		return $sKey;
 	}

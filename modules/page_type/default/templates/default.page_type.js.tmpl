@@ -281,9 +281,9 @@
 							}, function(widget) {
 								if(widget.additional_buttons) {
 									var additional_button_pane = preview_bar.find('.additional-buttons');
-									var button_prototype = jQuery('<div/>', {'class': 'ui-icon ui-corner-all'});
+									var button_prototype = jQuery('<span/>', {'class': 'rapila-icon'});
 									jQuery.each(widget.additional_buttons, function(i, button) {
-										var button_element = button_prototype.clone().addClass('ui-icon-'+button.icon).click(button.action.bind(widget)).attr('title', button.text);
+										var button_element = button_prototype.clone().addClass(button.icon).click(button.action.bind(widget)).attr('title', button.text).text(button.icon);
 										additional_button_pane.append(button_element);
 									});
 								}
