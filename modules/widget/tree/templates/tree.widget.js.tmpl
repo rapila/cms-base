@@ -1,3 +1,36 @@
+$.jstree.plugins.tree_widget = function(options, parent) {
+	var widget = options.widget;
+	if(!widget) {
+		return;
+	}
+	this.redraw_node = function(node, deep, callback, force_render) {
+		node = this.get_node(node);
+		var obj = parent.redraw_node.apply(this, arguments);
+		if(!obj) {
+			return obj;
+		}
+		var $obj = jQuery(obj);
+		// Init drop target (for tags, etc.)
+		if(widget.dnd) {
+			widget.dnd.init_dnd($obj, widget.settings.model_name, node.id, true);
+		}
+		// Set primary icon
+		var primary_icon = widget.settings.primary_icon_from_item(node.data);
+		var $primary_icon = $obj.find('> .jstree-anchor > i.jstree-themeicon').text(primary_icon);
+		// Add secondary icons
+		var icons = widget.settings.icons_from_item(node.data)
+			.map(function(icon) {
+				return jQuery('<span/>').addClass('rapila-icon status').text(icon||'');
+			});
+		$obj.children('.jstree-anchor').append(icons);
+		// Wrap title with span.title
+		var title = $primary_icon[0].nextSibling;
+		var $title = jQuery('<span/>').addClass('title').text(title.textContent||'');
+		title.parentNode.replaceChild($title[0], title);
+		return obj;
+	};
+};
+
 Widget.types.tree = {
 	prepare: function() {
 		var _this = this;
@@ -11,90 +44,66 @@ Widget.types.tree = {
 			}
 		}
 
-		// Item click handler
-		this._element.bind('select_node.jstree', function(event) {
-			// Get the selected item
-			var element = _this._tree.get_selected();
-			// Open it
-			if(!_this._tree.is_open(element)) {
-				_this._tree.open_node(element);
-			}
-			// Select it
-			_this.activate(element);
-		});
-
-		//Open initially opened items
-		this._element.one('loaded.jstree', function(event, result) {
-			var open_initial_nodes = function(event, data) {
-				var callback = arguments.callee;
-				var opened_node = data.rslt.obj;
-				_this._tree._get_children(opened_node).each(function() {
-					var node = jQuery(this);
-					var data = node.data('jstree');
-					if(_this.settings.is_active(data)) {
-						_this._tree.select_node(node);
-					} else if(_this.settings.is_open(data)) {
-						_this._element.one('open_node.jstree', callback);
-						_this._tree.open_node(node);
-					}
-				});
-			};
-			open_initial_nodes(null, {rslt: {obj: _this._element}});
-		});
-
 		this._element.jstree({
-			plugins: ["ui", "tree_widget", "crrm", "dnd", "themeroller"],
-			tree_widget: {widget: _this},
-			crrm: {
-				move: {
-					default_position: 'first',
-					check_move: function(data) {
-						var src_data = data.o.data('jstree');
-						if(!_this.settings.may_move_item(src_data)) {
-							return false;
-						}
-						var dest_data = data.r !== -1 && data.r.data('jstree');
-						if(!dest_data || !data.p) {
-							return false;
-						}
-						var result = false;
-						if(data.p === 'inside' || data.p === 'first' || data.p === 'last') {
-							result = _this.settings.may_create_child(dest_data);
-						} else {
-							result = _this.settings.may_create_sibling(dest_data);
-						}
-						return result;
+			// plugins: ['dnd', 'unique', 'state', 'tree_widget', 'wholerow'],
+			plugins: ['dnd', 'unique', 'state', 'tree_widget'],
+			core: {
+				data: this.load_item.bind(this),
+				check_callback: function(operation, node, parent, position, more) {
+					if(operation !== 'move_node') {
+						// FIXME: Support create_node, rename_node, delete_node, copy_node, edit operations
+						return false;
 					}
-				}
+					var src_data = node.data;
+					if(!_this.settings.may_move_item(src_data)) {
+						return false;
+					}
+					var dest_data = parent.data;
+					if(!dest_data) {
+						return false;
+					}
+					return _this.settings.may_create_child(dest_data);
+				},
+				multiple: false,
+				force_text: true,
 			},
-
+			state: {
+				key: this.name+'|'+this.settings.key+'|'+(this.settings.model_name || ''),
+				preserve_loaded: true,
+			},
 			dnd: {
-				//TODO: fill in function callbacks for sort, move and deny
-				drag_target: false,
-				drop_target: false
+				copy: false,
+				is_draggable: function(node) {
+					return _this.settings.may_move_item(node[0].data);
+				},
+				check_while_dragging: false,
+				use_html5: false
 			},
-
-			ui: {
-				select_limit: 1,
-				selected_parent_close: false,
-				select_multiple_modifier: false
-			}
+			tree_widget: {widget: this}
 		});
-		this._tree = jQuery.jstree._reference(this._element);
-		this._element.bind('move_node.jstree', function(event, data) {
-			_this.moveItem(_this.identifier_from_element(data.rslt.o), _this.identifier_from_element(data.rslt.r), data.rslt.p, function(res, error) {
+
+		this._tree = jQuery.jstree.reference(this._element);
+
+		// Item click handler
+		this._element.on('select_node.jstree', function(event, info) {
+			// Open it
+			_this._tree.open_node(info.node);
+			// Select it
+			_this.activate(info.node.data);
+		});
+
+		this._element.on('move_node.jstree', function(event, info) {
+			_this.moveItem(info.node.id, info.parent, info.position, function(res, error) {
 				if(error) {
-					jQuery.jstree.rollback(data.rlbk);
+					_this.reload();
 				}
 			}, WidgetJSONOptions.with_callback_handles_error(false));
-		}).bind('refresh.jstree', function(event, data) {
-			if(_this.current_element_identifier && _this.current_element().length == 0) {
-				var new_element = _this.element_with_identifier(_this.current_element_identifier);
-				_this._tree.deselect_all();
-				_this._tree.select_node(new_element);
+		}).on('refresh.jstree', function(event, data) {
+			// TODO: Check if still needed
+			if(_this.current_element_identifier) {
+				_this._tree.select_node(_this.current_element_identifier);
 			}
 		});
-		// this.reload();
 	},
 
 	reload: function() {
@@ -103,46 +112,44 @@ Widget.types.tree = {
 
 	load_item: function(item, success) {
 		var _this = this;
-		var id = item == -1 ? null : this.identifier_from_element(item);
+		var id = item.id;
+		if(id === '#') {
+			// Root item
+			id = null;
+		}
 		this.listChildren(id, function(children) {
-			var result = [];
-			jQuery.each(children, function(i, child) {
-				var icons = _this.settings.icons_from_item(child);
-				jQuery.each(icons, function(i, theIcon) {
-					icons[i] = 'ui-icon ui-icon-'+theIcon;
-				});
-				var node = {
-					data: {title: _this.settings.description_from_item(child), icon: icons},
-					metadata: child
+			var result = children.map(function(child) {
+				var has_children = _this.settings.has_children(child);
+				return {
+					id: _this.settings.identifier_from_data(child),
+					text: _this.settings.description_from_item(child),
+					icon: 'rapila-icon',
+					state: {
+						opened: has_children && _this.settings.is_open(child),
+						selected: _this.settings.is_active(child),
+						loaded: !has_children,
+					},
+					children: has_children ? [] : null,
+					data: child
 				};
-				if(_this.settings.has_children(child)) {
-					node.state = _this.settings.is_open(child) ? 'closed' : 'closed';
-				}
-				result.push(node);
 			});
 			success(result);
 		});
 	},
 
-	activate: function(element) {
-		var new_identifier = this.identifier_from_element(element);
+	activate: function(data) {
+		var new_identifier = this.settings.identifier_from_data(data);
 		var has_changed = this.current_element_identifier !== new_identifier;
 		this.current_element_identifier = new_identifier;
-		this.fire('tree_item-activated', element, this.current_element_identifier, has_changed);
+		this.fire('tree_item-activated', data, new_identifier, has_changed);
 	},
 
-	parent_of: function(element) {
-		return this._tree._get_parent(element);
+	parent_of: function(id) {
+		return this._tree.get_parent(id);
 	},
 
-	remove_element_with_identifier: function(data) {
-		var element = this.element_with_identifier(data);
-		var parent = this.parent_of(element);
-		// var is_selected = element.is('.ui-state-active');
-		this._tree.remove(element);
-		// if(is_selected) {
-		// 	this.activate(parent);
-		// }
+	remove_element_with_identifier: function(id) {
+		this._tree.remove(id);
 	},
 
 	current_element: function() {
@@ -153,64 +160,31 @@ Widget.types.tree = {
 		return jQuery('#admin_sidebar').find('li');
 	},
 
-	element_with_identifier: function(data) {
-		var result = null;
-		var widget = this;
-		this._element.find('li').each(function() {
-			if(widget.identifier_from_element(jQuery(this)) === data) {
-				result = jQuery(this);
-				return false;
-			}
-		});
-		return result;
-	},
-
-	update_element: function(element) {
-		var data = arguments[1] || this.identifier_from_element(element);
-		this.loadItem(data, function(item) {
-			var icons = element.children('.ui-icons').empty();
-			var name = element.children('span').text(this.settings.description_from_item(item));
-			var opener = element.children('.tree-opener').removeClass('no-children');
-			if(!this.settings.has_children(item)) {
-				element.removeClass('opened');
-				opener.addClass('no-children').removeClass('opened closed');
-			}
-			this.fire('updated', element, item);
-		});
-	},
-
-	identifier_from_element: function(element) {
-		return this.settings.identifier_from_data(element.data('jstree'));
-	},
-
 	/**
 	* Reloads the children of a given element (li) as well as its properties.
 	* The item retains its open/closed state (except if true is passed for the `open` argument, in which case it is opened)
 	* @param element the element to reload
 	*/
-	reload_element: function(element, open) {
-		this._tree.refresh(element);
+	reload_element: function(id, open) {
+		this._tree.refresh_node(id);
 		if(open) {
-			this._element.one('refresh.jstree', function() {
-				this._tree.open_node(element);
+			this._element.one('refresh_node.jstree', function() {
+				this._tree.open_node(id);
 			}.bind(this));
 		}
 	},
 
 	update_elements: function() {
-		var tree = this;
-		tree._element.find('li').each(function() {
-			tree.update_element(jQuery(this));
-		});
+		this._tree.refresh();
 	},
 
 	current_element_identifier: null,
 
 	settings: {
+		key: 'tree',
 		description_from_item: jQuery.noop,
 		has_children: jQuery.noop,
 		may_create_child: jQuery.noop,
-		may_create_sibling: jQuery.noop,
 		may_move_item: jQuery.noop,
 		identifier_from_data: jQuery.noop,
 		is_open: jQuery.noop,
@@ -218,6 +192,7 @@ Widget.types.tree = {
 		custom_class: jQuery.noop,
 		allow_reorder: jQuery.noop,
 		icons_from_item: jQuery.noop,
+		primary_icon_from_item: jQuery.noop,
 		init_dnd: false
 	}
 };

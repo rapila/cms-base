@@ -67,7 +67,7 @@ Widget.types.tag_area = {
 		}
 		tag.append(end);
 		tag.appendTo(this._element);
-		tag.bind('dblclick', function() {
+		tag.on('dblclick', function() {
 			_this.tagId(name, function(id) {
 				if(id !== null) {
 					Widget.create('tag_detail', function(tag_detail) {

@@ -5,29 +5,14 @@ general:
 
 libraries:
   jquery:
-    url: '//ajax.googleapis.com/ajax/libs/jquery/${version}/jquery.min.js'
-    url_uncompressed: '//ajax.googleapis.com/ajax/libs/jquery/${version}/jquery.js'
+    url: '//code.jquery.com/jquery-${version}.min.js'
+    url_uncompressed: '//code.jquery.com/jquery-${version}.js'
   jqueryui:
-    url: '//ajax.googleapis.com/ajax/libs/jqueryui/${version}/jquery-ui.min.js'
-    url_uncompressed: '//ajax.googleapis.com/ajax/libs/jqueryui/${version}/jquery-ui.js'
-  prototype: '//ajax.googleapis.com/ajax/libs/prototype/${version}/prototype.js'
-  scriptaculous: '//ajax.googleapis.com/ajax/libs/scriptaculous/${version}/scriptaculous.js'
-  webfont: '//ajax.googleapis.com/ajax/libs/webfont/${version}/webfont.js'
-  mootools:
-    url: '//ajax.googleapis.com/ajax/libs/mootools/${version}/mootools-yui-compressed.js'
-    url_uncompressed: '//ajax.googleapis.com/ajax/libs/mootools/${version}/mootools.js'
-  dojo:
-    url: '//ajax.googleapis.com/ajax/libs/dojo/${version}/dojo/dojo.xd.js'
-    url_uncompressed: '//ajax.googleapis.com/ajax/libs/dojo/${version}/dojo/dojo.xd.js.uncompressed.js'
-  swfobject:
-    url: '//ajax.googleapis.com/ajax/libs/swfobject/${version}/swfobject.js'
-    url_uncompressed: '//ajax.googleapis.com/ajax/libs/swfobject/${version}/swfobject_src.js'
-  yui:
-    url: '//ajax.googleapis.com/ajax/libs/yui/${version}/build/yuiloader/yuiloader-min.js'
-    url_uncompressed: '//ajax.googleapis.com/ajax/libs/yui/${version}/build/yuiloader/yuiloader.js'
-  ext-core:
-    url: '//ajax.googleapis.com/ajax/libs/ext-core/${version}/ext-core.js'
-    url_uncompressed: '//ajax.googleapis.com/ajax/libs/ext-core/${version}/ext-core-debug.js'
+    url: '//code.jquery.com/ui/${version}/jquery-ui.min.js'
+    url_uncompressed: '//code.jquery.com/ui/${version}/jquery-ui.js'
+  jstree:
+    url: '//cdn.rawgit.com/vakata/jstree/${version}/dist/jstree.min.js'
+    url_uncompressed: '//cdn.rawgit.com/vakata/jstree/${version}/dist/jstree.js'
 
 library_dependencies:
   scriptaculous: {prototype: 1.6}

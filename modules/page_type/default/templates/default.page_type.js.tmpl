@@ -76,10 +76,10 @@
 					method.call(_this, event, jQuery(this).closest('li'));
 				};
 			};
-			filled_modules.delegate('li .remove_button', 'click', bind(this.remove_object));
-			filled_modules.delegate('li .edit_condition_button', 'click', bind(this.edit_condition));
-			filled_modules.delegate('li .edit_button', 'click', bind(this.edit_object));
-			filled_modules.delegate('li .draft_status', 'click', bind(this.drop_draft));
+			filled_modules.on('click', 'li .remove_button', bind(this.remove_object));
+			filled_modules.on('click', 'li .edit_condition_button', bind(this.edit_condition));
+			filled_modules.on('click', 'li .edit_button', bind(this.edit_object));
+			filled_modules.on('click', 'li .draft_status', bind(this.drop_draft));
 
 			var available_modules = container.find('.available_modules');
 			var delete_drop_zone = container.find('.delete_drop_zone').droppable({
@@ -115,7 +115,6 @@
 
 			filled_modules_containers.sortable({
 				connectWith: filled_modules_containers,
-				helper: 'clone',
 				update: function(event, ui) {
 					if(ui.sender) {
 						return;
@@ -157,18 +156,20 @@
 						_this.filled_frontend_modules[target.attr('data-container-name')].contents.splice(position, 0, content_params);
 						_this.update_content_properties(item, {content: content_params});
 					});
+					item.css({width: '', height: ''}).removeClass('ui-draggable ui-draggable-handle ui-draggable-dragging');
 					_this.update_additional_container_info(target);
 				}
 			});
 
 			var dragOptions = {
-				cursor: "move",
+				cursor: 'move',
 				helper: 'clone',
 				connectToSortable: filled_modules_containers
 			};
 			jQuery.each(this.possible_frontend_modules, function(object_type, module_name) {
-				var element = _this.filled_module_li.clone(true).find('.module_name').text(module_name).end().attr({'data-object-type': object_type, 'data-language-id': language_id}).draggable(dragOptions);
+				var element = _this.filled_module_li.clone(true).find('.module_name').text(module_name).end().attr({'data-object-type': object_type, 'data-language-id': language_id});
 				element.appendTo(available_modules);
+				element.draggable(dragOptions);
 			});
 		},
 
@@ -222,19 +223,19 @@
 					filled_container.position_bar();
 				});
 
-				filled_container.bind('mouseenter', function() {
+				filled_container.on('mouseenter', function() {
 					if(leave_timeout) {
 						window.clearTimeout(leave_timeout); leave_timeout = null;
 					}
 					preview_bar.show('fast');
 					filled_container.position_bar();
-				}).bind('mouseleave', leave);
+				}).on('mouseleave', leave);
 
-				preview_bar.bind('mouseenter', function(event) {
+				preview_bar.on('mouseenter', function(event) {
 					if(leave_timeout) {
 						window.clearTimeout(leave_timeout); leave_timeout = null;
 					}
-				}).bind('mouseleave', leave);
+				}).on('mouseleave', leave);
 			});
 			Widget.callStatic('permission', 'mayEditPageContents', page_id, function(may) {
 				jQuery('.preview_bar').css({opacity: may ? 1 : 0.5})[may ? 'addClass' : 'removeClass']('may_edit');
@@ -252,7 +253,7 @@
 				});
 			};
 
-			jQuery('.preview_bar').delegate('.edit', 'click', function() {
+			jQuery('.preview_bar').on('click', '.edit', function() {
 				var preview_bar = jQuery(this).closest('.preview_bar');
 				if(!preview_bar.is('.may_edit')) {
 					return;
@@ -295,7 +296,7 @@
 						});
 					}, edit_info.control_session_key);
 				});
-			}).delegate('.cancel', 'click', function() {
+			}).on('click', '.cancel', function() {
 				var preview_bar = jQuery(this).closest('.preview_bar');
 				var container = preview_bar.data('filled_container');
 				container.data('protector').warn(function(ok) {
@@ -304,7 +305,7 @@
 						cleanup(preview_bar, container);
 					}
 				});
-			}).delegate('.save', 'click', function(event) {
+			}).on('click', '.save', function(event) {
 				var preview_bar = jQuery(this).closest('.preview_bar');
 				var container = preview_bar.data('filled_container');
 				preview_bar.removeClass('editing').addClass('loading');
@@ -363,7 +364,10 @@
 							widget.setObjectId(item_to_edit.attr('data-object-id'));
 						}
 
-						widget.handle('element_set', function(event, element) {
+						widget.handle('element_set', function element_set(event, element) {
+							widget.notify_size_change = function notify_size_change() {
+								element.dialog('option', 'position', {my: 'center', at: 'center', of: window});
+							};
 							Widget.callStatic('detail', 'clickable_labels_for', element);
 							var save = function(is_draft) {
 								language_object_control.save(widget.save(), is_draft, function(result) {
@@ -399,6 +403,7 @@
 								});
 							}
 							element.dialog({
+								appendTo: document.body,
 								dialogClass: 'default-page-type-editor',
 								close: function() {
 									protector.unprotect(element).release();
@@ -418,11 +423,10 @@
 									return false;
 								},
 								title: item_to_edit.find('.module_name').text(),
-								position: ['center', 50],
 								// modal: true,
 								width: widget.settings.preferred_width || 550,
 								// open: function(event, ui){},
-								resize: function(event, ui) {
+								resizeStop: function(event, ui) {
 									if(widget.resize_to) {
 										widget.resize_to(null, ui.size.height-200);
 									}

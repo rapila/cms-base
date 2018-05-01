@@ -126,11 +126,11 @@ EOT;
 		$oIncluder = ResourceIncluder::defaultIncluder();
 		$oIncluder->clearIncludedResources();
 		$oIncluder->addResource('admin/accept.png', null, null, array('template' => 'icons'));
-		$oIncluder->addResource(array('web', 'js', 'widget', 'ckeditor', 'skins', 'moono', 'editor.css'));
+		$oIncluder->addResource(array('web', 'js', 'widget', 'ckeditor', 'skins', 'moono-lisa', 'editor.css'));
 		$oIncluder->addJavaScriptLibrary('jqueryui', 1);
 		$oIncluder->addResource('admin/admin-ui.css');
 		$oIncluder->addResource('widget/ckeditor/ckeditor.js');
-		$this->assertSame('<link rel="icon" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/images/admin/accept.png" />'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/widget/ckeditor/skins/moono/editor.css" />'."\n".'<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>'."\n".'<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/css/admin/admin-ui.css" />'."\n".'<script type="text/javascript" src="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/widget/ckeditor/ckeditor.js"></script>'."\n", $oTemplate->render());
+		$this->assertSame('<link rel="icon" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/images/admin/accept.png" />'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/widget/ckeditor/skins/moono-lisa/editor.css" />'."\n".'<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>'."\n".'<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/css/admin/admin-ui.css" />'."\n".'<script type="text/javascript" src="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/widget/ckeditor/ckeditor.js"></script>'."\n", $oTemplate->render());
 	}
 	
 	public function testWriteNamedResourceIncludes() {
@@ -141,11 +141,11 @@ EOT;
 		$oIncluder = ResourceIncluder::namedIncluder('myIncluder');
 		$oIncluder->clearIncludedResources();
 		$oIncluder->addResource('admin/accept.png', null, null, array('template' => 'icons'));
-		$oIncluder->addResource(array('web', 'js', 'widget', 'ckeditor', 'skins', 'moono', 'editor.css'));
+		$oIncluder->addResource(array('web', 'js', 'widget', 'ckeditor', 'skins', 'moono-lisa', 'editor.css'));
 		$oIncluder->addJavaScriptLibrary('jqueryui', 1);
 		$oIncluder->addResource('admin/admin-ui.css');
 		$oIncluder->addResource('widget/ckeditor/ckeditor.js');
-		$this->assertSame('<link rel="icon" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/images/admin/accept.png" />'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/widget/ckeditor/skins/moono/editor.css" />'."\n".'<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>'."\n".'<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/css/admin/admin-ui.css" />'."\n".'<script type="text/javascript" src="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/widget/ckeditor/ckeditor.js"></script>'."\n", $oTemplate->render());
+		$this->assertSame('<link rel="icon" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/images/admin/accept.png" />'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/widget/ckeditor/skins/moono-lisa/editor.css" />'."\n".'<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>'."\n".'<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/css/admin/admin-ui.css" />'."\n".'<script type="text/javascript" src="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/widget/ckeditor/ckeditor.js"></script>'."\n", $oTemplate->render());
 	}
 
 	public function testStringReplace() {

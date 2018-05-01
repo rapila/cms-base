@@ -224,6 +224,9 @@ Widget.types.rich_text = {
 		var _this = this;
 		var instance = this.instance = CKEDITOR.replace(this.textarea[0], this.settings);
 		instance.on('instanceReady', function(event) {
+			if(_this.notify_size_change) {
+				_this.notify_size_change();
+			}
 			instance.window.$.document.documentElement.classList.add(_this.settings.bodyClass);
 			for(var i=1;i<=6;i++) {
 				instance.dataProcessor.writer.setRules('h'+i, {

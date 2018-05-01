@@ -30,8 +30,7 @@ jQuery(document).ready(function() {
 		});
 		page_detail.handle('saved', function(event) {
 			var page_id = page_detail.current_page_id;
-			var element = page_tree.element_with_identifier(page_id);
-			page_tree.reload_element(page_tree.parent_of(element));
+			page_tree.reload_element(page_tree.parent_of(page_id));
 		});
 	}, function(widget) {
 		widget.disable_input();
@@ -44,7 +43,7 @@ jQuery(document).ready(function() {
 		info_bar.add_button('add-new-item', function() {
 			Widget.create('sidebar_input', function(sidebar_input) {
 				sidebar_input.add_new_sidebar_input("{{writeString=wns.page.new_entry_placeholder}}", function(name, cleanup_callback) {
-					//This is the save callback
+					// This is the save callback
 					var page_id = page_tree.current_element_identifier;
 					page_detail.createPage(page_id, name, function(result, error) {
 						if(!error) {
@@ -52,14 +51,14 @@ jQuery(document).ready(function() {
 						}
 					}, WidgetJSONOptions.with_callback_handles_error(false));
 				}, function(page_id) {
-					page_tree.reload_element(page_tree.element_with_identifier(page_id), true);
+					page_tree.reload_element(page_id, true);
 				});
 			});
 		}, 'n', false, true, "{{writeString=wns.page.create}}", {documentation: 'admin.pages/create'});
 	});
 
 	// init main content
-	var click_handler = function(event, element, page_id, has_changed) {
+	var click_handler = function(event, data, page_id, has_changed) {
 		if(has_changed) {
 			page_detail.load_page(page_id);
 		}
@@ -67,6 +66,7 @@ jQuery(document).ready(function() {
 
 	Widget.createWithElement('tree', function(widget) {
 		jQuery.extend(widget.settings, {
+			key: page_detail,
 			description_from_item: function(item) {
 				return item.Name;
 			},
@@ -76,11 +76,8 @@ jQuery(document).ready(function() {
 			may_create_child: function(item) {
 				return item.UserMayCreateChildren;
 			},
-			may_create_sibling: function(item) {
-				return item.UserMayCreateSiblings;
-			},
 			may_move_item: function(item) {
-				//if the user may create siblings, she’s got the may_create_children right on the parent => she’s also allowed to move around child pages
+				// If the user may create siblings, she’s got the may_create_children right on the parent => she’s also allowed to move around child pages
 				return item.UserMayCreateSiblings;
 			},
 			identifier_from_data: function(data) {
@@ -97,13 +94,19 @@ jQuery(document).ready(function() {
 					return 'page_is_inactive';
 				}
 			},
+			primary_icon_from_item: function(item) {
+				if(item.IsInactive) {
+					return item.IsFolder ? 'hidden-files' : 'hidden-file';
+				}
+				return item.IsFolder ? 'files' : 'file';
+			},
 			icons_from_item: function(item) {
 				var result = [];
 				if(item.IsProtected) {
-					result.push('is-protected');
+					result.push('locked');
 				}
 				if(item.IsHidden) {
-					result.push('is-hidden');
+					result.push('hidden');
 				}
 				return result;
 			}
@@ -111,7 +114,8 @@ jQuery(document).ready(function() {
 	}, function(widget) {
 		page_tree = widget;
 		AdminInterface.sidebar.append(widget._element);
-		widget.handle('tree_item-activated', click_handler).handle('updated', jQuery.noop);//TODO: update icons on update
+		//TODO: update icons on update
+		widget.handle('tree_item-activated', click_handler).handle('updated', jQuery.noop);
 	}, '{{writeRequestValue=tree_session}}');
 
 });

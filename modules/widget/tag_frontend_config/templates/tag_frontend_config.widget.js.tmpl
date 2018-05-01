@@ -21,7 +21,7 @@ Widget.types.tag_frontend_config = {
 			jQuery('<option/>').text(name).attr('value', key).appendTo(_this.types_dropdown);
 		});
 		
-		this.tag_area.delegate('.tag', 'click', function() {
+		this.tag_area.on('click', '.tag', function() {
 			var tag = jQuery(this);
 			if(tag.is('.active')) {
 				tag.removeClass('active');

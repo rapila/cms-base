@@ -7,11 +7,13 @@
 			top 1px
 			margin 2px 2px 0 2px
 			background-color #ebedef
+			border-radius 3px 3px 0 0
 			a
-				padding 0.5em 1.5em 0.2em
+				padding 0.5em 1.5em 0.2em !important
 			&.ui-state-default
 				background transparent
 				border 1px solid #cccdcf
+				border-bottom-width 0
 			&.ui-state-active
 				background-color #ffffff
 				position relative
@@ -20,8 +22,16 @@
 				a
 					// margin-top -1px
 					color black
+					padding 0.4em 1em 0.3em
+			&.ui-state-active
+				background-image none !important
+				background-color #fff !important
+				margin 2px 2px 0px 2px
+				padding-bottom 6px
+
 		&.ui-widget-header
 			background transparent url('')
+
 	.ui-tabs-panel
 		border-top 1px solid #cccdcf
 		padding 0

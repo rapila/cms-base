@@ -50,7 +50,7 @@ Widget.types.image_picker = {
 				}
 			});
 		} else {
-			this.image_area.delegate('div.ui-image-picker-image', 'click', function() {
+			this.image_area.on('click', 'div.ui-image-picker-image', function() {
 				var document_id = jQuery(this).data('document_id');
 				_this.settings.callback(document_id);
 				if(_this.is_popup) {
@@ -103,7 +103,13 @@ Widget.types.image_picker = {
 				}
 				_this._element.dialog('close');
 			};
-			this._element.dialog({title: "{{writeString=wns.image_picker.pick_image}}", buttons: buttons, width: 600, maxHeight: 800});
+			this._element.dialog({
+				appendTo: document.body,
+				title: "{{writeString=wns.image_picker.pick_image}}",
+				buttons: buttons,
+				width: 600,
+				maxHeight: 800
+			});
 			return;
 		}
 		this.is_popup = true;

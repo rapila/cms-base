@@ -328,7 +328,7 @@ Widget.types.list = {
 			jQuery.each(metadata.heading_filter, function(value, text) {
 				filter.append(jQuery('<option/>').text(text).attr('value', value));
 			});
-			filter.bind('change', value_changed).appendTo(cell);
+			filter.on('change', value_changed).appendTo(cell);
 		}
 	},
 
@@ -936,7 +936,7 @@ Widget.types.list = {
 			if(!jQuery.isArray(data)) {
 				data = [data, data];
 			}
-			jQuery("<a>").attr('href', data[1]).text(this.truncate(data[0])).appendTo(column).bind('click', function(event) {
+			jQuery("<a>").attr('href', data[1]).text(this.truncate(data[0])).appendTo(column).on('click', function(event) {
 				event.stopPropagation();
 			});
 		},

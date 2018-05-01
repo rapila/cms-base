@@ -96,20 +96,15 @@ class PagesAdminModule extends AdminModule {
 		return self::propertiesFromPage(PageQuery::create()->findPk($iId));
 	}
 
-	public function moveItem($iIdNew, $iIdRef, $sPosition) {
+	public function moveItem($iIdNew, $iIdParent, $iPosition) {
 		$oPage = PageQuery::create()->findPk($iIdNew);
-		$oRefPage = PageQuery::create()->findPk($iIdRef);
-		if($sPosition === 'first' || $sPosition === 'inside') {
-			$oPage->moveToFirstChildOf($oRefPage);
-		} else if($sPosition === 'before') {
-			$oPage->moveToPrevSiblingOf($oRefPage);
-		} else if($sPosition === 'after') {
-			$oPage->moveToNextSiblingOf($oRefPage);
-		} else if($sPosition === 'last') {
-			$oPage->moveToLastChildOf($oRefPage);
+		$oParent = PageQuery::create()->findPk($iIdParent);
+		$oChildAfter = @$oParent->getChildren()[$iPosition];
+		if($oChildAfter) {
+			$oPage->moveToPrevSiblingOf($oChildAfter);
 		} else {
-			return false;
+			$oPage->moveToLastChildOf($oParent);
 		}
-		return true;
+		return false;
 	}
 }
