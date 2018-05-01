@@ -97,31 +97,44 @@ option.rapila-icon
 		right 0
 		z-index 2000
 
-.add-new-item
+.add-new-item,
+.edit-item,
+.item-action,
+.infobar_left .remove-item,
+.print_area,
+.go-to-documentation
 	height 16px
 	width 16px
-	@extend .rapila-icon
-	&::after
-		content 'new'
+	text-align center
 
-.infobar_left .add-new-item::after
-	content 'new-category'
-
-.remove-item,
+.add-new-item,
 .edit-item,
+.item-action,
+.infobar_left .remove-item
+	@extend .rapila-icon
+	color #666
+.add-new-item::after
+	content 'new'
+.edit-item::after
+	content 'edit'
+.item-action::after
+	content 'settings'
+
+.infobar_left
+	.add-new-item::after
+		content 'new-category'
+	.remove-item::after
+		content 'remove-category'
+
+// Use normal plus for page tree
+body.pages .infobar_left .add-new-item::after
+	content 'new'
+
 .item-action,
 .print_area,
 .go-to-documentation
 	background-repeat no-repeat
 	display inline-block
-	height 16px
-	width 16px
-
-.remove-item
-	background-image url('../../images/admin/remove_item.png')
-
-.edit-item
-	background-image url('../../images/admin/edit_item.png')
 
 .item-action
 	background-image url('../../images/admin/action.png')
