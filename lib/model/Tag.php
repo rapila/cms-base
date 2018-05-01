@@ -39,14 +39,12 @@ class Tag extends BaseTag {
 		$this->collTagInstances=null;
 	}
 
-	public function getTagInstanceCount() {
-		return $this->countTagInstances();
-	}
-
-	public function countTagInstancesByModel($sModelName) {
-		$oCriteria = new Criteria();
-		$oCriteria->add(TagInstancePeer::MODEL_NAME, $sModelName);
-		return $this->countTagInstances($oCriteria);
+	public function getTagInstanceCount($sModelName = null) {
+		$oQuery = TagInstanceQuery::create();
+		if($sModelName) {
+			$oQuery->filterByModelName($sModelName);
+		}
+		return $this->countTagInstances($oQuery);
 	}
 
 	public function getLanguageIdsOfStrings() {

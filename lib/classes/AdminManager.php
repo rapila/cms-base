@@ -37,8 +37,6 @@ class AdminManager extends Manager {
 		if(!LanguageQuery::languageExists($sLanguageId)) {
 			if(LanguageQuery::languageExists(Session::language())) {
 				$sLanguageId = Session::language();
-			} else if(LanguageQuery::languageExists(Session::sessionDefaultFor(self::CONTENT_LANGUAGE_SESSION_KEY))) {
-				$sLanguageId = Session::sessionDefaultFor(self::CONTENT_LANGUAGE_SESSION_KEY);
 			} else if(LanguageQuery::languageExists(Session::sessionDefaultFor(Session::SESSION_LANGUAGE_KEY))) {
 				$sLanguageId = Session::sessionDefaultFor(Session::SESSION_LANGUAGE_KEY);
 			} else {
@@ -152,6 +150,7 @@ class AdminManager extends Manager {
 	protected function preRender() {
 		$oConstants = new Template('constants.js', array(DIRNAME_TEMPLATES, 'admin'));
 		$oConstants->replaceIdentifier('current_admin_module', $this->sModuleName ? $this->sModuleName : self::DEFAULT_MODULE);
+		$oConstants->replaceIdentifier('content_language', self::getContentLanguage());
 		$oConstants->replaceIdentifier('is_logged_in', Session::getSession()->isAuthenticated() && Session::getSession()->getUser()->getIsBackendLoginEnabled());
 		$this->oResourceIncluder->addJavaScriptLibrary('jquery', self::JQUERY_VERSION);
 		$this->oResourceIncluder->addCustomJs($oConstants);

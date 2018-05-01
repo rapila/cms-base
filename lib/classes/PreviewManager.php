@@ -92,6 +92,7 @@ class PreviewManager extends FrontendManager {
 		$oConstants = new Template('constants.js', array(DIRNAME_TEMPLATES, 'preview'));
 		$oConstants->replaceIdentifier('language_id', Session::getSession()->getUser()->getLanguageId());
 		$oConstants->replaceIdentifier('page_type', $this->oPageType->getModuleName());
+		$oConstants->replaceIdentifier('content_language', AdminManager::getContentLanguage());
 		$oConstants->replaceIdentifier('page_type_widget_session', $this->oPageTypeWidget->getSessionKey());
 		$oConstants->replaceIdentifier('admin_menu_widget_session', $this->oAdminMenuWidget->getSessionKey());
 		$oConstants->replaceIdentifier('current_page_id', self::$CURRENT_PAGE->getId());
@@ -101,7 +102,7 @@ class PreviewManager extends FrontendManager {
 
 		return parent::fillContent();
 	}
-	
+
 	public function isPreview() {
 		return true;
 	}

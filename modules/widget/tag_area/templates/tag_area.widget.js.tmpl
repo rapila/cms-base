@@ -1,6 +1,7 @@
 Widget.types.tag_area = {
 	prepare: function() {
 		var _this = this;
+		this.tag_mapping = {};
 		this._element.addClass('tag_area');
 		if(this.settings.drop_zone === null) {
 			this.settings.drop_zone = this.getModelName();
@@ -27,6 +28,7 @@ Widget.types.tag_area = {
 
 	reload_tags: function() {
 		var _this = this;
+		this.tag_mapping = {};
 		this.listTags(window.AdminInterface.current_admin_module, function(all_tags) {
 			this._element.find('.tag').remove();
 			this._element.removeClass('has_tags');
@@ -44,7 +46,13 @@ Widget.types.tag_area = {
 		if(!display_name) {
 			display_name = name;
 		}
+		if(name in this.tag_mapping) {
+			// Tag exists already
+			return;
+		}
 		var tag = jQuery('<span/>').addClass('tag');
+		this.tag_mapping[name] = tag;
+		
 		tag.data('tagName', name);
 		if(this.dnd) {
 			this.dnd.init_dnd(tag, "Tag", name);
@@ -88,6 +96,14 @@ Widget.types.tag_area = {
 			}
 		});
 		return false;
+	},
+
+	set_prefix_match(prefix) {
+		var matching = Object.keys(this.tag_mapping)
+			.map(name => [name, this.tag_mapping[name]])
+			.map(([name, tag]) => (tag.removeClass('matching'), [name, tag]))
+			.filter(([name]) => prefix && name.indexOf(prefix) === 0)
+			.forEach(([_, tag]) => tag.addClass('matching'));
 	},
 
 	settings: {
