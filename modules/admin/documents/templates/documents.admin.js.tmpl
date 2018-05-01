@@ -123,8 +123,14 @@ jQuery(document).ready(function() {
 			}
 		});
 
+		
+		// Handle initial selection ≠ __all (e.g. from hash)
+		var sel = sidebar.active_row_datas()[0];
+		if(sel && sel.document_category_id && sel.document_category_id !== '__all') {
+			content_list.setOption('document_category_id', sel.document_category_id);
+			content_list.reload();
+		}
 		// Sidebar selection changed
-		sidebar.settings.row_click_active_mode = 'activate';
 		sidebar.handle('list-selection_changed', function(event, selection) {
 			var document_category_id = selection[0] && selection[0].document_category_id;
 			var has_detail = selection.length === 1 && document_category_id.constructor === Number;
