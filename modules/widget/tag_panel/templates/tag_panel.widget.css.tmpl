@@ -10,31 +10,50 @@
 	cursor: pointer;
 	float: left;
 	color: #fff;
-	margin: 5px;
+	margin: 0 5px 5px 5px;
+	font-stretch: ultra-expanded;
+	font-weight: bold;
+	font-size: 1.3em;
+	position: absolute;
 }
 
 .tag_panel.ui-widget-content {
 	background-color: #888;
-	z-index: 10000;
+	z-index: 1000;
 }
 
 .tag_panel .admin_area {
 	position: absolute;
 	bottom: 0px;
+	height: 32px;
+	display: flex;
+	right: 0;
+	left: 0;
 }
 
 .tag_panel .admin_area input {
 	margin: 0.5em;
-	width: 190px;
 }
 
 .tag_panel button {
 	margin-bottom: 0.2em;
 }
 
+.tag_panel button.rapila-button {
+	border: none;
+	background: none;
+	color: white;
+	font-size: 1.2em;
+}
+
 .tag_panel .tag_area {
 /*	margin: 0.6em;*/
 	/* for lots of tags, should be improved to fixed bottom space */
-	height: 86%;
+	height: calc(100% - 32px);
 	overflow-y: scroll;
+}
+
+.tag_panel .tag_area > .no_tags_message,
+.tag_panel .tag_area > .no_tags_message + span.tag {
+	margin-left: 20px;
 }

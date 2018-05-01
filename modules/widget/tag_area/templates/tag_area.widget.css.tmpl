@@ -24,6 +24,10 @@
 	width: 16px;
 }
 
+.tag.matching > .tag_start {
+	background-image: url("{{writeDirectInclude=admin/tag_start_matching.png;template=location_only}}");
+}
+
 .tag > .tag_repeat {
 	background-image: url("{{writeDirectInclude=admin/tag_repeat.png;template=location_only}}");
 	background-repeat: repeat-x;
@@ -31,10 +35,18 @@
 	padding-right: 1px;
 }
 
+.tag.matching > .tag_repeat {
+	background-image: url("{{writeDirectInclude=admin/tag_repeat_matching.png;template=location_only}}");
+}
+
 .tag > .tag_end {
 	background-image: url("{{writeDirectInclude=admin/tag_end.png;template=location_only}}");
 	padding-left: 1px;
 	width: 12px;
+}
+
+.tag.matching > .tag_end {
+	background-image: url("{{writeDirectInclude=admin/tag_end_matching.png;template=location_only}}");
 }
 
 .tag > .tag_end.deletable {

@@ -23,6 +23,10 @@ class LinksAdminModule extends AdminModule {
 		$this->oInputWidget = new SidebarInputWidgetModule();
 	}
 
+	public static function getPrincipalModel() {
+		return 'Link';
+	}
+
 	public function mainContent() {
 		return $this->oListWidget->doWidget();
 	}

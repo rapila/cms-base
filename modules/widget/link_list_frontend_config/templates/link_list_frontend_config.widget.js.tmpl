@@ -2,16 +2,11 @@ Widget.types.link_list_frontend_config = {
 	prepare: function() {
 		var display_modes = this.getConfigData() || {};
 		var config_modes = this.getConfigurationModes();
-		this.content = (config_modes.link_categories.length == 0) ? Widget.parseHTML("{{includeTemplate=edit_no_categories}}") : Widget.parseHTML("{{includeTemplate=edit}}");
+
+		this.content = (config_modes['link_categories[]'].length == 0) ? Widget.parseHTML("{{includeTemplate=edit_no_categories}}") : Widget.parseHTML("{{includeTemplate=edit}}");
 		var _this = this;
-		jQuery.each(config_modes, function(config_name, options) {
-			var select_name = config_name;
-			if(select_name === 'link_categories') {
-				select_name += '[]';
-			}
-			if(select_name === 'tags') {
-				select_name += '[]';
-			}
+		jQuery.each(config_modes, function(select_name, options) {
+			var config_name = select_name.replace(/\[\]$/g, '');
 			var select = _this.content.find("select[name='"+select_name+"']").populate(options, display_modes[config_name]);
 			if(config_name !== 'template') {
 				select.change(_this.reload_preview.bind(_this));
@@ -52,7 +47,10 @@ Widget.types.link_list_frontend_config = {
 	},
 
 	save: function() {
-		return this._element.serializeArrayKV();
+		var result = this._element.serializeArrayKV();
+		result.link_categories = result.link_categories.filter(Boolean);
+		result.tags = result.tags.filter(Boolean);
+		return result;
 	},
 
 	additional_buttons: [

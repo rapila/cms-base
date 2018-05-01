@@ -160,10 +160,21 @@ class WidgetJsonFileModule extends FileModule {
 		$aResult = array();
 		$aColumnNames = array();
 		foreach($aOriginalColumnNames as $mIdentifier => $sColumnName) {
+			$aArgs = [];
+			if(is_array($sColumnName)) {
+				$aArgs = $sColumnName['args'];
+				$sColumnName = $sColumnName['column'];
+				if(is_callable($aArgs)) {
+					$aArgs = $aArgs();
+				}
+			}
 			if(is_numeric($mIdentifier)) {
 				$mIdentifier = $sColumnName;
 			}
-			$aColumnNames[$mIdentifier] = 'get'.StringUtil::camelize($sColumnName, true);
+			$aColumnNames[$mIdentifier] = array(
+				'getter' => 'get'.StringUtil::camelize($sColumnName, true),
+				'args' => $aArgs
+			);
 		}
 		foreach($aBaseObjects as $oBaseObect) {
 			if(!($oBaseObect instanceof BaseObject)) {
@@ -171,8 +182,10 @@ class WidgetJsonFileModule extends FileModule {
 				continue;
 			}
 			$aResult[] = array();
-			foreach($aColumnNames as $sColumnName => $sGetterName) {
-				$aResult[count($aResult)-1][$sColumnName] = $oBaseObect->$sGetterName();
+			foreach($aColumnNames as $sColumnName => $aOptions) {
+				$sGetterName = $aOptions['getter'];
+				$aArgs = $aOptions['args'];
+				$aResult[count($aResult)-1][$sColumnName] = $oBaseObect->$sGetterName(...$aArgs);
 			}
 		}
 		return $aResult;

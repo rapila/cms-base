@@ -350,22 +350,30 @@ class LinkUtil {
 		return MAIN_DIR_FE_PHP.$sPrefix.implode('/', $mPath).self::prepareLinkParameters($aParameters);
 	}
 
+	private static function linkParameter($sKey, $mValue) {
+		if(is_array($mValue)) {
+			$sResult = "";
+			$bIsAssoc = ArrayUtil::arrayIsAssociative($mValue);
+			foreach($mValue as $sValueKey => $mValueValue) {
+				$sValueKey = $bIsAssoc ? '['.rawurlencode($sValueKey).']' : '[]';
+				$sResult .= '&'.self::linkParameter("$sKey".$sValueKey, $mValueValue);
+			}
+			return $sResult;
+		} else {
+			return '&'.$sKey.($mValue !== null && $mValue !== ''? "=".rawurlencode($mValue) : '');
+		}
+	}
+
 	/**
 	* @todo: check use of http_build_query()
 	*/
 	public static function prepareLinkParameters($aParameters) {
 		$sParameters = '';
 		foreach($aParameters as $sKey => $sValue) {
-			if(is_array($sValue)) {
-				foreach($sValue as $sKeyKey => $sValueValue) {
-					$sParameters .= "&".rawurlencode($sKey)."[".rawurlencode($sKeyKey)."]".($sValueValue ? "=".rawurlencode($sValueValue) : '');
-				}
-			} else {
-				$sParameters .= "&".rawurlencode($sKey).($sValue ? "=".rawurlencode($sValue) : '');
-			}
+			$sParameters .= self::linkParameter(rawurlencode($sKey), $sValue);
 		}
-		$sParameters = substr($sParameters, 1);
-		if($sParameters !== false && $sParameters !== "") {
+		if($sParameters !== "") {
+			$sParameters = substr($sParameters, 1);
 			$sParameters = "?".$sParameters;
 		}
 		return $sParameters;

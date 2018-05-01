@@ -13,10 +13,19 @@ Widget.types.tag_panel = {
 			_this.tag_area = tag_area;
 		});
 		this.admin_area = jQuery('<div/>').addClass('admin_area').appendTo(this.panel);
+		var to_admin = jQuery('<button/>')
+			.attr('type', 'button')
+			.text('wrench')
+			.addClass('rapila-icon rapila-button')
+			.appendTo(this.admin_area)
+			.click(jQuery.openLink.bind(jQuery, '{{writeLink=tags;manager=AdminManager}}'));
 		var new_tag = jQuery('<input/>').addClass('ui-widget-content').attr('type', 'text').appendTo(this.admin_area);
 		var create_new_tag = jQuery('<button/>').text('{{writeString=wns.tag.add}}').appendTo(this.admin_area).button({disabled: true});
 		new_tag.bind('keyup', function(event) {
-			if(jQuery.trim(new_tag.val())) {
+			var val = jQuery.trim(new_tag.val());
+			_this.tag_area.set_prefix_match(val);
+
+			if(val) {
 				create_new_tag.button('enable');
 			} else {
 				create_new_tag.button('disable');
@@ -32,6 +41,7 @@ Widget.types.tag_panel = {
 			if(!create_new_tag.button('option', 'disabled')) {
 				_this.tag_area.append_tag(jQuery.trim(new_tag.val()));
 				new_tag.val('');
+				_this.tag_area.set_prefix_match();
 				create_new_tag.button('option', 'disabled', true);
 			}
 		});

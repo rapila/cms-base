@@ -9,8 +9,8 @@ class LinkListFrontendConfigWidgetModule extends FrontendConfigWidgetModule {
 	public function getConfigurationModes() {
 		$aResult = array();
 		$aLinkCategories = LinkListFrontendModule::getCategoryOptions();
-		$aResult['link_categories'] = $aLinkCategories;
-		$aResult['tags'] = LinkListFrontendModule::getTagOptions();
+		$aResult['link_categories[]'] = $aLinkCategories;
+		$aResult['tags[]'] = LinkListFrontendModule::getTagOptions();
 		$aResult['template'] = array_keys(LinkListFrontendModule::getTemplateOptions());
 		if(count($aLinkCategories) > 0) {
 			$aResult['sort_by'] = LinkListFrontendModule::getSortOptions();
