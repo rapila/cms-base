@@ -69,6 +69,41 @@
 	color: #fff;
 }
 
+[data-widget-type='tree'] .jstree-open > .jstree-ocl,
+[data-widget-type='tree'] .jstree-closed > .jstree-ocl {
+	background-position: -68px -4px;
+	position: relative;
+}
+
+[data-widget-type='tree'] .jstree-open > .jstree-ocl::after,
+[data-widget-type='tree'] .jstree-closed > .jstree-ocl::after {
+	font-style: normal;
+	content: '▶︎';
+	font-size: 0.8em;
+	left: 6px;
+	position: absolute;
+	transition: transform 200ms ease-in-out;
+	transform: rotate(0deg) scale(0.8, 1);
+	font-family: 'Rapila-Icons', Arial;
+	cursor: pointer;
+	-ms-font-feature-settings: "liga" 1, "dlig" 1;
+	-moz-font-feature-settings: "liga=1", "dlig=1";
+	-moz-font-feature-settings: "liga" 1, "dlig" 1;
+	font-feature-settings: "liga" 1, "dlig" 1;
+	font-variant-ligatures: common-ligatures;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+[data-widget-type='tree'] .jstree-open > .jstree-ocl::after {
+	transform: rotate(90deg) scale(0.8, 1);
+}
+
+[data-widget-type='tree'] > .jstree-container-ul > li > .jstree-ocl {
+	/* Root is always expanded, hide its icon completely. */
+	display: none;
+}
+
 #jstree-marker {
 	z-index: 10;
 }
