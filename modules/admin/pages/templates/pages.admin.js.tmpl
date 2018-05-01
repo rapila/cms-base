@@ -35,7 +35,7 @@ jQuery(document).ready(function() {
 	}, function(widget) {
 		widget.disable_input();
 		AdminInterface.content.append(widget._element);
-		// widget.load_page(initial_selection);
+		widget.load_page(initial_selection);
 	});
 
 	//Info bar stuff
@@ -66,7 +66,7 @@ jQuery(document).ready(function() {
 
 	Widget.createWithElement('tree', function(widget) {
 		jQuery.extend(widget.settings, {
-			key: page_detail,
+			key: 'page_detail',
 			description_from_item: function(item) {
 				return item.Name;
 			},

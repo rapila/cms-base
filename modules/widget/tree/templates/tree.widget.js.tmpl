@@ -120,13 +120,18 @@ Widget.types.tree = {
 		this.listChildren(id, function(children) {
 			var result = children.map(function(child) {
 				var has_children = _this.settings.has_children(child);
+				var id = _this.settings.identifier_from_data(child)
+				var selected = _this.settings.is_active(child);
+				if(selected) {
+					_this.current_element_identifier = id;
+				}
 				return {
-					id: _this.settings.identifier_from_data(child),
+					id: id,
 					text: _this.settings.description_from_item(child),
 					icon: 'rapila-icon',
 					state: {
 						opened: has_children && _this.settings.is_open(child),
-						selected: _this.settings.is_active(child),
+						selected: selected,
 						loaded: !has_children,
 					},
 					children: has_children ? [] : null,
