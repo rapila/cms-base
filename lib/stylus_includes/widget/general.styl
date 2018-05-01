@@ -97,13 +97,21 @@ option.rapila-icon
 		right 0
 		z-index 2000
 
-.add-new-item,
+.add-new-item
+	height 16px
+	width 16px
+	@extend .rapila-icon
+	&::after
+		content 'new'
+
+.infobar_left .add-new-item::after
+	content 'new-category'
+
 .remove-item,
 .edit-item,
 .item-action,
 .print_area,
 .go-to-documentation
-	background-image url('../../images/admin/add_new_item.png')
 	background-repeat no-repeat
 	display inline-block
 	height 16px
