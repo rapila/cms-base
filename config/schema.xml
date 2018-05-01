@@ -411,3 +411,13 @@
 		<parameter name="mode" value="allow" />
 	</behavior>
 </table>
+
+<table name="scheduled_actions" phpName="ScheduledAction">
+	<column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
+	<column name="model_id" type="varchar" size="20" required="true" />
+	<column name="model_name" type="varchar" size="80" required="true" />
+	<column name="schedule_date" type="timestamp" required="true" />
+	<column name="execution_date" type="timestamp" required="false" />
+	<column name="action" type="varchar" size="80" required="true" />
+	<column name="params" type="blob" required="false" />
+</table>

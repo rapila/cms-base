@@ -2,10 +2,10 @@
 
 /**
  * Data object containing the SQL and PHP code to migrate the database
- * up to version 1412886439.
- * Generated on 2014-10-09 22:27:19 by rafi
+ * up to version 1525074231.
+ * Generated on 2014-10-02 23:42:08 by rafi
  */
-class PropelMigration_1412886439
+class PropelMigration_1525074231
 {
 
     public function preUp($manager)
@@ -42,8 +42,23 @@ class PropelMigration_1412886439
 # It "suspends judgement" for fkey relationships until are tables are set.
 SET FOREIGN_KEY_CHECKS = 0;
 
-ALTER TABLE `users`
-    ADD `timezone` VARCHAR(32) AFTER `language_id`;
+CREATE TABLE `scheduled_actions`
+(
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `model_id` VARCHAR(20) NOT NULL,
+    `model_name` VARCHAR(80) NOT NULL,
+    `schedule_date` DATETIME NOT NULL,
+    `execution_date` DATETIME,
+    `action` VARCHAR(80) NOT NULL,
+    `params` LONGBLOB,
+    `created_at` DATETIME,
+    `updated_at` DATETIME,
+    `created_by` INTEGER,
+    `updated_by` INTEGER,
+    PRIMARY KEY (`id`),
+    INDEX `scheduled_actions_FI_1` (`created_by`),
+    INDEX `scheduled_actions_FI_2` (`updated_by`)
+) ENGINE=MyISAM;
 
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;
@@ -65,7 +80,7 @@ SET FOREIGN_KEY_CHECKS = 1;
 # It "suspends judgement" for fkey relationships until are tables are set.
 SET FOREIGN_KEY_CHECKS = 0;
 
-ALTER TABLE `users` DROP `timezone`;
+DROP TABLE IF EXISTS `scheduled_actions`;
 
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;

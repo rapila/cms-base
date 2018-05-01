@@ -387,7 +387,7 @@ class Page extends BasePage {
 		$this->delete();
 	}
 
-	///Override moveSubtreeTo to store the old parent
+	// Override moveSubtreeTo to store the old parent
 	protected function moveSubtreeTo($destLeft, $levelDelta, PropelPDO $con = null) {
 		$oOldParent = $this->getParent($con);
 		$oNewParent = PageQuery::create()->filterByTreeLeft($destLeft, Criteria::LESS_THAN)->filterByTreeRight($destLeft, Criteria::GREATER_EQUAL)->filterByTreeLevel($this->getLevel()+$levelDelta-1)->findOne();
@@ -413,5 +413,38 @@ class Page extends BasePage {
 
 	public function getOldParent() {
 		return $this->oOldParent;
+	}
+	
+	public function executeActionActivate() {
+		$this->setIsInactive(false);
+		$this->save();
+	}
+
+	public static function describeActionActivate() {
+		return ActionDescriptor::create('page.activate');
+	}
+	
+	public function executeActionActivateLanguage(ScheduledAction $oAction, $sLanguageId = null, $bActivatePageAsWell) {
+		$oQuery = PageStringQuery::create()->filterByPageId($this->getId());
+		if($sLanguageId) {
+			$oQuery->filterByLanguageId($sLanguageId);
+		}
+		foreach($oQuery->find() as $oPageString) {
+			$oPageString->setIsInactive(false);
+			$oPageString->save();
+		}
+		if($bActivatePageAsWell) {
+			$this->executeActionActivate($oAction);
+		}
+	}
+
+	public static function describeActionActivateLanguage() {
+		$oLanguageChoices = ActionParameterChoiceType::create();
+		foreach(LanguagePeer::getLanguagesAssoc(true, true) as $sLanguageId => $sLanguageName) {
+			$oLanguageChoices->addChoice($sLanguageName, $sLanguageId);
+		}
+		return ActionDescriptor::create('page.activate_language')
+			->addParameter(ActionParameterDescriptor::create($oLanguageChoices, 'page.activate_language.language')->allowNull())
+			->addParameter(ActionParameterDescriptor::create(ActionParameterBooleanType::create(), 'page.activate_language.page_too')->withDefaultValue(true));
 	}
 }

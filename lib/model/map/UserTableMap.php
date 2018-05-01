@@ -116,6 +116,8 @@ class UserTableMap extends TableMap
         $this->addRelation('LinkCategoryRelatedByUpdatedBy', 'LinkCategory', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null, 'LinkCategorysRelatedByUpdatedBy');
         $this->addRelation('ReferenceRelatedByCreatedBy', 'Reference', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null, 'ReferencesRelatedByCreatedBy');
         $this->addRelation('ReferenceRelatedByUpdatedBy', 'Reference', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null, 'ReferencesRelatedByUpdatedBy');
+        $this->addRelation('ScheduledActionRelatedByCreatedBy', 'ScheduledAction', RelationMap::ONE_TO_MANY, array('id' => 'created_by', ), 'SET NULL', null, 'ScheduledActionsRelatedByCreatedBy');
+        $this->addRelation('ScheduledActionRelatedByUpdatedBy', 'ScheduledAction', RelationMap::ONE_TO_MANY, array('id' => 'updated_by', ), 'SET NULL', null, 'ScheduledActionsRelatedByUpdatedBy');
     } // buildRelations()
 
     /**
