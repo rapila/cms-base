@@ -299,7 +299,7 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 					$oPageString->setLanguageId($sLanguageId);
 					$this->oPage->addPageString($oPageString);
 				}
-				$oPageString->setPageTitle($aPageData['page_title'][$iCounter] ? $aPageData['page_title'][$iCounter] : null);
+				$oPageString->setPageTitle($aPageData['page_title'][$iCounter] ? $aPageData['page_title'][$iCounter] : "");
 				$oPageString->setLinkText($aPageData['link_text'][$iCounter] ? $aPageData['link_text'][$iCounter] : null);
 				$oPageString->setMetaDescription($aPageData['meta_description'][$iCounter] ? $aPageData['meta_description'][$iCounter] : null);
 				$oPageString->setMetaKeywords($aPageData['meta_keywords'][$iCounter] ? $aPageData['meta_keywords'][$iCounter] : null);

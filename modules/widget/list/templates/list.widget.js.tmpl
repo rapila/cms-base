@@ -144,6 +144,7 @@ Widget.types.list = {
 	 */
 	fire_selection_changed: function(previous_selection, event) {
 		var new_selection = this.active_row_datas().sort();
+		this.save_to_hash(new_selection);
 		if(JSON.stringify(previous_selection) !== JSON.stringify(new_selection)) {
 			if(event) {
 				this.fire('list-selection_changed', event, new_selection, previous_selection);
@@ -151,6 +152,23 @@ Widget.types.list = {
 				this.fire('list-selection_changed', new_selection, previous_selection);
 			}
 		}
+	},
+
+	save_to_hash: function(selection) {
+		var hash_key = this.settings.hash_key;
+		if(!hash_key) {
+			return;
+		}
+		var hash = window.location.hash || '#';
+		hash = hash.replace(new RegExp('([#&])('+this.settings.hash_key+'(=([&]|$)+)?)'), '$1');
+		const id = this.schema_for_col(0).identifier;
+		hash = hash + '&' + selection.map(function(data) {
+			return hash_key + '=' + data[id];
+		}).join('&');
+		if(hash.indexOf('#?') === 0) {
+			hash = '#' + hash.substring(2);
+		}
+		window.location.hash = hash;
 	},
 
 	/**
@@ -274,7 +292,7 @@ Widget.types.list = {
 			jQuery.each(metadata.heading_filter, function(value, text) {
 				filter.append(jQuery('<option/>').text(text).attr('value', value));
 			});
-			filter.bind('change', value_changed).appendTo(cell);
+			filter.on('change', value_changed).appendTo(cell);
 		}
 	},
 
@@ -880,7 +898,7 @@ Widget.types.list = {
 			if(!jQuery.isArray(data)) {
 				data = [data, data];
 			}
-			jQuery("<a>").attr('href', data[1]).text(this.truncate(data[0])).appendTo(column).bind('click', function(event) {
+			jQuery("<a>").attr('href', data[1]).text(this.truncate(data[0])).appendTo(column).on('click', function(event) {
 				event.stopPropagation();
 			});
 		},
@@ -931,6 +949,7 @@ Widget.types.list = {
 		row_click_active_exclusive: true,
 		row_click_active_class: 'ui-state-active',
 		row_model_drag_and_drop_identifier: false,
-		initial_selection: []
+		initial_selection: [],
+		hash_key: null,
 	}
 };

@@ -14,10 +14,10 @@ Widget.types.file_upload = {
 		if(!selector) {
 			element.addClass('ui-state-droppable');
 		}
-		
+
 		var _this = this;
 		var current_drag_is_file = false;
-		element.bind('dragenter', function(event) {
+		element.on('dragenter', function(event) {
 			current_drag_is_file = event.dataTransfer && (event.dataTransfer.files !== null || event.dataTransfer.types.contains("Files"));
 			if(single_file_only && event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files.length > 1) {
 				current_drag_is_file = false;
@@ -31,12 +31,12 @@ Widget.types.file_upload = {
 			var target_is_descendant = !el.is(event.target) && el.has(event.target);
 			el.data('drag-hover-target_is_descendant', target_is_descendant);
 			el.addClass('ui-state-droppable-hover');
-		}).bind('dragover', function(event) {
+		}).on('dragover', function(event) {
 			if(!current_drag_is_file) {
 				return;
 			}
 			event.originalEvent.preventDefault();
-		}).bind('dragleave', function(event) {
+		}).on('dragleave', function(event) {
 			var tar = jQuery(event.target);
 			var el = selector ? tar.closest(selector, element) : element;
 			if(!el.length) {
@@ -47,7 +47,7 @@ Widget.types.file_upload = {
 			if(el.is(event.target) && !target_is_descendant) {
 				el.removeClass('ui-state-droppable-hover');
 			}
-		}).bind('drop', function(event) {
+		}).on('drop', function(event) {
 			event.preventDefault();
 			if(!event.dataTransfer || (single_file_only && event.dataTransfer.files.length > 1)) {
 				return;
@@ -65,7 +65,7 @@ Widget.types.file_upload = {
 				}
 				return;
 			}
-			
+
 			var i = 0;
 			for(i=0;i<event.dataTransfer.files.length;i++) {
 				var file = event.dataTransfer.files.item(i);
@@ -74,14 +74,14 @@ Widget.types.file_upload = {
 					_this.upload_file(file, callback_result);
 				}
 			}
-			
+
 			current_drag_is_file = false;
 			return;
 		});
 	},
-	
+
 	open_type_callbacks: {},
-	
+
 	upload: function(obj, options, accepts_method, accepts_params, do_method) {
 		accepts_params.splice(accepts_params.length, 0, function(result, error) {
 			if(error && error.exception_type === 'LocalizedException') {
@@ -96,24 +96,27 @@ Widget.types.file_upload = {
 						options.error(error);
 					} : jQuery.noop;
 					var dialog;
+					function cancel() {
+						dialog.element.dialog("destroy");
+						jQuery.each(dialog.errors, function(i, err) {err();});
+						delete _this.open_type_callbacks[dialog_key];
+					}
 					//Make sure only one dialog is ever displayed for each type. Dismissing it (with either success or failure), continues or aborts all uploads depending on said decision.
 					if(!_this.open_type_callbacks[dialog_key]) {
 						dialog = {};
 						dialog.element = jQuery('<div/>').text(error.message);
 						dialog.element.dialog({
+							appendTo: document.body,
 							buttons: {
 								"{{writeString=wns.document_type.allow}}": function() {
 									dialog.element.dialog("close");
 									jQuery.each(dialog.successes, function(i, succ) {succ();});
 									delete _this.open_type_callbacks[dialog_key];
 								},
-								"{{writeString=wns.cancel}}": function() {
-									dialog.element.dialog("destroy");
-									jQuery.each(dialog.errors, function(i, err) {err();});
-									delete _this.open_type_callbacks[dialog_key];
-								}
+								"{{writeString=wns.cancel}}": cancel
 							},
-							dialogClass: 'file_upload_error'
+							dialogClass: 'file_upload_error',
+							close: cancel
 						});
 						dialog.successes = [];
 						dialog.errors = [];
@@ -136,7 +139,7 @@ Widget.types.file_upload = {
 		});
 		this[accepts_method].apply(this, accepts_params);
 	},
-	
+
 	upload_file: function(file, options) {
 		options = jQuery.extend({}, this.settings.default_options, {name: file.name, type: file.type}, options || {});
 		this.upload(file, options, 'accepts', [file.name, file.type], 'do_upload_file');
@@ -147,7 +150,7 @@ Widget.types.file_upload = {
 		options = jQuery.extend({}, this.settings.default_options, {name: name}, options || {});
 		this.upload(url, options, 'acceptsURL', [url], 'do_upload_url');
 	},
-	
+
 	do_upload_file: function(file, options, create_type) {
 		var _this = this;
 		var size = file.size;

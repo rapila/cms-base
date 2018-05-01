@@ -28,7 +28,7 @@ class PreviewManager extends FrontendManager {
 		//Override some site styles in specific regions
 		$oResourceIncluder->addResource('preview/preview-reset.css');
 		$oResourceIncluder->addResource('preview/preview-default.css');
-		$oResourceIncluder->addResource('admin/theme/jquery-ui-1.10.2.custom.min.css');
+		$oResourceIncluder->addResource('jquery-ui-theme/jquery-ui.min.css');
 		//Add the css that handles styles for all widgets but namespace it so it applies only to specific areas of the page (editable areas, dialogs, the admin menu, etc.)
 		$this->addNamespacedCss(array('widget', 'widget.css'));
 

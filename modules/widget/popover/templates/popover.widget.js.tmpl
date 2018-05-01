@@ -8,7 +8,7 @@ Widget.types['popover'] = {
 		var content = jQuery('<ul/>');
 		this.popoverContents(function(contents) {
 			jQuery.each(contents, function(key, val) {
-				jQuery('<li/>').appendTo(content).bind('click', function() {
+				jQuery('<li/>').appendTo(content).on('click', function() {
 					_this.fire('popover-chosen', jQuery(this));
 					_this._element.triggerHandler('hidePopover');
 				}).html(val);
@@ -18,13 +18,13 @@ Widget.types['popover'] = {
 				header: jQuery('<h2/>').val(this.settings.title)
 			});
 			if(!this._element.is(':button')) {
-				this._element.unbind('click');
+				this._element.off('click');
 			}
 		});
 		if(!this._element.is(':button')) {
-			this._element.bind('focus', function(event) {
+			this._element.on('focus', function(event) {
 				_this._element.triggerHandler('showPopover');
-			}).bind('blur', function(event) {
+			}).on('blur', function(event) {
 				setTimeout(function() {
 					_this._element.triggerHandler('hidePopover');
 				}, 100);

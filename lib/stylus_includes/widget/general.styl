@@ -1,6 +1,6 @@
 @font-face
 	font-family 'Rapila-Icons'
-	src url('../../fonts/Rapila-UI-Icons.woff') format('woff')
+	src url('../../fonts/Rapila-Icons.woff') format('woff')
 	font-weight normal
 	font-style normal
 
@@ -51,10 +51,10 @@ body .cke_dialog .ui-state-droppable
 	border-width 0
 
 .ui-state-active .ui-icon
-	background-image url("../admin/theme/images/ui-icons_000000_256x240.png")
+	background-image url("../jquery-ui-theme/images/ui-icons_000000_256x240.png")
 
 .ui-state-hover .ui-icon
-	background-image url("../admin/theme/images/ui-icons_000000_256x240.png")
+	background-image url("../jquery-ui-theme/images/ui-icons_000000_256x240.png")
 
 .rapila-icon,
 button.rapila-icon
@@ -97,34 +97,44 @@ option.rapila-icon
 		right 0
 		z-index 2000
 
-.ui-my-icon
-	height 20px
-	margin -2px 2px 0 0
-	width 26px
-	&.ui-icon-trash
-		background transparent url("../../images/admin/icon_trash.png") no-repeat center bottom
-	&.ui-icon-wrench
-		background transparent url("../../images/admin/icon_edit_condition.png") no-repeat center bottom
-	&.ui-icon-pencil
-		background transparent url("../../images/admin/icon_edit.png") no-repeat center bottom
+.add-new-item,
+.edit-item,
+.item-action,
+.infobar_left .remove-item,
+.print_area,
+.go-to-documentation
+	height 16px
+	width 16px
+	text-align center
 
 .add-new-item,
-.remove-item,
 .edit-item,
+.item-action,
+.infobar_left .remove-item
+	@extend .rapila-icon
+	color #666
+.add-new-item::after
+	content 'new'
+.edit-item::after
+	content 'edit'
+.item-action::after
+	content 'settings'
+
+.infobar_left
+	.add-new-item::after
+		content 'new-category'
+	.remove-item::after
+		content 'remove-category'
+
+// Use normal plus for page tree
+body.pages .infobar_left .add-new-item::after
+	content 'new'
+
 .item-action,
 .print_area,
 .go-to-documentation
-	background-image url('../../images/admin/add_new_item.png')
 	background-repeat no-repeat
 	display inline-block
-	height 16px
-	width 16px
-
-.remove-item
-	background-image url('../../images/admin/remove_item.png')
-
-.edit-item
-	background-image url('../../images/admin/edit_item.png')
 
 .item-action
 	background-image url('../../images/admin/action.png')

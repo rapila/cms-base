@@ -17,9 +17,11 @@
 			padding 0.6em 0.8em 2em
 			background #2d3238
 		.ui-dialog-titlebar-close
-			background none
+			background none !important
 			border none
 			margin-top -20px
+			&:hover
+				color #e3ef99 !important
 	.ui-dialog-title
 		float left
 		margin 0.1em 1em 0.2em 0
@@ -35,10 +37,11 @@
 .ui-dialog-titlebar
 	.ui-state-focus,
 	.ui-state-highlight,
-	.ui-state-hover
+	.ui-state-hover,
+	:focus, :hover
 		color #e3ef99
 		.ui-icon
-			background-image url("../admin/theme/images/ui-icons_b8d600_256x240.png")
+			background-image url("../jquery-ui-theme/images/ui-icons_b8d600_256x240.png")
 
 .ui-dialog-content
 	cursor auto

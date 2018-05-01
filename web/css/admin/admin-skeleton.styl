@@ -90,8 +90,9 @@ body
 	.infobar_context
 		position relative
 	.sidebar_resizer
+		color #333
+		font-size 1.2em
 		position relative
-		background-image url('../../images/admin/sidebar_resizer.png')
 		width sidebar_resizer_width
 		height info_bar_height
 		display none
@@ -155,11 +156,12 @@ body
 		&.default_state
 			background-color transparent
 	.info-bar-button
+		text-align center
+		padding-right 0
 		width info_bar_height
 		background-color transparent
 		background-repeat no-repeat
 		background-position center center
-		padding-right 1px
 		cursor pointer
 	span.info-bar-element,
 	div.info-bar-element
@@ -174,12 +176,9 @@ body
 			float left
 	.search_field
 		padding 0 4px
-	.search_button
-		background-image url('../../images/admin/search_icon.gif')
 	.search_button.active
-		background-image url('../../images/admin/search_icon_active.gif')
+		color #2C87F6
 	.search_field_reset
-		background-image url('../../images/admin/search_reset.png')
 		border none
 		width 16px
 		margin-left -24px

@@ -46,44 +46,29 @@ div.ui-widget-content
 	display block
 	position absolute
 	z-index 1001
-	.ui-icon
+	.rapila-icon
 		margin-right 1px
 		margin-top 1px
 		cursor not-allowed
 		background-color #C1C1C1
+		padding 0.1em 0.4em
+		border-radius 0.2em
+		margin-right 0.2em
 	> div
 		float left
 		display none
 	> div.is_not_shown
 		display inline-block
-	.ui-icon.edit,
-	&.editing .ui-icon,
+	.rapila-icon.edit,
+	&.editing .rapila-icon,
 	&.editing .additional-buttons,
 	&.loading .ui-loading
 		display block
-	&.editing .ui-icon.edit,
-	&.loading .ui-icon.edit
+	&.editing .rapila-icon.edit,
+	&.loading .rapila-icon.edit
 		display none
-	&.may_edit
-		.ui-icon
-			width 25px
-			height 19px
-			cursor pointer
-			&.ui-icon-pencil
-				background transparent url('../../images/admin/icon_edit.png') no-repeat center center
-			&.ui-icon-trash
-				background transparent url('../../images/admin/icon_trash.png') no-repeat center center
-			&.ui-icon-wrench
-				background transparent url('../../images/admin/icon_edit_condition.png') no-repeat center center
-			&.ui-icon-preview-cancel
-				background transparent url('../../images/admin/icon_preview_edit_cancel.png') no-repeat center center
-			&.ui-icon-save
-				background transparent url('../../images/admin/icon_save.png') no-repeat center center
-			&.ui-icon-is-hidden
-				background transparent url('../../images/admin/page_hidden_default.png') no-repeat center center
-				cursor default
 
-// add style for add_entry button, used in journal plugin, but could be used anywhere
+	// add style for add_entry button, used in journal plugin, but could be used anywhere
 	.add_entry_wrapper
 		outline 1px solid #f2f2f2
 		outline-radius 3px
@@ -116,8 +101,3 @@ div.ui-widget-content
 	background transparent url('../../images/preview/loader.gif') no-repeat scroll top left
 	min-width 17px
 	min-height 17px
-
-
-
-
-

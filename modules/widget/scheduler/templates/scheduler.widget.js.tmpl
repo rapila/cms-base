@@ -81,6 +81,7 @@ Widget.types['scheduler'] = {
 		}, this.settings.list_widget_session);
 
 		this.dialog.dialog({
+			appendTo: document.body,
 			autoOpen: false,
 			title: "{{writeString=wns.scheduler.title}}",
 			open: function() {

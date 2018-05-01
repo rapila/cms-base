@@ -17,6 +17,7 @@ class DocumentsAdminModule extends AdminModule {
 
 		$this->oInputWidget = new SidebarInputWidgetModule();
 		$this->oSidebarWidget = new ListWidgetModule();
+		$this->oSidebarWidget->setSetting('hash_key', 'document_category_id');
 		$this->oSidebarWidget->setListTag(new TagWriter('ul'));
 		$this->oSidebarWidget->setDelegate(new CriteriaListWidgetDelegate($this, 'DocumentCategory', 'name'));
 		$this->oSidebarWidget->setSetting('initial_selection', array('document_category_id' => $this->oListWidget->getDocumentCategoryId()));

@@ -28,7 +28,8 @@ Widget.types.info_bar = {
 					return this;
 				},
 				text: function() {
-					return this.element.text.apply(this.element, arguments);
+					this.element.text.apply(this.element, arguments);
+					return this;
 				}
 			}, opts);
 			if(opts.parent.constructor === String) {
@@ -117,8 +118,8 @@ Widget.types.info_bar = {
 				var result = add_item(options);
 				var previous_search = null;
 
-				var clear_button = this.add_button('search_field_reset', null, null, true).element.hide();
-				var search_button = this.add_button('search_button', function() {
+				var clear_button = this.add_button('search_field_reset rapila-icon', null, null, true).text('⊗').element.hide();
+				var search_button = this.add_button('search_button rapila-icon', function() {
 					if((search_input.is('.default_state') || search_input.val() === '') && !previous_search) {
 						Widget.notifyUser(Widget.logSeverity.INFO, "{{writeString=wns.not_applicable.add_search_word}}");
 						return;
@@ -129,7 +130,7 @@ Widget.types.info_bar = {
 						previous_search = search_input.val();
 					}
 					click_handler(previous_search);
-				}, null, true).element;
+				}, null, true).text('▶').element;
 				clear_button.click(function(event) {
 					search_input.val('').focus();
 					search_button.removeClass('active');
@@ -146,7 +147,7 @@ Widget.types.info_bar = {
 					if(search_input.val() === '') {
 						search_input.addClass('default_state').val(default_value);
 					}
-				}).bind('keyup', function(event) {
+				}).on('keyup', function(event) {
 					if(event.which === 27) {
 						return clear_button.click();
 					}

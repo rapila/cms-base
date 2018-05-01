@@ -4,7 +4,9 @@
  */
 class TreeWidgetModule extends PersistentWidgetModule {
 	private $oDelegate = null;
-	
+
+	const JSTREE_VERSION = '3.3.5';
+
 	public function setDelegate($oDelegate) {
 		$this->oDelegate = $oDelegate;
 	}
@@ -17,8 +19,9 @@ class TreeWidgetModule extends PersistentWidgetModule {
 		if($oResourceIncluder == null) {
 			$oResourceIncluder = ResourceIncluder::defaultIncluder();
 		}
-		$oResourceIncluder->addResource('widget/jsTree/jquery.jstree.js');
-		$oResourceIncluder->addResource('widget/jsTree/jquery.jstree.tree_widget_plugin.js');
+		$oResourceIncluder->addJavaScriptLibrary('jstree', self::JSTREE_VERSION);
+		// Load the tree CSS
+		$oResourceIncluder->addResource('//cdn.rawgit.com/vakata/jstree/'.self::JSTREE_VERSION.'/dist/themes/default/style.min.css');
 		self::includeWidgetResources(false, $oResourceIncluder);
 	}
 	
@@ -38,8 +41,8 @@ class TreeWidgetModule extends PersistentWidgetModule {
 		return $this->oDelegate->loadItem($mData);
 	}
 	
-	public function moveItem($mFromData, $mToData, $sPosition) {
-		return $this->oDelegate->moveItem($mFromData, $mToData, $sPosition);
+	public function moveItem($mFromData, $mParentData, $iPosition) {
+		return $this->oDelegate->moveItem($mFromData, $mParentData, $iPosition);
 	}
 	
 	public function getModelName() {

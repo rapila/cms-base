@@ -82,7 +82,7 @@ Widget.types.admin_menu = {
 		if(!text) {
 			text = '';
 		}
-		element.find('.ui-button-text').text(text);
+		element.text(text);
 		if(this.settings.attach_events) {
 			element.click(callback);
 		}
@@ -138,7 +138,7 @@ Widget.types.admin_menu = {
 				result.element.addClass('ui-state-active');
 			}
 			if(this.settings.attach_events) {
-				result.element.bind('change', function(event) {
+				result.element.on('change', function(event) {
 					var selected = jQuery(this).find(':selected');
 					if(!jQuery.isFunction(selected.data('action'))) {
 						result.element.addClass('inactive');
@@ -265,7 +265,7 @@ Widget.types.admin_menu = {
 			}).menu({
 				select: function(event, ui) {
 					menu.hide();
-					ui.item.data('callback')(event);
+					ui.item.closest('li').data('callback')(event);
 				}
 			}).hide();
 			var element = jQuery('<button/>').addClass('open-action rapila-icon').text(icon).attr('title',"{{writeString=wns.admin_menu.settings_dropdown_tile}}");
@@ -278,7 +278,7 @@ Widget.types.admin_menu = {
 						display: 'table'
 					}).position({
 						my: "right top",
-						at: "center bottom",
+						at: "center+15 bottom+1",
 						of: element
 					});
 				}

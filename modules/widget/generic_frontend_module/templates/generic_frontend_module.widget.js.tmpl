@@ -3,8 +3,9 @@ Widget.types.generic_frontend_module = {
 		var _this = this;
 		if(this._element.attr('data-widget-type')) {
 			this._element.prepareWidget(function(widget) {
-				this.internal_widget = widget;
-			}.bind(this), jQuery.noop);
+				_this.internal_widget = widget;
+				_this.internal_widget.notify_size_change = _this.notify_size_change;
+			}, jQuery.noop);
 		} else {
 			this.internal_widget = null;
 			var inner_widgets_prepared = [];

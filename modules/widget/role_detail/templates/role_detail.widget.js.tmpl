@@ -9,7 +9,7 @@ Widget.types.role_detail = {
 		this.right_content = Widget.parseHTML("{{includeTemplate=right}}");
 		this.right_content.find('[name="page_id[]"]').prepareWidget();
 		var rights_container = this._element.find('.rights_container');
-		rights_container.delegate('.delete_right', 'click', function(event) {
+		rights_container.on('click', '.delete_right', function(event) {
 			var delete_this_right = jQuery(this);
 			var right_content = delete_this_right.closest('.role-rights');
 			right_content.remove();

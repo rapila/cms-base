@@ -24,7 +24,7 @@ Widget.types.document_list_frontend_config = {
 		});
 
 		this.reload_preview();
-		this.result_list.delegate('li', 'click', function() {
+		this.result_list.on('click', 'li', function() {
 			var id = jQuery(this).data('id');
 			_this.detail_widget.setDocumentId(id);
 			_this.detail_widget.fill_data();

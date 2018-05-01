@@ -188,6 +188,7 @@ Widget.types.detail = {
 		// option something like.....
 
 		this.content.dialog({
+			appendTo: document.body,
 			title: this.settings.title,
 			autoOpen: this.settings.autoOpen,
 			modal: this.settings.modal,
@@ -197,9 +198,8 @@ Widget.types.detail = {
 			dialogClass: this.settings.dialogClass,
 			width: this.settings.width,
 			height: this.settings.height,
-			buttons: buttons,
-			position: ['center', 50]
-		}).dialog('open').bind('keydown', function(event) {
+			buttons: buttons
+		}).dialog('open').on('keydown', function(event) {
 			if(event.which === 13) {
 				if(!jQuery(event.target).is('textarea')) {
 					detail_widget.save();
@@ -313,7 +313,7 @@ Widget.types.detail = {
 	},
 
 	clickable_labels_for: function(element) {
-		element.delegate('label[for]', 'click', function() {
+		element.on('click', 'label[for]', function() {
 			var label = jQuery(this);
 			var related_input = element.find('*[name="'+label.attr('for')+'"]');
 			if(related_input.length > 1) {
