@@ -4,16 +4,16 @@ abstract class FrontendModule extends Module {
 
 	protected $oLanguageObject;
 	protected $oData;
-	protected $aPath;
+	protected $oNavigationItem;
 	protected $iId;
 
-	public function __construct($oLanguageObject = null, $aPath = null, $iId = 1) {
+	public function __construct($oLanguageObject = null, $oNavigationItem = null, $iId = 1) {
 		if($oLanguageObject instanceof LanguageObject || $oLanguageObject instanceof LanguageObjectHistory) {
 			$this->oLanguageObject = $oLanguageObject;
 		} else {
 			$this->oData = $oLanguageObject;
 		}
-		$this->aPath = $aPath;
+		$this->oNavigationItem = $oNavigationItem;
 		$this->iId = $iId;
 	}
 
