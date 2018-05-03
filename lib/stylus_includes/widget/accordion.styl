@@ -25,29 +25,20 @@
 			color #666666
 			padding 0.3em 0.3em 0.3em 0.2em
 	.ui-accordion-header-icon
+		background none
+		text-indent 0
 		margin-left 0.3em
 		font-family 'Rapila-Icons', Arial
 		color #999
 		&::after
 			content: '▶︎'
+			transform rotate(0deg)
+			transition: transform 200ms ease-in-out;
+			display block
 		&.ui-icon-triangle-1-s::after	
-			transform rotate(90deg) scale(1, 1)
-		&.ui-icon-triangle-1-e::after
-			transform rotate(0deg) scale(1, 1)
+			transform rotate(90deg)
 	.ui-accordion-icons
 		padding-left 0
-
-.ui-icon.toggle_show_all,
-.ui-accordion .ui-state-default .ui-icon-triangle-1-s
-	&::after
-		content '▶︎'
-		transform rotate(90deg) scale(1, 1)
-
-.ui-icon.toggle_show_all.closed,
-.ui-accordion .ui-state-default .ui-icon-triangle-1-e
-	&::after
-		content '▶︎'
-		transform rotate(0deg) scale(1, 1)
 
 // style for count elements in accordion title
 h3

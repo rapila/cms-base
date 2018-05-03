@@ -113,6 +113,13 @@ option.rapila-icon
 .infobar_left .remove-item
 	@extend .rapila-icon
 	color #666
+	position relative
+	&::after
+		position absolute
+		top 0
+		left 0
+		right 0
+		bottom 0
 .add-new-item::after
 	content 'new'
 .edit-item::after
