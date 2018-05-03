@@ -157,7 +157,10 @@ jQuery(document).ready(function() {
 				});
 			});
 		}
-
+		
+		Widget.handle('user_admin_settings_change', reload);
+	
+	
 		function update_empty_message() {
 			var has_widgets = AdminInterface.content.find('.dashboard-widget').length !== 0;
 			AdminInterface.content[has_widgets ? 'removeClass' : 'addClass']('empty-dashboard');
