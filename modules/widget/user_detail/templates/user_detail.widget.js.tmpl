@@ -9,12 +9,16 @@ Widget.types.user_detail = {
 			var force = this.checked;
 			_this.password_section.find('input:text, input:password').prop('disabled', force);
 		});
-
 		this.settings.detail_widget.additionalButtons.push({
 			text: "{{writeString=wns.user.reset_settings}}",
 			click: function() {
 				_this.resetSettings(function(result) {
-					result && Widget.notifyUser(Widget.logSeverity.INFO, '{{writeString=wns.user.reset_settings.reset}}');
+					if(result) {
+						Widget.notifyUser(Widget.logSeverity.INFO, '{{writeString=wns.user.reset_settings.reset}}');
+						if(_this.is_current_user) {
+							Widget.fire('user_admin_settings_change');
+						}
+					}
 				});
 			}
 		});
@@ -78,6 +82,7 @@ Widget.types.user_detail = {
 	fill_data: function() {
 		this._element.find('input[name="password_suggest"]').hide();
 		this.userData(function(user_data) {
+			this.is_current_user = user_data.IsSessionUser;
 			if(user_data.IsSessionUser) {
 				// Users are not able to edit their own rights. Or they are admin, in which case they have no specific “rights”
 				this.rights_section.hide();

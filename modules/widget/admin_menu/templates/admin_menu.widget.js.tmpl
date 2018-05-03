@@ -240,7 +240,11 @@ Widget.types.admin_menu = {
 		reset_user_settings: function() {
 			var _this = this;
 			return {text: "{{writeString=wns.admin_menu.reset_user_settings}}", callback: function() {
-				_this.resetUserSettings();
+				_this.resetUserSettings(function(executed) {
+					if(executed) {
+						Widget.fire('user_admin_settings_change');
+					}
+				});
 			}};
 		},
 
