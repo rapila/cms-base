@@ -13,7 +13,8 @@ class SchedulerWidgetModule extends PersistentWidgetModule {
 	}
 
 	public function getElementType() {
-		$oTag = new TagWriter('div', array(), 'scheduler');
+		$oTag = new TagWriter('button', array(), 'scheduler');
+		$oTag->addToParameter('type', 'button');
 		$oTag->addToParameter('class', 'rapila-icon');
 		$oTag->addToParameter('class', 'ui-badge');
 		return $oTag;
