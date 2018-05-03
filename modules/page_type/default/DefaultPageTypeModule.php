@@ -195,7 +195,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 		// Some frontend modules generate links into the current manager – those need to be correct
 		PreviewManager::setTemporaryManager();
 		$oModuleInstance = $this->backendModuleInstanceByLanguageObject($oCurrentContentObject, $oCurrentLanguageObject);
-		$aResult = array('preview_contents' => FillHelper::getModuleContents($oModuleInstance, false, true));
+		$aResult = array('preview_contents' => PageObjectFillHelper::getModuleContents($oModuleInstance, false, true));
 		PreviewManager::revertTemporaryManager();
 		return $aResult;
 	}
