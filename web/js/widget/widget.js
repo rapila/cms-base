@@ -585,8 +585,15 @@ jQuery.widget("ui.dialog", jQuery.ui.dialog, {
 			jQuery(element).on('mouseenter', alert.bind(window, text));
 		},
 
-		confirm: function(title, message, callback, cancelButtonText, okButtonText) {
+		confirm: function(title, message, callback, cancelButtonText, okButtonText, options) {
+			options = options || {};
 			message = title+' '+message;
+			console.log('confirm callback', callback);
+			debugger;
+			if(options.drowDown) {
+
+
+			}
 			// We don’t support the changing of button texts but still need to follow the convention of not displaying the cancel button if it is false-y but not undefined
 			if(cancelButtonText !== undefined && !cancelButtonText) {
 				alert(message);

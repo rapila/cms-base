@@ -324,11 +324,29 @@
 		//Admin helper methods
 		remove_object: function(event, item_to_remove, force) {
 			var _this = this;
+
 			var container = item_to_remove.parent();
-			if(force) {
-				item_to_remove.data('removing', true);
+			var remove_options = {
+				dropDown: [
+					{
+						title: '{{writeString=wns.language_object.delete.language}}',
+						key: 'language'
+					},
+					{
+						title: '{{writeString=wns.language_object.delete.all}}',
+						key: 'all'
+					}
+				]
 			}
-			this.methods.adminRemoveObject(item_to_remove.attr('data-object-id'), !!force, function(deleted) {
+			var delete_message = "Bitte wählen...";
+			Widget.confirm("{{writeString=wns.language_object.delete.title}}", delete_message, function(action) {
+				if(action === 'all') {
+					this.delete_row(row);
+				} else if (action === 'language'){
+					item_to_remove.data('removing', true);
+				}
+			}.bind(this), null, null, remove_options);
+			this.methods.adminRemoveObject(item_to_remove.attr('data-object-id'), action === 'all', function(deleted) {
 				item_to_remove.data('removing', false);
 				var md = _this.find_structure(item_to_remove);
 				if(deleted && !force) {
