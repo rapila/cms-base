@@ -30,17 +30,11 @@ dashboard:
     -
       type: static_text
       title: "Welcome"
-      color: '#555555'
-      contrastColor: 'white'
+      color: '#8dc100'
+      contrastColor: 'black'
       container: 'column-1'
       config:
-        text: '<h3>Hello</h3><p>Welcome to your Dashboard. The Dashboard allows you to see all the information at a glance that is most relevant to you.</p><p>You may add as many widgets to the dashboard as you like. Dashboard widgets can be added using the “+” Icon at the bottom-left or using the access key “n”: just choose a type and container and you’re good to go.</p><p>To change the Dashboard layout, use the dropdown on the bottom. Each layout contains containers into which your widgets can be easily organized simply by dragging them.</p><p>To edit a widget, click the edit button in its title bar; to remove it, click the “╳” icon.</p>'
-    -
-      type: backup
-      title: "Backup Database"
-      color: "#555555"
-      contrastColor: white
-      container: 'column-1'
+        text: '<h3>Introduction to your Dashboard</h3><p>The Dashboard allows you to see all the information that is most relevant to you.</p><p>You can organize the widgets as you like. Dashboard widgets can be added using the “+” Icon at the bottom-left or using the access key “n”: just choose a type and container and you’re good to go.</p><p>To change the Dashboard layout, use the dropdown on the bottom. Each layout contains containers into which your widgets can be easily organized simply by dragging them.</p><p>To edit a widget, click the edit button in its title bar; to remove it, click the “╳” icon.</p>'
     -
       type: recent_activity
       title: "Activity in Pages"
