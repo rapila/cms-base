@@ -49,13 +49,13 @@ jQuery(document).ready(function() {
 				content_list.reload();
 			}
 		}).add_row_count_info_for_list(content_list).add_pager_for_list(content_list).add_button('toggle-thumbnail-view rapila-icon', function(event, item) {
-			if(item.text() === 'thumbnails') {
+			if(item.element.text() === 'thumbnails') {
 				// Switch to thumbnail view
-				item.text('list');
+				item.element.text('list');
 				content_list.thumbnail_view(true);
 			} else {
 				// Switch from thumbnail view
-				item.text('thumbnails');
+				item.element.text('thumbnails');
 				content_list.thumbnail_view(false);
 			}
 		}, 't', 'commons').text('thumbnails');
