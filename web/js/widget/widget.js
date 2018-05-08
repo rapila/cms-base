@@ -588,18 +588,16 @@ jQuery.widget("ui.dialog", jQuery.ui.dialog, {
 		confirm: function(title, message, callback, cancelButtonText, okButtonText, options) {
 			options = options || {};
 			message = title+' '+message;
-			console.log('confirm callback', callback);
-			debugger;
+			var return_value = 'all';
 			if(options.drowDown) {
-
-
 			}
 			// We don’t support the changing of button texts but still need to follow the convention of not displaying the cancel button if it is false-y but not undefined
 			if(cancelButtonText !== undefined && !cancelButtonText) {
+				console.log('return_value', return_value);
 				alert(message);
-				return callback(true);
+				// return callback(return_value);
 			}
-			callback(confirm(message));
+			// callback(confirm(message));
 		},
 
 		//Show Ajax loader

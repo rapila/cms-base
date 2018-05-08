@@ -326,6 +326,7 @@
 			var _this = this;
 
 			var container = item_to_remove.parent();
+
 			var remove_options = {
 				dropDown: [
 					{
@@ -338,15 +339,25 @@
 					}
 				]
 			}
+
 			var delete_message = "Bitte wählen...";
-			Widget.confirm("{{writeString=wns.language_object.delete.title}}", delete_message, function(action) {
-				if(action === 'all') {
-					this.delete_row(row);
-				} else if (action === 'language'){
-					item_to_remove.data('removing', true);
+
+			Widget.confirm("{{writeString=wns.language_object.delete.title}}", delete_message, function(force) {
+				console.log('force', force);
+				if(force === 'all') {
+					force = true;
+					// this.delete_row(row);
+				} else if (force === 'language'){
+					force = false;
+					// item_to_remove.data('removing', true);
 				}
+				debugger;
+				// return force;
+
 			}.bind(this), null, null, remove_options);
-			this.methods.adminRemoveObject(item_to_remove.attr('data-object-id'), action === 'all', function(deleted) {
+
+			this.methods.adminRemoveObject(item_to_remove.attr('data-object-id'), force, function(deleted) {
+
 				item_to_remove.data('removing', false);
 				var md = _this.find_structure(item_to_remove);
 				if(deleted && !force) {
