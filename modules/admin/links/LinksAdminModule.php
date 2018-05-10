@@ -16,6 +16,7 @@ class LinksAdminModule extends AdminModule {
 		}
 
 		$this->oSidebarWidget = new ListWidgetModule();
+		$this->oSidebarWidget->setSetting('hash_key', 'link_category_id');
 		$this->oSidebarWidget->setListTag(new TagWriter('ul'));
 		$this->oSidebarWidget->setDelegate(new CriteriaListWidgetDelegate($this, 'LinkCategory', 'name'));
     $this->oSidebarWidget->setSetting('initial_selection', array('link_category_id' => $this->oListWidget->getLinkCategoryId()));

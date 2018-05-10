@@ -86,6 +86,13 @@ jQuery(document).ready(function() {
 			});
 		}).disable();
 
+	// Handle initial selection ≠ __all (e.g. from hash)
+	var sel = sidebar.active_row_datas()[0];
+	if(sel && sel.link_category_id && sel.link_category_id !== '__all') {
+		content_list.setOption('link_category_id', sel.link_category_id);
+		content_list.reload();
+	}
+
 		Widget.handle('rapila-link_category_changed', function(event, info) {
 			if(info.updated) {
 				sidebar.update_row(sidebar.row_from_row_data({link_category_id: info.id}));

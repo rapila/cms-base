@@ -104,8 +104,7 @@ Widget.types.page_detail = {
 		//Tag area
 		this.tags_in_detail = this._element.find('div.tags_in_detail');
 		var page_detail = this;
-		Widget.createWithElement('tag_area', function(widget) {
-			page_detail.tag_area = widget;
+		this.tag_area = Widget.createWithElement('tag_area', function(widget) {
 			widget.settings.auto_load = false;
 			widget.settings.dnd = false;
 			widget.settings.deletable = true;
@@ -319,10 +318,12 @@ Widget.types.page_detail = {
 		}
 
 		// Tag panel
-		this.tag_area.setTaggedItemId(page_data.Id);
-		this.tag_area.reload_tags();
+		this.tag_area.done(function(tag_area) {
+			tag_area.setTaggedItemId(page_data.Id);
+			tag_area.reload_tags();
+		});
 
-		// Update info in accordion headings
+			// Update info in accordion headings
 		this.update_properties_info(count_properties);
 	},
 

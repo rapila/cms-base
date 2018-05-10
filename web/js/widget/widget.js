@@ -23,7 +23,7 @@ Function.prototype.deferred = function(list) {
 
 // escapes all selector meta chars
 String.prototype.escapeSelector = function() {
-	return this.replace(/([#;&,\.+\*~':"!\^\$\[\]\(\)=>|\/])/g, "\\$1");
+	return jQuery.escapeSelector(this);
 };
 
 // Override jQuery UI dialog to support CKEDITOR Pop-Ups
@@ -363,11 +363,7 @@ jQuery.widget("ui.dialog", jQuery.ui.dialog, {
 				return Widget.singletons[widgetType];
 			}
 			var widgetInformation = Widget.loadInfo(widgetType);
-			Widget.widgetJSON(widgetType, session, 'instanciateWidget', function(instanceInformation, error) {
-				if(error) {
-					Widget.notifyUser(Widget.logSeverity.ALERT, error.message);
-					return;
-				}
+			Widget.widgetJSON(widgetType, session, 'instanciateWidget', function(instanceInformation) {
 				var widget = new Widget.types[widgetType](instanceInformation);
 				widget._type = widgetType;
 
@@ -414,6 +410,7 @@ jQuery.widget("ui.dialog", jQuery.ui.dialog, {
 				finishCallback = session;
 				session = arguments[3];
 			}
+			var result = $.Deferred();
 			Widget.create(widgetType, intermediateCallback, function(widget) {
 				widget._element = Widget.parseHTML(widget._instanceInformation.content);
 				widget.fire('element_set', widget._element);
@@ -423,8 +420,11 @@ jQuery.widget("ui.dialog", jQuery.ui.dialog, {
 					} else {
 						finishCallback(widget);
 					}
+					result.resolve(widget);
 				}, false);
 			}, session);
+
+			return result.promise();
 		},
 
 		createOnce: function(widgetType, apply, finish, intermediate, context) {
@@ -774,13 +774,8 @@ jQuery.widget("ui.dialog", jQuery.ui.dialog, {
 			},
 
 			needs_login: function(error, widgetType, widgetOrId, action, callback, options, attributes) {
-				Widget.create('login_window', function(login_widget) {
-					login_widget.show();
-					Widget.handle('rapila-logged_in', function(event) {
-						// Re-try the action
-						Widget.widgetJSON(widgetType, widgetOrId, action, callback, options, attributes);
-					}, true);
-				});
+				Widget.notifyUser(Widget.logSeverity.ALERT, error.message);
+				window.location.reload();
 				return false;
 			},
 

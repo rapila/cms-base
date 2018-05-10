@@ -71,9 +71,8 @@ class WidgetJsonFileModule extends FileModule {
 
 	private function getJSON(&$aRequest) {
 		if($this->sAction === 'destroy') {
-			foreach($aRequest['session_key'] as $sSessionKey) {
-				Session::getSession()->setArrayAttributeValueForKey(WidgetModule::WIDGET_SESSION_KEY, $sSessionKey, null);
-			}
+			// Not currently implemented to preserve back button functionality.
+			// Widget sessions are cleared on logout by the login window widget.
 			return;
 		}
 		$sWidgetClass = WidgetModule::getClassNameByName($this->sWidgetType);

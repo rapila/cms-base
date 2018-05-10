@@ -1,5 +1,6 @@
 Widget.types.link_list_frontend_config = {
 	prepare: function() {
+		var _this = this;
 		var display_modes = this.getConfigData() || {};
 		var config_modes = this.getConfigurationModes();
 
@@ -15,6 +16,7 @@ Widget.types.link_list_frontend_config = {
 		this._element.append(this.content);
 
 		this.result_list = jQuery('<ol/>').addClass('ui-editable-items-list');;
+		this.add_new_item = jQuery('<a/>').addClass('add-new-item').attr('title', "{{writeString=wns.link.create}}");
 		this._element.append(this.result_list);
 
 		var detail_widget;
@@ -43,7 +45,23 @@ Widget.types.link_list_frontend_config = {
 			jQuery.each(links, function(id, name) {
 				_this.result_list.append(jQuery('<li/>').text(name).attr('title', "{{writeString=wns.edit_entry}}").data('id', id));
 			});
+			_this.add_new_item.click(function(event) {
+				Widget.create('link_detail', function(widget) {
+					var category_id = _this.category_if_exists();
+					if(category_id !== null) {
+						widget.settings.initial_category_id = category_id;
+						widget._element.find("select[name='link_category_id']").prop('disabled', 'disabled');
+					}
+					widget.open();
+					widget.handle('saved', function() {
+						_this.reload_preview();
+					});
+				});
+			});
+			_this.result_list.append(_this.add_new_item);
+
 		});
+		
 	},
 
 	save: function() {
@@ -53,11 +71,29 @@ Widget.types.link_list_frontend_config = {
 		return result;
 	},
 
+	category_if_exists: function() {
+		var category_dropdown = this.content.find("select[name='link_categories[]']");
+		var category_id=[];
+		if(category_dropdown.length > 0) {
+			category_id=category_dropdown.val();
+		}
+		if(category_id.length === 1) {
+			return category_id[0];
+		}
+		return '';
+	},
+
 	additional_buttons: [
 		{
 			text: '{{writeString=links.do_admin}}',
 			icon: 'wrench',
-			action: jQuery.openLink.bind(window, "{{writeLink=links;manager=AdminManager}}")
+			action: function(event) {
+				var category_id=this.category_if_exists();
+				if(category_id !== '') {
+					category_id = '#link_category_id=' + category_id[0];
+				}
+				jQuery.openLink("{{writeLink=links;manager=AdminManager}}" + category_id, event);
+			}
 		}
 	]
 };

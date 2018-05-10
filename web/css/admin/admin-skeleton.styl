@@ -90,8 +90,8 @@ body
 	.infobar_context
 		position relative
 	.sidebar_resizer
-		color #333
-		font-size 1.2em
+		color #999
+		font-size 1.7em
 		position relative
 		width sidebar_resizer_width
 		height info_bar_height
@@ -104,7 +104,7 @@ body
 		float left
 	.infobar_right
 		position absolute
-		left initial_sidebar_width
+		left initial_sidebar_width + 1
 		right 0
 		form
 			margin-left 24px
@@ -163,6 +163,7 @@ body
 		background-repeat no-repeat
 		background-position center center
 		cursor pointer
+		font-size 1.2em
 	span.info-bar-element,
 	div.info-bar-element
 		display block
@@ -184,6 +185,7 @@ body
 		margin-left -24px
 		z-index 1
 		border-right 0
+		font-size 1.7em
 
 .tooltip,
 body .cke_dialog .tooltip

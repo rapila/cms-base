@@ -25,33 +25,20 @@
 			color #666666
 			padding 0.3em 0.3em 0.3em 0.2em
 	.ui-accordion-header-icon
+		background none
+		text-indent 0
 		margin-left 0.3em
-	.ui-state-active
-		.ui-icon-triangle-1-s
-			background-image url("../../images/admin/icon_triangle_open_active.png")
-			background-position 3px 3px
-		.ui-icon-triangle-1-e
-			background-image url("../../images/admin/icon_triangle_closed_active.png")
-			background-position 3px 3px
-	.ui-state-hover
-		.ui-icon-triangle-1-s
-			background-image url("../../images/admin/icon_triangle_open_active.png")
-			background-position 3px 3px
-		.ui-icon-triangle-1-e
-			background-image url("../../images/admin/icon_triangle_closed_active.png")
-			background-position 3px 3px
+		font-family 'Rapila-Icons', Arial
+		color #999
+		&::after
+			content: '▶︎'
+			transform rotate(0deg)
+			transition: transform 200ms ease-in-out;
+			display block
+		&.ui-icon-triangle-1-s::after	
+			transform rotate(90deg)
 	.ui-accordion-icons
 		padding-left 0
-
-.ui-icon.toggle_show_all,
-.ui-accordion .ui-state-default .ui-icon-triangle-1-s
-	background-image url("../../images/admin/icon_triangle_open.png")
-	background-position 3px 3px
-
-.ui-icon.toggle_show_all.closed,
-.ui-accordion .ui-state-default .ui-icon-triangle-1-e
-	background-image url("../../images/admin/icon_triangle_closed.png")
-	background-position 3px 3px
 
 // style for count elements in accordion title
 h3
