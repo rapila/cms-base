@@ -414,6 +414,7 @@ jQuery.widget("ui.dialog", jQuery.ui.dialog, {
 				finishCallback = session;
 				session = arguments[3];
 			}
+			var result = $.Deferred();
 			Widget.create(widgetType, intermediateCallback, function(widget) {
 				widget._element = Widget.parseHTML(widget._instanceInformation.content);
 				widget.fire('element_set', widget._element);
@@ -423,8 +424,11 @@ jQuery.widget("ui.dialog", jQuery.ui.dialog, {
 					} else {
 						finishCallback(widget);
 					}
+					result.resolve(widget);
 				}, false);
 			}, session);
+
+			return result.promise();
 		},
 
 		createOnce: function(widgetType, apply, finish, intermediate, context) {
