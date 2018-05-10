@@ -23,7 +23,7 @@ Function.prototype.deferred = function(list) {
 
 // escapes all selector meta chars
 String.prototype.escapeSelector = function() {
-	return this.replace(/([#;&,\.+\*~':"!\^\$\[\]\(\)=>|\/])/g, "\\$1");
+	return jQuery.escapeSelector(this);
 };
 
 // Override jQuery UI dialog to support CKEDITOR Pop-Ups
