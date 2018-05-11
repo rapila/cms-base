@@ -259,7 +259,7 @@ Widget.types.admin_menu = {
 				if(!item_contents) {
 					return;
 				}
-				menu.append(jQuery('<li/>').append(jQuery('<div/>').addClass('ui-menu-item').text(item_contents.text)).data('callback', item_contents.callback));
+				menu.append(jQuery('<li/>').append(jQuery('<div/>').text(item_contents.text)).data('callback', item_contents.callback));
 			});
 			menu.appendTo(document.body).css({
 				zIndex: 101,
