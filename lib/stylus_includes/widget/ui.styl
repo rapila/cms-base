@@ -67,7 +67,7 @@ button.ui-button.ui-state-highlight,
 	margin-bottom 0.5em
 
 .ui-badge
-	&[data-badge-count]:after
+	&[data-badge-count]::after
 		display inline-block
 		position absolute
 		content attr(data-badge-count)
@@ -80,8 +80,11 @@ button.ui-button.ui-state-highlight,
 		text-align center
 		font-family Arial, Helvetica, sans-serif
 		min-width 12px
-	&[data-badge-count="0"]:after
+	&[data-badge-count="0"]::after
 		content none
+	&.ui-button[data-badge-count]::after
+		margin-top -.7em
+		margin-left 0.2em
 
 // Widget-Notifications
 #widget-notifications

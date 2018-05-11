@@ -93,11 +93,10 @@ class PageObjectFillHelper {
 			}
 			return false;
 		}
-		$aPath = $this->oNavigationItem->getLink();
 		if($this->bIsPreview) {
-			$oModule = FrontendModule::getModuleInstance($oContentObject->getObjectType(), $oPageContents->getDraft(), $aPath, $iModuleId);
+			$oModule = FrontendModule::getModuleInstance($oContentObject->getObjectType(), $oPageContents->getDraft(), $this->oNavigationItem, $iModuleId);
 		} else {
-			$oModule = FrontendModule::getModuleInstance($oContentObject->getObjectType(), $oPageContents, $aPath, $iModuleId);
+			$oModule = FrontendModule::getModuleInstance($oContentObject->getObjectType(), $oPageContents, $this->oNavigationItem, $iModuleId);
 		}
 		$sFrontentContents = self::getModuleContents($oModule, true, $this->bIsPreview);
 		if($sFrontentContents === null) {
