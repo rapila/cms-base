@@ -1,4 +1,41 @@
 (function() {
+	function add_menu(menu, container, area, selected, opening) {
+		var current_item;
+
+		menu
+			.appendTo(container)
+			.css({display: 'inline-block'})
+			.menu({
+				select(event, ui) {
+					selected(event, ui, current_item);
+				}
+			})
+			.hide()
+			.css('position', 'absolute');
+
+		var clicked_to_open = false;
+		$(document).bind('click', function() {
+			if(!clicked_to_open) {
+				menu.hide();
+			}
+			clicked_to_open = false;
+		});
+
+		return function open() {
+			clicked_to_open = true;
+			current_item = jQuery(this);
+			if(opening) {
+				opening(current_item);
+			}
+			menu.show().position({
+				my: "right top",
+				at: "middle",
+				of: this,
+				within: area
+			});
+		};
+	}
+
 	function PageType(controller, page_id, container) {
 		this.controller = controller;
 		this.methods = controller.methods;
@@ -77,53 +114,64 @@
 				};
 			};
 
-			var current_delete_item;
-
 			var delete_menu = jQuery('<ul/>');
 			delete_menu.append('<li class="language"><div>{{writeString=wns.language_object.delete.language}}</div></li>');
 			delete_menu.append('<li class="draft"><div>{{writeString=wns.language_object.delete.draft}}</div></li>');
 			delete_menu.append('<li class="all"><div>{{writeString=wns.language_object.delete.all}}</div></li>');
-			delete_menu.appendTo(container).css({display: 'inline-block'})
-			delete_menu.menu({
-				select(event, ui) {
-					if(ui.item.is('.draft')) {
-						return _this.drop_draft(event, current_delete_item);
-					}
-					if(ui.item.is('.language')) {
-						return _this.remove_object(event, current_delete_item, false);
-					}
-					if(ui.item.is('.all')) {
-						return _this.remove_object(event, current_delete_item, true);
-					}
+			var open_delete_menu = add_menu(delete_menu, container, this.container, function selected(event, ui, current_item) {
+				var current_delete_item = current_item.closest('li');
+				if(ui.item.is('.draft')) {
+					return _this.drop_draft(event, current_delete_item);
 				}
-			}).hide().css('position', 'absolute');
-			var clicked_to_open = false;
-			$(document).bind('click', function() {
-				if(!clicked_to_open) {
-					delete_menu.hide();
+				if(ui.item.is('.language')) {
+					return _this.remove_object(event, current_delete_item, false);
 				}
-				clicked_to_open = false;
-			})
-			
-			filled_modules.on('click', 'li .remove_button', function() {
-				clicked_to_open = true;
-				current_delete_item = jQuery(this).closest('li');
+				if(ui.item.is('.all')) {
+					return _this.remove_object(event, current_delete_item, true);
+				}
+			}, function opening(current_item) {
+				var current_delete_item = current_item.closest('li');
 				var language_id = current_delete_item.data('languageId');
 				var md = _this.find_structure(current_delete_item);
 				delete_menu.find('li.language').toggle(md.content.language_objects[language_id].exists_in_language);
 				delete_menu.find('li.draft').toggle(md.content.language_objects[language_id].is_draft);
-				delete_menu.show().position({
-					my: "right top",
-					at: "middle",
-					of: this,
-					within: _this.container
-				});
 			});
+			filled_modules.on('click', 'li .remove_button', open_delete_menu);
 			filled_modules.on('click', 'li .edit_condition_button', bind(this.edit_condition));
 			filled_modules.on('click', 'li .edit_button', bind(this.edit_object));
 
-			var available_modules = container.find('.available_modules');
-
+			var available_modules = jQuery('<ul/>');
+			Object.keys(this.possible_frontend_modules).forEach(function(module_name) {
+				var entry = jQuery('<li><div></div></li>').data({moduleName: module_name});
+				entry.find('div').text(_this.possible_frontend_modules[module_name]);
+				available_modules.append(entry);
+			});
+			var open_available_modules = add_menu(available_modules, container, this.container, function selected(event, ui, current_item) {
+				var current_container = current_item.nextAll('.template-container:eq(0)');
+				var current_items = current_container.children();
+				var position = current_items.length;
+				var container_name = current_container.data('containerName');
+				var module_name = ui.item.data('moduleName');
+				var item = _this.filled_module_li.clone();
+				current_container[0].insertBefore(item[0], current_items[position]);
+				_this.methods.adminAddObjectToContainer(
+					container_name,
+					module_name,
+					position,
+					function(content_params) {
+						item.attr({
+							'data-object-type': module_name,
+							'data-object-id': content_params.id,
+							'data-language-id': language_id
+						});
+						_this.filled_frontend_modules[container_name].contents.splice(position, 0, content_params);
+						_this.update_content_properties(item, {content: content_params});
+					}
+				);
+				_this.update_additional_container_info(current_container);
+			});
+			container.on('click', '.template-container-insert-language-object', open_available_modules);
+	
 			var container_html = this.containers.html;
 			if(container_html) {
 				jQuery().add(Widget.parseHTML(container_html)).add(Widget.parseHTML("{{includeTemplate=unused_objects}}")).appendTo(filled_modules);
@@ -179,28 +227,7 @@
 						_this.update_additional_container_info(source);
 						return;
 					}
-					// add new object, prepare for delete
-					item.attr('data-container', target.attr('data-container-name'));
-					_this.methods.adminAddObjectToContainer(target.attr('data-container-name'), item.attr('data-object-type'), position, function(content_params) {
-						item.attr('data-object-id', content_params.id);
-
-						_this.filled_frontend_modules[target.attr('data-container-name')].contents.splice(position, 0, content_params);
-						_this.update_content_properties(item, {content: content_params});
-					});
-					item.css({width: '', height: ''}).removeClass('ui-draggable ui-draggable-handle ui-draggable-dragging');
-					_this.update_additional_container_info(target);
 				}
-			});
-
-			var dragOptions = {
-				cursor: 'move',
-				helper: 'clone',
-				connectToSortable: filled_modules_containers
-			};
-			jQuery.each(this.possible_frontend_modules, function(object_type, module_name) {
-				var element = _this.filled_module_li.clone(true).find('.module_name').text(module_name).end().attr({'data-object-type': object_type, 'data-language-id': language_id});
-				element.appendTo(available_modules);
-				element.draggable(dragOptions);
 			});
 		},
 

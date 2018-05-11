@@ -270,8 +270,21 @@ class DefaultPageTypeModule extends PageTypeModule {
 
 			//Replace container info
 			//…name
-			$mInnerTemplate->replaceIdentifierMultiple('content', TagWriter::quickTag('div', array('class' => 'template-container-description'), TranslationPeer::getString('wns.page.template_container', null, null, array('container' => TranslationPeer::getString('template_container.'.$sContainerName, null, $sContainerName)), true)));
+			$mInnerTemplate->replaceIdentifierMultiple(
+				'content',
+				TagWriter::quickTag(
+					'div',
+					array('class' => 'template-container-description'),
+					TranslationPeer::getString(
+						'wns.page.template_container',
+						null, null,
+						array('container' => TranslationPeer::getString('template_container.'.$sContainerName, null, $sContainerName)),
+						true
+					)
+				)
+			);
 			//…additional info
+			$mInnerTemplate->replaceIdentifierMultiple('content', TagWriter::quickTag('div', array('class' => 'template-container-insert-language-object add-new-item')));
 			$mInnerTemplate->replaceIdentifierMultiple('content', TagWriter::quickTag('div', array('class' => 'template-container-info')));
 			//…tag
 			$mInnerTemplate->replaceIdentifierMultiple('content', $oContainerTag);
