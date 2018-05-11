@@ -139,6 +139,7 @@ class PageObjectFillHelper {
 		if(!$oContentObject) {
 			$oContentObject = $oLanguageObject->getContentObject();
 		}
+		$oLanguageObject = $oLanguageObject->getDraft();
 		$sFrontendModuleClass = FrontendModule::getClassNameByName($oContentObject->getObjectType());
 		if(!class_exists($sFrontendModuleClass, true)) {
 			return null;

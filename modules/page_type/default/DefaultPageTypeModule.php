@@ -131,7 +131,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 			} else {
 				$aLanguageInfo['is_draft'] = $oLanguageObject->getHasDraft();
 			}
-			$aLanguageInfo['content_info'] = PageObjectFillHelper::getContentInfo($oLanguageObject->getDraft(), $oObject);
+			$aLanguageInfo['content_info'] = PageObjectFillHelper::getContentInfo($oLanguageObject, $oObject);
 			$aObject['language_objects'][$oLanguage->getId()] = $aLanguageInfo;
 		}
 		$aObject['object_type'] = $oObject->getObjectType();
