@@ -76,7 +76,24 @@
 					method.call(_this, event, jQuery(this).closest('li'));
 				};
 			};
-			filled_modules.on('click', 'li .remove_button', bind(this.remove_object));
+
+			var delete_menu = jQuery('<ul/>');
+			delete_menu.append('<li><div>{{writeString=wns.language_object.delete.language}}</div></li>');
+			delete_menu.append('<li><div>{{writeString=wns.language_object.delete.all}}</div></li>');
+			delete_menu.appendTo(container);
+			delete_menu.menu({
+				select: function() {
+					debugger;
+				}
+			}).hide();
+			
+			filled_modules.on('click', 'li .remove_button', function() {
+				delete_menu.menu('option', 'position', {
+					my: "bottom",
+					at: "middle",
+					of: this
+				}).show();
+			});
 			filled_modules.on('click', 'li .edit_condition_button', bind(this.edit_condition));
 			filled_modules.on('click', 'li .edit_button', bind(this.edit_object));
 			filled_modules.on('click', 'li .draft_status', bind(this.drop_draft));
