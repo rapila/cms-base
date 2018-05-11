@@ -25,10 +25,19 @@ class CachingStrategyFile extends CachingStrategy {
 	public function exists(Cache $oCache) {
 		return file_exists($this->getFilePath($oCache));
 	}
+
+	private static function blockingRead($sPath) {
+		$rFile = fopen($sPath, 'rb');
+		@flock($rFile, LOCK_SH);
+		$sContents = file_get_contents($sPath);
+		@flock($rFile, LOCK_UN);
+		fclose($rFile);
+		return $sContents;
+}
 	
 	public function read(Cache $oCache) {
 		$sPath = $this->getFilePath($oCache);
-		return file_get_contents($sPath);
+		return self::blockingRead($sPath);
 	}
 	
 	public function readData(Cache $oCache) {
@@ -36,13 +45,22 @@ class CachingStrategyFile extends CachingStrategy {
 		if($this->use_var_export) {
 			return include($sPath);
 		} else {
-			return unserialize(file_get_contents($sPath));
+			return unserialize(self::blockingRead($sPath));
 		}
+	}
+
+	public function pass(Cache $oCache) {
+		$sPath = $this->getFilePath($oCache);
+		$rFile = fopen($sPath, 'rb');
+		@flock($rFile, LOCK_SH);
+		fpassthru($rFile);
+		@flock($rFile, LOCK_UN);
+		fclose($rFile);
 	}
 
 	public function write(Cache $oCache, $sEntry, $bAppend = false) {
 		$sPath = $this->prepareFilePath($oCache);
-		return file_put_contents($this->getFilePath($oCache), $sEntry, $bAppend ? FILE_APPEND : 0);
+		return file_put_contents($this->getFilePath($oCache), $sEntry, $bAppend ? FILE_APPEND | LOCK_EX : LOCK_EX);
 	}
 
 	public function writeData(Cache $oCache, $mEntry, $bAppend = false) {
