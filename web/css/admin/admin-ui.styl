@@ -261,6 +261,9 @@ h3.status
 					flex-grow 1
 					overflow hidden
 					text-overflow ellipsis
+					&[title]::after
+						content " (" attr(title) ")"
+						color rgba(black, 0.5)
 				.draft_status
 					display none
 				&.is_draft .draft_status
