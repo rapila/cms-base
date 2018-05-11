@@ -123,16 +123,6 @@
 			filled_modules.on('click', 'li .edit_button', bind(this.edit_object));
 
 			var available_modules = container.find('.available_modules');
-			var delete_drop_zone = container.find('.delete_drop_zone').droppable({
-				accept: 'li[data-container]',
-				tolerance: 'pointer',
-				activeClass: 'ui-state-draggable',
-				hoverClass: 'ui-state-droppable',
-				drop: function(event, ui) {
-					_this.remove_object(event, ui.draggable, true);
-					event.stopPropagation();
-				}
-			});
 
 			var container_html = this.containers.html;
 			if(container_html) {
