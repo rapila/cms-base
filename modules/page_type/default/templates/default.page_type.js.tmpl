@@ -417,6 +417,7 @@
 									var language_id = item_to_edit.attr('data-language-id');
 									md.content.language_objects[language_id].is_draft = is_draft;
 									md.content.language_objects[language_id].exists_in_language = result.language_object_exists;
+									md.content.language_objects[language_id].content_info = result.content_info;
 									_this.update_content_properties(item_to_edit, md);
 									element.dialog('close');
 								});

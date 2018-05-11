@@ -56,7 +56,12 @@ class LanguageObjectControlWidgetModule extends PersistentWidgetModule {
 			$oToDelete->delete();
 		}
 		$oSaveInto->setData($mSaveData);
-		return array('saved' => $oSaveInto->save(), 'language_object_exists' => !$this->oCurrentLanguageObject->isNew());
+
+		return array(
+			'saved' => $oSaveInto->save(),
+			'language_object_exists' => !$this->oCurrentLanguageObject->isNew(),
+			'content_info' => PageObjectFillHelper::getContentInfo($oSaveInto)
+		);
 	}
 
 	public function __sleep() {
