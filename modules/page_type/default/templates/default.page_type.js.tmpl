@@ -77,26 +77,50 @@
 				};
 			};
 
+			var current_delete_item;
+
 			var delete_menu = jQuery('<ul/>');
-			delete_menu.append('<li><div>{{writeString=wns.language_object.delete.language}}</div></li>');
-			delete_menu.append('<li><div>{{writeString=wns.language_object.delete.all}}</div></li>');
-			delete_menu.appendTo(container);
+			delete_menu.append('<li class="language"><div>{{writeString=wns.language_object.delete.language}}</div></li>');
+			delete_menu.append('<li class="draft"><div>{{writeString=wns.language_object.delete.draft}}</div></li>');
+			delete_menu.append('<li class="all"><div>{{writeString=wns.language_object.delete.all}}</div></li>');
+			delete_menu.appendTo(container).css({display: 'inline-block'})
 			delete_menu.menu({
-				select: function() {
-					debugger;
+				select(event, ui) {
+					if(ui.item.is('.draft')) {
+						return _this.drop_draft(event, current_delete_item);
+					}
+					if(ui.item.is('.language')) {
+						return _this.remove_object(event, current_delete_item, false);
+					}
+					if(ui.item.is('.all')) {
+						return _this.remove_object(event, current_delete_item, true);
+					}
 				}
-			}).hide();
+			}).hide().css('position', 'absolute');
+			var clicked_to_open = false;
+			$(document).bind('click', function() {
+				if(!clicked_to_open) {
+					delete_menu.hide();
+				}
+				clicked_to_open = false;
+			})
 			
 			filled_modules.on('click', 'li .remove_button', function() {
-				delete_menu.menu('option', 'position', {
-					my: "bottom",
+				clicked_to_open = true;
+				current_delete_item = jQuery(this).closest('li');
+				var language_id = current_delete_item.data('languageId');
+				var md = _this.find_structure(current_delete_item);
+				delete_menu.find('li.language').toggle(md.content.language_objects[language_id].exists_in_language);
+				delete_menu.find('li.draft').toggle(md.content.language_objects[language_id].is_draft);
+				delete_menu.show().position({
+					my: "right top",
 					at: "middle",
-					of: this
-				}).show();
+					of: this,
+					within: _this.container
+				});
 			});
 			filled_modules.on('click', 'li .edit_condition_button', bind(this.edit_condition));
 			filled_modules.on('click', 'li .edit_button', bind(this.edit_object));
-			filled_modules.on('click', 'li .draft_status', bind(this.drop_draft));
 
 			var available_modules = container.find('.available_modules');
 			var delete_drop_zone = container.find('.delete_drop_zone').droppable({
@@ -482,8 +506,9 @@
 			element[lang_props.is_draft ? 'addClass' : 'removeClass']('is_draft');
 			element[props.has_condition ? 'addClass' : 'removeClass']('has_condition');
 
-			element.find('.module_name').text(props.object_type_display_name);
-			element.attr('title', lang_props.content_info);
+			element.find('.module_name')
+				.text(props.object_type_display_name)
+				.attr('title', lang_props.content_info);
 		},
 
 		update_additional_container_info: function(container) {

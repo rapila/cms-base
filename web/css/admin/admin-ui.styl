@@ -251,8 +251,6 @@ h3.status
 					margin-right 0.5em
 				&.language_object_empty
 					background #e3ef99 url("../../images/admin/filled_object_bg_gradient_empty.png") repeat-x right bottom
-					.remove_button
-						display none
 
 				.edit_condition_button
 					opacity 0.5
@@ -268,8 +266,6 @@ h3.status
 				&.is_draft .draft_status
 					display inline
 					text-transform uppercase
-					cursor url('../../icons/admin/cursor-remove.png'), unquote('not-allowed')
-					cursor url('../../icons/admin/cursor-remove.png') 3px 3px, unquote('not-allowed')
 					margin-right -13px
 					transform rotate(-40deg)
 					color #AF1A15
@@ -283,8 +279,6 @@ h3.status
 					position relative
 					left -15px
 					top -1px
-					&:hover
-						opacity 0.5
 
 		ol.template-container li,
 		.template-container-description,
@@ -360,6 +354,9 @@ div.ui-state-droppable
 .users fieldset.option_groups
 	padding 0 0 0.6em 0
 
+.ui-accordion .ui-accordion-content.configuration_container
+	overflow visible
+
 .ui-accordion .ui-accordion-content.contents_container	div.ui-widget-content,
 .ui-accordion .ui-accordion-content.configuration_container div.ui-widget-content
 	padding 0
@@ -405,7 +402,7 @@ td span.remove_entry
 		margin 0
 		&:not(:last-child)
 			border-bottom 1px dotted #999
-		div.ui-menu-item
+		div.ui-menu-item-wrapper
 			padding 4px 5px
 			display block
 			margin 0
