@@ -5,29 +5,25 @@
 
 class DefaultPageTypeModule extends PageTypeModule {
 
-	private $oFrontendTemplate;
-	private $iModuleId;
-	private $sContainerName;
 	protected $sLanguageId;
-	private $bIsPreview;
+
+	private $oFillHelper;
 
 	public function __construct(Page $oPage = null, NavigationItem $oNavigationItem = null, $sLanguageId = null) {
 		parent::__construct($oPage, $oNavigationItem);
 		$this->sLanguageId = $sLanguageId;
+		$this->oFillHelper = new PageObjectFillHelper($oPage, $oNavigationItem);
 	}
 
 	//Frontend stuff
 	public function display(Template $oTemplate, $bIsPreview = false) {
-		$this->bIsPreview = $bIsPreview;
-		if($this->bIsPreview) {
+		if($bIsPreview) {
 			ResourceIncluder::defaultIncluder()->addResource('preview/jquery.ba-resize.min.js');
 		}
 		if($this->sLanguageId === null) {
-			$this->sLanguageId = $this->bIsPreview ? AdminManager::getContentLanguage() : Session::language();
+			$this->sLanguageId = $bIsPreview ? AdminManager::getContentLanguage() : Session::language();
 		}
-		$this->oFrontendTemplate = $oTemplate;
-		$this->iModuleId = 1;
-		$this->oFrontendTemplate->replaceIdentifierCallback("container", $this, "fillContainer", Template::NO_HTML_ESCAPE);
+		$this->oFillHelper->fill($this->sLanguageId, $oTemplate, $bIsPreview);
 	}
 
 	public function getWords() {
@@ -43,117 +39,6 @@ class DefaultPageTypeModule extends PageTypeModule {
 			$aWords = array_merge($aWords, $oModule->getWords());
 		}
 		return $aWords;
-	}
-
-	public function fillContainer($oTemplateIdentifier, $iFlags) {
-		if($oTemplateIdentifier->hasParameter('declaration_only')) {
-			// Container exists only to appear in admin area, not be rendered in frontend (at least not directly)
-			return;
-		}
-		$bInheritContainer = BooleanParser::booleanForString($oTemplateIdentifier->getParameter("inherit"));
-		$sContainerName = $oTemplateIdentifier->getValue();
-		$aPageObjects = $this->oPage->getObjectsForContainer($sContainerName);
-		if(count($aPageObjects) === 0 && $bInheritContainer) {
-			$oParent = $this->oPage;
-			while (($oParent = $oParent->getParent()) !== null && count($aPageObjects) === 0) {
-				$aPageObjects = $oParent->getObjectsForContainer($sContainerName);
-			}
-		}
-		if(count($aPageObjects) === 0) {
-			return null;
-		}
-
-		$aObjectTypes = array();
-		$oTemplate = new Template(TemplateIdentifier::constructIdentifier('container'), null, true);
-		foreach($aPageObjects as $oContainer) {
-			if($this->fillContainerWithModule($oContainer, $oTemplate, $this->iModuleId) === false) {
-				continue;
-			}
-			FilterModule::getFilters()->handleDefaultPageTypeFilledContainer($oContainer, $this->oPage, $oTemplate, $this->oFrontendTemplate, $this->iModuleId);
-			$this->iModuleId++;
-
-			if(isset($aObjectTypes[$oContainer->getObjectType()])) {
-				$aObjectTypes[$oContainer->getObjectType()]++;
-			} else {
-				$aObjectTypes[$oContainer->getObjectType()] = 1;
-			}
-		}
-		$this->oFrontendTemplate->replaceIdentifier("container_filled_types", implode(',', array_keys($aObjectTypes)), $sContainerName);
-
-		if(count($aObjectTypes) === 0) {
-			return null;
-		}
-		return $oTemplate;
-	} // fillOneContainer()
-
-	/**
-	 * fillContainerWithModule()
-	 */
-	private function fillContainerWithModule($oContentObject, $oTemplate, $iModuleId) {
-		$oPageContents = $oContentObject->getLanguageObject($this->sLanguageId);
-		if($this->bIsPreview && $oPageContents === null) {
-			//Need to get unsaved drafts in preview
-			$oPageContents = new LanguageObject();
-			$oPageContents->setLanguageId($this->sLanguageId);
-			$oPageContents->setContentObject($oContentObject);
-			$oPageContents = $oPageContents->getDraft(true);
-		}
-		if($oPageContents === null) {
-			return false;
-		}
-		if($oContentObject->getConditionSerialized() !== null && !$this->bIsPreview) {
-			$oConditionTemplate = unserialize(stream_get_contents($oContentObject->getConditionSerialized()));
-			if($oConditionTemplate->render() === '') {
-				return false;
-			}
-		}
-		$sObjectType = $oContentObject->getObjectType();
-		if(!Module::moduleExists($sObjectType, FrontendModule::getType()) || !Module::isModuleEnabled(FrontendModule::getType(), $sObjectType)) {
-			$sLink = implode('/', $this->oNavigationItem->getLink());
-			ErrorHandler::handleError(E_WARNING, "Disabled or non-existing frontend module $sObjectType in use on page $sLink ($this->sLanguageId)", __FILE__, __LINE__, null, debug_backtrace(), true);
-			if($this->bIsPreview) {
-				$oTemplate->replaceIdentifierMultiple("container", "<strong>Disabled or non-existing frontend module $sObjectType in use!</strong>", null, Template::NO_HTML_ESCAPE);
-				return true;
-			}
-			return false;
-		}
-		if($this->bIsPreview) {
-			$oModule = FrontendModule::getModuleInstance($oContentObject->getObjectType(), $oPageContents->getDraft(), $iModuleId);
-		} else {
-			$oModule = FrontendModule::getModuleInstance($oContentObject->getObjectType(), $oPageContents, $iModuleId);
-		}
-		$sFrontentContents = $this->getModuleContents($oModule);
-		if($sFrontentContents === null) {
-			return false;
-		}
-		// module_id
-		FilterModule::getFilters()->handleDefaultPageTypeFilledContainerWithModule($oContentObject, $oModule, $oTemplate, $this->oFrontendTemplate, $this->iModuleId);
-		if($this->bIsPreview) {
-			$sFrontentContents = $this->getPreviewMarkup($oContentObject, $sFrontentContents);
-		}
-		$oTemplate->replaceIdentifierMultiple("container", $sFrontentContents, null, Template::NO_HTML_ESCAPE);
-		if(($sCss = $oModule->getCssForFrontend()) !== null) {
-			ResourceIncluder::defaultIncluder()->addCustomCss($sCss, ResourceIncluder::PRIORITY_LAST);
-		}
-		if(($sJs = $oModule->getJsForFrontend()) !== null) {
-			ResourceIncluder::defaultIncluder()->addCustomJs($sJs, ResourceIncluder::PRIORITY_LAST);
-		}
-		return true;
-	}
-
-	protected function getPreviewMarkup($oContentObject, $mFrontentContents) {
-		if(!($mFrontentContents instanceof Template)) {
-			$mFrontentContents = new Template($mFrontentContents, null, true);
-		}
-		return TagWriter::quickTag('div', array('data-object-id' => $oContentObject->getId(), 'data-container' => $oContentObject->getContainerName(), 'class' => 'filled-container'), $mFrontentContents);
-	}
-
-	protected function getModuleContents($oModule, $bAllowTemplate = true) {
-		$mResult = $oModule->cachedFrontend($this->bIsPreview);
-		if(!$bAllowTemplate && $mResult instanceof Template) {
-			$mResult = $mResult->render();
-		}
-		return $mResult;
 	}
 
 	public function acceptedRequestParams($aModulesToCheck = null) {
@@ -310,7 +195,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 		// Some frontend modules generate links into the current manager – those need to be correct
 		PreviewManager::setTemporaryManager();
 		$oModuleInstance = $this->backendModuleInstanceByLanguageObject($oCurrentContentObject, $oCurrentLanguageObject);
-		$aResult = array('preview_contents' => $this->getModuleContents($oModuleInstance, false));
+		$aResult = array('preview_contents' => PageObjectFillHelper::getModuleContents($oModuleInstance, false, true));
 		PreviewManager::revertTemporaryManager();
 		return $aResult;
 	}
