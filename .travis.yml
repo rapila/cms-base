@@ -8,10 +8,6 @@ php:
 env: RAPILA_ENVIRONMENT=test PHPUNIT_PATH=phpunit MIGRATION_SUDO=env SKIP_ICONV_TESTS=1
 sudo: false
 before_install:
-    - REV="$(git describe --all --contains || echo 'master')"
-    - REV="${REV#remotes/origin/}"
-    - REV="${REV#tags/}"
-    - REV="${REV%~*}"
     - mkdir .base
     - mv * .git* .travis.yml .base/
     - mv .base base
@@ -19,7 +15,7 @@ before_install:
     - git remote add origin git://github.com/rapila/cms-full.git
     - git checkout -b tmp && git branch -D master
     - git fetch ---all
-    - git checkout "$REV" || git checkout master
+    - git checkout "$TRAVIS_BRANCH" || git checkout master
     - ./base/scripts/create-folders.sh
     - ./base/scripts/generate-model.sh
 script: ./base/scripts/run-tests.sh
