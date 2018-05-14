@@ -130,7 +130,7 @@ EOT;
 		$oIncluder->addJavaScriptLibrary('jqueryui', 1);
 		$oIncluder->addResource('admin/admin-ui.css');
 		$oIncluder->addResource('widget/ckeditor/ckeditor.js');
-		$this->assertSame('<link rel="icon" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/images/admin/accept.png" />'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/widget/ckeditor/skins/moono-lisa/editor.css" />'."\n".'<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>'."\n".'<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/css/admin/admin-ui.css" />'."\n".'<script type="text/javascript" src="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/widget/ckeditor/ckeditor.js"></script>'."\n", $oTemplate->render());
+		$this->assertSame('<link rel="icon" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/images/admin/accept.png" />'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/widget/ckeditor/skins/moono-lisa/editor.css" />'."\n".'<script type="text/javascript" src="//code.jquery.com/jquery-1.4.min.js"></script>'."\n".'<script type="text/javascript" src="//code.jquery.com/ui/1/jquery-ui.min.js"></script>'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/css/admin/admin-ui.css" />'."\n".'<script type="text/javascript" src="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/widget/ckeditor/ckeditor.js"></script>'."\n", $oTemplate->render());
 	}
 	
 	public function testWriteNamedResourceIncludes() {
@@ -145,7 +145,7 @@ EOT;
 		$oIncluder->addJavaScriptLibrary('jqueryui', 1);
 		$oIncluder->addResource('admin/admin-ui.css');
 		$oIncluder->addResource('widget/ckeditor/ckeditor.js');
-		$this->assertSame('<link rel="icon" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/images/admin/accept.png" />'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/widget/ckeditor/skins/moono-lisa/editor.css" />'."\n".'<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>'."\n".'<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/css/admin/admin-ui.css" />'."\n".'<script type="text/javascript" src="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/widget/ckeditor/ckeditor.js"></script>'."\n", $oTemplate->render());
+		$this->assertSame('<link rel="icon" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/images/admin/accept.png" />'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/widget/ckeditor/skins/moono-lisa/editor.css" />'."\n".'<script type="text/javascript" src="//code.jquery.com/jquery-1.4.min.js"></script>'."\n".'<script type="text/javascript" src="//code.jquery.com/ui/1/jquery-ui.min.js"></script>'."\n".'<link rel="stylesheet" media="all" href="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/css/admin/admin-ui.css" />'."\n".'<script type="text/javascript" src="'.MAIN_DIR_FE.DIRNAME_BASE.'/web/js/widget/ckeditor/ckeditor.js"></script>'."\n", $oTemplate->render());
 	}
 
 	public function testStringReplace() {
@@ -174,12 +174,12 @@ EOT;
 	
 	public function testInlineResourceOrdering() {
 		$sTemplateText = <<<EOT
-{{writeResourceIncludes=GAGA}}{{addResourceInclude=jquery;library=1.7.0}}{{writeResourceIncludes}}{{addResourceInclude=mootools;library=1.4.5}}{{addResourceInclude=admin/accept.png;name=GAGA}}{{addResourceInclude=admin/accept.png;name=GAGA2}}
+{{writeResourceIncludes=GAGA}}{{addResourceInclude=jquery;library=1.7.0}}{{writeResourceIncludes}}{{addResourceInclude=jstree;library=3.3.5}}{{addResourceInclude=admin/accept.png;name=GAGA}}{{addResourceInclude=admin/accept.png;name=GAGA2}}
 EOT;
 		$oTemplate = new Template($sTemplateText, null, true);
 		$this->assertSame('<img src="/base/web/images/admin/accept.png" />
-<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script>
-<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/mootools/1.4.5/mootools-yui-compressed.js"></script>
+<script type="text/javascript" src="//code.jquery.com/jquery-1.7.0.min.js"></script>
+<script type="text/javascript" src="//cdn.rawgit.com/vakata/jstree/3.3.5/dist/jstree.min.js"></script>
 ', $oTemplate->render());
 	}
 }
