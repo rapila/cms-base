@@ -2,7 +2,7 @@
 /**
  * @package test
  */
-class UtilSystemPartTests extends PHPUnit_Framework_TestCase {
+class UtilSystemPartTests extends PHPUnit\Framework\TestCase {
 	public function testSimpleOrder() {
 		$aParts = array();
 		$aParts['test/3'] = SystemPart::getPart('test/3');

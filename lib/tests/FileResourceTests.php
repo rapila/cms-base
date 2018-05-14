@@ -3,7 +3,7 @@
 * @package test
 */
 
-class FileResourceTests extends PHPUnit_Framework_TestCase {
+class FileResourceTests extends PHPUnit\Framework\TestCase {
 	
 	protected function setUp() {
 		exec('mkdir -p "'.MAIN_DIR.'/plugins/test_only/test"');

@@ -3,7 +3,7 @@
  * @package test
  */
 
-class TemplateTest extends PHPUnit_Framework_TestCase {
+class TemplateTest extends PHPUnit\Framework\TestCase {
 	public function testConditionalNestingError() {
 		$this->expectException(Exception::class);
 		$sText = <<<EOT

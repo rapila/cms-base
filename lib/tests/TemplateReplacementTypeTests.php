@@ -2,7 +2,7 @@
 /**
 * @package test
 */
-class TemplateReplacementTypeTests extends PHPUnit_Framework_TestCase {
+class TemplateReplacementTypeTests extends PHPUnit\Framework\TestCase {
 	
 	public function testStringReplace() {
 		$oTestTemplate = new Template('{{test}}', null, true);

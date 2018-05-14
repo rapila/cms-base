@@ -3,7 +3,7 @@
 /**
 * @package test
 */
-class ResourceIncluderConsolidationTests extends PHPUnit_Framework_TestCase {
+class ResourceIncluderConsolidationTests extends PHPUnit\Framework\TestCase {
 	private $oIncluder;
 
 	private static $CACHED_INCLUDE;

@@ -2,7 +2,7 @@
 /**
  * @package test
  */
-class UtilStringTests extends PHPUnit_Framework_TestCase {
+class UtilStringTests extends PHPUnit\Framework\TestCase {
 	public function testSpecialCharsInPath() {
 		$this->assertSame("test", StringUtil::normalizePath("test"));
 		$this->assertSame("rämi", StringUtil::normalizePath("rämi"));

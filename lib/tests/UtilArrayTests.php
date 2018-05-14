@@ -3,7 +3,7 @@
 * @package test
 */
 
-class UtilArrayTests extends PHPUnit_Framework_TestCase {
+class UtilArrayTests extends PHPUnit\Framework\TestCase {
 	public function testAssocUnshift() {
 		$aArray = array('one' => 1, 'two' => 2, 'three' => 3);
 		ArrayUtil::assocUnshift($aArray, 'half', 0.5);

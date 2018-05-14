@@ -2,7 +2,7 @@
 /**
  * @package test
  */
-class TemplateReplacementTests extends PHPUnit_Framework_TestCase {
+class TemplateReplacementTests extends PHPUnit\Framework\TestCase {
 	public function testSimpleReplacement() {
 		$sTemplateText = <<<EOT
 {{test}}

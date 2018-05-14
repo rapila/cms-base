@@ -3,7 +3,7 @@
 * @package test
 */
 
-class ResourceFinderTests extends PHPUnit_Framework_TestCase {
+class ResourceFinderTests extends PHPUnit\Framework\TestCase {
 	public function testFindMain() {
 		$sMainPath = ResourceFinder::findResource(array('lib', 'main.php'));
 		$this->assertSame(MAIN_DIR.'/base/lib/main.php', $sMainPath);

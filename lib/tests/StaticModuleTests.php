@@ -2,7 +2,7 @@
 /**
  * @package test
  */
-class StaticModuleTests extends PHPUnit_Framework_TestCase {
+class StaticModuleTests extends PHPUnit\Framework\TestCase {
 	public function testModuleTypeList() {
 		$this->assertGreaterThanOrEqual(array('backend', 'file', 'frontend', 'page_type'), Module::listModuleTypes());
 	}
