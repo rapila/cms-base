@@ -3,7 +3,11 @@ php:
   - "5.4"
   - "5.5"
   - "5.6"
-env: RAPILA_ENVIRONMENT=test PHPUNIT_PATH=phpunit MIGRATION_SUDO=env SKIP_ICONV_TESTS=1
+  - "7.0"
+  - "7.1"
+  - "7.2"
+  - "nightly"
+Zenv: RAPILA_ENVIRONMENT=test PHPUNIT_PATH=phpunit MIGRATION_SUDO=env SKIP_ICONV_TESTS=1
 sudo: false
 before_install:
   - mkdir .base
@@ -23,13 +27,9 @@ addons:
     - language-pack-de
     - language-pack-uk
     - language-pack-en
-matrix:
-  include:
-    -
-      php: "5.3"
-      dist: precise
-      sudo: false
-    # -
-    #   php: "hhvm"
-    #   before_script:
-    #     - curl -sSfL -o ~/.phpenv/versions/hhvm/bin/phpunit https://phar.phpunit.de/phpunit-5.7.phar
+# matrix:
+#   include:
+#     -
+#       php: "hhvm-3.26"
+#       before_script:
+#         - curl -sSfL -o ~/.phpenv/versions/hhvm/bin/phpunit https://phar.phpunit.de/phpunit-5.7.phar
