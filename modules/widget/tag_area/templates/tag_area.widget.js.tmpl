@@ -102,7 +102,7 @@ Widget.types.tag_area = {
 		var matching = Object.keys(this.tag_mapping)
 			.map(name => [name, this.tag_mapping[name]])
 			.map(([name, tag]) => (tag.removeClass('matching'), [name, tag]))
-			.filter(([name]) => prefix && name.indexOf(prefix) === 0)
+			.filter(([name]) => prefix && name.indexOf(prefix.toLowerCase()) === 0)
 			.forEach(([_, tag]) => tag.addClass('matching'));
 	},
 
