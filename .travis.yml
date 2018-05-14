@@ -29,7 +29,7 @@ matrix:
       php: "5.3"
       dist: precise
       sudo: false
-    -
-      php: "hhvm"
-      before_script:
-        - curl -sSfL -o ~/.phpenv/versions/hhvm/bin/phpunit https://phar.phpunit.de/phpunit-5.7.phar
+    # -
+    #   php: "hhvm"
+    #   before_script:
+    #     - curl -sSfL -o ~/.phpenv/versions/hhvm/bin/phpunit https://phar.phpunit.de/phpunit-5.7.phar
