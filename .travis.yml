@@ -1,0 +1,35 @@
+language: php
+php:
+  - "5.4"
+  - "5.5"
+  - "5.6"
+env: RAPILA_ENVIRONMENT=test PHPUNIT_PATH=phpunit MIGRATION_SUDO=env SKIP_ICONV_TESTS=1
+sudo: false
+before_install:
+  - mkdir .base
+  - mv * .git* .travis.yml .base/
+  - mv .base base
+  - git init && git checkout -b tmp
+  - git remote add origin git://github.com/rapila/cms-full.git && git fetch --all
+  - git checkout "$TRAVIS_BRANCH" || git checkout master
+  - ./base/scripts/create-folders.sh
+  - ./base/scripts/generate-model.sh
+script: ./base/scripts/run-tests.sh
+addons:
+  apt:
+    update: true
+    packages:
+    - locales
+    - language-pack-de
+    - language-pack-uk
+    - language-pack-en
+matrix:
+  include:
+    -
+      php: "5.3"
+      dist: precise
+      sudo: false
+    # -
+    #   php: "hhvm"
+    #   before_script:
+    #     - curl -sSfL -o ~/.phpenv/versions/hhvm/bin/phpunit https://phar.phpunit.de/phpunit-5.7.phar
