@@ -131,17 +131,7 @@ class DefaultPageTypeModule extends PageTypeModule {
 			} else {
 				$aLanguageInfo['is_draft'] = $oLanguageObject->getHasDraft();
 			}
-			if($oLanguageObject !== null) {
-				$sFrontendModuleClass = FrontendModule::getClassNameByName($oObject->getObjectType());
-				if(class_exists($sFrontendModuleClass, true)) {
-					$mContentInfo = $sFrontendModuleClass::getContentInfo($oLanguageObject);
-				} else {
-					$mContentInfo = null;
-				}
-				$aLanguageInfo['content_info'] = $mContentInfo;
-			} else {
-				$aLanguageInfo['content_info'] = null;
-			}
+			$aLanguageInfo['content_info'] = PageObjectFillHelper::getContentInfo($oLanguageObject, $oObject);
 			$aObject['language_objects'][$oLanguage->getId()] = $aLanguageInfo;
 		}
 		$aObject['object_type'] = $oObject->getObjectType();
@@ -278,10 +268,24 @@ class DefaultPageTypeModule extends PageTypeModule {
 
 			$mInnerTemplate = new Template(TemplateIdentifier::constructIdentifier('content'), null, true);
 
+			//add new language object
+			$mInnerTemplate->replaceIdentifierMultiple('content', TagWriter::quickTag('div', array('class' => 'template-container-insert-language-object add-new-item', 'title' => TranslationPeer::getString('wns.language_object.add_new'))));
+
 			//Replace container info
 			//…name
-			$mInnerTemplate->replaceIdentifierMultiple('content', TagWriter::quickTag('div', array('class' => 'template-container-description'), TranslationPeer::getString('wns.page.template_container', null, null, array('container' => TranslationPeer::getString('template_container.'.$sContainerName, null, $sContainerName)), true)));
-			//…additional info
+			$mInnerTemplate->replaceIdentifierMultiple(
+				'content',
+				TagWriter::quickTag(
+					'div',
+					array('class' => 'template-container-description'),
+					TranslationPeer::getString(
+						'wns.page.template_container',
+						null, null,
+						array('container' => TranslationPeer::getString('template_container.'.$sContainerName, null, $sContainerName)),
+						true
+					)
+				)
+			);
 			$mInnerTemplate->replaceIdentifierMultiple('content', TagWriter::quickTag('div', array('class' => 'template-container-info')));
 			//…tag
 			$mInnerTemplate->replaceIdentifierMultiple('content', $oContainerTag);

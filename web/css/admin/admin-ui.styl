@@ -119,16 +119,14 @@ form.page_detail .status_section,
 .ui-widget-content h3
 	background-color #ebedef
 
-form.page_detail .ui-state-active,
-form.page_detail .ui-widget-content .ui-state-active
-	background-image none
-
 form.page_detail
 	.status_section
 		border-top none
 		border-bottom #C1C2C4 1px solid
 		padding-bottom 0.5em
 		padding-left 1.6em
+		padding-top 1em
+		padding-bottom 1em
 		h3
 			border-bottom none
 
@@ -208,7 +206,6 @@ h3.status
 
 // For the default page type
 .page_detail
-	.available_modules li,
 	.filled_modules ol.template-container li
 		list-style none inside
 		border-radius 3px
@@ -226,6 +223,13 @@ h3.status
 		background-color transparent
 		font-size 4px
 		position relative
+		.add-new-item
+			font-size 3em
+			&.template-container-insert-language-object
+				display inline-block
+				margin-bottom 1px
+				margin-right 1px
+				font-size 2.5em
 		&.css_parsed
 			width 500px
 		ol.template-container
@@ -253,8 +257,6 @@ h3.status
 					margin-right 0.5em
 				&.language_object_empty
 					background #e3ef99 url("../../images/admin/filled_object_bg_gradient_empty.png") repeat-x right bottom
-					.remove_button
-						display none
 
 				.edit_condition_button
 					opacity 0.5
@@ -265,13 +267,14 @@ h3.status
 					flex-grow 1
 					overflow hidden
 					text-overflow ellipsis
+					&[title]::after
+						content " (" attr(title) ")"
+						color rgba(black, 0.5)
 				.draft_status
 					display none
 				&.is_draft .draft_status
 					display inline
 					text-transform uppercase
-					cursor url('../../icons/admin/cursor-remove.png'), unquote('not-allowed')
-					cursor url('../../icons/admin/cursor-remove.png') 3px 3px, unquote('not-allowed')
 					margin-right -13px
 					transform rotate(-40deg)
 					color #AF1A15
@@ -285,8 +288,6 @@ h3.status
 					position relative
 					left -15px
 					top -1px
-					&:hover
-						opacity 0.5
 
 		ol.template-container li,
 		.template-container-description,
@@ -299,29 +300,12 @@ h3.status
 			margin 0
 		.template-container-description
 			margin-top 1em
+			display inline-block
 		.template-container-info
 			margin-top 0.2em
 			position absolute
 			font-style italic
 			padding-left 0.3em
-
-	.available_modules
-		min-width 125px
-		max-width 250px
-		margin 15px 0 0 26px
-		min-height 150px
-		padding 0
-		float:left
-		li > *
-			display none
-		li > .module_name
-			display inline
-
-	.available_modules li
-		padding 1px 5px 0
-		margin 0 0 -1px 0
-		background-color #f2f2f2
-		z-index 2
 
 .ui-image-picker-image
 	.ui-icon.ui-icon-trash
@@ -367,13 +351,6 @@ div.ui-state-droppable
 	padding 0
 	border-color #CCCDCF
 
-.delete_drop_zone
-	float left
-	height 100px
-	margin 23px 2px 2px 2px
-	padding 2px
-	width 100px
-
 .add_entry, .remove_entry
 	height 24px
 	width 24px
@@ -395,17 +372,19 @@ td span.remove_entry
 	background-position left top !important
 
 .ui-menu
+	padding 0
 	font-size 13px
-	border 1px solid rgba(black, 0.3)
 	border-radius 4px
 	box-shadow 0px 0px 7px 3px rgba(black, 0.3)
 	background-image linear-gradient(top, rgba(black, 0.15), rgba(black, 0.05))
+	border none !important
+	z-index 1001 !important
 	li.ui-menu-item
-		padding 0
+		padding 0 3px
 		margin 0
 		&:not(:last-child)
 			border-bottom 1px dotted #999
-		a.ui-menu-item
+		div.ui-menu-item-wrapper
 			padding 4px 5px
 			display block
 			margin 0
@@ -424,10 +403,6 @@ td span.remove_entry
 				background-image linear-gradient(top, rgba(black, 0.5), rgba(black, 0.3))
 				&:not(:last-child)
 					border-bottom 1px dotted white
-ul.dropdown-menu-settings
-	padding 0
-	z-index 1001 !important
-	border 0 !important
 
 .ui-progressbar
 	margin-top 0.3em

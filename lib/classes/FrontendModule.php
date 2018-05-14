@@ -147,7 +147,6 @@ abstract class FrontendModule extends Module {
 			|| ($sModuleName === 'tag' && TagPeer::doCount(new Criteria()) == 0)) {
 				continue;
 			}
-			$sClassName = self::getClassNameByName($sModuleName);
 			$aResult[$sModuleName] = self::getDisplayNameByName($sModuleName);
 		}
 		asort($aResult);

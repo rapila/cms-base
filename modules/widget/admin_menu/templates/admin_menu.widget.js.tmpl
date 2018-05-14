@@ -259,8 +259,7 @@ Widget.types.admin_menu = {
 				if(!item_contents) {
 					return;
 				}
-				// FIXME: When upgrading to jQuery UI 1.11 or later, lose the <a> tag. Also in admin-ui.styl
-				menu.append(jQuery('<li/>').append(jQuery('<a/>').addClass('ui-menu-item').text(item_contents.text)).data('callback', item_contents.callback));
+				menu.append(jQuery('<li/>').append(jQuery('<div/>').text(item_contents.text)).data('callback', item_contents.callback));
 			});
 			menu.appendTo(document.body).css({
 				zIndex: 101,

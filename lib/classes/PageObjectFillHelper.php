@@ -131,4 +131,19 @@ class PageObjectFillHelper {
 		}
 		return $mResult;
 	}
+
+	public static function getContentInfo($oLanguageObject, $oContentObject = null) {
+		if($oLanguageObject === null) {
+			return null;
+		}
+		if(!$oContentObject) {
+			$oContentObject = $oLanguageObject->getContentObject();
+		}
+		$oLanguageObject = $oLanguageObject->getDraft();
+		$sFrontendModuleClass = FrontendModule::getClassNameByName($oContentObject->getObjectType());
+		if(!class_exists($sFrontendModuleClass, true)) {
+			return null;
+		}
+		return $sFrontendModuleClass::getContentInfo($oLanguageObject);
+	}
 }
