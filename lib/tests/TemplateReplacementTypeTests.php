@@ -56,7 +56,9 @@ class TemplateReplacementTypeTests extends PHPUnit\Framework\TestCase {
 	
 	public function testStringNotCallableReplace() {
 		$oTestTemplate = new Template('{{test}}', null, true);
-		$cFunction = create_function('', 'return "gaga";');
+		$cFunction = function() {
+			return 'gaga';
+		};
 		$oTestTemplate->replaceIdentifier('test', $cFunction);
 		$this->assertNotEquals("gaga", $oTestTemplate->render());
 		$this->assertSame((string)$cFunction, $oTestTemplate->render());
