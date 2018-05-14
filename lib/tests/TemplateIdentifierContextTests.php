@@ -2,7 +2,7 @@
 /**
  * @package test
  */
-class TemplateIdentifierContextTests extends PHPUnit_Framework_TestCase {
+class TemplateIdentifierContextTests extends PHPUnit\Framework\TestCase {
 	public function testSimpleContext() {
 		$sTemplateText = <<<EOT
 {{identifierContext=start;name=identifier}} s{{identifier}}{{identifierContext=end;name=identifier}}

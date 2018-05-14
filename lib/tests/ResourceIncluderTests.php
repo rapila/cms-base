@@ -3,7 +3,7 @@
 * @package test
 */
 
-class ResourceIncluderTests extends PHPUnit_Framework_TestCase {
+class ResourceIncluderTests extends PHPUnit\Framework\TestCase {
 	private $oIncluder;
 
 	protected function setUp() {

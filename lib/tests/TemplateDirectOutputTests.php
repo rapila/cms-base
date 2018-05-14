@@ -2,7 +2,7 @@
 /**
  * @package test
  */
-class TemplateDirectOutputTests extends PHPUnit_Framework_TestCase {
+class TemplateDirectOutputTests extends PHPUnit\Framework\TestCase {
 	public function testDirectOutput() {
 		$sTemplateText = <<<EOT
 test

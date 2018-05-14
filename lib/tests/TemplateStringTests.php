@@ -2,7 +2,7 @@
 /**
  * @package test
  */
-class TemplateStringTests extends PHPUnit_Framework_TestCase {
+class TemplateStringTests extends PHPUnit\Framework\TestCase {
 	
 	public function setUp() {
 		TranslationPeer::setStaticStrings(array(

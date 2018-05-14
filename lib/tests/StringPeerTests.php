@@ -2,7 +2,7 @@
 /**
  * @package test
  */
-class StringPeerTests extends PHPUnit_Framework_TestCase {
+class StringPeerTests extends PHPUnit\Framework\TestCase {
 	public function testSimpleString() {
 		$this->assertSame("Deutsch", TranslationPeer::getString("language.de", "de"));
 	}

@@ -2,7 +2,7 @@
 /**
  * @package test
  */
-class UtilDateFunctionTests extends PHPUnit_Framework_TestCase {
+class UtilDateFunctionTests extends PHPUnit\Framework\TestCase {
 	public function setUp() {
 		LocaleUtil::$ACCEPT_LOCALE_LISTS = array();
 	}

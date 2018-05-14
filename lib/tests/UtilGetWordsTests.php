@@ -2,7 +2,7 @@
 /**
  * @package test
  */
-class UtilGetWordsTests extends PHPUnit_Framework_TestCase {
+class UtilGetWordsTests extends PHPUnit\Framework\TestCase {
 	public function testGetSingleWOrd() {
 		$this->assertSame(array('phil'), StringUtil::getWords("phil"));
 	}

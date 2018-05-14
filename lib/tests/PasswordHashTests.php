@@ -2,7 +2,7 @@
 /**
  * @package test
  */
-class PasswordHashTests extends PHPUnit_Framework_TestCase {
+class PasswordHashTests extends PHPUnit\Framework\TestCase {
 	public function testSimplePassword() {
 		$sPassword = <<<EOT
 myTestPassword

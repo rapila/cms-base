@@ -4,7 +4,7 @@
  */
 define("CONSTANT", "myTest is great");
 define("MANAGER", "AdminManager");
-class TemplateSpecialIdentifierTests extends PHPUnit_Framework_TestCase {
+class TemplateSpecialIdentifierTests extends PHPUnit\Framework\TestCase {
 	public function setUp() {
 		ResourceIncluder::defaultIncluder()->clearIncludedResources();
 		ErrorHandler::setEnvironment('production');
