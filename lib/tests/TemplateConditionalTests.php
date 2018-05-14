@@ -8,13 +8,9 @@ class TemplateTest extends PHPUnit_Framework_TestCase {
 		$sText = <<<EOT
 {{if==;1=1;2=1}}test
 EOT;
-		try {
-			$oTemplate = new Template($sText, null, true);
-			$oTemplate->render();
-		} catch (Exception $e) {
-			return;
-		}
-		$this->fail("No Exception thrown, should have notified of incorrect nesting");
+		$oTemplate = new Template($sText, null, true);
+		$oTemplate->render();
+		$this->expectException(Exception::class);
 	}
 
 	public function testSimpleExpressionEqual() {
