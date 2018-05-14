@@ -5,12 +5,12 @@
 
 class TemplateTest extends PHPUnit_Framework_TestCase {
 	public function testConditionalNestingError() {
+		$this->expectException(Exception::class);
 		$sText = <<<EOT
 {{if==;1=1;2=1}}test
 EOT;
 		$oTemplate = new Template($sText, null, true);
 		$oTemplate->render();
-		$this->expectException(Exception::class);
 	}
 
 	public function testSimpleExpressionEqual() {
