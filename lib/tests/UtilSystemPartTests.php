@@ -2,7 +2,7 @@
 /**
  * @package test
  */
-class UtilSystemPartTests extends PHPUnit_Framework_TestCase {
+class UtilSystemPartTests extends PHPUnit\Framework\TestCase {
 	public function testSimpleOrder() {
 		$aParts = array();
 		$aParts['test/3'] = SystemPart::getPart('test/3');
@@ -36,7 +36,7 @@ class UtilSystemPartTests extends PHPUnit_Framework_TestCase {
 		$aParts['test/2'] = SystemPart::getPart('test/2')->dependOn($aParts['test/3']);
 		$aParts['test/1']->dependOn($aParts['test/2']);
 		$aParts['test/3']->dependOn($aParts['test/1']);
-		$this->setExpectedException('Exception');
+		$this->expectException(Exception::class);
 		$aParts = SystemPart::orderedParts($aParts);
 	}
 	
@@ -44,7 +44,7 @@ class UtilSystemPartTests extends PHPUnit_Framework_TestCase {
 		$aParts = array();
 		$aParts['test/1'] = SystemPart::getPart('test/1');
 		$aParts['test/1']->dependOn($aParts['test/1']);
-		$this->setExpectedException('Exception');
+		$this->expectException(Exception::class);
 		$aParts = SystemPart::orderedParts($aParts);
 	}
 }

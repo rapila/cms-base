@@ -2,7 +2,7 @@
 /**
  * @package test
  */
-class UtilLinkTests extends PHPUnit_Framework_TestCase {
+class UtilLinkTests extends PHPUnit\Framework\TestCase {
 	public function testPrepareLinkParameters_simple() {
 		$aParams = array(
 			'test[1]' => '',

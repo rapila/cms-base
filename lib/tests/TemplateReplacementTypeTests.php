@@ -2,7 +2,7 @@
 /**
 * @package test
 */
-class TemplateReplacementTypeTests extends PHPUnit_Framework_TestCase {
+class TemplateReplacementTypeTests extends PHPUnit\Framework\TestCase {
 	
 	public function testStringReplace() {
 		$oTestTemplate = new Template('{{test}}', null, true);
@@ -52,14 +52,6 @@ class TemplateReplacementTypeTests extends PHPUnit_Framework_TestCase {
 			};
 		});
 		$this->assertSame("hello you", $oTestTemplate->render());
-	}
-	
-	public function testStringNotCallableReplace() {
-		$oTestTemplate = new Template('{{test}}', null, true);
-		$cFunction = create_function('', 'return "gaga";');
-		$oTestTemplate->replaceIdentifier('test', $cFunction);
-		$this->assertNotEquals("gaga", $oTestTemplate->render());
-		$this->assertSame((string)$cFunction, $oTestTemplate->render());
 	}
 	
 	public function testBooleanFalseReplace() {

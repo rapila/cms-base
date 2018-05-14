@@ -4,7 +4,7 @@
  */
 class TestEverything {
 	public static function suite() {
-		$oResult = new PHPUnit_Framework_TestSuite("Complete test suite");
+		$oResult = new PHPUnit\Framework\TestSuite("Complete test suite");
 		foreach(ResourceFinder::getFolderContents(dirname(__FILE__)) as $sFileName => $sFilePath) {
 			if(StringUtil::endsWith($sFileName, ".php") && StringUtil::startsWith($sFileName, "Test") && !StringUtil::startsWith($sFileName, "TestUtil") && $sFilePath !== __FILE__) {
 				require_once($sFilePath);

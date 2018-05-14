@@ -3,18 +3,14 @@
  * @package test
  */
 
-class TemplateTest extends PHPUnit_Framework_TestCase {
+class TemplateTest extends PHPUnit\Framework\TestCase {
 	public function testConditionalNestingError() {
+		$this->expectException(Exception::class);
 		$sText = <<<EOT
 {{if==;1=1;2=1}}test
 EOT;
-		try {
-			$oTemplate = new Template($sText, null, true);
-			$oTemplate->render();
-		} catch (Exception $e) {
-			return;
-		}
-		$this->fail("No Exception thrown, should have notified of incorrect nesting");
+		$oTemplate = new Template($sText, null, true);
+		$oTemplate->render();
 	}
 
 	public function testSimpleExpressionEqual() {

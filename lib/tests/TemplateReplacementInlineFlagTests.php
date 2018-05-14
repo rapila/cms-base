@@ -2,7 +2,7 @@
 /**
  * @package test
  */
-class TemplateReplacementInlineFlagTests extends PHPUnit_Framework_TestCase {
+class TemplateReplacementInlineFlagTests extends PHPUnit\Framework\TestCase {
 	public function testSimpleInlineFlagNoHtmlEscape() {
 		$sTemplateText = <<<EOT
 {{test;templateFlag=NO_HTML_ESCAPE}}

@@ -2,6 +2,6 @@
 /**
  * @package test
  */
-class FrontendManagerLanguageTests extends PHPUnit_Framework_TestCase {
+class FrontendManagerLanguageTests extends PHPUnit\Framework\TestCase {
 
 }
