@@ -11,13 +11,14 @@ before_install:
     - mv * .git* .travis.yml .base/
     - mv .base base
     - git init && git checkout -b tmp
-    - git remote add origin git://github.com/rapila/cms-full.git && git fetch ---all
+    - git remote add origin git://github.com/rapila/cms-full.git && git fetch --all
     - git checkout "$REV" || git checkout master
     - ./base/scripts/create-folders.sh
     - ./base/scripts/generate-model.sh
 script: ./base/scripts/run-tests.sh
 addons:
   apt:
+    update: true
     packages:
     - locales
     - language-pack-de
