@@ -149,7 +149,7 @@
 			var open_available_modules = add_menu(available_modules, container, this.container, function selected(event, ui, current_item) {
 				var current_container = current_item.nextAll('.template-container:eq(0)');
 				var current_items = current_container.children();
-				var position = current_items.length;
+				var position = event.altKey ? 0 : current_items.length;
 				var container_name = current_container.data('containerName');
 				var module_name = ui.item.data('moduleName');
 				var item = _this.filled_module_li.clone();
