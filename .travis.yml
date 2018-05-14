@@ -1,6 +1,5 @@
 language: php
 php:
-    - "5.3"
     - "5.4"
     - "5.5"
     - "5.6"
@@ -11,11 +10,9 @@ before_install:
     - mkdir .base
     - mv * .git* .travis.yml .base/
     - mv .base base
-    - git init
-    - git remote add origin git://github.com/rapila/cms-full.git
-    - git checkout -b tmp && git branch -D master
-    - git fetch ---all
-    - git checkout "$TRAVIS_BRANCH" || git checkout master
+    - git init && git checkout -b tmp
+    - git remote add origin git://github.com/rapila/cms-full.git && git fetch ---all
+    - git checkout "$REV" || git checkout master
     - ./base/scripts/create-folders.sh
     - ./base/scripts/generate-model.sh
 script: ./base/scripts/run-tests.sh
@@ -26,3 +23,9 @@ addons:
     - language-pack-de
     - language-pack-uk
     - language-pack-en
+matrix:
+  include:
+    -
+      php: "5.3"
+      dist: precise
+      sudo: false
