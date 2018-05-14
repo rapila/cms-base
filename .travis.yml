@@ -7,7 +7,7 @@ php:
   - "7.1"
   - "7.2"
   - "nightly"
-Zenv: RAPILA_ENVIRONMENT=test PHPUNIT_PATH=phpunit MIGRATION_SUDO=env SKIP_ICONV_TESTS=1
+env: RAPILA_ENVIRONMENT=test PHPUNIT_PATH=phpunit MIGRATION_SUDO=env SKIP_ICONV_TESTS=1
 sudo: false
 before_install:
   - mkdir .base
