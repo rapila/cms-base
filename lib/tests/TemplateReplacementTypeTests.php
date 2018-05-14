@@ -60,7 +60,7 @@ class TemplateReplacementTypeTests extends PHPUnit\Framework\TestCase {
 			return 'gaga';
 		};
 		$oTestTemplate->replaceIdentifier('test', $cFunction);
-		$this->assertNotEquals("gaga", $oTestTemplate->render());
+		$this->assertSame("gaga", $oTestTemplate->render());
 		$this->assertSame((string)$cFunction, $oTestTemplate->render());
 	}
 	
