@@ -268,6 +268,9 @@ class DefaultPageTypeModule extends PageTypeModule {
 
 			$mInnerTemplate = new Template(TemplateIdentifier::constructIdentifier('content'), null, true);
 
+			//add new language object
+			$mInnerTemplate->replaceIdentifierMultiple('content', TagWriter::quickTag('div', array('class' => 'template-container-insert-language-object add-new-item', 'title' => TranslationPeer::getString('wns.language_object.add_new'))));
+
 			//Replace container info
 			//…name
 			$mInnerTemplate->replaceIdentifierMultiple(
@@ -283,8 +286,6 @@ class DefaultPageTypeModule extends PageTypeModule {
 					)
 				)
 			);
-			//…additional info
-			$mInnerTemplate->replaceIdentifierMultiple('content', TagWriter::quickTag('div', array('class' => 'template-container-insert-language-object add-new-item')));
 			$mInnerTemplate->replaceIdentifierMultiple('content', TagWriter::quickTag('div', array('class' => 'template-container-info')));
 			//…tag
 			$mInnerTemplate->replaceIdentifierMultiple('content', $oContainerTag);
