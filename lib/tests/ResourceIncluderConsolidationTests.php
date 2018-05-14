@@ -54,7 +54,7 @@ EOT
 		$this->oIncluder->addJavaScriptLibrary('jqueryui', 1, true, true, null);
 		$this->assertSame(<<<EOT
 <!--[if IE]><link rel="stylesheet" media="all" href="/base/web/css/admin/admin-ui.css" /><![endif]-->
-<link rel="stylesheet" media="all" href="/get_file/consolidated_resource/css/6dcd670087f2d32c23330116c8fc63d5" />
+<link rel="stylesheet" media="all" href="/get_file/consolidated_resource/css/632a2e9ae0930e5979486adb7c7a64cc" />
 <!--[if IE lt 6]><script type="text/javascript" src="/base/web/js/widget/ckeditor/ckeditor.js"></script><![endif]-->
 <script type="text/javascript" src="/get_file/consolidated_resource/js/b60745877cf6f631c3f8f3d63b2546c1/6b71198caa246549b55c85ac758dbac8"></script>
 
@@ -68,7 +68,7 @@ EOT
 		$this->oIncluder->addResource('widget/ckeditor/ckeditor.js');
 		$this->oIncluder->addJavaScriptLibrary('jqueryui', 1, true, true, null);
 		$this->assertSame(<<<EOT
-<link rel="stylesheet" media="all" href="/get_file/consolidated_resource/css/7536fdcd091d2ac23c503e8f8f07a8b5/6dcd670087f2d32c23330116c8fc63d5" />
+<link rel="stylesheet" media="all" href="/get_file/consolidated_resource/css/7536fdcd091d2ac23c503e8f8f07a8b5/632a2e9ae0930e5979486adb7c7a64cc" />
 <script type="text/javascript" src="/get_file/consolidated_resource/js/f274a1b41e54444d057311779e734818/b60745877cf6f631c3f8f3d63b2546c1/6b71198caa246549b55c85ac758dbac8"></script>
 
 EOT
