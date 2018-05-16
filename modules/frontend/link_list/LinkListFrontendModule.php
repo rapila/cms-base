@@ -44,11 +44,16 @@ class LinkListFrontendModule extends DynamicFrontendModule {
 		$oQuery = LinkQuery::create()->filterByDisplayLanguage();
 
 		// Link categories
-		$aCategories = isset($aOptions['link_categories']) ? (is_array($aOptions['link_categories']) ? $aOptions['link_categories'] : array($aOptions['link_categories'])) : array();
-		$iCountCategories = count($aCategories);
-		if($iCountCategories > 0) {
-			$oQuery->filterByLinkCategoryId($aCategories);
+		$aCategories = $aOptions['link_categories'];
+		if(count($aCategories) === 1 && $aCategories[0] == null) {
+			unset($aCategories[0]);
 		}
+		$iCountCategories = count($aCategories);
+		// Util::dumpAll($iCountCategories, $aOptions['link_categories']);
+		if($iCountCategories > 0) {
+			$oQuery->filterByLinkCategoryId($aCategories, Criteria::IN);
+		}
+		// Util::dumpAll($oQuery->toString());
 
 		// Tags
 		$aTags = isset($aOptions['tags']) ? (is_array($aOptions['tags']) ? $aOptions['tags'] : array($aOptions['tags'])) : array();
