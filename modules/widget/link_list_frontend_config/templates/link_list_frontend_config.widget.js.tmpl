@@ -5,7 +5,7 @@ Widget.types.link_list_frontend_config = {
 		var config_modes = this.getConfigurationModes();
 
 		this.content = (config_modes['link_categories[]'].length == 0) ? Widget.parseHTML("{{includeTemplate=edit_no_categories}}") : Widget.parseHTML("{{includeTemplate=edit}}");
-		var _this = this;
+		
 		jQuery.each(config_modes, function(select_name, options) {
 			var config_name = select_name.replace(/\[\]$/g, '');
 			var select = _this.content.find("select[name='"+select_name+"']").populate(options, display_modes[config_name]);
@@ -17,8 +17,8 @@ Widget.types.link_list_frontend_config = {
 
 		this.result_list = jQuery('<ol/>').addClass('ui-editable-items-list');;
 		this._element.append(this.result_list);
-
-		this.list_label = jQuery('<label/>').addClass('list_label').text("{{writeString=wns.link_list_config.found_links}}");
+		
+		this.list_label = jQuery('<label/>').addClass('list_label');
 		this.list_label.insertBefore(this.result_list);
 
 		this.add_new_item = jQuery('<a/>').addClass('add-new-item').attr('title', "{{writeString=wns.link.create}}");
@@ -49,8 +49,8 @@ Widget.types.link_list_frontend_config = {
 		}
 		this.allLinks(options, function(links) {
 			var count = Object.keys(links).length;
-			var label_text = _this.list_label.text();
-			console.log(label_text, label_text.replace('?<=\())(.*?)(?=\)'), '('+count+')');
+			var label_default_text = "{{writeString=wns.link_list_config.found_links}}";
+			_this.list_label.text(label_default_text + '(' +count + ')');
 			jQuery.each(links, function(id, name) {
 				_this.result_list.append(jQuery('<li/>').text(name).attr('title', "{{writeString=wns.edit_entry}}").data('id', id));
 			});
