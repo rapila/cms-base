@@ -43,8 +43,11 @@ class LinkListFrontendModule extends DynamicFrontendModule {
 	public static function listQuery($aOptions) {
 		$oQuery = LinkQuery::create()->filterByDisplayLanguage();
 
-		// Link categories
-		$aCategories = $aOptions['link_categories'];
+		// Link categories, handle missing config param if no categories exist
+		$aCategories = array();
+		if(isset($aOptions['link_categories'])) {
+			$aCategories = $aOptions['link_categories'];
+		}
 		if(count($aCategories) === 1 && $aCategories[0] == null) {
 			unset($aCategories[0]);
 		}
