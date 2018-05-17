@@ -60,11 +60,12 @@ class LinkListFrontendModule extends DynamicFrontendModule {
 			$oQuery->filterByTagId($aTags);
 		}
 
-		// Sort order only in case of one category and no tags
-		if($iCountCategories === 1 && $bHasTags === false && $aOptions['sort_by'] === self::SORT_BY_SORT) {
+		// Sort order only if one link category is chosen and the list ordered by sort
+		if($iCountCategories === 1 && $aOptions['sort_by'] === self::SORT_BY_SORT) {
 			$oQuery->orderBySort();
 		}
-		return $oQuery->orderByName();
+		$oQuery->orderByName();
+		return $oQuery;
 	}
 
 	public static function getTemplateOptions() {
