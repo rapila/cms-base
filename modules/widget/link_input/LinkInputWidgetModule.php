@@ -5,16 +5,31 @@
 class LinkInputWidgetModule extends WidgetModule {
 	
 	public function externalLinks() {		
+		
 		$aResult = array();
-		foreach(LinkCategoryQuery::create()->filterByHasLinks()->orderByName()->find() as $oLinkCategory) {
-			foreach(LinkQuery::create()->filterByLinkCategoryId($oLinkCategory->getId())->orderByName()->find() as $oLink) {
-				$aResult[$oLinkCategory->getName()][$oLink->getId()] = $oLink->getName();
+		foreach(LinkCategoryQuery::create()
+		->filterByHasLinks()->orderByName()
+		->select(array('Id', 'Name'))->find()
+		->toKeyValue('Id', 'Name') as $iCategoryId => $sCategoryName) {
+			foreach(LinkQuery::create()
+			->filterByLinkCategoryId($iCategoryId)->orderByName()
+			->select(array('Id', 'Name'))->find()
+			->toKeyValue('Id', 'Name') as $iId => $sName) {
+				$aResult[$sCategoryName][$iId] = $sName;
 			}
 		}
-		$sWithoutCategory = TranslationPeer::getString('wns.links.select_without_title');
-		foreach(LinkQuery::create()->filterByLinkCategoryId(null, Criteria::ISNULL)->orderByName()->find() as $oLink) {
-			$aResult[$sWithoutCategory][$oLink->getId()] = $oLink->getName();
-		}		
+
+		$sWithoutCategoryName = TranslationPeer::getString('wns.links.select_without_title');	
+		foreach(LinkQuery::create()
+		->filterByLinkCategoryId(null, Criteria::ISNULL)->orderByName()
+		->select(array('Id', 'Name'))->find()
+		->toKeyValue('Id', 'Name') as $iId => $sName) {
+			$aResult[$sWithoutCategoryName][$iId] = $sName;
+		}
+
+		foreach($aResult as $iCategoryId => $aLinks) {
+			$aResult[$iCategoryId] = WidgetJsonFileModule::jsonBaseObjects($aLinks, array());
+		}
 		return $aResult;
 	}
 
