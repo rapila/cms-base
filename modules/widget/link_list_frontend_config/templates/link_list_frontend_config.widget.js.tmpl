@@ -51,8 +51,8 @@ Widget.types.link_list_frontend_config = {
 			var count = Object.keys(links).length;
 			var label_default_text = "{{writeString=wns.link_list_config.found_links}}";
 			_this.list_label.text(label_default_text + '(' +count + ')');
-			jQuery.each(links, function(id, name) {
-				_this.result_list.append(jQuery('<li/>').text(name).attr('title', "{{writeString=wns.edit_entry}}").data('id', id));
+			jQuery.each(links, function(i, link) {
+				_this.result_list.append(jQuery('<li/>').text(link.value).attr('title', "{{writeString=wns.edit_entry}}").data('id', link.key));
 			});
 			_this.add_new_item.click(function(event) {
 				Widget.create('link_detail', function(widget) {
