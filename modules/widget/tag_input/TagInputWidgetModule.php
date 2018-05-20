@@ -9,8 +9,8 @@ class TagInputWidgetModule extends PersistentWidgetModule {
 
 	public function getTags($sModelName) {
 		$sQuery = $sModelName::TAG_MODEL_NAME.'Query';
-		$oQuery = $sQuery::create()->distinct()->useTagInstanceQuery()->filterByModelName($sModelName)->endUse();
-		return $oQuery->find()->toKeyValue('Id', 'Name');
+		$oQuery = $sQuery::create()->distinct()->useTagInstanceQuery()->filterByModelName($sModelName)->endUse()->orderByName();
+		return WidgetJsonFileModule::jsonOrderedObject($oQuery->find()->toKeyValue('Id', 'Name'));
 	}
 
 	public function setSelectedTagId($sSelectedTagId) {
