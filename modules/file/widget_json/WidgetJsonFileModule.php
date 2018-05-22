@@ -185,7 +185,7 @@ class WidgetJsonFileModule extends FileModule {
 			foreach($aColumnNames as $sColumnName => $aOptions) {
 				$sGetterName = $aOptions['getter'];
 				$aArgs = $aOptions['args'];
-				$aResult[count($aResult)-1][$sColumnName] = $oBaseObect->$sGetterName(...$aArgs);
+				$aResult[count($aResult)-1][$sColumnName] = call_user_func_array([$oBaseObect, $sGetterName], $aArgs);
 			}
 		}
 		return $aResult;

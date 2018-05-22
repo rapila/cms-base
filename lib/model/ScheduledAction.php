@@ -102,7 +102,7 @@ class ScheduledAction extends BaseScheduledAction {
 		$sPeerClass = "{$sModel}Peer";
 
 		$sPeerClass::setRightsUser($oUser);
-		$oObject->$sMethodName(...$aParams);
+		call_user_func_array([$oObject, $sMethodName], $aParams);
 		$sPeerClass::setRightsUser();
 	}
 	
