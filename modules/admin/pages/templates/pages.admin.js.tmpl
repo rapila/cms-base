@@ -4,6 +4,60 @@ jQuery(document).ready(function() {
 
 	var initial_selection = {{writeRequestValue=initial_page_id}};
 
+	Widget.createWithElement('tree', function(widget) {
+		jQuery.extend(widget.settings, {
+			key: 'page_detail',
+			description_from_item: function(item) {
+				return item.Name;
+			},
+			has_children: function(item) {
+				return item.TreeRight-item.TreeLeft > 1;
+			},
+			may_create_child: function(item) {
+				return item.UserMayCreateChildren;
+			},
+			may_move_item: function(item) {
+				// If the user may create siblings, she’s got the may_create_children right on the parent => she’s also allowed to move around child pages
+				return item.UserMayCreateSiblings;
+			},
+			identifier_from_data: function(data) {
+				return data.Id;
+			},
+			is_open: function(item) {
+				return item.TreeLeft <= {{writeRequestValue=initial_page_tree_left}} && item.TreeRight > {{writeRequestValue=initial_page_tree_left}};
+			},
+			is_active: function(item) {
+				return item.Id === initial_selection;
+			},
+			custom_class: function(item) {
+				if(item.IsInactive) {
+					return 'page_is_inactive';
+				}
+			},
+			primary_icon_from_item: function(item) {
+				if(item.IsInactive) {
+					return item.IsFolder ? 'hidden-files' : 'hidden-file';
+				}
+				return item.IsFolder ? 'files' : 'file';
+			},
+			icons_from_item: function(item) {
+				var result = [];
+				if(item.IsProtected) {
+					result.push('locked');
+				}
+				if(item.IsHidden) {
+					result.push('hidden');
+				}
+				return result;
+			}
+		});
+	}, function(widget) {
+		page_tree = widget;
+		AdminInterface.sidebar.append(widget._element);
+		//TODO: update icons on update
+		widget.handle('tree_item-activated', click_handler).handle('updated', jQuery.noop);
+	}, '{{writeRequestValue=tree_session}}');
+
 	Widget.createWithElement('page_detail', function(widget) {
 		widget.settings.delete_callback = function(page_id) {
 			// do not remove element if NotPermittedException
@@ -63,61 +117,6 @@ jQuery(document).ready(function() {
 			page_detail.load_page(page_id);
 		}
 	};
-
-	Widget.createWithElement('tree', function(widget) {
-		jQuery.extend(widget.settings, {
-			key: 'page_detail',
-			description_from_item: function(item) {
-				return item.Name;
-			},
-			has_children: function(item) {
-				return item.TreeRight-item.TreeLeft > 1;
-			},
-			may_create_child: function(item) {
-				return item.UserMayCreateChildren;
-			},
-			may_move_item: function(item) {
-				// If the user may create siblings, she’s got the may_create_children right on the parent => she’s also allowed to move around child pages
-				return item.UserMayCreateSiblings;
-			},
-			identifier_from_data: function(data) {
-				return data.Id;
-			},
-			is_open: function(item) {
-				return item.TreeLeft <= {{writeRequestValue=initial_page_tree_left}} && item.TreeRight > {{writeRequestValue=initial_page_tree_left}};
-			},
-			is_active: function(item) {
-				return item.Id === initial_selection;
-			},
-			custom_class: function(item) {
-				if(item.IsInactive) {
-					return 'page_is_inactive';
-				}
-			},
-			primary_icon_from_item: function(item) {
-				if(item.IsInactive) {
-					return item.IsFolder ? 'hidden-files' : 'hidden-file';
-				}
-				return item.IsFolder ? 'files' : 'file';
-			},
-			icons_from_item: function(item) {
-				var result = [];
-				if(item.IsProtected) {
-					result.push('locked');
-				}
-				if(item.IsHidden) {
-					result.push('hidden');
-				}
-				return result;
-			}
-		});
-	}, function(widget) {
-		page_tree = widget;
-		AdminInterface.sidebar.append(widget._element);
-		//TODO: update icons on update
-		widget.handle('tree_item-activated', click_handler).handle('updated', jQuery.noop);
-	}, '{{writeRequestValue=tree_session}}');
-
 });
 
 
