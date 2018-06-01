@@ -2,6 +2,19 @@ form.document_list_frontend_config {
 	display:block;
 	margin-bottom: .5em;
 }
+
 p.multi_select_info {
 	margin: 0;
+}
+
+*[data-widget-type=document_list_frontend_config] label.list_label {
+	margin-top: 2em;
+}
+
+*[data-widget-type=document_list_frontend_config] label.list_label + ol.ui-editable-items-list {
+	margin-top: 0;
+}
+
+.ui-editable-items-list + a.add-new-item {
+	display: block;
 }

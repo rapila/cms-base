@@ -17,6 +17,12 @@ Widget.types.document_list_frontend_config = {
 		this.result_list = jQuery('<ol/>').addClass('ui-editable-items-list');
 		this._element.append(this.result_list);
 
+		this.list_label = jQuery('<label/>').addClass('list_label');
+		this.list_label.insertBefore(this.result_list);
+
+		this.add_new_item = jQuery('<a/>').addClass('add-new-item').attr('title', "{{writeString=wns.link.create}}");
+		this.add_new_item.insertAfter(this.result_list);
+
 		var detail_widget;
 		Widget.create('document_detail', function(widget) {
 			_this.detail_widget = widget;
@@ -35,13 +41,26 @@ Widget.types.document_list_frontend_config = {
 	reload_preview: function() {
 		var _this = this;
 		this.result_list.empty();
-		var options = this._element.serializeArrayKV();
-		if(options.tags && options.tags[0] === null) {
-			options.tags = [];
-		}
-		this.allDocuments(options, function(files) {
+		this.allDocuments(this._element.serializeArrayKV(), function(files) {
+			var count = Object.keys(files).length;
+			var label_default_text = "{{writeString=wns.document_list_config.found_documents}}";
+			_this.list_label.text(label_default_text + ' (' +count + ')');
+
 			jQuery.each(files, function(i, data) {
 				_this.result_list.append(jQuery('<li/>').text(data.value).attr('title', "{{writeString=wns.edit_entry}}").data('id', data.key));
+			});
+		});
+		_this.add_new_item.click(function(event) {
+			Widget.create('document_detail', function(widget) {
+				var category_id = _this.category_if_exists();
+				if(category_id !== null) {
+					widget.settings.initial = {document_category_id: category_id};
+					widget._element.find("select[name='document_category_id']").prop('disabled', 'disabled');
+				}
+				widget.open();
+				widget.handle('saved', function() {
+					_this.reload_preview();
+				});
 			});
 		});
 	},
@@ -53,11 +72,30 @@ Widget.types.document_list_frontend_config = {
 		return result;
 	},
 
+	category_if_exists: function() {
+		var category_dropdown = this.content.find("select[name='document_categories[]']");
+		var category_id=[];
+		if(category_dropdown.length > 0) {
+			category_id=category_dropdown.val();
+		}
+		if(category_id.length === 1) {
+			return category_id[0];
+		}
+		return '';
+	},
+
 	additional_buttons: [
 		{
 			text: '{{writeString=documents.do_admin}}',
 			icon: 'wrench',
-			action: jQuery.openLink.bind(window, "{{writeLink=documents;manager=AdminManager}}")
+			action: function(event) {
+				var category_id=this.category_if_exists();
+				if(category_id !== '') {
+					category_id = '#document_category_id=' + category_id[0];
+				}
+				jQuery.openLink("{{writeLink=documents;manager=AdminManager}}" + category_id, event);
+			}
+
 		}
 	]
 };

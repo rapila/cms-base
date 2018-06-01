@@ -5,6 +5,17 @@ class DocumentListFrontendConfigWidgetModule extends FrontendConfigWidgetModule 
 		return WidgetJsonFileModule::jsonOrderedObject(DocumentListFrontendModule::listQuery($aOptions)->select(array('Id', 'Name'))->find()->toKeyValue('Id', 'Name'));
 	}
 
+	public function getConfigData() {
+		$aResult = $this->configData();
+		if(!isset($aResult['document_categories'])) {
+			$aResult['document_categories'] = array();
+		}
+		if(!isset($aResult['tags'])) {
+			$aResult['tags'] = array();
+		}
+		return $aResult;
+	}
+
 	public function getConfigurationModes() {
 		$aResult = array();
 		$aDocumentCategories = DocumentListFrontendModule::getCategoryOptions();
