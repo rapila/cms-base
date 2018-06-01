@@ -42,12 +42,8 @@ Widget.types.link_list_frontend_config = {
 	reload_preview: function() {
 		var _this = this;
 		this.result_list.empty();
-		var options = this._element.serializeArrayKV();
-
-		if(options.tags && options.tags[0] === null) {
-			options.tags = [];
-		}
-		this.allLinks(options, function(links) {
+		
+		this.allLinks(this._element.serializeArrayKV(), function(links) {
 			var count = Object.keys(links).length;
 			var label_default_text = "{{writeString=wns.link_list_config.found_links}}";
 			_this.list_label.text(label_default_text + '(' +count + ')');
