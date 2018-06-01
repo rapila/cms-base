@@ -4,6 +4,59 @@ jQuery(document).ready(function() {
 
 	var initial_selection = {{writeRequestValue=initial_page_id}};
 
+	Widget.createWithElement('page_detail', function(widget) {
+		widget.settings.delete_callback = function(page_id) {
+			// do not remove element if NotPermittedException
+			if(!arguments[1]) {
+				page_tree.remove_element_with_identifier(page_id);
+			}
+		};
+		//Add event handlers in intermediate callback
+		page_detail = widget;
+		page_detail.handle('loading', function() {
+			Widget.load();
+			// info_bar_buttons.hide();
+			page_detail.disable_input();
+		});
+		page_detail.handle('loaded', function() {
+			Widget.callStatic('permission', 'mayEditPageDetailsAndDelete', page_detail.current_page_id, function(may) {
+				if(may[0]) {
+					page_detail.enable_input(may[1]);
+				} else if(may[1]) {
+					page_detail.enable_delete();
+				}
+			});
+			Widget.end_load();
+		});
+		page_detail.handle('saved', function(event) {
+			var page_id = page_detail.current_page_id;
+			page_tree.reload_element(page_tree.parent_of(page_id));
+		});
+	}, function(widget) {
+		widget.disable_input();
+		AdminInterface.content.append(widget._element);
+		widget.load_page(initial_selection);
+	});
+
+	//Info bar stuff
+	AdminInterface.info_bar.prepareWidget(function(info_bar) {
+		info_bar.add_button('add-new-item', function() {
+			Widget.create('sidebar_input', function(sidebar_input) {
+				sidebar_input.add_new_sidebar_input("{{writeString=wns.page.new_entry_placeholder}}", function(name, cleanup_callback) {
+					// This is the save callback
+					var page_id = page_tree.current_element_identifier;
+					page_detail.createPage(page_id, name, function(result, error) {
+						if(!error) {
+							cleanup_callback(page_id);
+						}
+					}, WidgetJSONOptions.with_callback_handles_error(false));
+				}, function(page_id) {
+					page_tree.reload_element(page_id, true);
+				});
+			});
+		}, 'n', false, true, "{{writeString=wns.page.create}}", {documentation: 'admin.pages/create'});
+	});
+
 	Widget.createWithElement('tree', function(widget) {
 		jQuery.extend(widget.settings, {
 			key: 'page_detail',
@@ -57,59 +110,6 @@ jQuery(document).ready(function() {
 		//TODO: update icons on update
 		widget.handle('tree_item-activated', click_handler).handle('updated', jQuery.noop);
 	}, '{{writeRequestValue=tree_session}}');
-
-	Widget.createWithElement('page_detail', function(widget) {
-		widget.settings.delete_callback = function(page_id) {
-			// do not remove element if NotPermittedException
-			if(!arguments[1]) {
-				page_tree.remove_element_with_identifier(page_id);
-			}
-		};
-		//Add event handlers in intermediate callback
-		page_detail = widget;
-		page_detail.handle('loading', function() {
-			Widget.load();
-			// info_bar_buttons.hide();
-			page_detail.disable_input();
-		});
-		page_detail.handle('loaded', function() {
-			Widget.callStatic('permission', 'mayEditPageDetailsAndDelete', page_detail.current_page_id, function(may) {
-				if(may[0]) {
-					page_detail.enable_input(may[1]);
-				} else if(may[1]) {
-					page_detail.enable_delete();
-				}
-			});
-			Widget.end_load();
-		});
-		page_detail.handle('saved', function(event) {
-			var page_id = page_detail.current_page_id;
-			page_tree.reload_element(page_tree.parent_of(page_id));
-		});
-	}, function(widget) {
-		widget.disable_input();
-		AdminInterface.content.append(widget._element);
-		widget.load_page(initial_selection);
-	});
-
-	//Info bar stuff
-	AdminInterface.info_bar.prepareWidget(function(info_bar) {
-		info_bar.add_button('add-new-item', function() {
-			Widget.create('sidebar_input', function(sidebar_input) {
-				sidebar_input.add_new_sidebar_input("{{writeString=wns.page.new_entry_placeholder}}", function(name, cleanup_callback) {
-					// This is the save callback
-					var page_id = page_tree.current_element_identifier;
-					page_detail.createPage(page_id, name, function(result, error) {
-						if(!error) {
-							cleanup_callback(page_id);
-						}
-					}, WidgetJSONOptions.with_callback_handles_error(false));
-				}, function(page_id) {
-					page_tree.reload_element(page_id, true);
-				});
-			});
-		}, 'n', false, true, "{{writeString=wns.page.create}}", {documentation: 'admin.pages/create'});
-	});
 
 	// init main content
 	var click_handler = function(event, data, page_id, has_changed) {
