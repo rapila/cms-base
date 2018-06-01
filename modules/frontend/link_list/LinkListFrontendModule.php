@@ -43,11 +43,17 @@ class LinkListFrontendModule extends DynamicFrontendModule {
 	public static function listQuery($aOptions) {
 		$oQuery = LinkQuery::create()->filterByDisplayLanguage();
 
-		// Link categories
-		$aCategories = isset($aOptions['link_categories']) ? (is_array($aOptions['link_categories']) ? $aOptions['link_categories'] : array($aOptions['link_categories'])) : array();
+		// Link categories, handle missing config param if no categories exist
+		$aCategories = array();
+		if(isset($aOptions['link_categories'])) {
+			$aCategories = $aOptions['link_categories'];
+		}
+		if(count($aCategories) === 1 && $aCategories[0] == null) {
+			unset($aCategories[0]);
+		}
 		$iCountCategories = count($aCategories);
 		if($iCountCategories > 0) {
-			$oQuery->filterByLinkCategoryId($aCategories);
+			$oQuery->filterByLinkCategoryId($aCategories, Criteria::IN);
 		}
 
 		// Tags
@@ -57,11 +63,12 @@ class LinkListFrontendModule extends DynamicFrontendModule {
 			$oQuery->filterByTagId($aTags);
 		}
 
-		// Sort order only in case of one category and no tags
-		if($iCountCategories === 1 && $bHasTags === false && $aOptions['sort_by'] === self::SORT_BY_SORT) {
+		// Sort order only if one link category is chosen and the list ordered by sort
+		if($iCountCategories === 1 && $aOptions['sort_by'] === self::SORT_BY_SORT) {
 			$oQuery->orderBySort();
 		}
-		return $oQuery->orderByName();
+		$oQuery->orderByName();
+		return $oQuery;
 	}
 
 	public static function getTemplateOptions() {

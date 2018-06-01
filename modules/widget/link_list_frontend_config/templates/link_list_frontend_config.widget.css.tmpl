@@ -1,10 +1,19 @@
 *[data-widget-type=link_list_frontend_config] select {
 	max-width: 225px;
 }
+
 p.multi_select_info {
 	margin: 0;
 }
-.ui-editable-items-list a.add-new-item {
-	margin: 5px 0 0 15px;
-	cursor: pointer;
+
+*[data-widget-type=link_list_frontend_config] label.list_label {
+	margin-top: 2em;
+}
+
+*[data-widget-type=link_list_frontend_config] label.list_label + ol.ui-editable-items-list {
+	margin-top: 0;
+}
+
+.ui-editable-items-list + a.add-new-item {
+	display: block;
 }

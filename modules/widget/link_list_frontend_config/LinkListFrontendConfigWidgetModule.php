@@ -3,7 +3,18 @@ class LinkListFrontendConfigWidgetModule extends FrontendConfigWidgetModule {
 
 	public function allLinks($aOptions = array()) {
 		$oQuery = LinkListFrontendModule::listQuery($aOptions);
-		return $oQuery->select(array('Id', 'Name'))->find()->toKeyValue('Id', 'Name');
+		return WidgetJsonFileModule::jsonOrderedObject($oQuery->select(array('Id', 'Name'))->find()->toKeyValue('Id', 'Name'));
+	}
+
+	public function getConfigData() {
+		$aResult = $this->configData();
+		if(!isset($aResult['link_categories'])) {
+			$aResult['link_categories'] = array();
+		}
+		if(!isset($aResult['tags'])) {
+			$aResult['tags'] = array();
+		}
+		return $aResult;
 	}
 
 	public function getConfigurationModes() {
