@@ -15,6 +15,10 @@ class AdminMenuWidgetModule extends PersistentWidgetModule {
 		return true;
 	}
 
+	public static function needsLogin() {
+		return false;
+	}
+
 	public function getUserInfo() {
 		if(Session::getSession()->isAuthenticated()) {
 			$aResult['FullName'] = Session::getSession()->getUser()->getFullName();
@@ -24,6 +28,9 @@ class AdminMenuWidgetModule extends PersistentWidgetModule {
 	}
 
 	public function moduleConfig() {
+		if(!Session::getSession()->isAuthenticated()) {
+			return array();
+		}
 		$oUser = Session::getSession()->getUser();
 		$aSettings = $oUser->getAdminSettings('admin_menu');
 		$aResult = array();
