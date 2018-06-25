@@ -19,6 +19,7 @@ class DocumentListFrontendModule extends DynamicFrontendModule {
 			foreach(self::listQuery($aOptions)->find() as $i => $oDocument) {
 				$oItemTemplate = clone $oItemPrototype;
 				$oDocument->renderListItem($oItemTemplate);
+				$oItemTemplate->replaceIdentifier('index', $i);
 				$oListTemplate->replaceIdentifierMultiple('items', $oItemTemplate);
 			}
 		} catch(Exception $e) {
