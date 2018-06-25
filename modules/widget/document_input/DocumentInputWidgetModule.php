@@ -23,6 +23,7 @@ class DocumentInputWidgetModule extends PersistentWidgetModule {
 		->filterByIsExternallyManaged(false)->endUse()
 		->orderBy('DocumentCategory.Name')->orderByName()
 		->select(array('Id', 'Name', 'DocumentCategory.Name'))->find();
+
 		foreach($oDocuments as $aDocument) {
 			$aResult[$aDocument['DocumentCategory.Name']][$aDocument['Id']] = $aDocument['Name'];
 		}
@@ -31,10 +32,11 @@ class DocumentInputWidgetModule extends PersistentWidgetModule {
 		foreach(self::getDocumentsWithoutCategoryId() as $iId => $sName) {
 			$aResult[$sWithoutCategory][$iId] = $sName;
 		}
-		
+
 		foreach($aResult as $sCategory => $aContents) {
-			$aResult[$sCategory] = WidgetJsonFileModule::jsonBaseObjects($aContents, array());
+			$aResult[$sCategory] = WidgetJsonFileModule::jsonOrderedObject($aContents);
 		}
+
 		return $aResult;
 	}
 

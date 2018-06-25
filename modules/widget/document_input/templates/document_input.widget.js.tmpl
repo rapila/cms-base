@@ -12,8 +12,8 @@ Widget.types.document_input = {
 		this.allDocumentsByCategories(function(document_categories) {
 			jQuery.each(document_categories, function(optgroup_label, documents) {
 				var cloned_optgroup = optgroup.clone().attr('label', optgroup_label).appendTo(_this._element);
-				jQuery.each(documents, function(id, name) {
-					option.clone().val(id).text(name).appendTo(cloned_optgroup);
+				jQuery.each(documents, function(id, data) {
+					option.clone().val(data.key).text(data.value).appendTo(cloned_optgroup);
 				});
 			});
 			if(this.settings.default_value_label) {
