@@ -15,6 +15,11 @@ p.multi_select_info {
 	margin-top: 0;
 }
 
-.ui-editable-items-list + a.add-new-item {
+*[data-widget-type=document_list_frontend_config] .ui-editable-items-list + a.add-new-item {
 	display: block;
+}
+
+*[data-widget-type=document_list_frontend_config] .ui-editable-items-list {
+	max-height: 200px;
+	overflow-y: scroll;
 }
