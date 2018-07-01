@@ -157,7 +157,11 @@ Widget.types.tree = {
 	},
 
 	remove_element_with_identifier: function(id) {
+		var parent = this.parent_of(id);
 		this._tree.delete_node(id);
+		if(parent) {
+			this._tree.select_node(parent);
+		}
 	},
 
 	current_element: function() {
