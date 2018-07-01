@@ -50,8 +50,11 @@ Widget.types.tree = {
 			core: {
 				data: this.load_item.bind(this),
 				check_callback: function(operation, node, parent, position, more) {
+					if(operation === 'delete_node') {
+						return true;
+					}
 					if(operation !== 'move_node') {
-						// FIXME: Support create_node, rename_node, delete_node, copy_node, edit operations
+						// FIXME: Support create_node, rename_node, copy_node, edit operations
 						return false;
 					}
 					var src_data = node.data;
@@ -154,7 +157,7 @@ Widget.types.tree = {
 	},
 
 	remove_element_with_identifier: function(id) {
-		this._tree.remove(id);
+		this._tree.delete_node(id);
 	},
 
 	current_element: function() {
