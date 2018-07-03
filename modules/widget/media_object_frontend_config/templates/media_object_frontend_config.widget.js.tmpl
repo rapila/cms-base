@@ -136,6 +136,9 @@ Widget.types.media_object_frontend_config = {
 		this.renderPreview(this._element.serializeArrayKV(), function(result) {
 			this.preview.empty().append(Widget.parseHTML(result));
 		});
+		if(this.notify_size_change) {
+			this.notify_size_change();
+		}
 	},
 
 	save: function() {
