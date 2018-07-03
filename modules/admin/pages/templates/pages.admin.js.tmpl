@@ -2,7 +2,8 @@ jQuery(document).ready(function() {
 	var page_detail = null;
 	var page_tree = null;
 
-	var initial_selection = {{writeRequestValue=initial_page_id}};
+	var initial_selection = parseInt('{{writeRequestValue=initial_page_id}}', 10);
+	var initial_page_tree_left = parseInt('{{writeRequestValue=initial_page_tree_left}}', 10);
 
 	Widget.createWithElement('page_detail', function(widget) {
 		widget.settings.delete_callback = function(page_id) {
@@ -77,7 +78,7 @@ jQuery(document).ready(function() {
 				return data.Id;
 			},
 			is_open: function(item) {
-				return item.TreeLeft <= {{writeRequestValue=initial_page_tree_left}} && item.TreeRight > {{writeRequestValue=initial_page_tree_left}};
+				return item.TreeLeft <= initial_page_tree_left && item.TreeRight > initial_page_tree_left;
 			},
 			is_active: function(item) {
 				return item.Id === initial_selection;
