@@ -50,6 +50,9 @@ Widget.types.link_list_frontend_config = {
 			jQuery.each(links, function(i, link) {
 				_this.result_list.append(jQuery('<li/>').text(link.value).attr('title', "{{writeString=wns.edit_entry}}").data('id', link.key));
 			});
+			if(this.notify_size_change) {
+				this.notify_size_change();
+			}
 			_this.add_new_item.click(function(event) {
 				Widget.create('link_detail', function(widget) {
 					var category_id = _this.category_if_exists();
