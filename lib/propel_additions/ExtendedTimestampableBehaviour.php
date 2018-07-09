@@ -55,7 +55,7 @@ public function get".$this->getColumnForParameter('update_column')->getPhpName()
 			$sMethods .= '
 public function findMostRecentUpdate($bAsTimestamp = false) {
 	$oQuery = clone $this;
-	$sDate = $oQuery->clearOrderByColumns()->lastUpdatedFirst()->select("'.$this->getColumnForParameter('update_column')->getPhpName().'")->findOne();
+	$sDate = $oQuery->clearOrderByColumns()->lastUpdatedFirst()->select(["'.$this->getColumnForParameter('update_column')->getPhpName().'"])->findOne();
 	if($sDate === null) {
 		return null;
 	}
