@@ -25,7 +25,7 @@ class TagPeer extends BaseTagPeer {
 		if($sTagName !== null) {
 			$oCriteria->add(TagPeer::NAME, $sTagName);
 		}
-		$oCriteria->select('TaggedItemId');
+		$oCriteria->select(['TaggedItemId']);
 		return $oCriteria->find();
 	}
 

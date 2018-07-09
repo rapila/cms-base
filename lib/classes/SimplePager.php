@@ -38,7 +38,7 @@
  * }
  *
  * // Queries executed with defined select
- * $oPager->getQuery()->select('fieldName1', 'fieldName2')->find() // etc
+ * $oPager->getQuery()->select(['fieldName1', 'fieldName2'])->find() // etc
  *
  * @author		Jürg Messmer <jm@mosaics.ch>
  * @version   0.8
