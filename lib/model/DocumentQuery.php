@@ -26,12 +26,12 @@ class DocumentQuery extends BaseDocumentQuery {
 	}
 
 	public function filterByTagId($aTagId) {
-		$aTaggedIds = TagInstanceQuery::create()->filterByTagId($aTagId)->filterByModelName('Document')->select(array('TaggedItemId'))->find();
+		$aTaggedIds = TagInstanceQuery::create()->filterByTagId($aTagId)->filterByModelName('Document')->select(array(['TaggedItemId']))->find();
 		return $this->filterById($aTaggedIds, Criteria::IN);
 	}
 
 	public function filterByTagName($sTagName) {
-		$aTaggedItems = TagInstanceQuery::create()->filterByTagName($sTagName)->filterByModelName('Document')->select('TaggedItemId')->find();
+		$aTaggedItems = TagInstanceQuery::create()->filterByTagName($sTagName)->filterByModelName('Document')->select(['TaggedItemId'])->find();
 		$this->filterById($aTaggedItems, Criteria::IN);
 		return $this;
 	}

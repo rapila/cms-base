@@ -28,6 +28,6 @@ class Translation extends BaseTranslation {
 	}
 	
 	public function getLanguagesAvailable() {
-		return implode(', ', TranslationQuery::create()->filterByStringKey($this->getStringKey())->orderByLanguageId()->select('LanguageId')->find()->toArray());
+		return implode(', ', TranslationQuery::create()->filterByStringKey($this->getStringKey())->orderByLanguageId()->select(['LanguageId'])->find()->toArray());
 	}
 }
