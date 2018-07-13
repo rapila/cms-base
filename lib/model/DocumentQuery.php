@@ -26,7 +26,7 @@ class DocumentQuery extends BaseDocumentQuery {
 	}
 
 	public function filterByTagId($aTagId) {
-		$aTaggedIds = TagInstanceQuery::create()->filterByTagId($aTagId)->filterByModelName('Document')->select(array(['TaggedItemId']))->find();
+		$aTaggedIds = TagInstanceQuery::create()->filterByTagId($aTagId)->filterByModelName('Document')->select(['TaggedItemId'])->find();
 		return $this->filterById($aTaggedIds, Criteria::IN);
 	}
 
