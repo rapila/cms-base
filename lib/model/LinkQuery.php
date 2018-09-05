@@ -22,6 +22,10 @@ class LinkQuery extends BaseLinkQuery {
 		return $this->filterById($aTaggedLinkIds, Criteria::IN);
 	}
 
-
+	public function filterByTagName($sTagName) {
+		$aTaggedItems = TagInstanceQuery::create()->filterByTagName($sTagName)->filterByModelName('Link')->select(['TaggedItemId'])->find();
+		$this->filterById($aTaggedItems, Criteria::IN);
+		return $this;
+	}
 }
 
