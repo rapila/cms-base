@@ -231,7 +231,7 @@ class DocumentListWidgetModule extends SpecializedListWidgetModule {
 			$oQuery->excludeExternallyManaged();
 		}
 		if($this->oTagFilter && $this->oDelegateProxy->getListSettings()->getFilterColumnValue('has_tags') !== CriteriaListWidgetDelegate::SELECT_ALL) {
-			$oQuery->filterByTagId($this->oDelegateProxy->getListSettings()->getFilterColumnValue('has_tags'));
+			$oQuery->filterByTagName($this->oDelegateProxy->getListSettings()->getFilterColumnValue('has_tags'));
 		}
 		return $oQuery;
 	}
