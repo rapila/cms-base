@@ -216,6 +216,9 @@ class LinkUtil {
 	* @param string $sProtocol whether or not to link to the HTTPS version. 'default' reads the linking/ssl_in_absolute_links setting. 'auto' will use whatever is currently being used to access the site.
 	*/
 	public static function absoluteLink($sLocation, $sHost = null, $mProtocolSetting = 'default', $bAbsoluteLinkMayBeOmitted = false) {
+		if($sLocation && !StringUtil::startsWith($sLocation, '/')) {
+			$sLocation = "/$sLocation";
+		}
 		$sProtocol = self::getProtocol($mProtocolSetting);
 		if($bAbsoluteLinkMayBeOmitted && Settings::getSetting('linking', 'always_link_absolutely', false) === false) {
 			// If the current protocol differs from a clear preference given (explicit true or false), we still need to use an absolute link
