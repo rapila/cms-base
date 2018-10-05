@@ -140,7 +140,7 @@ class Document extends BaseDocument {
 	}
 
 	public function getImage() {
-		return Image::imageFromStream($this->getData());
+		return Image::imageFromStream($this->getData(), 'DocumentId: '.$this->getId());
 	}
 
 	public function getDimensionsIfImage($sPostfix = "px") {

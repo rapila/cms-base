@@ -274,16 +274,16 @@ class Image {
 		return array($iWidth, $iHeight);
 	}
 
-	public static function imageFromData($sImageData) {
-			$rImageResource = @imagecreatefromstring($sImageData);
-			if(!$rImageResource) {
-				throw new Exception("imagecreatefromstring: Unrecognized image format");
-			}
-			return new Image($rImageResource);
+	public static function imageFromData($sImageData, $sDocumentDescription= null) {
+		$rImageResource = @imagecreatefromstring($sImageData);
+		if(!$rImageResource) {
+			throw new Exception("imagecreatefromstring: Unrecognized image format ($sDocumentDescription)");
+		}
+		return new Image($rImageResource);
 	}
 
-	public static function imageFromStream($rImageResource) {
-		return Image::imageFromData(stream_get_contents($rImageResource));
+	public static function imageFromStream($rImageResource, $sDescription = null) {
+		return Image::imageFromData(stream_get_contents($rImageResource), 'ImageResource: '.$rImageResource.', Description: '.$sDescription);
 	}
 
 	public static function emptyImage($iWidth, $iHeight) {
@@ -291,7 +291,7 @@ class Image {
 	}
 
 	public static function imageFromPath($sPath) {
-		return Image::imageFromData(file_get_contents($sPath));
+		return Image::imageFromData(file_get_contents($sPath), "Path: $sPath");
 	}
 
 	public static function imageWithText($sText, $sFontFilePath, $iFontSize, $iRed, $iGreen, $iBlue, $iOpacity, $iBackgoundRed = 255, $iBackgoundGreen = 255, $iBackgoundBlue = 255, $iBackgoundAlpha = 0) {
