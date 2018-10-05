@@ -283,6 +283,7 @@ class Image {
 	}
 
 	public static function imageFromStream($rImageResource, $sDescription = null) {
+		rewind($rImageResource);
 		return Image::imageFromData(stream_get_contents($rImageResource), 'ImageResource: '.$rImageResource.', Description: '.$sDescription);
 	}
 
