@@ -274,10 +274,10 @@ class Image {
 		return array($iWidth, $iHeight);
 	}
 
-	public static function imageFromData($sImageData, $sDocumentDescription= null) {
+	public static function imageFromData($sImageData, $sDescription= null) {
 		$rImageResource = @imagecreatefromstring($sImageData);
 		if(!$rImageResource) {
-			throw new Exception("imagecreatefromstring: Unrecognized image format ($sDocumentDescription)");
+			throw new Exception("imagecreatefromstring: Unrecognized image format ($sDescription)");
 		}
 		return new Image($rImageResource);
 	}
