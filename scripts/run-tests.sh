@@ -20,18 +20,19 @@ fi
 
 
 if [ "$1" != "" ]; then
-		test_module=$1
-		if [ "$1" == "help" ]; then
-			echo "USAGE: run-tests.sh [<test name (default: Everything)>] [<filter>]"
-			exit 1
-		fi
-	else
-		test_module=Everything
+	test_module=shift
+	if [ "$test_module" == "help" ]; then
+		echo "USAGE: run-tests.sh [<test name (default: Everything)>] [<filter>]"
+		exit 1
+	fi
+else
+	test_module=Everything
 fi
 
 filter=""
-if [ "$2" != "" ]; then
-		filter="--filter $2"
+if [ "$1" != "" ]; then
+	filter="--filter $1"
+	shift
 fi
 
 export RAPILA_ENVIRONMENT=test
@@ -46,7 +47,7 @@ sqlite3 ./test-db.sqlite < ./generated/*schema.sql
 # Create test plugin
 mkdir -p plugins/test_only
 
-"$PHPUNIT_PATH" $filter --bootstrap "base/lib/tests/RapilaTestLoader.php" "./base/lib/tests/Test$test_module"
+"$PHPUNIT_PATH" $filter --bootstrap "base/lib/tests/RapilaTestLoader.php" "./base/lib/tests/Test$test_module" "$@"
 retval=$?
 
 rm -Rf plugins/test_only

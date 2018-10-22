@@ -16,7 +16,9 @@ before_script:
   - git checkout "$TRAVIS_BRANCH" || git checkout master
   - ./base/scripts/create-folders.sh
   - ./base/scripts/generate-model.sh
-script: ./base/scripts/run-tests.sh
+  - composer require codacy/coverage
+script: ./base/scripts/run-tests.sh "" "" --coverage-clover build/coverage/xml --whitelist base/lib
+after_script: ./vendor/bin/codacycoverage clover build/coverage/xml
 addons:
   apt:
     update: true
