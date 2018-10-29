@@ -98,16 +98,16 @@ class PageObjectFillHelper {
 		} else {
 			$oModule = FrontendModule::getModuleInstance($oContentObject->getObjectType(), $oPageContents, $this->oNavigationItem, $iModuleId);
 		}
-		$sFrontentContents = self::getModuleContents($oModule, true, $this->bIsPreview);
-		if($sFrontentContents === null) {
+		$sFrontendContents = self::getModuleContents($oModule, true, $this->bIsPreview);
+		if($sFrontendContents === null) {
 			return false;
 		}
 		// module_id
 		FilterModule::getFilters()->handleDefaultPageTypeFilledContainerWithModule($oContentObject, $oModule, $oTemplate, $this->oFrontendTemplate, $iModuleId);
 		if($this->bIsPreview) {
-			$sFrontentContents = $this->getPreviewMarkup($oContentObject, $sFrontentContents);
+			$sFrontendContents = $this->getPreviewMarkup($oContentObject, $sFrontendContents);
 		}
-		$oTemplate->replaceIdentifierMultiple("container", $sFrontentContents, null, Template::NO_HTML_ESCAPE);
+		$oTemplate->replaceIdentifierMultiple("container", $sFrontendContents, null, Template::NO_HTML_ESCAPE);
 		if(($sCss = $oModule->getCssForFrontend()) !== null) {
 			ResourceIncluder::defaultIncluder()->addCustomCss($sCss, ResourceIncluder::PRIORITY_LAST);
 		}
