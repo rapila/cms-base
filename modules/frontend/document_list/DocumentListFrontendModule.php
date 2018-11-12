@@ -3,7 +3,7 @@
  * @package modules.frontend
  */
 
-class DocumentListFrontendModule extends DynamicFrontendModule {
+class DocumentListFrontendModule extends FrontendModule {
 
 	const LIST_ITEM_POSTFIX = '_item';
 	const SORT_BY_NAME = 'by_name';
@@ -26,6 +26,10 @@ class DocumentListFrontendModule extends DynamicFrontendModule {
 			$oListTemplate = new Template("", null, true);
 		}
 		return $oListTemplate;
+	}
+
+	public function isOutdated($oCache) {
+		return $oCache->isOlderThan(DocumentQuery::create());
 	}
 
 	public static function listQuery($aOptions) {
