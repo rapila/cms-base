@@ -2020,9 +2020,10 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             if ($this->linksRelatedByOwnerIdScheduledForDeletion !== null) {
                 if (!$this->linksRelatedByOwnerIdScheduledForDeletion->isEmpty()) {
-                    LinkQuery::create()
-                        ->filterByPrimaryKeys($this->linksRelatedByOwnerIdScheduledForDeletion->getPrimaryKeys(false))
-                        ->delete($con);
+                    foreach ($this->linksRelatedByOwnerIdScheduledForDeletion as $linkRelatedByOwnerId) {
+                        // need to save related object because we set the relation to null
+                        $linkRelatedByOwnerId->save($con);
+                    }
                     $this->linksRelatedByOwnerIdScheduledForDeletion = null;
                 }
             }
@@ -5771,7 +5772,7 @@ abstract class BaseUser extends BaseObject implements Persistent
                 $this->linksRelatedByOwnerIdScheduledForDeletion = clone $this->collLinksRelatedByOwnerId;
                 $this->linksRelatedByOwnerIdScheduledForDeletion->clear();
             }
-            $this->linksRelatedByOwnerIdScheduledForDeletion[]= clone $linkRelatedByOwnerId;
+            $this->linksRelatedByOwnerIdScheduledForDeletion[]= $linkRelatedByOwnerId;
             $linkRelatedByOwnerId->setUserRelatedByOwnerId(null);
         }
 
