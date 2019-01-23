@@ -94,7 +94,7 @@ Widget.types.document_list_frontend_config = {
 			action: function(event) {
 				var category_id=this.category_if_exists();
 				if(category_id !== '') {
-					category_id = '#document_category_id=' + category_id[0];
+					category_id = '#document_category_id=' + category_id;
 				}
 				jQuery.openLink("{{writeLink=documents;manager=AdminManager}}" + category_id, event);
 			}
