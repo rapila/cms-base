@@ -130,6 +130,7 @@ jQuery(document).ready(function() {
 			content_list.reload();
 		}
 		// Sidebar selection changed
+		sidebar.settings.row_click_active_mode = 'activate';
 		sidebar.handle('list-selection_changed', function(event, selection) {
 			var document_category_id = selection[0] && selection[0].document_category_id;
 			var has_detail = selection.length === 1 && document_category_id.constructor === Number;
