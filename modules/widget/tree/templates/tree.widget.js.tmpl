@@ -71,7 +71,7 @@ Widget.types.tree = {
 				force_text: true,
 			},
 			state: {
-				key: this.name+'|'+this.settings.key+'|'+(this.settings.model_name || ''),
+				key: (this.name || '')+'|'+this.settings.key+'|'+(this.settings.model_name || ''),
 				preserve_loaded: true,
 			},
 			dnd: {
