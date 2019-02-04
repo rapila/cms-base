@@ -162,13 +162,14 @@
 						item.attr({
 							'data-object-type': module_name,
 							'data-object-id': content_params.id,
-							'data-language-id': language_id
+							'data-language-id': language_id,
+							'data-container': container_name
 						});
 						_this.filled_frontend_modules[container_name].contents.splice(position, 0, content_params);
 						_this.update_content_properties(item, {content: content_params});
+						_this.update_additional_container_info(current_container);
 					}
 				);
-				_this.update_additional_container_info(current_container);
 			});
 			container.on('click', '.template-container-insert-language-object', open_available_modules);
 	
