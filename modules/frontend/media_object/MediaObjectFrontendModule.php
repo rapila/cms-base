@@ -30,7 +30,7 @@ class MediaObjectFrontendModule extends FrontendModule {
 					$aParameters['max_height'] = $aDocumentInfo['max_width'];
 				}
 				if(@$aDocumentInfo['force_refresh']) {
-          $aParameters['refresh'] = time();
+          $aParameters['no-cache'] = 'true';
 				}
 				
 				$sSrc = $oDocument->getDisplayUrl($aParameters);

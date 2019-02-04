@@ -56,7 +56,7 @@ class DocumentDetailWidgetModule extends PersistentWidgetModule {
 	public static function documentPreview($iDocumentId, $iSize) {
 		$oDocument = DocumentQuery::create()->findPk($iDocumentId);
 		if($oDocument) {
-			return DocumentQuery::create()->findPk($iDocumentId)->getPreview($iSize);
+			return DocumentQuery::create()->findPk($iDocumentId)->getPreview($iSize, true);
 		}
 		return null;
 	}

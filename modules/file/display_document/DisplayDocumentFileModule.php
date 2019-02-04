@@ -46,6 +46,10 @@ class DisplayDocumentFileModule extends FileModule {
 		}
 		header('Content-Disposition: '.$sDisplay.';filename="'.$this->oDocument->getFullName().'"');
 
+		if(isset($_REQUEST['no-cache'])) {
+			header('Cache-Control: max-age=0; no-cache');
+		}
+
 		//Don’t base the last-modified off the cache but rather off the document’s updated-at.
 		LinkUtil::sendCacheControlHeaders($this->oDocument, $oCache);
 
