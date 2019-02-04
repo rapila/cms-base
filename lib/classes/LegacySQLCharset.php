@@ -1,7 +1,7 @@
 <?php
 
 class LegacySQLCharset {
-	private static $SQL_ENCODINGS = array("utf-8" => "utf8",
+	private static $SQL_ENCODINGS = array("utf-8" => "utf8mb4",
 																				"iso-8859-1" => "latin1",
 																				"iso-8859-2" => "latin2");
 
