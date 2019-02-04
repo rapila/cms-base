@@ -21,7 +21,7 @@ Widget.types.rich_text = {
 		}
 		// Make sure width/height gets output as attributes, not style
 		this.settings.disallowedContent = 'img{width,height}';
-		this.settings.extraAllowedContent = 'img[width,height]';
+		this.settings.extraAllowedContent = (this.settings.extraAllowedContent ? this.settings.extraAllowedContent + '; ' : '') + 'img[width,height]';
 		CKEDITOR.on('dialogDefinition', function(ev) {
 			var dialogName = ev.data.name;
 			var dialogDefinition = ev.data.definition;

@@ -109,24 +109,24 @@ class Document extends BaseDocument {
 
 	public function getPreviewForAdminList($iSize = 190) {
 		if($this->isImage()) {
-			return $this->getPreview($iSize);
+			return $this->getPreview($iSize, true);
 		}
 		return '<div><img src="'.LinkUtil::link(array('document_type_preview', $this->getDocumentTypeId()), 'FileManager', array('size' => $iSize)).'"/></div>';
 	}
 
-	public function getPreview($iSize = 190, $bRefresh = true, $bMayReturnTemplate = false) {
+	public function getPreview($iSize = 190, $bRefresh = false, $bMayReturnTemplate = false) {
 		$aOptions = array();
 		$aOptions['document_id'] = $this->getId();
 		if($this->getDocumentType()->getDocumentKind() === 'image') {
 			// Objects don’t get displayed otherwise
 			$aOptions['max_width'] = $iSize;
 			$aOptions['max_height'] = $iSize;
-			$aOptions['force_refresh'] = $bRefresh;
 		} else {
 			$aOptions['width'] = $iSize;
 			$aOptions['height'] = $iSize*0.747;
 		}
-
+		$aOptions['force_refresh'] = $bRefresh;
+		
 		$aFallback = $aOptions;
 		$aFallback['document_id'] = '';
 		$aFallback['height'] = $iSize;
