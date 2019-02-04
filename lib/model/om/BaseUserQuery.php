@@ -1424,7 +1424,7 @@ abstract class BaseUserQuery extends ModelCriteria
      *
      * @return UserQuery The current query, for fluid interface
      */
-    public function joinLinkRelatedByOwnerId($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinLinkRelatedByOwnerId($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         $tableMap = $this->getTableMap();
         $relationMap = $tableMap->getRelation('LinkRelatedByOwnerId');
@@ -1459,7 +1459,7 @@ abstract class BaseUserQuery extends ModelCriteria
      *
      * @return   LinkQuery A secondary query class using the current class as primary query
      */
-    public function useLinkRelatedByOwnerIdQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useLinkRelatedByOwnerIdQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         return $this
             ->joinLinkRelatedByOwnerId($relationAlias, $joinType)

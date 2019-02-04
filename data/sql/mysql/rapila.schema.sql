@@ -506,7 +506,7 @@ CREATE TABLE `links`
     `url` VARCHAR(255),
     `description` VARCHAR(255),
     `language_id` VARCHAR(3),
-    `owner_id` INTEGER NOT NULL,
+    `owner_id` INTEGER,
     `link_category_id` INTEGER,
     `sort` INTEGER,
     `is_private` TINYINT(1) DEFAULT 0,

@@ -43,7 +43,7 @@ class LinkTableMap extends TableMap
         $this->addColumn('url', 'Url', 'VARCHAR', false, 255, null);
         $this->addColumn('description', 'Description', 'VARCHAR', false, 255, null);
         $this->addForeignKey('language_id', 'LanguageId', 'VARCHAR', 'languages', 'id', false, 3, null);
-        $this->addForeignKey('owner_id', 'OwnerId', 'INTEGER', 'users', 'id', true, null, null);
+        $this->addForeignKey('owner_id', 'OwnerId', 'INTEGER', 'users', 'id', false, null, null);
         $this->addForeignKey('link_category_id', 'LinkCategoryId', 'INTEGER', 'link_categories', 'id', false, null, null);
         $this->addColumn('sort', 'Sort', 'INTEGER', false, null, null);
         $this->addColumn('is_private', 'IsPrivate', 'BOOLEAN', false, 1, false);
