@@ -10,5 +10,5 @@ default:
         html: 'The <em>template chooser</em> is used for…'
 rapi.la:
   provider: json_based
-  metadata_url: 'http://rapi.la/get_file/documentation/metadata'
-  content_url: 'http://rapi.la/get_file/documentation/content/${language}/${part}'
+  metadata_url: 'https://rapi.la/get_file/documentation/metadata'
+  content_url: 'https://rapi.la/get_file/documentation/content/${language}/${part}'
