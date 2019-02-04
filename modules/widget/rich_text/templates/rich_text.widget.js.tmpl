@@ -314,12 +314,19 @@ Widget.types.rich_text = {
 
 	set_data: function(new_data) {
 		var _this = this;
+		function setDataOnEditor() {
+			_this.instance.setData(new_data, function() {
+				_this.instance.document.appendStyleText(_this.settings.inline_css);
+			});
+		}
 		if(!this.instance) {
 			this.textarea.val(new_data);
 		} else {
-			this.instance.setData(new_data, function() {
-				_this.instance.document.appendStyleText(_this.settings.inline_css);
-			});
+			if(this.instance.status === 'ready') {
+				setDataOnEditor();
+			} else {
+				this.instance.on('instanceReady', setDataOnEditor);
+			}
 		}
 	},
 
