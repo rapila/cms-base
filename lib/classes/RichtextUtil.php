@@ -246,6 +246,7 @@ class RichtextUtil {
 				} else if($sFileMethod === 'internal_link_proxy') {
 					$sIdentifier = 'internal_link';
 					$sModel = 'Page';
+					$sAdditional = rawurldecode($sAdditional);
 				}
 				$this->addTrackReference($iId, $sModel);
 				return TemplateIdentifier::constructIdentifier($sIdentifier, "$iId$sAdditional", array_merge($oHtmlTag->getParameters(), array('link_text' => $sParsedChildren)));
