@@ -65,7 +65,7 @@ Widget.types.media_object_frontend_config = {
 			});
 		}).on('change', 'input, select', function() {
 			_this.update_preview();
-		}).on('change', '.delete_media', function() {
+		}).on('click', '.delete_media', function() {
 			var media_entry = jQuery(this).closest('.media_entry');
 			media_entry.remove();
 			if(_this.config.find('.media_entry').length === 0) {
