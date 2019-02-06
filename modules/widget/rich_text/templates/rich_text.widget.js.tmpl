@@ -81,7 +81,7 @@ Widget.types.rich_text = {
 							data.external_link_id = id;
 						} else if(url.indexOf('/display_document/') > -1) {
 							data.type = 'document';
-							data.document_id = id;
+							data.document_id = id.replace(/(\.\w+)$/, '');
 						}
 					}
 					this.setValue(data.type);
