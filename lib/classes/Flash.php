@@ -111,7 +111,7 @@ class Flash {
 	}
 	
 	public function checkForValue($sName, $sFlashName = null) {
-		return $this->checkForExactNotMatch($sName, "", $sFlashName);
+		return $this->checkForExactNotMatch($sName, "", $sFlashName) && $this->checkForExactNotMatch($sName, null, $sFlashName);
 	}
 	
 	public function checkForPattern($sName, $sPattern, $sFlashName = null) {
