@@ -134,7 +134,7 @@ class RichtextUtil {
 		$oPage = PageQuery::create()->findPk($iId);
 		array_unshift($aValue, 'internal_link_proxy');
 		if($oPage) {
-			$sLink = self::getLink($aValue, 'FileManager');
+			$sLink = LinkUtil::link($aValue, 'FileManager');
 			return self::writeTagForIdentifier("a", array('href' => $sLink), $oIdentifier, null, $oPage);
 		}
 	}
@@ -165,7 +165,7 @@ class RichtextUtil {
 	public static function externalLinkCallbackBe($oIdentifier) {
 		$oLink = LinkQuery::create()->findPk($oIdentifier->getValue());
 		if($oLink) {
-			return self::writeTagForIdentifier("a", array('href' => self::getLink(array('external_link_proxy', $oLink->getId()), 'FileManager')), $oIdentifier, null, $oLink);
+			return self::writeTagForIdentifier("a", array('href' => LinkUtil::link(array('external_link_proxy', $oLink->getId()), 'FileManager')), $oIdentifier, null, $oLink);
 		} else {
 			return self::writeTagForIdentifier("a", array('href' => '#', 'style' => "color: red;!important;"), $oIdentifier, $oIdentifier->getParameter("link_text").' [Link missing!]');
 		}
@@ -183,7 +183,7 @@ class RichtextUtil {
 	public static function fileLinkCallbackBe($oIdentifier) {
 		$oDocument = DocumentQuery::create()->findPk($oIdentifier->getValue());
 		if($oDocument !== null) {
-			return self::writeTagForIdentifier("a", array('href' => self::link($oDocument->getDisplayUrl())), $oIdentifier, null, $oDocument);
+			return self::writeTagForIdentifier("a", array('href' => $oDocument->getDisplayUrl()), $oIdentifier, null, $oDocument);
 		} else {
 			return self::writeTagForIdentifier("a", array('style' => "color: red;"), $oIdentifier, $oIdentifier->getParameter("link_text").' [Document missing!]');
 		}

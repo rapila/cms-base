@@ -67,7 +67,7 @@ Widget.types.rich_text = {
 				linkType.items.unshift(['{{writeString=wns.richtext.external_link}}', 'external']);
 				linkType.items.unshift(['{{writeString=wns.richtext.internal_link}}', 'internal']);
 				linkType.setup = function(data) {
-					if(data.type === 'url' && data.url && data.url.protocol === undefined) {
+					if(data.type === 'url' && data.url && data.url.protocol === undefined && data.url.url.indexOf('/') === 0) {
 						var url = data.url.url;
 						var id = url.split(/\//).pop(), index;
 						if((index = id.indexOf('?')) > -1) {
@@ -75,14 +75,13 @@ Widget.types.rich_text = {
 						}
 						if(url.indexOf('/internal_link_proxy/') > -1) {
 							data.type = 'internal';
-							id = url.substring(url.indexOf('/internal_link_proxy/')+'/internal_link_proxy/'.length);
-							data.internal_link_id = id;
+							data.internal_link_id = url.substring(url.indexOf('/internal_link_proxy/')+'/internal_link_proxy/'.length);
 						} else if(url.indexOf('/external_link_proxy/') > -1) {
 							data.type = 'external';
 							data.external_link_id = id;
 						} else if(url.indexOf('/display_document/') > -1) {
 							data.type = 'document';
-							data.document_id = id;
+							data.document_id = id.replace(/(\.\w+)$/, '');
 						}
 					}
 					this.setValue(data.type);
@@ -133,7 +132,9 @@ Widget.types.rich_text = {
 					return function(data) {
 						var widget_element = jQuery(this.getElement().$).children('[data-widget-type]');
 						if(!!widget_element.length) {
-							widget_element.val(data[idName]);
+							widget_element.ensureWidget(function(widget) {
+								widget.value(data[idName]);
+							});
 						} else {
 							jQuery(this.getElement().$).data('id', data[idName]);
 						}
