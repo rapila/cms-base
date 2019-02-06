@@ -417,6 +417,7 @@ jQuery.widget("ui.dialog", jQuery.ui.dialog, {
 			var result = $.Deferred();
 			Widget.create(widgetType, intermediateCallback, function(widget) {
 				widget._element = Widget.parseHTML(widget._instanceInformation.content);
+				widget._element.data('widget', widget);
 				widget.fire('element_set', widget._element);
 				widget.handle('prepared', function(event, widget) {
 					if(finishCallback.resolveWith) {
