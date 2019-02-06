@@ -413,7 +413,6 @@ jQuery.widget("ui.dialog", jQuery.ui.dialog, {
 			var result = $.Deferred();
 			Widget.create(widgetType, intermediateCallback, function(widget) {
 				widget._element = Widget.parseHTML(widget._instanceInformation.content);
-				widget._element.data('widget', widget);
 				widget.fire('element_set', widget._element);
 				widget.handle('prepared', function(event, widget) {
 					if(finishCallback.resolveWith) {
@@ -421,6 +420,7 @@ jQuery.widget("ui.dialog", jQuery.ui.dialog, {
 					} else {
 						finishCallback(widget);
 					}
+					widget._element.data('prepared-widget', widget);
 					result.resolve(widget);
 				}, false);
 			}, session);
@@ -1009,6 +1009,7 @@ jQuery.widget("ui.dialog", jQuery.ui.dialog, {
 				widget._element = widget_element;
 				(widget_element.data('waiting_intermediate_callbacks') || {resolve: jQuery.noop}).resolve(widget);
 				widget.handle('prepared', function() {
+					widget_element.data('prepared-widget', widget);
 					(widget_element.data('waiting_prepare_callbacks') || {resolve: jQuery.noop}).resolve(widget);
 				});
 			}, widget_session);
@@ -1028,18 +1029,18 @@ jQuery.widget("ui.dialog", jQuery.ui.dialog, {
 		* Use this to make sure a specific element’s widget is initialized/prepared when the callback is called but DO NOT WANT to cause the widget to initialize, for example if you know that the widget will be initialized eventually.
 		*/
 		ensureWidget: function(callback, is_intermediate) {
-			if(this.hasWidget()) {
+			var preparedWidget = this.data('prepared-widget');
+			if(preparedWidget) {
 				if(is_intermediate) {
-					console.error('Can’t add intermediate callback after widget was created');
+					console.warn('Can’t add intermediate callback after widget was created');
+				} else {
+					if(callback.resolveWith) {
+						callback.resolve(preparedWidget);
+					} else {
+						callback.call(preparedWidget, preparedWidget);
+					}
 					return this;
 				}
-				var widget = this.data('widget');
-				if(callback.resolveWith) {
-					callback.resolveWith(widget, [widget]);
-				} else {
-					callback.call(widget, widget);
-				}
-				return this;
 			}
 			var data_name = is_intermediate ? 'waiting_intermediate_callbacks' : 'waiting_prepare_callbacks';
 			var queue = this.data(data_name);
