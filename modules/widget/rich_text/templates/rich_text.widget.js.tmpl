@@ -133,7 +133,9 @@ Widget.types.rich_text = {
 					return function(data) {
 						var widget_element = jQuery(this.getElement().$).children('[data-widget-type]');
 						if(!!widget_element.length) {
-							widget_element.val(data[idName]);
+							widget_element.ensureWidget(function(widget) {
+								widget.value(data[idName]);
+							});
 						} else {
 							jQuery(this.getElement().$).data('id', data[idName]);
 						}
