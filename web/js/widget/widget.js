@@ -1034,6 +1034,19 @@ jQuery.widget("ui.dialog", jQuery.ui.dialog, {
 		* Use this to make sure a specific element’s widget is initialized/prepared when the callback is called but DO NOT WANT to cause the widget to initialize, for example if you know that the widget will be initialized eventually.
 		*/
 		ensureWidget: function(callback, is_intermediate) {
+			if(this.hasWidget()) {
+				if(is_intermediate) {
+					console.error('Can’t add intermediate callback after widget was created');
+					return this;
+				}
+				var widget = this.data('widget');
+				if(callback.resolveWith) {
+					callback.resolveWith(widget, [widget]);
+				} else {
+					callback.call(widget, widget);
+				}
+				return this;
+			}
 			var data_name = is_intermediate ? 'waiting_intermediate_callbacks' : 'waiting_prepare_callbacks';
 			var queue = this.data(data_name);
 			if(!queue) {
