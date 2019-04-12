@@ -51,10 +51,19 @@ class Document extends BaseDocument {
 
 	public function getDisplayUrl($aUrlParameters = array(), $sFileModule = 'display_document') {
 		$iId = $this->getId();
+		$sHash = $this->getHash();
 		if($sFileModule === 'display_document') {
-			$iId .= '.'.$this->getDocumentType()->getExtension();
+			$iId = DisplayDocumentFileModule::getPath(
+				$iId,
+				isset($aUrlParameters['no-cache']) ? '' : $this->getImmutableUrlKey(),
+				$this->getDocumentType()->getExtension()
+			);
 		}
 		return LinkUtil::link(array($sFileModule, $iId), "FileManager", $aUrlParameters);
+	}
+
+	public function getImmutableUrlKey() {
+		return base64_encode(hex2bin($this->getHash()));
 	}
 
 	public function shouldBeIncludedInList($sLanguageId, $oPage) {
