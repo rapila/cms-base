@@ -13,17 +13,18 @@ class DisplayDocumentFileModule extends FileModule {
 			throw new Exception("Error in DisplayDocumentFileModule->__construct: no key given");
 		}
 		$this->oSession = Session::close();
-		$this->oDocument = DocumentQuery::create()->findPk(intval($this->aPath[0]));
 		
 		$sIdPart = explode('.', $this->aPath[0])[0];
-		list($id, $sHash) = explode('@', $sIdPart.'@');
+		list($iId, $sHash) = explode('@', $sIdPart.'@');
+
+		$this->oDocument = DocumentQuery::create()->findPk(intval($iId));
 
 		if(!empty($sHash)) {
 			if(!StringUtil::startsWith($this->oDocument->getImmutableUrlKey(), $sHash)) {
 				$aParams = array_filter($_GET, function($sKey) {
 					return $sKey !== 'path';
 				}, ARRAY_FILTER_USE_KEY);
-				LinkUtil::redirect($this->oDocument->getDisplayUrl($_GET));
+				LinkUtil::redirect($this->oDocument->getDisplayUrl($aParams));
 				return;
 			} else {
 				header('Cache-Control: public,max-age=31557600,immutable');
