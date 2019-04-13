@@ -63,7 +63,7 @@ class Document extends BaseDocument {
 	}
 
 	public function getImmutableUrlKey() {
-		return base64_encode(hex2bin($this->getHash()));
+		return str_replace(array('=', '+', '/'), '', base64_encode(hex2bin($this->getHash())));
 	}
 
 	public function shouldBeIncludedInList($sLanguageId, $oPage) {
