@@ -14,19 +14,22 @@ class DisplayDocumentFileModule extends FileModule {
 		}
 		$this->oSession = Session::close();
 		
-		$sIdPart = explode('.', $this->aPath[0])[0];
-		list($iId, $sHash) = explode('@', $sIdPart.'@');
+		$sIdPart = explode('.', $this->aPath[0])[0]; // Drop the extension
+		list($iId, $sHash) = explode('@', $sIdPart.'@'); // Split ID and Hash
 
 		$this->oDocument = DocumentQuery::create()->findPk(intval($iId));
 
 		if(!empty($sHash)) {
+			// Compare the given prefix with the complete hash
 			if(!StringUtil::startsWith($this->oDocument->getImmutableUrlKey(), $sHash)) {
+				// The hash is out-of-date, redirect
 				$aParams = array_filter($_GET, function($sKey) {
 					return $sKey !== 'path';
 				}, ARRAY_FILTER_USE_KEY);
 				LinkUtil::redirect($this->oDocument->getDisplayUrl($aParams));
 				return;
 			} else {
+				// The hash is current, tell the browser to cache long-term
 				header('Cache-Control: public,max-age=31557600,immutable');
 			}
 		} else if(isset($_REQUEST['no-cache'])) {
