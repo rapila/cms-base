@@ -18,16 +18,18 @@ class DisplayDocumentFileModule extends FileModule {
 		$sIdPart = explode('.', $this->aPath[0])[0];
 		list($id, $sHash) = explode('@', $sIdPart.'@');
 
-		if(isset($sHash)) {
+		if(!empty($sHash)) {
 			if(!StringUtil::startsWith($this->oDocument->getImmutableUrlKey(), $sHash)) {
-				// Util::dumpAll($_GET);
-				LinkUtil::redirect($this->oDocument->getDisplayUrl(), $_GET);
+				$aParams = array_filter($_GET, function($sKey) {
+					return $sKey !== 'path';
+				}, ARRAY_FILTER_USE_KEY);
+				LinkUtil::redirect($this->oDocument->getDisplayUrl($_GET));
 				return;
 			} else {
 				header('Cache-Control: public,max-age=31557600,immutable');
 			}
 		} else if(isset($_REQUEST['no-cache'])) {
-			header('Cache-Control: max-age=0,no-cache');
+			header('Cache-Control: no-cache');
 		} 
 
 		if($this->oDocument === null || ($this->oDocument->getIsProtected() && !$this->isAuthenticated())) {
