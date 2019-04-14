@@ -51,7 +51,6 @@ class Document extends BaseDocument {
 
 	public function getDisplayUrl($aUrlParameters = array(), $sFileModule = 'display_document') {
 		$iId = $this->getId();
-		$sHash = $this->getHash();
 		if($sFileModule === 'display_document') {
 			$iId = DisplayDocumentFileModule::getPath(
 				$iId,
