@@ -139,7 +139,6 @@ Widget.types.document_detail = {
 			this._element.find(".updated_info").text(document_data.UpdatedInfo);
 			this._element.find(".created_info").text(document_data.CreatedInfo);
 			this._element.find(".detail_id").text(document_data.Id);
-			this._element.find(".hash").text(document_data.Hash);
 			this._element.find(".file_size").text(document_data.FileInfo);
 			this._element.find(".original_name").text(document_data.OriginalName === null ? document_data.Name : document_data.OriginalName);
 			this._element.find(".ui-download-document").attr({ href: FILE_PREFIX+'/display_document/'+document_data.Id+'?download=true' });
