@@ -13,7 +13,29 @@ class DisplayDocumentFileModule extends FileModule {
 			throw new Exception("Error in DisplayDocumentFileModule->__construct: no key given");
 		}
 		$this->oSession = Session::close();
-		$this->oDocument = DocumentQuery::create()->findPk(intval($this->aPath[0]));
+		
+		$sIdPart = explode('.', $this->aPath[0])[0]; // Drop the extension
+		list($iId, $sHash) = explode('@', $sIdPart.'@'); // Split ID and Hash
+
+		$this->oDocument = DocumentQuery::create()->findPk(intval($iId));
+
+		if(!empty($sHash)) {
+			// Compare the given prefix with the complete hash
+			if(!StringUtil::startsWith($this->oDocument->getImmutableUrlKey(), $sHash)) {
+				// The hash is out-of-date, redirect
+				$aParams = array_filter($_GET, function($sKey) {
+					return $sKey !== 'path';
+				}, ARRAY_FILTER_USE_KEY);
+				LinkUtil::redirect($this->oDocument->getDisplayUrl($aParams));
+				return;
+			} else {
+				// The hash is current, tell the browser to cache long-term
+				header('Cache-Control: public,max-age=31557600,immutable');
+			}
+		} else if(isset($_REQUEST['no-cache'])) {
+			header('Cache-Control: no-cache');
+		} 
+
 		if($this->oDocument === null || ($this->oDocument->getIsProtected() && !$this->isAuthenticated())) {
 			$oErrorPage = PageQuery::create()->findOneByName(Settings::getSetting('error_pages', 'not_found', 'error_404'));
 			if($oErrorPage) {
@@ -45,10 +67,6 @@ class DisplayDocumentFileModule extends FileModule {
 			$sDisplay = "attachment";
 		}
 		header('Content-Disposition: '.$sDisplay.';filename="'.$this->oDocument->getFullName().'"');
-
-		if(isset($_REQUEST['no-cache'])) {
-			header('Cache-Control: max-age=0; no-cache');
-		}
 
 		//Don’t base the last-modified off the cache but rather off the document’s updated-at.
 		LinkUtil::sendCacheControlHeaders($this->oDocument, $oCache);
@@ -87,5 +105,13 @@ class DisplayDocumentFileModule extends FileModule {
 		$oCache->setContents(stream_get_contents($rDataStream));
 		rewind($rDataStream);
 		fpassthru($rDataStream);
+	}
+
+	public static function getPath($iId, $sHash, $sExtension) {
+		if(!empty($sHash)) {
+			$sHash = substr($sHash, 0, 6);
+			$sHash = '@'.$sHash;
+		}
+		return "$iId$sHash.$sExtension";
 	}
 }
