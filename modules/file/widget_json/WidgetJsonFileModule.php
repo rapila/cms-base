@@ -71,6 +71,9 @@ class WidgetJsonFileModule extends FileModule {
 
 	private function getJSON(&$aRequest) {
 		if($this->sAction === 'destroy') {
+			if(!isset($aRequest['session_key']) || !is_array($aRequest['session_key'])) {
+				return;
+			}
 			foreach($aRequest['session_key'] as $sSessionKey) {
 				Session::getSession()->setArrayAttributeValueForKey(WidgetModule::WIDGET_SESSION_KEY, $sSessionKey, null);
 			}
