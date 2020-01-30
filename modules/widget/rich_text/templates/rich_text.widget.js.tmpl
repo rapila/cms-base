@@ -22,6 +22,14 @@ Widget.types.rich_text = {
 		// Make sure width/height gets output as attributes, not style
 		this.settings.disallowedContent = 'img{width,height}';
 		this.settings.extraAllowedContent = (this.settings.extraAllowedContent ? this.settings.extraAllowedContent + '; ' : '') + 'img[width,height]';
+		// Allow drag&drop to work in dialogs
+		var origPreventDefaultDropOnElement = CKEDITOR.plugins.clipboard.preventDefaultDropOnElement;
+		CKEDITOR.plugins.clipboard.preventDefaultDropOnElement = function(element) {
+			if(element.hasClass('cke_dialog_body')) {
+				return;
+			}
+			return origPreventDefaultDropOnElement.apply(this, arguments);
+		};
 		CKEDITOR.on('dialogDefinition', function(ev) {
 			var dialogName = ev.data.name;
 			var dialogDefinition = ev.data.definition;
