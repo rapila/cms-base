@@ -314,7 +314,7 @@ Widget.types.list = {
 				value = event.val();
 			}
 			this.setOption(metadata.identifier, value);
-			this.reload();
+			this.reload(false, true);
 		}.bind(this);
 		if(is_widget) {
 			var widget_type = jQuery.isArray(metadata.heading_filter) ? metadata.heading_filter[0] : metadata.heading_filter;
@@ -344,7 +344,7 @@ Widget.types.list = {
 		into.click(function(){
 			_this.sort = [metadata.identifier, into.is('.asc') ? 'desc' : 'asc'];
 			_this.setOrderColumnSort.apply(_this, _this.sort);
-			_this.reload();
+			_this.reload(false, true);
 		});
 	},
 
@@ -488,7 +488,7 @@ Widget.types.list = {
 		var rowData = this.collect_row_data(row);
 		this.toggleBoolean(rowData, boolean_name, function(result) {
 			if(reload_all) {
-				this.reload();
+				this.reload(false, true);
 			} else {
 				this.update_row(row);
 			}
@@ -559,7 +559,7 @@ Widget.types.list = {
 	/**
 	 * Reloads the list. Must be called with true for load_heading on the first load.
 	 */
-	reload: function(load_heading) {
+	reload: function(load_heading, keep_paging) {
 		this.fire('reloading', load_heading);
 		this.toggle_loader(true);
 		// store active rows by row data
@@ -595,17 +595,16 @@ Widget.types.list = {
 
 		// List uses paging
 		if(this.settings.page_size) {
+			if(!keep_paging) {
+				this.number_of_rows = this.settings.page_size;
+			}
 			this.numberOfRows(function(rows) {
 				this.total_number_of_rows = rows;
-				this.number_of_pages = Math.ceil(rows/this.settings.page_size);
-				this.current_page = Math.max(0, Math.min(this.number_of_pages-1, this.current_page));
-				var start = this.current_page * this.settings.page_size;
-				// Load the list between start and start + page_size
-				this.partialList(start, this.settings.page_size, loaded);
+				// Load the list from start to number of rows
+				this.partialList(0, this.number_of_rows, loaded);
 			});
 		} else {
 			// Load the full list
-			this.number_of_pages = 1;
 			this.completeList(loaded);
 		}
 
@@ -644,55 +643,22 @@ Widget.types.list = {
 		}
 	},
 
-	is_first_page: function() {
+	load_more: function() {
+		this.number_of_rows = this.number_of_rows + this.settings.page_size;
+		this.reload(false, true);
+	},
+
+	has_more: function() {
 		if(this.settings.page_size) {
-			return this.current_page === 0;
+			return this.number_of_rows < this.total_number_of_rows;
 		}
-		return true;
-	},
-
-	is_last_page: function() {
-		if(this.settings.page_size) {
-			if(this.number_of_pages === 0) {
-				return true;
-			}
-			return this.current_page === this.number_of_pages - 1;
-		}
-		return true;
-	},
-
-	page: function(page) {
-		if(arguments.length) {
-			// Setter
-			if(this.settings.page_size) {
-				this.current_page = page;
-				this.reload();
-			}
-		} else {
-			// Getter
-			return this.current_page;
-		}
-	},
-
-	page_count: function() {
-		if(this.number_of_pages > 0) {
-			return this.number_of_pages;
-		}
-		return 1;
-	},
-
-	previous_page: function() {
-		this.page(this.current_page - 1);
-	},
-
-	next_page: function() {
-		this.page(this.current_page + 1);
+		return false;
 	},
 
 	set_page_size: function(size) {
 		this.settings.page_size = size;
-		this.current_page = 0;
-		this.reload();
+		this.number_of_rows = this.settings.page_size;
+		this.reload(false, true);
 	},
 
 	/**
@@ -869,9 +835,6 @@ Widget.types.list = {
   /**
 	* Internal stores for paging state
 	*/
-	number_of_pages: 1,
-	current_page: 0,
-
 	number_of_rows: 0,
 	total_number_of_rows: 0,
 
