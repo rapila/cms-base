@@ -11,8 +11,8 @@ libraries:
     url: '//code.jquery.com/ui/${version}/jquery-ui.min.js'
     url_uncompressed: '//code.jquery.com/ui/${version}/jquery-ui.js'
   jstree:
-    url: '//cdn.rawgit.com/vakata/jstree/${version}/dist/jstree.min.js'
-    url_uncompressed: '//cdn.rawgit.com/vakata/jstree/${version}/dist/jstree.js'
+    url: '//cdn.jsdelivr.net/gh/vakata/jstree@${version}/dist/jstree.min.js'
+    url_uncompressed: '//cdn.jsdelivr.net/gh/vakata/jstree@${version}/dist/jstree.js'
 
 library_dependencies:
   scriptaculous: {prototype: 1.6}

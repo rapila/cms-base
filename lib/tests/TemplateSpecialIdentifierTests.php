@@ -179,7 +179,7 @@ EOT;
 		$oTemplate = new Template($sTemplateText, null, true);
 		$this->assertSame('<img src="/base/web/images/admin/accept.png" />
 <script type="text/javascript" src="//code.jquery.com/jquery-1.7.0.min.js"></script>
-<script type="text/javascript" src="//cdn.rawgit.com/vakata/jstree/3.3.5/dist/jstree.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/gh/vakata/jstree@3.3.5/dist/jstree.min.js"></script>
 ', $oTemplate->render());
 	}
 }

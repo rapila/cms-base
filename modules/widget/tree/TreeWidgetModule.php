@@ -21,7 +21,7 @@ class TreeWidgetModule extends PersistentWidgetModule {
 		}
 		$oResourceIncluder->addJavaScriptLibrary('jstree', self::JSTREE_VERSION);
 		// Load the tree CSS
-		$oResourceIncluder->addResource('//cdn.rawgit.com/vakata/jstree/'.self::JSTREE_VERSION.'/dist/themes/default/style.min.css');
+		$oResourceIncluder->addResource('//cdn.jsdelivr.net/gh/vakata/jstree@'.self::JSTREE_VERSION.'/dist/themes/default/style.min.css');
 		self::includeWidgetResources(false, $oResourceIncluder);
 	}
 	
