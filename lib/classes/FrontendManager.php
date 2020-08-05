@@ -97,7 +97,7 @@ class FrontendManager extends Manager {
 					}
 					$aAdditionalPathItems[] = $sPathItem;
 				}
-				LinkUtil::redirectToManager(array_merge($oFirstChild->getLink(), $aAdditionalPathItems), null, $aRequestParams);
+				LinkUtil::redirectToManager(array_merge($oFirstChild->getLink(), $aAdditionalPathItems), null, $aRequestParams, null, false);
 			} else {
 				$this->bIsNotFound = true;
 			}
