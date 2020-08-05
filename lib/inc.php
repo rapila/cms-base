@@ -77,11 +77,6 @@ mb_internal_encoding(Settings::getSetting('encoding', 'browser', 'utf-8'));
 mb_regex_encoding(mb_internal_encoding());
 date_default_timezone_set('UTC');
 
-if(get_magic_quotes_gpc()) {
-	ArrayUtil::runFunctionOnArrayValues($_REQUEST, 'stripslashes');
-	ArrayUtil::runFunctionOnArrayValues($_POST, 'stripslashes');
-}
-
 require_once("propel/runtime/lib/Propel.php");
 $aConnectionSettings = Settings::getSetting('connection', null, array(), 'db_config');
 if(!isset($aConnectionSettings['settings'])) {
