@@ -160,7 +160,7 @@ class ErrorHandler {
 			foreach ($mToDump as $key => $val) {
 				$bHasLooped = true;
 				$sResult .= '[';
-				if ($key{0} == "\0") {
+				if ($key[0] == "\0") {
 					$keyParts = explode("\0", $key);
 					$sResult .= $keyParts[2];
 				} else {
