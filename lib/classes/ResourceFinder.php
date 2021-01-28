@@ -14,13 +14,13 @@ class ResourceFinder {
 	const SEARCH_BASE_FIRST = 3;
 	const SEARCH_SITE_FIRST = 4;
 	const SEARCH_PLUGINS_FIRST = 6;
-	
+
 	const WILDCARD_ANY = null;
 	const WILDCARD_DIR = false;
 	const WILDCARD_FILE = true;
-	
+
 	const ANY_NAME_OR_TYPE_PATTERN = '/^[\\w_]+$/';
-	
+
 	private $aPath;
 	private $bByExpressions;
 	private $bFindAll;
@@ -74,14 +74,14 @@ class ResourceFinder {
 		$this->bNoCache = $bNoCache;
 		return $this;
 	}
-	
+
 	public function mainOnly() {
 		$this->iFlag = self::SEARCH_MAIN_ONLY;
 		$this->bFindAll = false;
 		$this->mResult = false;
 		return $this;
 	}
-	
+
 	public function baseOnly() {
 		$this->iFlag = self::SEARCH_BASE_ONLY;
 		$this->bFindAll = false;
@@ -144,7 +144,7 @@ class ResourceFinder {
 	public function searchPluginsOnly() {
 		return $this->pluginsOnly();
 	}
-	
+
 	/**
 	* @deprecated use baseFirst()
 	*/
@@ -217,7 +217,7 @@ class ResourceFinder {
 	public function addFilePath($bOptional = false) {
 		return $bOptional ? $this->addOptionalPath(self::WILDCARD_FILE) : $this->addExpression(self::WILDCARD_FILE);
 	}
-	
+
 	/**
 	 * Adds a resource that needs to have the same name as the parent folder.
 	 * @param $bCamelized will camelize the parent name before matching.
@@ -276,20 +276,20 @@ class ResourceFinder {
 				}
 			}
 		}
-		
+
 		if($this->bFindAll || $this->bByExpressions) {
 			return $this->returnFromFindResource($mResult);
 		}
-		
+
 		return null;
 	}
-	
+
 	/**
 	* Finds files which reside inside the CMS’ main direcory. The goal of findResource is to provide a way of accessing all the desired resources from
 	* the most specific location. Files in the site folder override files in the plugins folders which, in turn, override files in the base folder.
 	* The return type varies depending on the given options ($bByExpressions, $bFindAll, $bReturnObjects).
 	* If $bReturnObjects is false, the returned value(s) will be strings containing the files canonical full path on the file system.
-	* $bReturnObjects set to true will return FileResource objects which store much more information and can be used to get to things such as the 
+	* $bReturnObjects set to true will return FileResource objects which store much more information and can be used to get to things such as the
 	* relative path, the directory the relative path was found in, or the frontend path which is used to directly render a file to the user agent.
 	* If $bByExpressions and $bFindAll are set to false, only a single string/object is returned (null if not found). Otherwise, an array is returned.
 	* If $bFindAll is set, the returned array is index-based; if only $bByExpressions is set, the returned array’s keys are the relative paths of the respective files.
@@ -310,70 +310,70 @@ class ResourceFinder {
 		}
 		return ResourceFinder::create($mRelativePath, $iFlag)->byExpressions($bByExpressions)->all($bFindAll)->returnObjects($bReturnObjects)->find();
 	}
-	
+
 	/**
 	* Shorthand for {@link ResourceFinder::findResource()} with $bFindAll set.
 	*/
 	public static function findAllResources($mRelativePath, $iFlag = null) {
 		return self::findResource($mRelativePath, $iFlag, false, true, false);
 	}
-	
+
 	/**
 	* Alias for {@link ResourceFinder::findResourcesByExpressions()}. Exists for historical reasons.
 	*/
 	public static function findResourceByExpressions($aExpressions, $iFlag = null) {
 		return self::findResource($aExpressions, $iFlag, true, false, false);
 	}
-	
+
 	/**
 	* Shorthand for {@link ResourceFinder::findResource()} with $bByExpressions set.
 	*/
 	public static function findResourcesByExpressions($aExpressions, $iFlag = null) {
 		return self::findResource($aExpressions, $iFlag, true, false, false);
 	}
-	
+
 	/**
 	* Shorthand for {@link ResourceFinder::findResource()} with $bFindAll and $bByExpressions set.
 	*/
 	public static function findAllResourcesByExpressions($aExpressions, $iFlag = null) {
 		return self::findResource($aExpressions, $iFlag, true, true, false);
 	}
-	
+
 	/**
 	* Shorthand for {@link ResourceFinder::findResource()} with $bReturnObjects set.
 	*/
 	public static function findResourceObject($mRelativePath, $iFlag = null) {
 		return self::findResource($mRelativePath, $iFlag, false, false, true);
 	}
-	
+
 	/**
 	* Shorthand for {@link ResourceFinder::findResource()} with $bFindAll and $bReturnObjects set.
 	*/
 	public static function findAllResourceObjects($mRelativePath, $iFlag = null) {
 		return self::findResource($mRelativePath, $iFlag, false, true, true);
 	}
-	
+
 	/**
 	* Alias for {@link ResourceFinder::findResourceObjectsByExpressions()}. Exists for historical reasons.
 	*/
 	public static function findResourceObjectByExpressions($aExpressions, $iFlag = null) {
 		return self::findResource($aExpressions, $iFlag, true, false, true);
 	}
-	
+
 	/**
 	* Shorthand for {@link ResourceFinder::findResource()} with $bByExpressions and $bReturnObjects set.
 	*/
 	public static function findResourceObjectsByExpressions($aExpressions, $iFlag = null) {
 		return self::findResource($aExpressions, $iFlag, true, false, true);
 	}
-	
+
 	/**
 	* Shorthand for {@link ResourceFinder::findResource()} with $bFindAll, $bByExpressions and $bReturnObjects set.
 	*/
 	public static function findAllResourceObjectsByExpressions($aExpressions, $iFlag = null) {
 		return self::findResource($aExpressions, $iFlag, true, true, true);
 	}
-	
+
 	private function buildSearchPathList() {
 		switch($this->iFlag) {
 			case self::SEARCH_MAIN_ONLY: return array(MAIN_DIR);
@@ -396,10 +396,10 @@ class ResourceFinder {
 				array_push($aResult, BASE_DIR);
 			break;
 		}
-		
+
 		return $aResult;
 	}
-	
+
 	private function returnFromFindResource(&$mResult) {
 		if($this->bReturnObjects) {
 			return $mResult;
@@ -413,13 +413,13 @@ class ResourceFinder {
 		return $mResult->getFullPath();
 	}
 
-	private function __sleep() {
+	public function __sleep() {
 		$aVars = get_object_vars($this);
 		unset($aVars['mResult']);
 		unset($aVars['bNoCache']);
 		return array_keys($aVars);
 	}
-	
+
 	private static function findInPath($aPath, $sPath, $sInstancePrefix) {
 		foreach($aPath as $sPathElement) {
 			if(file_exists("$sPath/$sPathElement")) {
@@ -430,7 +430,7 @@ class ResourceFinder {
 		}
 		return new FileResource($sPath, $sInstancePrefix, implode('/', $aPath));
 	}
-	
+
 	private static function findInPathByExpressions(&$aResult, $aExpressions, $sPath, $sInstancePrefix, $sParentName = null, $sRelativePath = null) {
 		if(count($aExpressions) === 0) {
 			return;
@@ -499,11 +499,11 @@ class ResourceFinder {
 			}
 		}
 	}
-	
+
 	public static function pluginFinder() {
 		return self::create()->addPath(DIRNAME_PLUGINS)->addExpression(self::ANY_NAME_OR_TYPE_PATTERN)->mainOnly();
 	}
-	
+
 	private static $PLUGINS = null;
 	private static function getPluginPaths($bReverseOrder = false) {
 		if(self::$PLUGINS === null) {
@@ -516,7 +516,7 @@ class ResourceFinder {
 		}
 		return self::$PLUGINS;
 	}
-	
+
 	/**
 	* Helper function for classes that are given a filename, base path and path name.
 	*/
@@ -537,7 +537,7 @@ class ResourceFinder {
 
 		return $mPath;
 	}
-	
+
 	public static function getFolderContents($sPath, $bIncludeInvisibles = false) {
 		if(!is_dir($sPath)){
 			return array();
@@ -556,12 +556,12 @@ class ResourceFinder {
 		natcasesort($aResult);
 		return $aResult;
 	}
-	
+
 	public static function mimeTypeOfFile($sFile) {
 		$aMimeTypes = DocumentTypePeer::getMostAgreedMimetypes($sFile);
 		return $aMimeTypes[0];
 	}
-	
+
 	public static function recursiveUnlink($sFileName) {
 		if(is_dir($sFileName)) {
 			foreach(self::getFolderContents($sFileName, true) as $sSubFilePath) {
@@ -572,5 +572,5 @@ class ResourceFinder {
 			unlink($sFileName);
 		}
 	}
-	
+
 }
