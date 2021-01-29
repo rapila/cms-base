@@ -3,9 +3,9 @@
  * @package modules.widget
  */
 class LinkInputWidgetModule extends WidgetModule {
-	
-	public function externalLinks() {		
-		
+
+	public function externalLinks() {
+
 		$aResult = array();
 		foreach(LinkCategoryQuery::create()
 		->filterByHasLinks()->orderByName()
@@ -19,16 +19,12 @@ class LinkInputWidgetModule extends WidgetModule {
 			}
 		}
 
-		$sWithoutCategoryName = TranslationPeer::getString('wns.links.select_without_title');	
+		$sWithoutCategoryName = TranslationPeer::getString('wns.links.select_without_title');
 		foreach(LinkQuery::create()
 		->filterByLinkCategoryId(null, Criteria::ISNULL)->orderByName()
 		->select(array('Id', 'Name'))->find()
 		->toKeyValue('Id', 'Name') as $iId => $sName) {
 			$aResult[$sWithoutCategoryName][$iId] = $sName;
-		}
-
-		foreach($aResult as $iCategoryId => $aLinks) {
-			$aResult[$iCategoryId] = WidgetJsonFileModule::jsonBaseObjects($aLinks, array());
 		}
 		return $aResult;
 	}
