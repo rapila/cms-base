@@ -49,12 +49,18 @@ class Document extends BaseDocument {
 		return $this->getDocumentType()->isGDImageType();
 	}
 
-	public function getDisplayUrl($aUrlParameters = array(), $sFileModule = 'display_document') {
+	public function getDisplayUrl($aUrlParameters = array(), $sFileModule = null, $bImmutable = true) {
 		$iId = $this->getId();
+		if($sFileModule === null) {
+			$sFileModule = 'display_document';
+		}
+		if(isset($aUrlParameters['no-cache'])) {
+			$bImmutable = false;
+		}
 		if($sFileModule === 'display_document') {
 			$iId = DisplayDocumentFileModule::getPath(
 				$iId,
-				isset($aUrlParameters['no-cache']) ? '' : $this->getImmutableUrlKey(),
+				$bImmutable ? $this->getImmutableUrlKey() : '',
 				$this->getDocumentType()->getExtension()
 			);
 		}
@@ -134,7 +140,7 @@ class Document extends BaseDocument {
 			$aOptions['height'] = $iSize*0.747;
 		}
 		$aOptions['force_refresh'] = $bRefresh;
-		
+
 		$aFallback = $aOptions;
 		$aFallback['document_id'] = '';
 		$aFallback['height'] = $iSize;

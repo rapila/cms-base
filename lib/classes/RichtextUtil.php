@@ -107,7 +107,7 @@ class RichtextUtil {
 		$oDocument = DocumentQuery::create()->findPk($iDocumentId);
 		if($oDocument !== null && $oDocument->isImage()) {
 			$oWriter = new TagWriter('img', $oIdentifier->getParameters());
-			$oWriter->setParameter('src', self::link($oDocument->getDisplayUrl()));
+			$oWriter->setParameter('src', $oDocument->getDisplayUrl(array(), null, false));
 			$oWriter->setParameter('alt', $oDocument->getDescription());
 			$oWriter->setParameter('title', $oDocument->getDescription());
 			return $oWriter->parse();
@@ -183,7 +183,7 @@ class RichtextUtil {
 	public static function fileLinkCallbackBe($oIdentifier) {
 		$oDocument = DocumentQuery::create()->findPk($oIdentifier->getValue());
 		if($oDocument !== null) {
-			return self::writeTagForIdentifier("a", array('href' => $oDocument->getDisplayUrl()), $oIdentifier, null, $oDocument);
+			return self::writeTagForIdentifier("a", array('href' => $oDocument->getDisplayUrl(array(), null, false)), $oIdentifier, null, $oDocument);
 		} else {
 			return self::writeTagForIdentifier("a", array('style' => "color: red;"), $oIdentifier, $oIdentifier->getParameter("link_text").' [Document missing!]');
 		}
