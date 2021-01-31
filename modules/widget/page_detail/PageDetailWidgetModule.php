@@ -138,28 +138,22 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 	private function getAvailablePageProperties($oPage) {
 		$aAvailablePageProperties = $oPage->getTemplate()->identifiersMatching('pageProperty', Template::$ANY_VALUE);
 		$aResult = array();
-		$aSetProperties = array();
-		foreach($oPage->getPagePropertyQuery()->byNamespace(false)->find() as $oPageProperty) {
-			$aSetProperties[$oPageProperty->getName()] = $oPageProperty->getValue();
-		}
+
 		foreach($aAvailablePageProperties as $oProperty) {
 			$sPropertyName = $oProperty->getValue();
-
-			$aResult[$sPropertyName]['value'] = isset($aSetProperties[$sPropertyName]) ? $aSetProperties[$sPropertyName] : '';
+			$aResult[$sPropertyName]['value'] = '';
 			$aResult[$sPropertyName]['defaultValue'] = $oProperty->getParameter('defaultValue');
 			$aResult[$sPropertyName]['type'] = $oProperty->getParameter('propertyType');
-
-			unset($aSetProperties[$sPropertyName]);
 		}
-		foreach($aSetProperties as $sRemainingPropertyName => $sRemainingPropertyValue) {
-			$aResult[$sRemainingPropertyName] = array('value' => $sRemainingPropertyValue, 'defaultValue' => null, 'type' => null);
+		foreach($oPage->getPagePropertyQuery()->byNamespace(false)->find() as $oPageProperty) {
+			if(isset($aResult[$oPageProperty->getName()])) {
+				$aResult[$oPageProperty->getName()]['value'] = $oPageProperty->getValue();
+			}
 		}
 		$aResult['page_identifier'] = array('value' => $oPage->getIdentifier(), 'defaultValue' => null, 'type' => null);
-
 		foreach($aResult as $sName => &$aValues) {
 			$aValues['display_name'] = TranslationPeer::getString("page_property.$sName", null, StringUtil::makeReadableName($sName));
 		}
-
 		return $aResult;
 	}
 
