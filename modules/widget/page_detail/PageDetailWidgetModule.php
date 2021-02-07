@@ -148,6 +148,8 @@ class PageDetailWidgetModule extends PersistentWidgetModule {
 		foreach($oPage->getPagePropertyQuery()->byNamespace(false)->find() as $oPageProperty) {
 			if(isset($aResult[$oPageProperty->getName()])) {
 				$aResult[$oPageProperty->getName()]['value'] = $oPageProperty->getValue();
+			}	else {
+				$aResult[$oPageProperty->getName()] = array('value' => $oPageProperty->getValue(), 'defaultValue' => null, 'type' => null);
 			}
 		}
 		$aResult['page_identifier'] = array('value' => $oPage->getIdentifier(), 'defaultValue' => null, 'type' => null);
