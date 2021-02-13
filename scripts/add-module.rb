@@ -254,7 +254,7 @@ write_file(:php, "#{class_name}.php") do
 
 		php_methods.push php_method('__construct', constructor_content, constructor_args) unless constructor_content.empty?
 	elsif $options[:type] == :frontend then
-		php_methods.push php_method('__construct', 'parent::__construct($oLanguageObject, $aRequestPath, $iId);', ['oLanguageObject = null', 'aRequestPath = null', 'iId = 1'])
+		php_methods.push php_method('__construct', 'parent::__construct($oLanguageObject, $aRequestPath, $iId);', ['oLanguageObject = null', 'oNavigationItem = null', 'iId = 1'])
 		php_methods.push php_method('renderFrontend')
 		php_methods.push php_method('cacheKey', 'return parent::cacheKey();')
 		if $aspects.include? 'widget_based' then
