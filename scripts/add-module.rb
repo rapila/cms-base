@@ -357,7 +357,7 @@ write_file(:js, "#{module_name}.#{$options[:type]}.js.tmpl", 'templates') do
 			add += "
 	update_preview: function(event, data) {
 		data = data || this.save();
-		this.updatePreview(this.save(), function(preview) {
+		this.updatePreview(data, function(preview) {
 			//TODO: append/replace the resulting HTML to this._element
 		});
 	},
