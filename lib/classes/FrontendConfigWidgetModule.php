@@ -16,7 +16,7 @@ class FrontendConfigWidgetModule extends PersistentWidgetModule {
 		return $this->configData();
 	}
 
-	public function updatePreview() {
+	public function updatePreview($oPreviewData) {
 		return null;
 	}
 	
