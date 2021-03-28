@@ -56,7 +56,7 @@ class ErrorHandler {
 
 	public static function getEnvironment() {
 		if(self::$ENVIRONMENT === null) {
-			self::$ENVIRONMENT = getenv('RAPILA_ENVIRONMENT');
+			self::$ENVIRONMENT = getenv('RAPILA_ENVIRONMENT', true);
 			if(self::$ENVIRONMENT === 'developer') {
 				self::$ENVIRONMENT = '';
 			}

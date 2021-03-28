@@ -110,7 +110,8 @@ class Settings {
 	private static function replaceEnvVars($sInput) {
 		$aSearch = array();
 		$aReplace = array();
-		foreach((empty($_ENV) ? $_SERVER : $_ENV) as $sEnvVarName => $sEnvVarValue) {
+		$aEnv = getenv();
+		foreach($aEnv as $sEnvVarName => $sEnvVarValue) {
 			if(!is_string($sEnvVarValue)) {
 				continue;
 			}
