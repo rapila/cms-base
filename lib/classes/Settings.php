@@ -96,7 +96,7 @@ class Settings {
 		$sFileName = "$sFile.yml";
 		if(!isset(self::$INSTANCES[$sCacheKey])) {
 			$oCache = new Cache($sCacheKey, DIRNAME_CONFIG, CachingStrategyFile::create());
-			$oFinder = ResourceFinder::create(array(DIRNAME_CONFIG))->addOptionalPath(ErrorHandler::getEnvironment())->addPath($sFileName)->byExpressions()->searchBaseFirst()->all();
+			$oFinder = ResourceFinder::create(array(DIRNAME_CONFIG))->addOptionalPath(ErrorHandler::getEnvironment())->addPath($sFileName)->byExpressions()->baseFirst()->all();
 			if($oCache->entryExists() && !$oCache->isOutdated($oFinder)) {
 				self::$INSTANCES[$sCacheKey] = $oCache->getContentsAsVariable();
 			} else {
@@ -110,7 +110,11 @@ class Settings {
 	private static function replaceEnvVars($sInput) {
 		$aSearch = array();
 		$aReplace = array();
-		$aEnv = getenv();
+		if(PHP_VERSION_ID >= 70100) {
+			$aEnv = getenv();
+		} else {
+			$aEnv = $_ENV;
+		}
 		foreach($aEnv as $sEnvVarName => $sEnvVarValue) {
 			if(!is_string($sEnvVarValue)) {
 				continue;
