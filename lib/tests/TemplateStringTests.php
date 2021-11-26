@@ -4,7 +4,7 @@
  */
 class TemplateStringTests extends PHPUnit\Framework\TestCase {
 	
-	public function setUp() {
+	public function setUp(): void {
 		TranslationPeer::setStaticStrings(array(
 			'de' => array(
 				'name' => 'Name',

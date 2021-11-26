@@ -8,14 +8,14 @@ class ResourceIncluderConsolidationTests extends PHPUnit\Framework\TestCase {
 
 	private static $CACHED_INCLUDE;
 	
-	protected function setUp() {
+	protected function setUp(): void {
 		// Reset overrides for test
 		Settings::clearOverrides();
 		Cache::clearAllCaches();
 		$this->oIncluder = new ResourceIncluder();
 	}
 
-	public static function setUpBeforeClass() {
+	public static function setUpBeforeClass(): void {
 		exec('mkdir -p "'.MAIN_DIR.'/'.DIRNAME_PLUGINS.'/test_only/web/css"');
 		file_put_contents(MAIN_DIR.'/'.DIRNAME_PLUGINS.'/test_only/web/css/ResourceIncluderConsolidationTests.css', <<<EOT
 @import url("fineprint.css") print;
@@ -41,7 +41,7 @@ EOT
 	self::$CACHED_INCLUDE = new Cache('consolidated-'.ResourceIncluder::RESOURCE_PREFIX_INTERNAL.'/plugins/test_only/web/css/ResourceIncluderConsolidationTests.css', DIRNAME_PRELOAD);
 }
 
-	public static function tearDownAfterClass() {
+	public static function tearDownAfterClass(): void {
 		exec('rm -Rf "'.MAIN_DIR.'/plugins/test_only/web/css"');
 		// Reset overrides for next test class
 		Settings::clearOverrides();

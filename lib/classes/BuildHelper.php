@@ -264,9 +264,15 @@ EOT;
 				self::moveNonOverridableFile($sMapClassPath, $sClassName, $sNewModelMapDir, self::$MAP_SUFFIX);
 			} else {
 				// Remove all overridables and leave non-overridables (Base…) in `generated` to be included
-				unlink($sClassPath);
-				unlink($sPeerClassPath);
-				unlink($sQueryClassPath);
+				if($sClassPath) {
+					unlink($sClassPath);
+				}
+				if($sPeerClassPath) {
+					unlink($sPeerClassPath);
+				}
+				if($sQueryClassPath) {
+					unlink($sQueryClassPath);
+				}
 			}
 		}
 	}

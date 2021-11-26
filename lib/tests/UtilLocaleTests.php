@@ -3,7 +3,7 @@
  * @package test
  */
 class UtilLocaleTests extends PHPUnit\Framework\TestCase {
-	public function setUp() {
+	public function setUp(): void {
 		LocaleUtil::$ACCEPT_LOCALE_LISTS = array();
 	}
 

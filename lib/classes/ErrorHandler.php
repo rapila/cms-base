@@ -228,11 +228,11 @@ class ErrorHandler {
 
 	private static function handle($aError, $bNeverPrint = false, $bNeverNotifyDeveloper = false) {
 		//Add additional information for logging/sending
-		$aError['referrer'] = @$_SERVER['HTTP_REFERER'];
-		$aError['host'] = @$_SERVER['HTTP_HOST'];
-		$aError['path'] = @$_SERVER['REQUEST_URI'];
-		$aError['request'] = @$_REQUEST;
-		$aError['cookies'] = @$_COOKIE;
+		$aError['referrer'] = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : null;
+		$aError['host'] = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : null;
+		$aError['path'] = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : null;
+		$aError['request'] = $_REQUEST;
+		$aError['cookies'] = $_COOKIE;
 
 		FilterModule::getFilters()->handleAnyError(array(&$aError), $bNeverPrint, $bNeverNotifyDeveloper);
 		if(!$bNeverNotifyDeveloper && self::shouldMailErrors()) {

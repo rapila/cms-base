@@ -111,7 +111,7 @@ abstract class Module {
 	* Fetches all module metadata (including module info obtained from the info.yml files) and stores it into a static field, returns it
 	*/
 	public static function getModuleMetadataByTypeAndName($sType, $sName) {
-		$aModuleMetadata = @self::$MODULES_METADATA_LIST[$sType][$sName];
+		$aModuleMetadata = isset(self::$MODULES_METADATA_LIST[$sType][$sName]) ? self::$MODULES_METADATA_LIST[$sType][$sName] : null;
 		if($aModuleMetadata !== null) {
 			return $aModuleMetadata;
 		}

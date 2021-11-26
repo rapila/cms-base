@@ -74,7 +74,7 @@ abstract class TemplateResourceFileModule extends FileModule {
 			$oResourceIncluder = ResourceIncluder::defaultIncluder();
 		}
 		foreach(self::$RESOURCE_TYPES as $sResourceType) {
-			$sResourceLink = self::getAvailableResource($sModuleName, $sModuleType, $sResourceType, @$aParameters[$sResourceType]);
+			$sResourceLink = self::getAvailableResource($sModuleName, $sModuleType, $sResourceType, isset($aParameters[$sResourceType]) ? $aParameters[$sResourceType] : null);
 			if($sResourceLink !== null) {
 				if($sResourceType === ResourceIncluder::RESOURCE_TYPE_JS && $bEndDependenciesOnJS) {
 					$oResourceIncluder->addResourceEndingDependency($sResourceLink, $sResourceType);

@@ -424,7 +424,7 @@ class Page extends BasePage {
 		return ActionDescriptor::create('page.activate');
 	}
 	
-	public function executeActionActivateLanguage(ScheduledAction $oAction, $sLanguageId = null, $bActivatePageAsWell) {
+	public function executeActionActivateLanguage(ScheduledAction $oAction, $sLanguageId=null, $bActivatePageAsWell=false) {
 		$oQuery = PageStringQuery::create()->filterByPageId($this->getId());
 		if($sLanguageId) {
 			$oQuery->filterByLanguageId($sLanguageId);

@@ -3,7 +3,7 @@
  * @package test
  */
 class UtilDateFunctionTests extends PHPUnit\Framework\TestCase {
-	public function setUp() {
+	public function setUp(): void {
 		LocaleUtil::$ACCEPT_LOCALE_LISTS = array();
 	}
 
@@ -25,13 +25,12 @@ class UtilDateFunctionTests extends PHPUnit\Framework\TestCase {
 	public function testDateParserNegativeEN() {
 		$_SERVER['HTTP_ACCEPT_LANGUAGE'] = "en-US";
 		$iDate = -1202299952;
-		$this->assertSame("11/26/1931", LocaleUtil::localizeDate($iDate, "en"));
+		$this->assertSame("Nov 26, 1931", LocaleUtil::localizeDate($iDate, "en"));
 	}
 	public function testDateParserNegativeENGB() {
 		$_SERVER['HTTP_ACCEPT_LANGUAGE'] = "en-GB";
 		$iDate = -1202299952;
-		$this->assertContains("26/11/", LocaleUtil::localizeDate($iDate, "en"));
-		$this->assertContains("31", LocaleUtil::localizeDate($iDate, "en"));
+		$this->assertSame("26 Nov 1931", LocaleUtil::localizeDate($iDate, "en"));
 	}
 	public function testGetLocaleIdEN() {
 		$_SERVER['HTTP_ACCEPT_LANGUAGE'] = "en-US,de-DE,de-AT,en_GB";
@@ -48,23 +47,6 @@ class UtilDateFunctionTests extends PHPUnit\Framework\TestCase {
 	public function testGetLocaleIdDE() {
 		$_SERVER['HTTP_ACCEPT_LANGUAGE'] = "en-US,de-AT";
 		$this->assertSame("de_AT", LocaleUtil::getLocaleId("de"));
-	}
-	public function testParseBack() {
-		$_SERVER['HTTP_ACCEPT_LANGUAGE'] = "";
-		$sDate = "01.01.1970";
-		$this->assertSame(0, LocaleUtil::parseLocalizedDate($sDate, "de"));
-	}
-	// public function testParseBackLongDate() {
-	//	 $_SERVER['HTTP_ACCEPT_LANGUAGE'] = "";
-	//	 $sDate = "Mi 06 Feb 2008 14:21:00 CET";
-	//	 $this->assertSame($sDate, LocaleUtil::localizeDate(LocaleUtil::parseLocalizedDate($sDate, "de", "c"), "de", "c"));
-	// }
-	public function testParseBackLongDateAsInGems() {
-		$_SERVER['HTTP_ACCEPT_LANGUAGE'] = "en-gb,en;q=0.8,de-de;q=0.5,de-ch;q=0.3";
-		$sDate = "10.03.2008";
-		$iTimestamp = LocaleUtil::parseLocalizedDate($sDate, "de");
-		$this->assertSame(1205107200, $iTimestamp);
-		$this->assertSame($sDate, LocaleUtil::localizeDate($iTimestamp, "de"));
 	}
 	
 	public function testMonthNameLocale() {
@@ -85,5 +67,64 @@ class UtilDateFunctionTests extends PHPUnit\Framework\TestCase {
 		$this->assertSame('Tue', LocaleUtil::getDayNameByWeekday(2, "en", false));
 		$this->assertSame('Mi', LocaleUtil::getDayNameByWeekday(3, "de", false));
 		$this->assertSame('Wed', LocaleUtil::getDayNameByWeekday(3, "en", false));
+	}
+
+	public function testStrftimeReplacement_simple() {
+		$oDateInTimezone = new DateTimeImmutable('2020-04-05T23:30', new DateTimeZone('+300'));
+		$this->assertSame('', LocaleUtil::strftime('%j', $oDateInTimezone, 'en-US'), 'Ignore Unsupported %j');
+		$sFormat = '%d, %e, %u, %w, %V, %m, %g, %G, %y, %Y, %H, %k, %I, %l, %M, %p, %P, %r, %R, %S, %z, %Z, %D, %F, %s, %n, %t, %%';
+		$this->assertSame(
+			"05, 5, 7, 0, 14, 04, 20, 2020, 20, 2020, 23, 23, 11, 11, 30, PM, pm, 11:30:00 PM, 23:30, 00, +0300, GMT+0300, 04/05/20, 2020-04-05, 1586118600, \n, \t, %",
+			LocaleUtil::strftime(
+				$sFormat,
+				$oDateInTimezone,
+				'en-US'
+			),
+		);
+		$this->assertSame(
+			"05, 5, 7, 0, 14, 04, 20, 2020, 20, 2020, 23, 23, 11, 11, 30, PM, pm, 11:30:00 PM, 23:30, 00, +0300, GMT+0300, 04/05/20, 2020-04-05, 1586118600, \n, \t, %",
+			LocaleUtil::strftime(
+				$sFormat,
+				$oDateInTimezone,
+				'de-CH'
+			),
+		);
+	}
+
+	public function testStrftimeReplacement_localeDependent() {
+		$oDateInTimezone = new DateTimeImmutable('2020-04-05T23:30', new DateTimeZone('+300'));
+		$sFormat = '%x, %X, %c, %a, %A, %U, %b, %B, %h, %T';
+		$this->assertSame(
+			"5 Apr 2020, 20:30, 5 Apr 2020, 20:30:00, Sun, Sunday, 14, Apr, April, Apr, 20:30:00",
+			LocaleUtil::strftime(
+				$sFormat,
+				$oDateInTimezone,
+				'en-GB'
+			),
+		);
+		$this->assertSame(
+			"Apr 5, 2020, 8:30 PM, Apr 5, 2020, 8:30:00 PM, Sun, Sunday, 15, Apr, April, Apr, 8:30:00 PM",
+			LocaleUtil::strftime(
+				$sFormat,
+				$oDateInTimezone,
+				'en-US'
+			),
+		);
+		$this->assertSame(
+			"05.04.2020, 20:30, 05.04.2020, 20:30:00, So, Sonntag, 14, Apr, April, Apr., 20:30:00",
+			LocaleUtil::strftime(
+				$sFormat,
+				$oDateInTimezone,
+				'de-CH'
+			),
+		);
+		$this->assertSame(
+			"5/04/2020, 20:30, 5/04/2020 20:30:00, dom., domingo, 15, abr., abril, abr., 20:30:00",
+			LocaleUtil::strftime(
+				$sFormat,
+				$oDateInTimezone,
+				'es-GT'
+			),
+		);
 	}
 }

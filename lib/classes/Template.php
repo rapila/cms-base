@@ -242,9 +242,9 @@ class Template {
 			}
 			$iLastMatchEndPos = $iMatchPosition+$iMatchLength;
 
-			$sMatchName = @$aValue[1][0];
-			$sMatchValue = @$aValue[2][0] ? @$aValue[3][0] : null;
-			$sMatchParameters = @$aValue[7][0];
+			$sMatchName = isset($aValue[1][0]) ? $aValue[1][0] : null;
+			$sMatchValue = (isset($aValue[2][0]) && $aValue[2][0]) ? (isset($aValue[3][0]) ? $aValue[3][0] : null) : null;
+			$sMatchParameters = isset($aValue[7][0]) ? $aValue[7][0] : null;
 			$aTemplateContents[] = new TemplateIdentifier($sMatchName, $sMatchValue, $sMatchParameters, $oTemplate);
 		}
 		$sRestText = substr($sTemplateText, $iLastMatchEndPos, (strlen($sTemplateText)-$iLastMatchEndPos));
@@ -572,7 +572,7 @@ class Template {
 		$bHasDoneIdentifierValueReplacement = false;
 		$aIdentifiers = $this->allIdentifiers();
 		foreach($aIdentifiers as $oIdentifier) {
-			if(strpos($oIdentifier->getValue(), TEMPLATE_IDENTIFIER_START) !== false) {
+			if($oIdentifier->getValue() && strpos($oIdentifier->getValue(), TEMPLATE_IDENTIFIER_START) !== false) {
 				//Identifier replacement in value
 				$oValueTemplate = $this->derivativeTemplate($oIdentifier->getValue(), false, true);
 				if($bMultiple) {
@@ -698,7 +698,7 @@ class Template {
 	/**
 	* @return void
 	*/
-	public function replaceIdentifierMultipleCallback($sIdentifier, $mCallbackObject, $sCallbackMethod="getTextForReplaceIdentifier", $iFlags) {
+	public function replaceIdentifierMultipleCallback($sIdentifier, $mCallbackObject, $sCallbackMethod="getTextForReplaceIdentifier", $iFlags=0) {
 		$mFunction = $mCallbackObject === null ? $sCallbackMethod : array($mCallbackObject, $sCallbackMethod);
 		$this->replaceIdentifierMultiple($sIdentifier, null, self::$ANY_VALUE, $iFlags, $mFunction);
 	}
@@ -779,7 +779,7 @@ class Template {
 		$aIdentifiers = $this->allIdentifiers();
 		foreach($aIdentifiers as $oIdentifier) {
 			//Identifier replacement in value
-			if(strpos($oIdentifier->getValue(), TEMPLATE_IDENTIFIER_START) !== false) {
+			if($oIdentifier->getValue() && strpos($oIdentifier->getValue(), TEMPLATE_IDENTIFIER_START) !== false) {
 				$oValueTemplate = $this->derivativeTemplate($oIdentifier->getValue(), false, true);
 				$oValueTemplate->iDefaultFlags = self::NO_HTML_ESCAPE;
 				$oValueTemplate->bKillIdentifiersBeforeRender = true;

@@ -5,6 +5,38 @@
 
 class LocaleUtil {
 
+	private const SIMPLE_FORMATS = [
+		'd' => 'd',
+		'e' => 'j',
+		'u' => 'N',
+		'w' => 'w',
+		'V' => 'W',
+		'm' => 'm',
+		'g' => 'y',
+		'G' => 'Y',
+		'y' => 'y',
+		'Y' => 'Y',
+		'H' => 'H',
+		'k' => 'G',
+		'I' => 'h',
+		'l' => 'g',
+		'M' => 'i',
+		'p' => 'A',
+		'P' => 'a',
+		'r' => 'h:i:s A',
+		'R' => 'H:i',
+		'S' => 's',
+		'z' => 'O',
+		'Z' => 'T',
+		'D' => 'm/d/y',
+		'F' => 'Y-m-d',
+		's' => 'U',
+		'n' => "\n",
+		't' => "\t",
+		'%' => '%',
+	];
+
+
 	/// @VisibleForTesting
 	public static $ACCEPT_LOCALE_LISTS = array();
 
@@ -62,124 +94,112 @@ class LocaleUtil {
 	}
 
 	/**
-	* Sets the locale settings of a given locale category to the passed locale. If a language is passed instead of a locale, the locale is searched using {@link LocaleUtil::getLocaleId()}. This function tries to set the locale using the current browser output encoding. If this fails, it tries to set the locale with the default encoding.
+	* Searches the User-Agent’s Accept header for the best locale to use for the given language ID.
+	*
+	* If the passed argument is already a locale, it will be returned as-is.
 	*/
-	public static function setLocaleToLanguageId($sLanguageId = null, $iCategory = LC_ALL) {
-		if($sLanguageId === null) {
-			$sLanguageId = Session::language();
-		}
+	private static function getLocaleFromLanguageId(string $sLanguageId): string {
+		$sLanguageId = str_replace('-', '_', $sLanguageId);
 		if(strpos($sLanguageId, "_") === false) {
 			$sLanguageId = self::getLocaleId($sLanguageId);
 		}
-		$sEncoding = strtoupper(Settings::getSetting("encoding", "browser", "utf-8"));
-		setlocale($iCategory, "$sLanguageId.$sEncoding");
-		if(setlocale($iCategory, "0") !== "$sLanguageId.$sEncoding") {
-			setlocale($iCategory, $sLanguageId);
-			if(setlocale($iCategory, "0") !== $sLanguageId) {
-				$sLanguageId = substr($sLanguageId, 0, strpos($sLanguageId, "_"));
-				setlocale($iCategory, $sLanguageId);
-			}
-		}
+		return $sLanguageId;
 	}
 
-	public static function localizeDate($iTimestamp = false, $sLanguageId = null, $sFormat = "x", $sTimeZone = null) {
-		if($iTimestamp === null) {
+	public static function strftime(string $sFormat, DateTimeInterface $oDate, string $sLocale) {
+		$aLocaleDependentReplacements = [
+			'x' => fn(string $sLocale) => new IntlDateFormatter($sLocale, IntlDateFormatter::MEDIUM, IntlDateFormatter::NONE),
+			'X' => fn(string $sLocale) => new IntlDateFormatter($sLocale, IntlDateFormatter::NONE, IntlDateFormatter::SHORT),
+			'c' => fn(string $sLocale) => new IntlDateFormatter($sLocale, IntlDateFormatter::MEDIUM, IntlDateFormatter::MEDIUM),
+			'a' => fn(string $sLocale) => new IntlDateFormatter($sLocale, IntlDateFormatter::NONE, IntlDateFormatter::NONE, null, null, 'ccc'),
+			'A' => fn(string $sLocale) => new IntlDateFormatter($sLocale, IntlDateFormatter::NONE, IntlDateFormatter::NONE, null, null, 'cccc'),
+			'U' => fn(string $sLocale) => new IntlDateFormatter($sLocale, IntlDateFormatter::NONE, IntlDateFormatter::NONE, null, null, 'ww'),
+			'b' => fn(string $sLocale) => new IntlDateFormatter($sLocale, IntlDateFormatter::NONE, IntlDateFormatter::NONE, null, null, 'LLL'),
+			'B' => fn(string $sLocale) => new IntlDateFormatter($sLocale, IntlDateFormatter::NONE, IntlDateFormatter::NONE, null, null, 'LLLL'),
+			'h' => fn(string $sLocale) => new IntlDateFormatter($sLocale, IntlDateFormatter::NONE, IntlDateFormatter::NONE, null, null, 'MMM'),
+			'T' => fn(string $sLocale) => new IntlDateFormatter($sLocale, IntlDateFormatter::NONE, IntlDateFormatter::MEDIUM),
+		];
+		$sFormat = preg_replace_callback('/(?<!%)%(\w|%)/', function(array $aMatches) use($oDate, $aLocaleDependentReplacements, $sLocale) {
+			$sFormatSpecifier = $aMatches[1];
+			if(isset(self::SIMPLE_FORMATS[$sFormatSpecifier])) {
+				return $oDate->format(self::SIMPLE_FORMATS[$sFormatSpecifier]);
+			}
+			if(isset($aLocaleDependentReplacements[$sFormatSpecifier])) {
+				$oFormatter = $aLocaleDependentReplacements[$sFormatSpecifier]($sLocale);
+				return $oFormatter->format($oDate);
+			}
+			return '';
+		}, $sFormat);
+
+		return $sFormat;
+	}
+
+	public static function localizeDate(
+		DateTimeInterface|int|false|null|string $oTimestamp = false,
+		string|null $sLanguageId = null,
+		string $sFormat = "%x",
+		string|DateTimeZone|null $oTimeZone = null
+	) {
+		if($oTimestamp === null) {
 			return null;
 		}
-		if($iTimestamp === false) {
-			$iTimestamp = time();
+
+		// Figure out time zone
+		if($oTimeZone === null) {
+			if($oTimestamp instanceof DateTimeInterface && $oTimestamp->getTimezone() !== false) {
+				$oTimeZone = $oTimestamp->getTimezone();
+			} else {
+				$oTimeZone = date_default_timezone_get();
+			}
 		}
+		if(is_string($oTimeZone)) {
+			$oTimeZone = new DateTimeZone($oTimeZone);
+		}
+
+		// Convert time to DateTimeInterface with attached time zone
+		if($oTimestamp === false) {
+			$iTimestamp = new DateTimeImmutable();
+		}
+
+		if($oTimestamp instanceof DateTimeInterface) {
+			$oTimestamp = DateTime::createFromInterface($oTimestamp);
+			$oTimestamp->setTimezone($oTimeZone);
+		} else if(is_numeric($oTimestamp)) {
+			$oTimestamp = new DateTimeImmutable("@$oTimestamp", $oTimeZone);
+		} else {
+			$oTimestamp = new DateTimeImmutable($oTimestamp, $oTimeZone);
+		}
+
+
 		if($sLanguageId === null) {
 			$sLanguageId = Session::language();
 		}
-		self::setLocaleToLanguageId($sLanguageId, LC_TIME);
 
-		if($iTimestamp instanceof DateTime) {
-			$iTimestamp	= $iTimestamp->getTimestamp();
-		} else if(is_string($iTimestamp)) {
-			$iTimestamp = strtotime($iTimestamp);
-		}
-		$sPrevTimeZone = date_default_timezone_get();
-		if($sTimeZone !== false) {
-			if($sTimeZone === null) {
-				$sTimeZone = Session::getSession()->getUser();
-			}
-			if($sTimeZone instanceof User) {
-				$sTimeZone = $sTimeZone->getTimezone();
-			}
-			if($sTimeZone instanceof DateTimeZone) {
-				$sTimeZone = $sTimeZone->getName();
-			}
-			if($sTimeZone === null) {
-				$sTimeZone = Settings::getSetting('general', 'timezone', 'Europe/Zurich');
-			}
-			date_default_timezone_set($sTimeZone);
-		}
+		$sLocale = self::getLocaleFromLanguageId($sLanguageId);
+
 		if($sLanguageId === '_') {
 			// Special case: Use the date function instead of strftime (it offers more formats for locale-independent stuff)
-			$sResult =  date($sFormat, $iTimestamp);
+			$sResult =  $oTimestamp->format($sFormat);
 		} else {
 			// add % only if not already set, double % are displayed differently on different server environment
 			$sPrefix = '';
 			if(strlen($sFormat) === 1) {
 				$sPrefix = '%';
 			}
-			$sResult = strftime("$sPrefix$sFormat", $iTimestamp);
+			$sResult = self::strftime("$sPrefix$sFormat", $oTimestamp, $sLocale);
 		}
-		date_default_timezone_set($sPrevTimeZone);
 		return $sResult;
-	}
-
-	public static function parseLocalizedDate($sDate, $sLanguageId, $sFormat="x") {
-		if($sLanguageId === null) {
-			$sLanguageId = Session::language();
-		}
-		self::setLocaleToLanguageId($sLanguageId, LC_TIME);
-
-		$aResult = strptime($sDate, "%$sFormat");
-		if($aResult === false) {
-			return null;
-		}
-
-		//Some variations of strptime seem to return invalid values for hour, minute and second
-		if($aResult['tm_hour'] < 0 || $aResult['tm_hour'] > 23) {
-			$aResult['tm_hour'] = 0;
-		}
-		if($aResult['tm_min'] < 0 || $aResult['tm_min'] > 59) {
-			$aResult['tm_min'] = 0;
-		}
-		if($aResult['tm_sec'] < 0 || $aResult['tm_sec'] > 61) {
-			$aResult['tm_sec'] = 0;
-		}
-
-		return mktime($aResult['tm_hour'], $aResult['tm_min'], $aResult['tm_sec'], $aResult['tm_mon']+1, $aResult['tm_mday'], $aResult['tm_year']+1900);
-	}
-
-	public static function localizeTimestamp($iTimestamp, $sLanguageId = null, $bShowTimeShort = false) {
-		if ($bShowTimeShort) {
-			return substr(self::localizeDate($iTimestamp, $sLanguageId, "X"), 0, 5);
-		}
-		return self::localizeDate($iTimestamp, $sLanguageId, "X");
-	}
-
-	public static function normalizeDate($sDate, $sSeparator = '-') {
-		return preg_replace("/[^\d]/", $sSeparator, $sDate);
-	}
-
-	public static function localizeTime($iTime, $sSeparator = '.') {
-		$sTime = substr($iTime, 0, 5);
-		return str_replace (':', $sSeparator, $sTime);
 	}
 
 	public static function getMonthNameByMonthId($iMonthId, $sLanguageId=null, $bIsLong=true) {
 		$iTimestamp = mktime(0, 0, 0, $iMonthId, 02, 1973);
-		return self::localizeDate($iTimestamp, $sLanguageId, $bIsLong ? 'B' : 'b');
+		return self::localizeDate($iTimestamp, $sLanguageId, $bIsLong ? '%B' : '%b');
 	}
 
 	public static function getDayNameByWeekday($iWeekday, $sLanguageId=null, $bIsLong=true) {
 		//1973 started with a monday
 		$iTimestamp = mktime(0, 0, 0, 01, $iWeekday, 1973);
-		return self::localizeDate($iTimestamp, $sLanguageId, $bIsLong ? 'A' : 'a');
+		return self::localizeDate($iTimestamp, $sLanguageId, $bIsLong ? '%A' : '%a');
 	}
 
 	public static function getPreferredUserLanguage() {

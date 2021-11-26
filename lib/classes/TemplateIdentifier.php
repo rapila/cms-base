@@ -19,7 +19,7 @@ class TemplateIdentifier extends TemplatePart {
 		$this->setName($sName);
 
 		$sValue = self::unescapeIdentifier($sValue);
-		if(strpos($sValue, TEMPLATE_IDENTIFIER_START) !== false) {
+		if($sValue && strpos($sValue, TEMPLATE_IDENTIFIER_START) !== false) {
 			$oValueTemplate = $this->oTemplate->derivativeTemplate($sValue, false, true);
 			$oValueTemplate->bKillIdentifiersBeforeRender = false;
 			$sValue = $oValueTemplate->render(true);
@@ -61,7 +61,7 @@ class TemplateIdentifier extends TemplatePart {
 	* @return true if neither the value nor any parameters contain identifiers
 	*/
 	public function isFinal() {
-		if(strpos($this->sValue, TEMPLATE_IDENTIFIER_START) !== false) {
+		if($this->sValue && strpos($this->sValue, TEMPLATE_IDENTIFIER_START) !== false) {
 			return false;
 		}
 		foreach($this->aParameters as $sParameterName => $sParameterValue) {

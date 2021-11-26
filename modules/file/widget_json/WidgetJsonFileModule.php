@@ -99,7 +99,7 @@ class WidgetJsonFileModule extends FileModule {
 			}
 			return array("result" => call_user_func_array(array($sWidgetClass, $sMethodName), isset($aRequest['method_parameters']) ? $aRequest['method_parameters'] : array()));
 		}
-		$aInstanceArgs = array(@$aRequest['session_key']);
+		$aInstanceArgs = [isset($aRequest['session_key']) ? $aRequest['session_key'] : null];
 		if(isset($aRequest['instance_args'])) {
 			$aInstanceArgs = $aRequest['instance_args'];
 		}

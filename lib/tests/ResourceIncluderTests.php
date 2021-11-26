@@ -6,7 +6,7 @@
 class ResourceIncluderTests extends PHPUnit\Framework\TestCase {
 	private $oIncluder;
 
-	protected function setUp() {
+	protected function setUp(): void {
 		$this->oIncluder = new ResourceIncluder();
 	}
 

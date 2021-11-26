@@ -5,10 +5,10 @@
 
 class FileResourceTests extends PHPUnit\Framework\TestCase {
 	
-	protected function setUp() {
+	protected function setUp(): void {
 		exec('mkdir -p "'.MAIN_DIR.'/plugins/test_only/test"');
 	}
-	protected function tearDown() {
+	protected function tearDown():void {
 		exec('rm -R "'.MAIN_DIR.'/plugins/test_only/test"');
 	}
 	

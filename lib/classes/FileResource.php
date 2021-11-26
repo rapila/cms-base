@@ -114,7 +114,7 @@ class FileResource {
 		return MAIN_DIR_FE.$this->getInternalPath();
 	}
 	
-	public function getFileName($sExtensionCutoff = null) {
+	public function getFileName($sExtensionCutoff = '') {
 		return basename($this->sFullPath, $sExtensionCutoff);
 	}
 	
