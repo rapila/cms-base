@@ -3,7 +3,7 @@
 
 require(dirname(__FILE__).'/../lib/inc.php');
 
-$sDir = realpath(@$argv[1]);
+$sDir = realpath($argv[1]);
 
 foreach(DocumentQuery::create()->find() as $oDocument) {
 	$sFileName = "{$oDocument->getId()}_{$oDocument->getName()}.{$oDocument->getExtension()}";

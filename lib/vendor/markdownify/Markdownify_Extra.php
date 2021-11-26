@@ -287,7 +287,7 @@ class Markdownify_Extra extends Markdownify {
    * @return void
    */
   function alignTdContent(&$content, $col) {
-    switch (@$this->table['aligns'][$col]) {
+    switch (isset($this->table['aligns'][$col]) ? $this->table['aligns'][$col] : null) {
       default:
       case 'left':
         $content .= str_repeat(' ', $this->table['col_widths'][$col] - $this->strlen($content));
@@ -331,7 +331,7 @@ class Markdownify_Extra extends Markdownify {
       $this->buffer();
     } else {
       $buffer = trim($this->unbuffer());
-      $this->table['col_widths'][$this->col] = max(@$this->table['col_widths'][$this->col], $this->strlen($buffer));
+      $this->table['col_widths'][$this->col] = max(isset($this->table['col_widths'][$this->col]) ? $this->table['col_widths'][$this->col] : 0, $this->strlen($buffer));
       $this->table['rows'][$this->row][$this->col] = $buffer;
     }
   }

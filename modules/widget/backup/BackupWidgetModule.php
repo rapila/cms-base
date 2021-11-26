@@ -176,8 +176,8 @@ class BackupWidgetModule extends PersistentWidgetModule {
 		$aDbConfig = $aDbConfig['datasources'][Propel::getDefaultDB()]['connection'];
 		$aResult['user'] = isset($aDbConfig['user']) ? $aDbConfig['user'] : $aDbConfig['username'];
 		$aResult['password'] = $aDbConfig['password'];
-		$aResult['host'] = @$aDbConfig['hostspec'];
-		$aResult['database'] = @$aDbConfig['database'];
+		$aResult['host'] = isset($aDbConfig['hostspec']) ? $aDbConfig['hostspec'] : null;
+		$aResult['database'] = isset($aDbConfig['database']) ? $aDbConfig['database'] : null;
 		if(isset($aDbConfig['dsn'])) {
 			$sDsn = $aDbConfig['dsn'];
 			$sDsn = substr($sDsn, strpos($sDsn, ':')+1);

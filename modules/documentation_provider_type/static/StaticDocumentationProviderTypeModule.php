@@ -14,6 +14,6 @@ class StaticDocumentationProviderTypeModule extends DocumentationProviderTypeMod
 	}
 
 	public function contentForPart($sDocumentationPart, $sLanguageId) {
-		return @$this->aConfig['docs'][$sDocumentationPart][$sLanguageId]['html'];
+		return isset($this->aConfig['docs'][$sDocumentationPart][$sLanguageId]['html']) ? $this->aConfig['docs'][$sDocumentationPart][$sLanguageId]['html'] : null;
 	}
 }

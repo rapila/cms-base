@@ -57,7 +57,7 @@ class DocumentListFrontendModule extends FrontendModule {
 			$oQuery->filterByDocumentKind($aOptions['document_kind']);
 		}
 
-		$sSortOrder = @$aOptions['sort_order'] === 'desc' ? 'desc' : 'asc';
+		$sSortOrder = (isset($aOptions['sort_order']) && $aOptions['sort_order'] === 'desc') ? 'desc' : 'asc';
 		// Sort order only in case of one category and no tags
 		if($iCountCategories === 1 && $bHasTags === false) {
 			if($aOptions['sort_by'] === self::SORT_BY_SORT) {

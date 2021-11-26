@@ -45,14 +45,13 @@ class ListSettings {
 		return $this->aSorts[$sColumnName];
 	}
 	
-	public function isTopSort($sColumnName) {
-		$aKeys = array_keys($this->aSorts);
-		return @$aKeys[0] === $sColumnName;
+	public function isTopSort($sColumnName): bool {
+		return $this->getTopSort() === $sColumnName;
 	}
 
 	public function getTopSort() {
 		$aKeys = array_keys($this->aSorts);
-		return @$aKeys[0];
+		return isset($aKeys[0]) ? $aKeys[0] : null;
 	}
 	
 	public function setSearchPhrase($sSearchPhrase) {

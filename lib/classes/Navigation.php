@@ -136,12 +136,12 @@ class Navigation {
 			$aConfig = $this->getConfigForPage($iLevel, $oBooleanParser, $oNavigationItem);
 
 			//Don’t show page (and subpages) in navigation if show===false
-			if(@$aConfig['show'] === false) {
+			if(isset($aConfig['show']) && $aConfig['show'] === false) {
 				continue;
 			}
 
-			$sTemplateName = @$aConfig['template'];
-			$sInlineTemplate = @$aConfig['template_inline'];
+			$sTemplateName = isset($aConfig['template']) ? $aConfig['template'] : null;
+			$sInlineTemplate = isset($aConfig['template_inline']) ? $aConfig['template_inline'] : null;
 
 			if($sTemplateName === null && $sInlineTemplate === null && ($this->iMaxLevel !== null && $iLevel+1 > $this->iMaxLevel)) {
 				continue;
@@ -234,7 +234,7 @@ class Navigation {
 	 * @return string parsed navigation
 	 */
 	private function getConfigForPage($iLevel, $oBooleanParser, $oNavigationItem) {
-		$aConfigToCheck = @$this->aConfig[$iLevel];
+		$aConfigToCheck = isset($this->aConfig[$iLevel]) ? $this->aConfig[$iLevel] : null;
 		if($aConfigToCheck === null) {
 			if(!isset($this->aConfig['all'])) {
 				return null;

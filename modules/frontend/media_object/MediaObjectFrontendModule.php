@@ -18,18 +18,18 @@ class MediaObjectFrontendModule extends FrontendModule {
 		$oTemplate = new Template(TemplateIdentifier::constructIdentifier("content"), null, true);
 		foreach($aOptions as $aDocumentInfo) {
 			$oDocument = DocumentQuery::create()->findPk($aDocumentInfo['document_id']);
-			$sMimeType = @$aDocumentInfo['mimetype'];
+			$sMimeType = isset($aDocumentInfo['mimetype']) ? $aDocumentInfo['mimetype'] : null;
 			$sSrc = null;
 			
 			if($oDocument !== null) {
 				$aParameters = array();
-				if(@$aDocumentInfo['max_width']) {
+				if(isset($aDocumentInfo['max_width']) && $aDocumentInfo['max_width']) {
 					$aParameters['max_width'] = $aDocumentInfo['max_width'];
 				}
-				if(@$aDocumentInfo['max_height']) {
+				if(isset($aDocumentInfo['max_height']) && $aDocumentInfo['max_height']) {
 					$aParameters['max_height'] = $aDocumentInfo['max_width'];
 				}
-				if(@$aDocumentInfo['force_refresh']) {
+				if(isset($aDocumentInfo['force_refresh']) && $aDocumentInfo['force_refresh']) {
           $aParameters['no-cache'] = 'true';
 				}
 				
@@ -37,7 +37,7 @@ class MediaObjectFrontendModule extends FrontendModule {
 				if(!$sMimeType) {
 					$sMimeType = $oDocument->getMimetype();
 				}
-			} else if ((@$aDocumentInfo['url'])) {
+			} else if ((isset($aDocumentInfo['url']) ? $aDocumentInfo['url'] : null)) {
 				$sSrcToCheck = $aDocumentInfo['url'];
 				if(($iQSPos = strrpos($sSrcToCheck, '?')) !== false) {
 					$sSrcToCheck = substr($sSrcToCheck, 0, $iQSPos);
@@ -45,7 +45,7 @@ class MediaObjectFrontendModule extends FrontendModule {
 				if(file_exists(MAIN_DIR.'/'.$sSrcToCheck)) {
 					$aDocumentInfo['url'] = MAIN_DIR_FE.$aDocumentInfo['url'];
 				}
-				$sSrc = @$aDocumentInfo['url'];
+				$sSrc = isset($aDocumentInfo['url']) ? $aDocumentInfo['url'] : null;
 			} else {
 				continue;
 			}
@@ -61,10 +61,10 @@ class MediaObjectFrontendModule extends FrontendModule {
 			} catch (Exception $e) {
 				$oSubTemplate = $this->constructTemplate("generic");
 			}
-			if(@$aDocumentInfo['width']) {
+			if(isset($aDocumentInfo['width']) && $aDocumentInfo['width']) {
 				$oSubTemplate->replaceIdentifier('width', $aDocumentInfo['width']);
 			}
-			if(@$aDocumentInfo['height']) {
+			if(isset($aDocumentInfo['height']) && $aDocumentInfo['height']) {
 				$oSubTemplate->replaceIdentifier('height', $aDocumentInfo['height']);
 			}
 			$oSubTemplate->replaceIdentifier('src', $sSrc);

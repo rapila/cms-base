@@ -79,12 +79,12 @@ abstract class Module {
 
 	public static function getModuleInfoByTypeAndName($sType, $sName) {
 		$aModuleMetadata = self::getModuleMetadataByTypeAndName($sType, $sName);
-		return @$aModuleMetadata['module_info'];
+		return isset($aModuleMetadata['module_info']) ? $aModuleMetadata['module_info'] : null;
 	}
 
 	public static function isModuleEnabled($sType, $sName) {
 		$aModuleInfo = self::getModuleInfoByTypeAndName($sType, $sName);
-		return @$aModuleInfo['enabled'];
+		return isset($aModuleInfo['enabled']) ? $aModuleInfo['enabled'] : null;
 	}
 
 	public static function getDefaultRolesForModule() {

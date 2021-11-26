@@ -43,7 +43,7 @@ class XHTMLOutput {
 		if($this->sSetting === self::SETTING_NONE || $this->sSetting === self::SETTING_HTML_4_STRICT || $this->sSetting === self::SETTING_HTML_4_TRANSITIONAL || $this->sSetting === self::SETTING_HTML_5) {
 			return;
 		}
-		if(@stristr(@$_SERVER["HTTP_ACCEPT"], "application/xhtml+xml")) {
+		if(stristr(isset($_SERVER["HTTP_ACCEPT"]) ? $_SERVER["HTTP_ACCEPT"] : '', "application/xhtml+xml")) {
 			if(preg_match("/application\/xhtml\+xml;q=([01]|0\.\d{1,3}|1\.0)/i", $_SERVER["HTTP_ACCEPT"], $matches)) {
 				$xhtml_q = $matches[1];
 				if(preg_match("/text\/html;q=([01]|0\.\d{1,3}|1\.0)/i", $_SERVER["HTTP_ACCEPT"], $matches)) {

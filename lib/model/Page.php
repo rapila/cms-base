@@ -73,7 +73,7 @@ class Page extends BasePage {
 
 		foreach($aKeywords as $iKey => $mKeywords) {
 			if(!is_array($mKeywords)) {
-				$mKeywords = explode(',', $mKeywords);
+				$mKeywords = explode(',', $mKeywords ?? '');
 			}
 
 			foreach($mKeywords as $sKeyword) {

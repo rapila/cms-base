@@ -40,11 +40,11 @@ class FormFrontendModule extends DynamicFrontendModule {
 
 	public static function validateRecaptchaInput() {
 		$sSecret = Settings::getSetting('frontend', 're_captcha_private_key', '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe');
-		$sResponse = @$_POST["g-recaptcha-response"];
+		$sResponse = isset($_POST["g-recaptcha-response"]) ? $_POST["g-recaptcha-response"] : null;
 		if(!$sResponse) {
-			$sResponse = @$_POST["g-recaptcha-noscript-response"];
+			$sResponse = isset($_POST["g-recaptcha-noscript-response"]) ? $_POST["g-recaptcha-noscript-response"] : null;
 		}
-		$sRemote = @$_SERVER["REMOTE_ADDR"];
+		$sRemote = isset($_SERVER["REMOTE_ADDR"]) ? $_SERVER["REMOTE_ADDR"] : null;
 
 		$rCurl = curl_init('https://www.google.com/recaptcha/api/siteverify');
 		curl_setopt($rCurl, CURLOPT_POST, true);
@@ -190,9 +190,9 @@ class FormStorage {
 
 	public function getRequestProperty($sName) {
 		if($this->sRequestMethod === "post") {
-			return @$_POST[$sName];
+			return isset($_POST[$sName]) ? $_POST[$sName] : null;
 		}
-		return @$_GET[$sName];
+		return isset($_GET[$sName]) ? $_GET[$sName] : null;
 	}
 
 	public function addFormObject(FormObject $oFormObject) {
@@ -205,7 +205,7 @@ class FormStorage {
 	}
 
 	public function getFormOption($sOptionName) {
-		return @$this->aFormOptions[$sOptionName];
+		return isset($this->aFormOptions[$sOptionName]) ? $this->aFormOptions[$sOptionName] : null;
 	}
 
 	public function getFormObjects() {
@@ -242,7 +242,7 @@ class FormStorage {
 		}
 
 		$aFormAttributes = $oSession->getAttribute($sSessionKey);
-		return @$aFormAttributes[$sName];
+		return isset($aFormAttributes[$sName]) ? $aFormAttributes[$sName] : null;
 	}
 
 	public function setRequestMethod($sRequestMethod) {

@@ -99,7 +99,7 @@ class PagesAdminModule extends AdminModule {
 	public function moveItem($iIdNew, $iIdParent, $iPosition) {
 		$oPage = PageQuery::create()->findPk($iIdNew);
 		$oParent = PageQuery::create()->findPk($iIdParent);
-		$oChildAfter = @$oParent->getChildren()[$iPosition];
+		$oChildAfter = isset($oParent->getChildren()[$iPosition]) ? $oParent->getChildren()[$iPosition] : null;
 		if($oChildAfter) {
 			$oPage->moveToPrevSiblingOf($oChildAfter);
 		} else {

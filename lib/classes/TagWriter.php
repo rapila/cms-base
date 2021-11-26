@@ -30,7 +30,7 @@ class TagWriter {
 	}
 
 	public function getParameter($sName) {
-		return @$this->aParameters[$sName];
+		return isset($this->aParameters[$sName]) ? $this->aParameters[$sName] : null;
 	}
 
 	public function hasParameter($sName) {
@@ -137,7 +137,8 @@ class TagWriter {
 				$iLevel = $mValue['level'];
 				if(($sIndentType === '┼' || $sIndentType === '+') && $iLevel > 0) {
 					$sIndented = str_repeat('│', $iLevel-1);
-					if(@$aKeyValuesToRender[@$aKeys[$iCounter+1]]['level'] >= $mValue['level']) {
+					$sKey = isset($aKeys[$iCounter+1]) ? $aKeys[$iCounter+1] : null;
+					if(isset($aKeyValuesToRender[$sKey]['level']) && $aKeyValuesToRender[$sKey]['level'] >= $mValue['level']) {
 						$sIndented .= '├';
 					} else {
 						$sIndented .= '└';
