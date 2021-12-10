@@ -3,29 +3,27 @@
  * @package modules.widget
  */
 class PageInputWidgetModule extends WidgetModule {
-	
 	public function pages($bIncludeVirtual = false) {
-		$aResult = array();
-		$cGather = function($aNavigationItems, $iLevel) use(&$aResult, &$cGather, $bIncludeVirtual) {
-			foreach($aNavigationItems as $oNavigationItem) {
-				if(!$bIncludeVirtual && !($oNavigationItem instanceof PageNavigationItem)) {
-					continue;
-				}
-				$oResult = new StdClass();
-				$oResult->level = $iLevel;
-				$oResult->page_id = $oNavigationItem->getPathId();
-				$oResult->name = $oNavigationItem->getName();
-				$aResult[] = $oResult;
-				if($oNavigationItem->hasChildren(null, false, true)) {
-					$cGather($oNavigationItem->getChildren(null, false, true), $iLevel+1);
-				}
+		$cGather = function($oNavigationItem) use(&$cGather, $bIncludeVirtual) {
+			if(!$bIncludeVirtual && !($oNavigationItem instanceof PageNavigationItem)) {
+				return null;
 			}
+			$oResult = new StdClass();
+			$oResult->page_id = $oNavigationItem->getPathId();
+			$oResult->name = ($oNavigationItem->isRoot() ? '' : $oNavigationItem->getName()) . '/';
+			$oResult->children = array_filter(
+				array_map(
+					$cGather,
+					array_values($oNavigationItem->getChildren(null, false, true))
+				),
+				'boolval'
+			);
+			return $oResult;
 		};
-		$cGather(array(PageNavigationItem::navigationItemForPage(PagePeer::getRootPage())), 0);
-		return $aResult;
+		return $cGather(PageNavigationItem::navigationItemForPage(PagePeer::getRootPage()));
 	}
 	
   public function getElementType() {
-		return 'select';
+		return 'div';
 	}
 }

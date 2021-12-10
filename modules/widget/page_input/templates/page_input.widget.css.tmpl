@@ -1,0 +1,72 @@
+[data-widget-type=page_input].cke_dialog_ui_input_select {
+	display: block !important;
+}
+
+[data-widget-type=page_input] .path {
+	display: flex;
+	padding: 0.3em;
+	flex-wrap: wrap;
+	gap: 0.2em 0.5em;
+}
+
+[data-widget-type=page_input] .path .page {
+	display: flex;
+	background-color: #dedede;
+	border: 1px solid #aeaeae;
+	border-radius: 0.3em;
+}
+
+[data-widget-type=page_input] .path .page .name {
+	padding: 0 1em;
+	line-height: 2em;
+	cursor: pointer;
+}
+
+[data-widget-type=page_input] .path .page .expander {
+	padding: 0 0.5em;
+	border-left: 1px solid #aeaeae;
+	cursor: pointer;
+	line-height: 1.6em;
+}
+
+[data-widget-type=page_input] .chooser {
+	flex-direction: column;
+	max-height: 350px;
+	top: 0;
+	left: 0;
+	right: 0;
+	display: none;
+}
+
+[data-widget-type=page_input] .chooser.active {
+	display: flex;
+}
+
+[data-widget-type=page_input] .chooser input.filter {
+	line-height: 2;
+	border: 2px solid #dedede;
+	border-radius: 4px;
+	padding: 0.2em 0.5em;
+}
+
+[data-widget-type=page_input] .chooser .items {
+	overflow: auto;
+	flex-grow: 1;
+}
+
+[data-widget-type=page_input] .chooser .items > * {
+	margin: 0.2em;
+	background-color: wheat;
+	padding: 0.4em;
+	border-radius: 3px;
+	border: 1px solid transparent;
+	cursor: pointer;
+}
+
+[data-widget-type=page_input] .chooser .items > *:hover {
+	border-color: red;
+}
+
+[data-widget-type=page_input] .chooser .items > .hidden {
+	display: none;
+}

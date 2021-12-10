@@ -1,43 +1,114 @@
 Widget.types.page_input = {
-	prepare: function() {
+	prepare() {
 		var _this = this;
-		var option = jQuery('<option/>');
-		this.pages(this.settings.include_virtual, function(pages) {
-			jQuery.each(pages, function(i, data) {
-				option.clone().text((new Array(data.level+1)).join('  ')+data.name).attr('value', data.page_id).appendTo(_this._element);
-			});
-			if(this.settings.default_value_label) {
-				this._element.prepend(option.clone().attr('value', '').text(this.settings.default_value_label));
-				this._element.val('');
+		this._element.html('{{includeTemplate=edit}}');
+		this._hidden_value_input = this._element.find('input.value').attr('name', this._element.attr('name'));
+		this.prepare_filter();
+		this.pages(this.settings.include_virtual, function(rootPage) {
+			this._root_page = rootPage;
+			this._pages_by_id = {};
+			function populateIdMap(parents, page) {
+				const pagePathItem = [...parents, page];
+				_this._pages_by_id[page.page_id] = [...parents, page];
+				for(const child of page.children) {
+					populateIdMap(pagePathItem, child);
+				}
 			}
-			if(this.settings.initial_value) {
-				this.value(this.settings.initial_value);
+			populateIdMap([], rootPage);
+			this.value(this.settings.initial_value);
+		});
+	},
+
+	is_fuzzy_match(text, query) {
+		let startIndex = 0;
+		for(const char of query) {
+			const index = text.indexOf(char, startIndex);
+			if(index === -1) {
+				return false;
 			}
-			if(this.settings.disabled) {
-				this._element.attr('disabled', true);
+			startIndex = index + char.length;
+		}
+		return true;
+	},
+
+	prepare_filter() {
+		const filter = this._element.find('input.filter');
+		const itemList = this._element.find('.items');
+		filter.on('input', () => {
+			const query = filter.val();
+			if(!query) {
+				itemList.children().removeClass('hidden');
+			} else {
+				itemList.children().each((_, child) => {
+					child.classList.toggle('hidden', !this.is_fuzzy_match(child.textContent, query));
+				});
 			}
 		});
 	},
-	
-	value: function(set) {
-		if(arguments.length) {
-			this.settings.initial_value = set;
-			return this._element.val(set);
+
+	render() {
+		this._element.find('input.filter').val('');
+		this._element.find('.chooser').removeClass('active');
+		const pathField = this._element.find('.path').empty();
+		for(const pathItem of this._selected_page_path) {
+			const div = Widget.parseHTML('{{includeTemplate=path_item}}');
+			div.find('.name').text(pathItem.name).on('click', this.value.bind(this, pathItem.page_id));
+			div.find('.expander').on('click', event => {
+				this.populate_chooser(pathItem);
+			});
+			pathField.append(div);
 		}
-		return this._element.val();
+	},
+
+	populate_chooser(pathItem) {
+		const _this = this;
+		const chooser = this._element.find('.chooser').addClass('active');
+		const query = this._element.find('input.filter').val();
+		const items = chooser.find('.items').empty();
+		function addToChooser(parents, item) {
+			const itemElement = jQuery('<div/>');
+			const name = parents + item.name;
+			itemElement.text(name);
+			if(query && !_this.is_fuzzy_match(name, query)) {
+				itemElement.addClass('hidden');
+			}
+			itemElement.on('click', _this.value.bind(_this, item.page_id));
+			items.append(itemElement);
+			for(const child of item.children) {
+				addToChooser(name, child);
+			}
+		}
+		addToChooser('', pathItem);
+	},
+
+	selected_page() {
+		return this._selected_page_path[this._selected_page_path.length-1];
 	},
 	
-	val: function(set) {
+	value(set) {
+		if(arguments.length) {
+			if(!this._root_page) {
+				// Special-case before pages have loaded
+				this.settings.initial_value = set;
+				return set;
+			}
+			this._selected_page_path = this._pages_by_id[set] ?? [this._root_page];
+			this._hidden_value_input.val(this.selected_page().page_id);
+			this.render();
+		}
+		return this.selected_page().page_id;
+	},
+	
+	val(set) {
 		return this.value(set);
 	},
 	
-	proxy_url: function() {
+	proxy_url() {
 		var value = this.value();
 		return "{{writeLink=internal_link_proxy;manager=FileManager}}/"+value;
 	},
 	
 	settings: {
-		default_value_label: null,
 		initial_value: null,
 		include_virtual: false
 	}
