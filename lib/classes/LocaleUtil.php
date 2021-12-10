@@ -4,6 +4,39 @@
  */
 
 class LocaleUtil {
+
+	private const SIMPLE_FORMATS = [
+		'd' => 'd',
+		'e' => 'j',
+		'u' => 'N',
+		'w' => 'w',
+		'V' => 'W',
+		'm' => 'm',
+		'g' => 'y',
+		'G' => 'Y',
+		'y' => 'y',
+		'Y' => 'Y',
+		'H' => 'H',
+		'k' => 'G',
+		'I' => 'h',
+		'l' => 'g',
+		'M' => 'i',
+		'p' => 'A',
+		'P' => 'a',
+		'r' => 'h:i:s A',
+		'R' => 'H:i',
+		'S' => 's',
+		'z' => 'O',
+		'Z' => 'T',
+		'D' => 'm/d/y',
+		'F' => 'Y-m-d',
+		's' => 'U',
+		'n' => "\n",
+		't' => "\t",
+		'%' => '%',
+	];
+
+
 	/// @VisibleForTesting
 	public static $ACCEPT_LOCALE_LISTS = array();
 
@@ -74,17 +107,31 @@ class LocaleUtil {
 	}
 
 	public static function strftime(string $sFormat, DateTimeInterface $oDate, string $sLocale) {
-		$sEncoding = strtoupper(Settings::getSetting("encoding", "browser", "utf-8"));
-		setlocale(LC_TIME, "$sLocale.$sEncoding");
-		if(setlocale(LC_TIME, 0) !== "$sLocale.$sEncoding") {
-			setlocale(LC_TIME, $sLocale);
-			if(setlocale(LC_TIME, 0) !== $sLocale) {
-				$sLocale = substr($sLocale, 0, strpos($sLocale, "_"));
-				setlocale(LC_TIME, $sLocale);
+		$aLocaleDependentReplacements = [
+			'x' => function(string $sLocale) { return new IntlDateFormatter($sLocale, IntlDateFormatter::MEDIUM, IntlDateFormatter::NONE); },
+			'X' => function(string $sLocale) { return new IntlDateFormatter($sLocale, IntlDateFormatter::NONE, IntlDateFormatter::SHORT); },
+			'c' => function(string $sLocale) { return new IntlDateFormatter($sLocale, IntlDateFormatter::MEDIUM, IntlDateFormatter::MEDIUM); },
+			'a' => function(string $sLocale) { return new IntlDateFormatter($sLocale, IntlDateFormatter::NONE, IntlDateFormatter::NONE, null, null, 'ccc'); },
+			'A' => function(string $sLocale) { return new IntlDateFormatter($sLocale, IntlDateFormatter::NONE, IntlDateFormatter::NONE, null, null, 'cccc'); },
+			'U' => function(string $sLocale) { return new IntlDateFormatter($sLocale, IntlDateFormatter::NONE, IntlDateFormatter::NONE, null, null, 'ww'); },
+			'b' => function(string $sLocale) { return new IntlDateFormatter($sLocale, IntlDateFormatter::NONE, IntlDateFormatter::NONE, null, null, 'LLL'); },
+			'B' => function(string $sLocale) { return new IntlDateFormatter($sLocale, IntlDateFormatter::NONE, IntlDateFormatter::NONE, null, null, 'LLLL'); },
+			'h' => function(string $sLocale) { return new IntlDateFormatter($sLocale, IntlDateFormatter::NONE, IntlDateFormatter::NONE, null, null, 'MMM'); },
+			'T' => function(string $sLocale) { return new IntlDateFormatter($sLocale, IntlDateFormatter::NONE, IntlDateFormatter::MEDIUM); },
+		];
+		$sFormat = preg_replace_callback('/(?<!%)%(\w|%)/', function(array $aMatches) use($oDate, $aLocaleDependentReplacements, $sLocale) {
+			$sFormatSpecifier = $aMatches[1];
+			if(isset(self::SIMPLE_FORMATS[$sFormatSpecifier])) {
+				return $oDate->format(self::SIMPLE_FORMATS[$sFormatSpecifier]);
 			}
-		}
-		setlocale(LC_TIME, $sLocale);
-		return strftime($sFormat, (int)$oDate->format('U'));
+			if(isset($aLocaleDependentReplacements[$sFormatSpecifier])) {
+				$oFormatter = $aLocaleDependentReplacements[$sFormatSpecifier]($sLocale);
+				return $oFormatter->format($oDate);
+			}
+			return '';
+		}, $sFormat);
+
+		return $sFormat;
 	}
 
 	public static function localizeDate(
@@ -114,8 +161,11 @@ class LocaleUtil {
 			$iTimestamp = new DateTimeImmutable();
 		}
 
-		if($oTimestamp instanceof DateTimeInterface) {
-			$oTimestamp = DateTime::createFromInterface($oTimestamp);
+		if($oTimestamp instanceof DateTime) {
+			$oTimestamp = clone $oTimestamp;
+			$oTimestamp->setTimezone($oTimeZone);
+		} else if($oTimestamp instanceof DateTimeImmutable) {
+			$oTimestamp = DateTime::createFromImmutable($oTimestamp);
 			$oTimestamp->setTimezone($oTimeZone);
 		} else if(is_numeric($oTimestamp)) {
 			$oTimestamp = new DateTimeImmutable("@$oTimestamp", $oTimeZone);
