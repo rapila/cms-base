@@ -23,10 +23,10 @@ jobs:
         with:
           repository: 'rapila/cms-full'
           submodules: true
-          branch: ${{ github.event.branch }}
+          ref: ${{ github.event.branch }}
 
       # Update base inside cms-full to version given
       - name: Run a multi-line script
         run: |
           env
-          echo "${{ github.event.branch }}"
+          echo "$GITHUB_REF_NAME"
