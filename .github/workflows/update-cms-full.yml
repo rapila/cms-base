@@ -23,6 +23,7 @@ jobs:
         with:
           repository: 'rapila/cms-full'
           submodules: true
+          ssh-key: ${{ secrets.CMS_FULL_UPDATER_CREDENTIALS }}
           ref: ${{ github.event.branch }}
 
       # Update base inside cms-full to version given
