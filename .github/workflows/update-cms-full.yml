@@ -30,7 +30,7 @@ jobs:
       - name: Run a multi-line script
         run: |
           cd base
-          git config --list
+          git config remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'
           git fetch origin
           git checkout "remotes/origin/$GITHUB_REF_NAME"
           cd ..
