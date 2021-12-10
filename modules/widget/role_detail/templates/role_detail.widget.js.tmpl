@@ -7,7 +7,6 @@ Widget.types.role_detail = {
 		Widget.callStatic('detail', 'create_for_instance', this);
 
 		this.right_content = Widget.parseHTML("{{includeTemplate=right}}");
-		this.right_content.find('[name="page_id[]"]').prepareWidget();
 		var rights_container = this._element.find('.rights_container');
 		rights_container.on('click', '.delete_right', function(event) {
 			var delete_this_right = jQuery(this);
@@ -17,7 +16,8 @@ Widget.types.role_detail = {
 
 		var add_new_right_button = jQuery('<a/>').addClass('add-new-item add_entry').text(' ');
 		add_new_right_button.click(function() {
-			_this.right_content.clone().appendTo(rights_container);
+			const addedRight = _this.right_content.clone().appendTo(rights_container);
+			addedRight.find('[name="page_id[]"]').prepareWidget();
 		});
 		rights_container.after(add_new_right_button);
 	},
@@ -35,7 +35,9 @@ Widget.types.role_detail = {
 			var rights_container = this._element.find('.rights_container').empty();
 			jQuery.each(role_data.rights, function(right_id, rights_data) {
 				var right_content = _this.right_content.clone();
-				right_content.find('select[name="page_id[]"]').val(rights_data.PageId);
+				right_content.find('[name="page_id[]"]').prepareWidget(function(widget) {
+					widget.settings.initial_value = rights_data.PageId;
+				}, jQuery.noop);
 				right_content.find('input[name="is_inherited[]"]').prop('checked', rights_data.IsInherited);
 				right_content.find('input[name="may_edit_page_details[]"]').prop('checked', rights_data.MayEditPageDetails);
 				right_content.find('input[name="may_edit_page_contents[]"]').prop('checked', rights_data.MayEditPageContents);
