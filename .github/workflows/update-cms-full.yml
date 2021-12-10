@@ -31,7 +31,7 @@ jobs:
         run: |
           cd base
           git fetch origin
-          git checkout --detach "origin/$GITHUB_REF_NAME"
+          git checkout "origin/$GITHUB_REF_NAME"
           cd ..
           git add base
           git config user.name "GitHub Actions"
