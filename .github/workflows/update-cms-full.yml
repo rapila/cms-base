@@ -32,5 +32,6 @@ jobs:
           git checkout --detach "origin/$GITHUB_REF_NAME"
           cd ..
           git add base
+          git config user.name "GitHub Actions"
           git commit -m "Update base to latest $GITHUB_REF_NAME"
           git push
