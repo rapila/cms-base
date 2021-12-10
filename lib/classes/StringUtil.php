@@ -60,14 +60,14 @@ class StringUtil {
 		return implode(" ", $aSplit);
 	}
 
-	public static function endsWith(string|null $str, string $end): bool {
+	public static function endsWith($str, string $end): bool {
 		if(!$str) {
 			return false;
 		}
 		return substr($str, -strlen($end)) === $end;
 	}
 
-	public static function startsWith(string|null $str, string $start): bool {
+	public static function startsWith($str, string $start): bool {
 		if(!$str) {
 			return false;
 		}

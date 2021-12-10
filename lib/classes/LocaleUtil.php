@@ -108,16 +108,16 @@ class LocaleUtil {
 
 	public static function strftime(string $sFormat, DateTimeInterface $oDate, string $sLocale) {
 		$aLocaleDependentReplacements = [
-			'x' => fn(string $sLocale) => new IntlDateFormatter($sLocale, IntlDateFormatter::MEDIUM, IntlDateFormatter::NONE),
-			'X' => fn(string $sLocale) => new IntlDateFormatter($sLocale, IntlDateFormatter::NONE, IntlDateFormatter::SHORT),
-			'c' => fn(string $sLocale) => new IntlDateFormatter($sLocale, IntlDateFormatter::MEDIUM, IntlDateFormatter::MEDIUM),
-			'a' => fn(string $sLocale) => new IntlDateFormatter($sLocale, IntlDateFormatter::NONE, IntlDateFormatter::NONE, null, null, 'ccc'),
-			'A' => fn(string $sLocale) => new IntlDateFormatter($sLocale, IntlDateFormatter::NONE, IntlDateFormatter::NONE, null, null, 'cccc'),
-			'U' => fn(string $sLocale) => new IntlDateFormatter($sLocale, IntlDateFormatter::NONE, IntlDateFormatter::NONE, null, null, 'ww'),
-			'b' => fn(string $sLocale) => new IntlDateFormatter($sLocale, IntlDateFormatter::NONE, IntlDateFormatter::NONE, null, null, 'LLL'),
-			'B' => fn(string $sLocale) => new IntlDateFormatter($sLocale, IntlDateFormatter::NONE, IntlDateFormatter::NONE, null, null, 'LLLL'),
-			'h' => fn(string $sLocale) => new IntlDateFormatter($sLocale, IntlDateFormatter::NONE, IntlDateFormatter::NONE, null, null, 'MMM'),
-			'T' => fn(string $sLocale) => new IntlDateFormatter($sLocale, IntlDateFormatter::NONE, IntlDateFormatter::MEDIUM),
+			'x' => function(string $sLocale) { return new IntlDateFormatter($sLocale, IntlDateFormatter::MEDIUM, IntlDateFormatter::NONE); },
+			'X' => function(string $sLocale) { return new IntlDateFormatter($sLocale, IntlDateFormatter::NONE, IntlDateFormatter::SHORT); },
+			'c' => function(string $sLocale) { return new IntlDateFormatter($sLocale, IntlDateFormatter::MEDIUM, IntlDateFormatter::MEDIUM); },
+			'a' => function(string $sLocale) { return new IntlDateFormatter($sLocale, IntlDateFormatter::NONE, IntlDateFormatter::NONE, null, null, 'ccc'); },
+			'A' => function(string $sLocale) { return new IntlDateFormatter($sLocale, IntlDateFormatter::NONE, IntlDateFormatter::NONE, null, null, 'cccc'); },
+			'U' => function(string $sLocale) { return new IntlDateFormatter($sLocale, IntlDateFormatter::NONE, IntlDateFormatter::NONE, null, null, 'ww'); },
+			'b' => function(string $sLocale) { return new IntlDateFormatter($sLocale, IntlDateFormatter::NONE, IntlDateFormatter::NONE, null, null, 'LLL'); },
+			'B' => function(string $sLocale) { return new IntlDateFormatter($sLocale, IntlDateFormatter::NONE, IntlDateFormatter::NONE, null, null, 'LLLL'); },
+			'h' => function(string $sLocale) { return new IntlDateFormatter($sLocale, IntlDateFormatter::NONE, IntlDateFormatter::NONE, null, null, 'MMM'); },
+			'T' => function(string $sLocale) { return new IntlDateFormatter($sLocale, IntlDateFormatter::NONE, IntlDateFormatter::MEDIUM); },
 		];
 		$sFormat = preg_replace_callback('/(?<!%)%(\w|%)/', function(array $aMatches) use($oDate, $aLocaleDependentReplacements, $sLocale) {
 			$sFormatSpecifier = $aMatches[1];
@@ -135,10 +135,10 @@ class LocaleUtil {
 	}
 
 	public static function localizeDate(
-		DateTimeInterface|int|false|null|string $oTimestamp = false,
-		string|null $sLanguageId = null,
+		$oTimestamp = false,
+		$sLanguageId = null,
 		string $sFormat = "%x",
-		string|DateTimeZone|null $oTimeZone = null
+		$oTimeZone = null
 	) {
 		if($oTimestamp === null) {
 			return null;
