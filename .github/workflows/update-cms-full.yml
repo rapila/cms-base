@@ -30,9 +30,9 @@ jobs:
       - name: Run a multi-line script
         run: |
           cd base
+          git config --list
           git fetch origin
           git checkout "remotes/origin/$GITHUB_REF_NAME"
-          git config --list
           cd ..
           git add base
           git config user.name "GitHub Actions"
