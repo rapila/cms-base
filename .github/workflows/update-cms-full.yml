@@ -30,6 +30,7 @@ jobs:
       - name: Run a multi-line script
         run: |
           cd base
+          git fetch origin
           git checkout --detach "origin/$GITHUB_REF_NAME"
           cd ..
           git add base
