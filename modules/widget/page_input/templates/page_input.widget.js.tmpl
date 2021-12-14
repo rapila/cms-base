@@ -95,12 +95,9 @@ Widget.types.page_input = {
 			this._selected_page_path = this._pages_by_id[set] ?? [this._root_page];
 			this._hidden_value_input.val(this.selected_page().page_id);
 			this.render();
+			this._element.trigger('change');
 		}
 		return this.selected_page().page_id;
-	},
-	
-	val(set) {
-		return this.value(set);
 	},
 	
 	proxy_url() {
