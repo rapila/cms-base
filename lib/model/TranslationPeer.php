@@ -66,9 +66,6 @@ class TranslationPeer extends BaseTranslationPeer {
 		if(Settings::getSetting('frontend', 'display_string_keys', false)) {
 			return $sKey;
 		}
-		if(!is_string($sDefaultValue)) {
-			$sDefaultValue = "Translation missing: $sKey";
-		}
 		if($sLanguageId === null) {
 			$sLanguageId = Session::language();
 		}
@@ -77,7 +74,18 @@ class TranslationPeer extends BaseTranslationPeer {
 		if($oString === null) {
 			$sString = self::getStaticString($sKey, $sLanguageId);
 			if($sString === null) {
-				return $sDefaultValue;
+					if(!is_string($sDefaultValue)) {
+						$sDefaultValue = "Translation missing: $sKey";
+						if(!empty($aParameters)) {
+							$sDefaultValue .= " (";
+							foreach($aParameters as $sKey => $sValue) {
+								$sDefaultValue .= "$sKey: $sValue, ";
+							}
+							$sDefaultValue = substr($sDefaultValue, 0, -2);
+							$sDefaultValue .= ")";
+						}
+					}
+					return $sDefaultValue;
 			}
 		} else {
 			$sString = $oString->getText();
