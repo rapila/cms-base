@@ -35,7 +35,7 @@ Widget.types.page_input = {
 		const filter = this._element.find('input.filter');
 		const itemList = this._element.find('.items');
 		filter.on('input', () => {
-			const query = filter.val();
+			const query = filter.val().toLowerCase().replace(/\s/g, '');
 			if(!query) {
 				itemList.children().removeClass('hidden');
 			} else {
