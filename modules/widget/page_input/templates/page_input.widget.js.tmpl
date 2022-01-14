@@ -36,12 +36,47 @@ Widget.types.page_input = {
 		const itemList = this._element.find('.items');
 		filter.on('input', () => {
 			const query = filter.val().toLowerCase().replace(/\s/g, '');
+			const items = itemList.children();
 			if(!query) {
-				itemList.children().removeClass('hidden');
+				items.removeClass('hidden');
 			} else {
-				itemList.children().each((_, child) => {
+				items.each((_, child) => {
 					child.classList.toggle('hidden', !this.is_fuzzy_match(child.textContent, query));
 				});
+			}
+			if(items.is('.hidden.selected')) {
+				// Reset selection if it’s newly hidden
+				items.removeClass('selected');
+				items.filter(':not(.hidden)')[0].classList.add('selected');
+			}
+		});
+		filter.on('keydown', event => {
+			if(!['Enter', 'ArrowUp', 'ArrowDown'].includes(event.key)) {
+				return;
+			}
+			event.preventDefault();
+			const items = itemList.children(':not(.hidden)');
+			let selectedItem = items.filter('.selected')[0] || items[0];
+			if(!selectedItem) {
+				return;
+			}
+			if(event.key === 'Enter') {
+				event.stopPropagation();
+				jQuery(selectedItem).click();
+			} else {
+				let selectedIndex = items.index(selectedItem);
+				selectedItem.classList.remove('selected');
+				const offset = event.key === 'ArrowDown' ? 1 : -1;
+				selectedIndex += offset;
+				if(selectedIndex < 0) {
+					selectedIndex = items.length - 1;
+				}
+				if(selectedIndex >= items.length) {
+					selectedIndex = 0;
+				}
+				selectedItem = items[selectedIndex];
+				selectedItem.classList.add('selected');
+				selectedItem.scrollIntoView();
 			}
 		});
 	},
@@ -62,15 +97,20 @@ Widget.types.page_input = {
 
 	populate_chooser(pathItem) {
 		const _this = this;
+		const filter = this._element.find('input.filter');
 		const chooser = this._element.find('.chooser').addClass('active');
-		const query = this._element.find('input.filter').val();
+		const query = filter.val();
 		const items = chooser.find('.items').empty();
+		let populatedFirst = false;
 		function addToChooser(parents, item) {
 			const itemElement = jQuery('<div/>');
 			const name = parents + item.name;
 			itemElement.text(name);
 			if(query && !_this.is_fuzzy_match(name, query)) {
 				itemElement.addClass('hidden');
+			} else if(!populatedFirst) {
+				itemElement.addClass('selected');
+				populatedFirst = true;
 			}
 			itemElement.on('click', _this.value.bind(_this, item.page_id));
 			items.append(itemElement);
@@ -79,6 +119,7 @@ Widget.types.page_input = {
 			}
 		}
 		addToChooser('', pathItem);
+		filter.focus();
 	},
 
 	selected_page() {
