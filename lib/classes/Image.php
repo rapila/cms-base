@@ -26,8 +26,8 @@ class Image {
 
 	public function setSize(int $iWidth, int $iHeight, int $iMode = self::RESIZE_TO_WIDTH) {
 		if($iMode === self::STRETCH) {
-			$this->iWidth = $iWidth;
-			$this->iHeight = $iHeight;
+			$this->iWidth = (int) $iWidth;
+			$this->iHeight = (int) $iHeight;
 			$this->fScalingFactor = null;
 			return;
 		}

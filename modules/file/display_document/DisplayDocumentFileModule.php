@@ -82,7 +82,7 @@ class DisplayDocumentFileModule extends FileModule {
 			if(is_int($mMaxWidth) || is_int($mMaxHeight)) {
 				$oImage = Image::imageFromStream($rDataStream, 'DocumentId: '.$this->oDocument->getId());
 				if(is_int($mMaxWidth) && is_int($mMaxHeight)) {
-					$oImage->setSize((int) $mMaxWidth, $mMaxHeight, Image::RESIZE_TO_SMALLER_VALUE);
+					$oImage->setSize((int) $mMaxWidth, (int) $mMaxHeight, Image::RESIZE_TO_SMALLER_VALUE);
 				} else if(is_int($mMaxWidth)) {
 					$oImage->setSize((int) $mMaxWidth, 0, Image::RESIZE_TO_WIDTH);
 				} else {
