@@ -9,7 +9,7 @@
 	url = https://github.com/phingofficial/phing.git
 [submodule "web/js/widget/popover"]
 	path = web/js/widget/popover
-    url = https://github.com/rapila/jquery-popover.git
+	url = https://github.com/rapila/jquery-popover.git
 [submodule "lib/vendor/nib"]
 	path = lib/vendor/nib
 	url = https://github.com/visionmedia/nib.git
