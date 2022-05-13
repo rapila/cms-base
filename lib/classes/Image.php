@@ -24,7 +24,7 @@ class Image {
 		$this->iOriginalHeight = imagesy($this->rImageHandle);
 	}
 
-	public function setSize($iWidth, $iHeight, $iMode = self::RESIZE_TO_WIDTH) {
+	public function setSize(int $iWidth, int $iHeight, int $iMode = self::RESIZE_TO_WIDTH) {
 		if($iMode === self::STRETCH) {
 			$this->iWidth = $iWidth;
 			$this->iHeight = $iHeight;
@@ -50,8 +50,8 @@ class Image {
 				$this->fScalingFactor = $fFactorOnScaleToHeight;
 				break;
 		}
-		$this->iWidth = $this->iOriginalWidth * $this->fScalingFactor;
-		$this->iHeight = $this->iOriginalHeight * $this->fScalingFactor;
+		$this->iWidth = (int) $this->iOriginalWidth * $this->fScalingFactor;
+		$this->iHeight = (int) $this->iOriginalHeight * $this->fScalingFactor;
 	}
 
 	public function getOriginalWidth()
