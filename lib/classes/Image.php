@@ -101,9 +101,9 @@ class Image {
 			return $this->sFileType;
 	}
 
-	public function addText($sFontFilePath, $sText, $iOpacity, $iFontSize, $iRed, $iGreen, $iBlue, $iX = 0, $iY = 0, $iRotationAngle = 0) {
+	public function addText(string $sFontFilePath, string $sText, int $iOpacity, float $fFontSize, int $iRed, int $iGreen, int $iBlue, int $iX = 0, int $iY = 0, float $fRotationAngle = 0) {
 		$rColor = imagecolorallocatealpha($this->rImageHandle, $iRed, $iGreen, $iBlue, $iOpacity);
-		imagefttext($this->rImageHandle, $iFontSize, $iRotationAngle, $iX, $iY, $rColor, $sFontFilePath, $sText);
+		imagefttext($this->rImageHandle, $fFontSize, $fRotationAngle, $iX, $iY, $rColor, $sFontFilePath, $sText);
 		imagecolordeallocate($this->rImageHandle, $rColor);
 	}
 
