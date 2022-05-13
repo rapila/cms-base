@@ -1971,7 +1971,7 @@ abstract class BaseLanguage extends BaseObject implements Persistent
     }
 
     /**
-     * @param	PageString $pageString The pageString object to remove.
+     * @param  PageString $pageString The pageString object to remove.
      * @return Language The current object (for fluent API support)
      */
     public function removePageString($pageString)
@@ -2274,7 +2274,7 @@ abstract class BaseLanguage extends BaseObject implements Persistent
     }
 
     /**
-     * @param	LanguageObject $languageObject The languageObject object to remove.
+     * @param  LanguageObject $languageObject The languageObject object to remove.
      * @return Language The current object (for fluent API support)
      */
     public function removeLanguageObject($languageObject)
@@ -2577,7 +2577,7 @@ abstract class BaseLanguage extends BaseObject implements Persistent
     }
 
     /**
-     * @param	LanguageObjectHistory $languageObjectHistory The languageObjectHistory object to remove.
+     * @param  LanguageObjectHistory $languageObjectHistory The languageObjectHistory object to remove.
      * @return Language The current object (for fluent API support)
      */
     public function removeLanguageObjectHistory($languageObjectHistory)
@@ -2880,7 +2880,7 @@ abstract class BaseLanguage extends BaseObject implements Persistent
     }
 
     /**
-     * @param	Translation $translation The translation object to remove.
+     * @param  Translation $translation The translation object to remove.
      * @return Language The current object (for fluent API support)
      */
     public function removeTranslation($translation)
@@ -3155,7 +3155,7 @@ abstract class BaseLanguage extends BaseObject implements Persistent
     }
 
     /**
-     * @param	UserRelatedByLanguageId $userRelatedByLanguageId The userRelatedByLanguageId object to remove.
+     * @param  User $userRelatedByLanguageId The userRelatedByLanguageId object to remove.
      * @return Language The current object (for fluent API support)
      */
     public function removeUserRelatedByLanguageId($userRelatedByLanguageId)
@@ -3380,7 +3380,7 @@ abstract class BaseLanguage extends BaseObject implements Persistent
     }
 
     /**
-     * @param	Document $document The document object to remove.
+     * @param  Document $document The document object to remove.
      * @return Language The current object (for fluent API support)
      */
     public function removeDocument($document)
@@ -3755,7 +3755,7 @@ abstract class BaseLanguage extends BaseObject implements Persistent
     }
 
     /**
-     * @param	Link $link The link object to remove.
+     * @param  Link $link The link object to remove.
      * @return Language The current object (for fluent API support)
      */
     public function removeLink($link)

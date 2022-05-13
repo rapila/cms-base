@@ -1555,7 +1555,7 @@ abstract class BaseTag extends BaseObject implements Persistent
     }
 
     /**
-     * @param	TagInstance $tagInstance The tagInstance object to remove.
+     * @param  TagInstance $tagInstance The tagInstance object to remove.
      * @return Tag The current object (for fluent API support)
      */
     public function removeTagInstance($tagInstance)

@@ -4933,7 +4933,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	UserGroupRelatedByUserId $userGroupRelatedByUserId The userGroupRelatedByUserId object to remove.
+     * @param  UserGroup $userGroupRelatedByUserId The userGroupRelatedByUserId object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removeUserGroupRelatedByUserId($userGroupRelatedByUserId)
@@ -5186,7 +5186,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	UserRoleRelatedByUserId $userRoleRelatedByUserId The userRoleRelatedByUserId object to remove.
+     * @param  UserRole $userRoleRelatedByUserId The userRoleRelatedByUserId object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removeUserRoleRelatedByUserId($userRoleRelatedByUserId)
@@ -5436,7 +5436,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	DocumentRelatedByOwnerId $documentRelatedByOwnerId The documentRelatedByOwnerId object to remove.
+     * @param  Document $documentRelatedByOwnerId The documentRelatedByOwnerId object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removeDocumentRelatedByOwnerId($documentRelatedByOwnerId)
@@ -5761,7 +5761,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	LinkRelatedByOwnerId $linkRelatedByOwnerId The linkRelatedByOwnerId object to remove.
+     * @param  Link $linkRelatedByOwnerId The linkRelatedByOwnerId object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removeLinkRelatedByOwnerId($linkRelatedByOwnerId)
@@ -6036,7 +6036,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	PageRelatedByCreatedBy $pageRelatedByCreatedBy The pageRelatedByCreatedBy object to remove.
+     * @param  Page $pageRelatedByCreatedBy The pageRelatedByCreatedBy object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removePageRelatedByCreatedBy($pageRelatedByCreatedBy)
@@ -6286,7 +6286,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	PageRelatedByUpdatedBy $pageRelatedByUpdatedBy The pageRelatedByUpdatedBy object to remove.
+     * @param  Page $pageRelatedByUpdatedBy The pageRelatedByUpdatedBy object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removePageRelatedByUpdatedBy($pageRelatedByUpdatedBy)
@@ -6536,7 +6536,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	PagePropertyRelatedByCreatedBy $pagePropertyRelatedByCreatedBy The pagePropertyRelatedByCreatedBy object to remove.
+     * @param  PageProperty $pagePropertyRelatedByCreatedBy The pagePropertyRelatedByCreatedBy object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removePagePropertyRelatedByCreatedBy($pagePropertyRelatedByCreatedBy)
@@ -6786,7 +6786,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	PagePropertyRelatedByUpdatedBy $pagePropertyRelatedByUpdatedBy The pagePropertyRelatedByUpdatedBy object to remove.
+     * @param  PageProperty $pagePropertyRelatedByUpdatedBy The pagePropertyRelatedByUpdatedBy object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removePagePropertyRelatedByUpdatedBy($pagePropertyRelatedByUpdatedBy)
@@ -7036,7 +7036,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	PageStringRelatedByCreatedBy $pageStringRelatedByCreatedBy The pageStringRelatedByCreatedBy object to remove.
+     * @param  PageString $pageStringRelatedByCreatedBy The pageStringRelatedByCreatedBy object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removePageStringRelatedByCreatedBy($pageStringRelatedByCreatedBy)
@@ -7311,7 +7311,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	PageStringRelatedByUpdatedBy $pageStringRelatedByUpdatedBy The pageStringRelatedByUpdatedBy object to remove.
+     * @param  PageString $pageStringRelatedByUpdatedBy The pageStringRelatedByUpdatedBy object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removePageStringRelatedByUpdatedBy($pageStringRelatedByUpdatedBy)
@@ -7586,7 +7586,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	ContentObjectRelatedByCreatedBy $contentObjectRelatedByCreatedBy The contentObjectRelatedByCreatedBy object to remove.
+     * @param  ContentObject $contentObjectRelatedByCreatedBy The contentObjectRelatedByCreatedBy object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removeContentObjectRelatedByCreatedBy($contentObjectRelatedByCreatedBy)
@@ -7836,7 +7836,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	ContentObjectRelatedByUpdatedBy $contentObjectRelatedByUpdatedBy The contentObjectRelatedByUpdatedBy object to remove.
+     * @param  ContentObject $contentObjectRelatedByUpdatedBy The contentObjectRelatedByUpdatedBy object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removeContentObjectRelatedByUpdatedBy($contentObjectRelatedByUpdatedBy)
@@ -8086,7 +8086,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	LanguageObjectRelatedByCreatedBy $languageObjectRelatedByCreatedBy The languageObjectRelatedByCreatedBy object to remove.
+     * @param  LanguageObject $languageObjectRelatedByCreatedBy The languageObjectRelatedByCreatedBy object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removeLanguageObjectRelatedByCreatedBy($languageObjectRelatedByCreatedBy)
@@ -8361,7 +8361,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	LanguageObjectRelatedByUpdatedBy $languageObjectRelatedByUpdatedBy The languageObjectRelatedByUpdatedBy object to remove.
+     * @param  LanguageObject $languageObjectRelatedByUpdatedBy The languageObjectRelatedByUpdatedBy object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removeLanguageObjectRelatedByUpdatedBy($languageObjectRelatedByUpdatedBy)
@@ -8636,7 +8636,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	LanguageObjectHistoryRelatedByCreatedBy $languageObjectHistoryRelatedByCreatedBy The languageObjectHistoryRelatedByCreatedBy object to remove.
+     * @param  LanguageObjectHistory $languageObjectHistoryRelatedByCreatedBy The languageObjectHistoryRelatedByCreatedBy object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removeLanguageObjectHistoryRelatedByCreatedBy($languageObjectHistoryRelatedByCreatedBy)
@@ -8911,7 +8911,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	LanguageObjectHistoryRelatedByUpdatedBy $languageObjectHistoryRelatedByUpdatedBy The languageObjectHistoryRelatedByUpdatedBy object to remove.
+     * @param  LanguageObjectHistory $languageObjectHistoryRelatedByUpdatedBy The languageObjectHistoryRelatedByUpdatedBy object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removeLanguageObjectHistoryRelatedByUpdatedBy($languageObjectHistoryRelatedByUpdatedBy)
@@ -9186,7 +9186,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	LanguageRelatedByCreatedBy $languageRelatedByCreatedBy The languageRelatedByCreatedBy object to remove.
+     * @param  Language $languageRelatedByCreatedBy The languageRelatedByCreatedBy object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removeLanguageRelatedByCreatedBy($languageRelatedByCreatedBy)
@@ -9411,7 +9411,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	LanguageRelatedByUpdatedBy $languageRelatedByUpdatedBy The languageRelatedByUpdatedBy object to remove.
+     * @param  Language $languageRelatedByUpdatedBy The languageRelatedByUpdatedBy object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removeLanguageRelatedByUpdatedBy($languageRelatedByUpdatedBy)
@@ -9636,7 +9636,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	TranslationRelatedByCreatedBy $translationRelatedByCreatedBy The translationRelatedByCreatedBy object to remove.
+     * @param  Translation $translationRelatedByCreatedBy The translationRelatedByCreatedBy object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removeTranslationRelatedByCreatedBy($translationRelatedByCreatedBy)
@@ -9886,7 +9886,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	TranslationRelatedByUpdatedBy $translationRelatedByUpdatedBy The translationRelatedByUpdatedBy object to remove.
+     * @param  Translation $translationRelatedByUpdatedBy The translationRelatedByUpdatedBy object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removeTranslationRelatedByUpdatedBy($translationRelatedByUpdatedBy)
@@ -10136,7 +10136,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	UserGroupRelatedByCreatedBy $userGroupRelatedByCreatedBy The userGroupRelatedByCreatedBy object to remove.
+     * @param  UserGroup $userGroupRelatedByCreatedBy The userGroupRelatedByCreatedBy object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removeUserGroupRelatedByCreatedBy($userGroupRelatedByCreatedBy)
@@ -10386,7 +10386,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	UserGroupRelatedByUpdatedBy $userGroupRelatedByUpdatedBy The userGroupRelatedByUpdatedBy object to remove.
+     * @param  UserGroup $userGroupRelatedByUpdatedBy The userGroupRelatedByUpdatedBy object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removeUserGroupRelatedByUpdatedBy($userGroupRelatedByUpdatedBy)
@@ -10636,7 +10636,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	GroupRelatedByCreatedBy $groupRelatedByCreatedBy The groupRelatedByCreatedBy object to remove.
+     * @param  Group $groupRelatedByCreatedBy The groupRelatedByCreatedBy object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removeGroupRelatedByCreatedBy($groupRelatedByCreatedBy)
@@ -10861,7 +10861,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	GroupRelatedByUpdatedBy $groupRelatedByUpdatedBy The groupRelatedByUpdatedBy object to remove.
+     * @param  Group $groupRelatedByUpdatedBy The groupRelatedByUpdatedBy object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removeGroupRelatedByUpdatedBy($groupRelatedByUpdatedBy)
@@ -11086,7 +11086,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	GroupRoleRelatedByCreatedBy $groupRoleRelatedByCreatedBy The groupRoleRelatedByCreatedBy object to remove.
+     * @param  GroupRole $groupRoleRelatedByCreatedBy The groupRoleRelatedByCreatedBy object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removeGroupRoleRelatedByCreatedBy($groupRoleRelatedByCreatedBy)
@@ -11361,7 +11361,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	GroupRoleRelatedByUpdatedBy $groupRoleRelatedByUpdatedBy The groupRoleRelatedByUpdatedBy object to remove.
+     * @param  GroupRole $groupRoleRelatedByUpdatedBy The groupRoleRelatedByUpdatedBy object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removeGroupRoleRelatedByUpdatedBy($groupRoleRelatedByUpdatedBy)
@@ -11636,7 +11636,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	RoleRelatedByCreatedBy $roleRelatedByCreatedBy The roleRelatedByCreatedBy object to remove.
+     * @param  Role $roleRelatedByCreatedBy The roleRelatedByCreatedBy object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removeRoleRelatedByCreatedBy($roleRelatedByCreatedBy)
@@ -11861,7 +11861,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	RoleRelatedByUpdatedBy $roleRelatedByUpdatedBy The roleRelatedByUpdatedBy object to remove.
+     * @param  Role $roleRelatedByUpdatedBy The roleRelatedByUpdatedBy object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removeRoleRelatedByUpdatedBy($roleRelatedByUpdatedBy)
@@ -12086,7 +12086,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	UserRoleRelatedByCreatedBy $userRoleRelatedByCreatedBy The userRoleRelatedByCreatedBy object to remove.
+     * @param  UserRole $userRoleRelatedByCreatedBy The userRoleRelatedByCreatedBy object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removeUserRoleRelatedByCreatedBy($userRoleRelatedByCreatedBy)
@@ -12336,7 +12336,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	UserRoleRelatedByUpdatedBy $userRoleRelatedByUpdatedBy The userRoleRelatedByUpdatedBy object to remove.
+     * @param  UserRole $userRoleRelatedByUpdatedBy The userRoleRelatedByUpdatedBy object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removeUserRoleRelatedByUpdatedBy($userRoleRelatedByUpdatedBy)
@@ -12586,7 +12586,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	RightRelatedByCreatedBy $rightRelatedByCreatedBy The rightRelatedByCreatedBy object to remove.
+     * @param  Right $rightRelatedByCreatedBy The rightRelatedByCreatedBy object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removeRightRelatedByCreatedBy($rightRelatedByCreatedBy)
@@ -12861,7 +12861,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	RightRelatedByUpdatedBy $rightRelatedByUpdatedBy The rightRelatedByUpdatedBy object to remove.
+     * @param  Right $rightRelatedByUpdatedBy The rightRelatedByUpdatedBy object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removeRightRelatedByUpdatedBy($rightRelatedByUpdatedBy)
@@ -13136,7 +13136,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	DocumentRelatedByCreatedBy $documentRelatedByCreatedBy The documentRelatedByCreatedBy object to remove.
+     * @param  Document $documentRelatedByCreatedBy The documentRelatedByCreatedBy object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removeDocumentRelatedByCreatedBy($documentRelatedByCreatedBy)
@@ -13461,7 +13461,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	DocumentRelatedByUpdatedBy $documentRelatedByUpdatedBy The documentRelatedByUpdatedBy object to remove.
+     * @param  Document $documentRelatedByUpdatedBy The documentRelatedByUpdatedBy object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removeDocumentRelatedByUpdatedBy($documentRelatedByUpdatedBy)
@@ -13786,7 +13786,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	DocumentDataRelatedByCreatedBy $documentDataRelatedByCreatedBy The documentDataRelatedByCreatedBy object to remove.
+     * @param  DocumentData $documentDataRelatedByCreatedBy The documentDataRelatedByCreatedBy object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removeDocumentDataRelatedByCreatedBy($documentDataRelatedByCreatedBy)
@@ -14011,7 +14011,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	DocumentDataRelatedByUpdatedBy $documentDataRelatedByUpdatedBy The documentDataRelatedByUpdatedBy object to remove.
+     * @param  DocumentData $documentDataRelatedByUpdatedBy The documentDataRelatedByUpdatedBy object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removeDocumentDataRelatedByUpdatedBy($documentDataRelatedByUpdatedBy)
@@ -14236,7 +14236,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	DocumentTypeRelatedByCreatedBy $documentTypeRelatedByCreatedBy The documentTypeRelatedByCreatedBy object to remove.
+     * @param  DocumentType $documentTypeRelatedByCreatedBy The documentTypeRelatedByCreatedBy object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removeDocumentTypeRelatedByCreatedBy($documentTypeRelatedByCreatedBy)
@@ -14461,7 +14461,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	DocumentTypeRelatedByUpdatedBy $documentTypeRelatedByUpdatedBy The documentTypeRelatedByUpdatedBy object to remove.
+     * @param  DocumentType $documentTypeRelatedByUpdatedBy The documentTypeRelatedByUpdatedBy object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removeDocumentTypeRelatedByUpdatedBy($documentTypeRelatedByUpdatedBy)
@@ -14686,7 +14686,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	DocumentCategoryRelatedByCreatedBy $documentCategoryRelatedByCreatedBy The documentCategoryRelatedByCreatedBy object to remove.
+     * @param  DocumentCategory $documentCategoryRelatedByCreatedBy The documentCategoryRelatedByCreatedBy object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removeDocumentCategoryRelatedByCreatedBy($documentCategoryRelatedByCreatedBy)
@@ -14911,7 +14911,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	DocumentCategoryRelatedByUpdatedBy $documentCategoryRelatedByUpdatedBy The documentCategoryRelatedByUpdatedBy object to remove.
+     * @param  DocumentCategory $documentCategoryRelatedByUpdatedBy The documentCategoryRelatedByUpdatedBy object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removeDocumentCategoryRelatedByUpdatedBy($documentCategoryRelatedByUpdatedBy)
@@ -15136,7 +15136,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	TagRelatedByCreatedBy $tagRelatedByCreatedBy The tagRelatedByCreatedBy object to remove.
+     * @param  Tag $tagRelatedByCreatedBy The tagRelatedByCreatedBy object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removeTagRelatedByCreatedBy($tagRelatedByCreatedBy)
@@ -15361,7 +15361,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	TagRelatedByUpdatedBy $tagRelatedByUpdatedBy The tagRelatedByUpdatedBy object to remove.
+     * @param  Tag $tagRelatedByUpdatedBy The tagRelatedByUpdatedBy object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removeTagRelatedByUpdatedBy($tagRelatedByUpdatedBy)
@@ -15586,7 +15586,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	TagInstanceRelatedByCreatedBy $tagInstanceRelatedByCreatedBy The tagInstanceRelatedByCreatedBy object to remove.
+     * @param  TagInstance $tagInstanceRelatedByCreatedBy The tagInstanceRelatedByCreatedBy object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removeTagInstanceRelatedByCreatedBy($tagInstanceRelatedByCreatedBy)
@@ -15836,7 +15836,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	TagInstanceRelatedByUpdatedBy $tagInstanceRelatedByUpdatedBy The tagInstanceRelatedByUpdatedBy object to remove.
+     * @param  TagInstance $tagInstanceRelatedByUpdatedBy The tagInstanceRelatedByUpdatedBy object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removeTagInstanceRelatedByUpdatedBy($tagInstanceRelatedByUpdatedBy)
@@ -16086,7 +16086,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	LinkRelatedByCreatedBy $linkRelatedByCreatedBy The linkRelatedByCreatedBy object to remove.
+     * @param  Link $linkRelatedByCreatedBy The linkRelatedByCreatedBy object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removeLinkRelatedByCreatedBy($linkRelatedByCreatedBy)
@@ -16361,7 +16361,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	LinkRelatedByUpdatedBy $linkRelatedByUpdatedBy The linkRelatedByUpdatedBy object to remove.
+     * @param  Link $linkRelatedByUpdatedBy The linkRelatedByUpdatedBy object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removeLinkRelatedByUpdatedBy($linkRelatedByUpdatedBy)
@@ -16636,7 +16636,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	LinkCategoryRelatedByCreatedBy $linkCategoryRelatedByCreatedBy The linkCategoryRelatedByCreatedBy object to remove.
+     * @param  LinkCategory $linkCategoryRelatedByCreatedBy The linkCategoryRelatedByCreatedBy object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removeLinkCategoryRelatedByCreatedBy($linkCategoryRelatedByCreatedBy)
@@ -16861,7 +16861,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	LinkCategoryRelatedByUpdatedBy $linkCategoryRelatedByUpdatedBy The linkCategoryRelatedByUpdatedBy object to remove.
+     * @param  LinkCategory $linkCategoryRelatedByUpdatedBy The linkCategoryRelatedByUpdatedBy object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removeLinkCategoryRelatedByUpdatedBy($linkCategoryRelatedByUpdatedBy)
@@ -17086,7 +17086,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	ReferenceRelatedByCreatedBy $referenceRelatedByCreatedBy The referenceRelatedByCreatedBy object to remove.
+     * @param  Reference $referenceRelatedByCreatedBy The referenceRelatedByCreatedBy object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removeReferenceRelatedByCreatedBy($referenceRelatedByCreatedBy)
@@ -17311,7 +17311,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	ReferenceRelatedByUpdatedBy $referenceRelatedByUpdatedBy The referenceRelatedByUpdatedBy object to remove.
+     * @param  Reference $referenceRelatedByUpdatedBy The referenceRelatedByUpdatedBy object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removeReferenceRelatedByUpdatedBy($referenceRelatedByUpdatedBy)
@@ -17536,7 +17536,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	ScheduledActionRelatedByCreatedBy $scheduledActionRelatedByCreatedBy The scheduledActionRelatedByCreatedBy object to remove.
+     * @param  ScheduledAction $scheduledActionRelatedByCreatedBy The scheduledActionRelatedByCreatedBy object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removeScheduledActionRelatedByCreatedBy($scheduledActionRelatedByCreatedBy)
@@ -17761,7 +17761,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * @param	ScheduledActionRelatedByUpdatedBy $scheduledActionRelatedByUpdatedBy The scheduledActionRelatedByUpdatedBy object to remove.
+     * @param  ScheduledAction $scheduledActionRelatedByUpdatedBy The scheduledActionRelatedByUpdatedBy object to remove.
      * @return User The current object (for fluent API support)
      */
     public function removeScheduledActionRelatedByUpdatedBy($scheduledActionRelatedByUpdatedBy)

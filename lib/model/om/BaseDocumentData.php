@@ -166,7 +166,7 @@ abstract class BaseDocumentData extends BaseObject implements Persistent
             $stmt = DocumentDataPeer::doSelectStmt($c, $con);
             $row = $stmt->fetch(PDO::FETCH_NUM);
             $stmt->closeCursor();
-            if ($row[0] !== null) {
+            if (isset($row[0])) {
                 $this->data = fopen('php://memory', 'r+');
                 fwrite($this->data, $row[0]);
                 rewind($this->data);
@@ -1664,7 +1664,7 @@ abstract class BaseDocumentData extends BaseObject implements Persistent
     }
 
     /**
-     * @param	Document $document The document object to remove.
+     * @param  Document $document The document object to remove.
      * @return DocumentData The current object (for fluent API support)
      */
     public function removeDocument($document)

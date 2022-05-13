@@ -2570,7 +2570,7 @@ abstract class BasePage extends BaseObject implements Persistent
     }
 
     /**
-     * @param	PageRelatedById $pageRelatedById The pageRelatedById object to remove.
+     * @param  Page $pageRelatedById The pageRelatedById object to remove.
      * @return Page The current object (for fluent API support)
      */
     public function removePageRelatedById($pageRelatedById)
@@ -2845,7 +2845,7 @@ abstract class BasePage extends BaseObject implements Persistent
     }
 
     /**
-     * @param	PageProperty $pageProperty The pageProperty object to remove.
+     * @param  PageProperty $pageProperty The pageProperty object to remove.
      * @return Page The current object (for fluent API support)
      */
     public function removePageProperty($pageProperty)
@@ -3123,7 +3123,7 @@ abstract class BasePage extends BaseObject implements Persistent
     }
 
     /**
-     * @param	PageString $pageString The pageString object to remove.
+     * @param  PageString $pageString The pageString object to remove.
      * @return Page The current object (for fluent API support)
      */
     public function removePageString($pageString)
@@ -3423,7 +3423,7 @@ abstract class BasePage extends BaseObject implements Persistent
     }
 
     /**
-     * @param	ContentObject $contentObject The contentObject object to remove.
+     * @param  ContentObject $contentObject The contentObject object to remove.
      * @return Page The current object (for fluent API support)
      */
     public function removeContentObject($contentObject)
@@ -3698,7 +3698,7 @@ abstract class BasePage extends BaseObject implements Persistent
     }
 
     /**
-     * @param	Right $right The right object to remove.
+     * @param  Right $right The right object to remove.
      * @return Page The current object (for fluent API support)
      */
     public function removeRight($right)

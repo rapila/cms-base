@@ -1924,7 +1924,7 @@ abstract class BaseContentObject extends BaseObject implements Persistent
     }
 
     /**
-     * @param	LanguageObject $languageObject The languageObject object to remove.
+     * @param  LanguageObject $languageObject The languageObject object to remove.
      * @return ContentObject The current object (for fluent API support)
      */
     public function removeLanguageObject($languageObject)
@@ -2227,7 +2227,7 @@ abstract class BaseContentObject extends BaseObject implements Persistent
     }
 
     /**
-     * @param	LanguageObjectHistory $languageObjectHistory The languageObjectHistory object to remove.
+     * @param  LanguageObjectHistory $languageObjectHistory The languageObjectHistory object to remove.
      * @return ContentObject The current object (for fluent API support)
      */
     public function removeLanguageObjectHistory($languageObjectHistory)

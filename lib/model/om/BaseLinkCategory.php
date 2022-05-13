@@ -1646,7 +1646,7 @@ abstract class BaseLinkCategory extends BaseObject implements Persistent
     }
 
     /**
-     * @param	Link $link The link object to remove.
+     * @param  Link $link The link object to remove.
      * @return LinkCategory The current object (for fluent API support)
      */
     public function removeLink($link)

@@ -1756,7 +1756,7 @@ abstract class BaseDocumentCategory extends BaseObject implements Persistent
     }
 
     /**
-     * @param	Document $document The document object to remove.
+     * @param  Document $document The document object to remove.
      * @return DocumentCategory The current object (for fluent API support)
      */
     public function removeDocument($document)

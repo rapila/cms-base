@@ -1606,7 +1606,7 @@ abstract class BaseGroup extends BaseObject implements Persistent
     }
 
     /**
-     * @param	UserGroup $userGroup The userGroup object to remove.
+     * @param  UserGroup $userGroup The userGroup object to remove.
      * @return Group The current object (for fluent API support)
      */
     public function removeUserGroup($userGroup)
@@ -1909,7 +1909,7 @@ abstract class BaseGroup extends BaseObject implements Persistent
     }
 
     /**
-     * @param	GroupRole $groupRole The groupRole object to remove.
+     * @param  GroupRole $groupRole The groupRole object to remove.
      * @return Group The current object (for fluent API support)
      */
     public function removeGroupRole($groupRole)

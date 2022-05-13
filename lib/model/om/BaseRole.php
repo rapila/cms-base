@@ -1646,7 +1646,7 @@ abstract class BaseRole extends BaseObject implements Persistent
     }
 
     /**
-     * @param	GroupRole $groupRole The groupRole object to remove.
+     * @param  GroupRole $groupRole The groupRole object to remove.
      * @return Role The current object (for fluent API support)
      */
     public function removeGroupRole($groupRole)
@@ -1949,7 +1949,7 @@ abstract class BaseRole extends BaseObject implements Persistent
     }
 
     /**
-     * @param	UserRole $userRole The userRole object to remove.
+     * @param  UserRole $userRole The userRole object to remove.
      * @return Role The current object (for fluent API support)
      */
     public function removeUserRole($userRole)
@@ -2249,7 +2249,7 @@ abstract class BaseRole extends BaseObject implements Persistent
     }
 
     /**
-     * @param	Right $right The right object to remove.
+     * @param  Right $right The right object to remove.
      * @return Role The current object (for fluent API support)
      */
     public function removeRight($right)

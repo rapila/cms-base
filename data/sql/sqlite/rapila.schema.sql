@@ -631,7 +631,7 @@ CREATE TABLE [links]
     [url] VARCHAR(255),
     [description] VARCHAR(255),
     [language_id] VARCHAR(3),
-    [owner_id] INTEGER NOT NULL,
+    [owner_id] INTEGER,
     [link_category_id] INTEGER,
     [sort] INTEGER,
     [is_private] INTEGER(1) DEFAULT 0,
@@ -697,6 +697,33 @@ CREATE TABLE [indirect_references]
     [created_by] INTEGER,
     [updated_by] INTEGER,
     UNIQUE ([from_id],[from_model_name],[to_id],[to_model_name])
+);
+
+-- SQLite does not support foreign keys; this is just for reference
+-- FOREIGN KEY ([created_by]) REFERENCES users ([id])
+
+-- SQLite does not support foreign keys; this is just for reference
+-- FOREIGN KEY ([updated_by]) REFERENCES users ([id])
+
+-----------------------------------------------------------------------
+-- scheduled_actions
+-----------------------------------------------------------------------
+
+DROP TABLE IF EXISTS [scheduled_actions];
+
+CREATE TABLE [scheduled_actions]
+(
+    [id] INTEGER NOT NULL PRIMARY KEY,
+    [model_id] VARCHAR(20) NOT NULL,
+    [model_name] VARCHAR(80) NOT NULL,
+    [schedule_date] TIMESTAMP NOT NULL,
+    [execution_date] TIMESTAMP,
+    [action] VARCHAR(80) NOT NULL,
+    [params] LONGBLOB,
+    [created_at] TIMESTAMP,
+    [updated_at] TIMESTAMP,
+    [created_by] INTEGER,
+    [updated_by] INTEGER
 );
 
 -- SQLite does not support foreign keys; this is just for reference
