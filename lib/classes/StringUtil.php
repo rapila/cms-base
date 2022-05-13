@@ -53,6 +53,9 @@ class StringUtil {
 	}
 
 	public static function makeReadableName($sString, $sExplodeString='_') {
+		if(!$sString) {
+			return '';
+		}
 		$aSplit = explode($sExplodeString, $sString);
 		foreach($aSplit as $i => $sChunks) {
 			$aSplit[$i] = ucfirst($sChunks);
