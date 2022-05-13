@@ -787,7 +787,7 @@ class Template {
 			}
 			//Identifier replacement in parameter values
 			foreach($oIdentifier->getParameters() as $sKey => $sIdentifierValue) {
-				if(strpos($sIdentifierValue, TEMPLATE_IDENTIFIER_START) !== false) {
+				if($sIdentifierValue && strpos($sIdentifierValue, TEMPLATE_IDENTIFIER_START) !== false) {
 					$oValueTemplate = $this->derivativeTemplate($sIdentifierValue, false, true);
 					$oValueTemplate->iDefaultFlags = self::NO_HTML_ESCAPE;
 					$oValueTemplate->bKillIdentifiersBeforeRender = true;
