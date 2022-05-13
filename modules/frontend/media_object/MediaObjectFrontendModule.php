@@ -50,6 +50,9 @@ class MediaObjectFrontendModule extends FrontendModule {
 				continue;
 			}
 			$oSubTemplate = null;
+			if(!$sMimeType) {
+				$sMimeType = "generic";
+			}
 			try {
 				try {
 					$oSubTemplate = $this->constructTemplate($sMimeType);
