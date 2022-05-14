@@ -50,8 +50,8 @@ class Image {
 				$this->fScalingFactor = $fFactorOnScaleToHeight;
 				break;
 		}
-		$this->iWidth = (int) $this->iOriginalWidth * $this->fScalingFactor;
-		$this->iHeight = (int) $this->iOriginalHeight * $this->fScalingFactor;
+		$this->iWidth = (int) ($this->iOriginalWidth * $this->fScalingFactor);
+		$this->iHeight = (int) ($this->iOriginalHeight * $this->fScalingFactor);
 	}
 
 	public function getOriginalWidth()
