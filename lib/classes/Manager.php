@@ -50,7 +50,7 @@ abstract class Manager {
 	}
 
 	public static function peekNextPathItem() {
-		return @self::$REQUEST_PATH[0];
+		return self::hasNextPathItem() ? self::$REQUEST_PATH[0] : null;
 	}
 
 	public static function getRequestedPath() {
