@@ -585,7 +585,7 @@ class Template {
 				$bHasDoneIdentifierValueReplacement = true;
 			}
 			foreach($oIdentifier->getParameters() as $sKey => $sValue) {
-				if($sValue && strpos($sValue, TEMPLATE_IDENTIFIER_START) !== false) {
+				if(!empty($sValue) && strpos($sValue, TEMPLATE_IDENTIFIER_START) !== false) {
 					//Identifier replacement in parameter values
 					$oValueTemplate = $this->derivativeTemplate($sValue, false, true);
 					if($bMultiple) {
