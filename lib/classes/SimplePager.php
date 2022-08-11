@@ -419,7 +419,7 @@ class SimplePager implements Iterator {
 	}
 
 	// Iterator methods
-	public function current() {
+	public function current(): mixed {
 		$oResult = new stdClass();
 		$oResult->page = $this->iCurrentKey+1;
 		$oResult->numberOfResults = $this->getRowsOnPage();
