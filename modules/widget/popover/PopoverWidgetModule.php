@@ -2,7 +2,7 @@
 class PopoverWidgetModule extends PersistentWidgetModule {
 	private $oDelegate;
 	
-	public function __construct($sSessionKey = null, $oDelegate) {
+	public function __construct($sSessionKey = null, $oDelegate = null) {
 		parent::__construct($sSessionKey);
 		$this->oDelegate = $oDelegate;
 	}
