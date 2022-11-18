@@ -426,15 +426,18 @@ class SimplePager implements Iterator {
 		$oResult->link = $this->getPageLink($oResult->iPage);
 		return $oResult;
 	}
-	public function key() {
+	public function key(): mixed {
 		return $this->iCurrentKey;
 	}
-	public function next() {
+	#[\ReturnTypeWillChange]
+	public function next()	 {
 		$this->iCurrentKey++;
 	}
+	#[\ReturnTypeWillChange]
 	public function rewind() {
 		$this->iCurrentKey = 0;
 	}
+	#[\ReturnTypeWillChange]
 	public function valid() {
 		$this->iCurrentKey === 0 || $this->iCurrentKey < $this->getTotalPageCount();
 	}
