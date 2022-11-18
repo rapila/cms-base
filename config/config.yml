@@ -39,7 +39,8 @@ domain_holder:
   email:  'info@example.com'
 
 developer:
-  email: cms@example.com
+  # change this if you want to receive error messages by email
+  # email: cms@example.com
 
 admin:
   title: 'CMS Admin — {{module_name}}'
