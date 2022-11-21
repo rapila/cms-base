@@ -134,18 +134,33 @@ class StringUtil {
 		return $sInput;
 	}
 
-	public static function getWords($sString, $bFromHtml=false, $sReplaceNonWordsWith = '') {
-		if($sString instanceof Template) {
-			$sString = $sString->render();
+	/**
+	* getWords()
+ 	*
+ 	* @param mixed (string/Template) $mString  containing words
+ 	* @param boolean  $bFromHtml  if $mString is html
+ 	* @param string $sReplaceNonWordsWith   string to replace non word char
+ 	* 
+	* @return array()
+ 	*/ 
+	public static function getWords($mString, $bFromHtml=false, $sReplaceNonWordsWith = '') {
+		if(is_null($mString)) {
+			return array();
 		}
-
+		
+		if($mString instanceof Template) {
+			// should the flag $bFromHtml be set to true here too
+			$mString = $mString->render();
+		}
+		
 		if($bFromHtml) {
 			$aReplaceByLinebreak = array('<br />', '<br/>', '<br>', '</p><p>', '</li><li>', '</div><div>');
-			$sString = str_replace($aReplaceByLinebreak, "\n", $sString);
-			$sString = html_entity_decode(strip_tags($sString), ENT_QUOTES, Settings::getSetting('encoding', 'browser', 'utf-8'));
+			$mString = str_replace($aReplaceByLinebreak, "\n", $mString);
+			$mString = html_entity_decode(strip_tags($mString), ENT_QUOTES, Settings::getSetting('encoding', 'browser', 'utf-8'));
 		}
+		
+		$aWords = mb_split("[\s\-–—.@]+", $mString);
 
-		$aWords = mb_split("[\s\-–—.@]+", $sString);
 		$aResult = array();
 		foreach($aWords as $sWord) {
 			$sWord = self::normalizeToASCII($sWord, '-', $sReplaceNonWordsWith);
