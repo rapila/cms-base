@@ -429,16 +429,16 @@ class SimplePager implements Iterator {
 	public function key(): mixed {
 		return $this->iCurrentKey;
 	}
-	#[\ReturnTypeWillChange]
-	public function next()	 {
+	
+	public function next(): void	 {
 		$this->iCurrentKey++;
 	}
-	#[\ReturnTypeWillChange]
-	public function rewind() {
+
+	public function rewind(): void {
 		$this->iCurrentKey = 0;
 	}
-	#[\ReturnTypeWillChange]
-	public function valid() {
+
+	public function valid(): bool {
 		$this->iCurrentKey === 0 || $this->iCurrentKey < $this->getTotalPageCount();
 	}
 }
