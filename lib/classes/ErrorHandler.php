@@ -85,7 +85,7 @@ class ErrorHandler {
 			if(!$bSimpleHost) {
 				$sTLD = explode('.', $_SERVER['HTTP_HOST']);
 				$sTLD = array_pop($sTLD);
-				$bSimpleHost = in_array($sTLD, array('local', 'home')) || StringUtil::endsWith($_SERVER['HTTP_HOST'], '.xip.io');
+				$bSimpleHost = in_array($sTLD, array('local', 'home', 'localhost', '')) || StringUtil::endsWith($_SERVER['HTTP_HOST'], '.xip.io');
 			}
 			if(!$bSimpleHost && isset($_SERVER['SERVER_ADDR'])) {
 				$bSimpleHost = $_SERVER['HTTP_HOST'] === $_SERVER['SERVER_ADDR'];
