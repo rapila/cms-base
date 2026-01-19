@@ -207,6 +207,8 @@ Widget.types.detail = {
 				}
 			}
 		});
+		this.content.data().uiDialog.window = $(window);
+		this.content.data().uiDialog.document = $(document);
 		// Get the wrapper widget
 		this._element = this.content.dialog('widget');
 		this.has_dialog = true;
