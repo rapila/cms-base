@@ -2,8 +2,8 @@
 
 class AdminManager extends Manager {
 
-	const JQUERY_VERSION = '3.3.1';
-	const JQUERY_UI_VERSION = '1.12.1';
+	const JQUERY_VERSION = '3.7.1';
+	const JQUERY_UI_VERSION = '1.14.1';
 
 	const DEFAULT_MODULE = 'dashboard';
 	const CONTENT_LANGUAGE_SESSION_KEY = 'content_language';
