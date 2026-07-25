@@ -1,5 +1,4 @@
 <?php
-
 class LocalJsLibraryFileModule extends FileModule {
 	private $aLibraryName;
 	private $sVersion;
@@ -8,7 +7,7 @@ class LocalJsLibraryFileModule extends FileModule {
 	public function __construct($aRequestPath) {
 		parent::__construct($aRequestPath);
 		$this->aLibraryName = Manager::usePath();
-		$this->aVersion = Manager::usePath();
+		$this->sVersion = Manager::usePath();
 		$sExtension = Manager::usePath();
 		$this->bUseCompression = $sExtension === 'min.js';
 	}
