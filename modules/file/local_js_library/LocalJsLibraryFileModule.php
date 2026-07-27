@@ -1,12 +1,12 @@
 <?php
 class LocalJsLibraryFileModule extends FileModule {
-	private $aLibraryName;
+	private $sLibraryName;
 	private $sVersion;
 	private $bUseCompression;
 
 	public function __construct($aRequestPath) {
 		parent::__construct($aRequestPath);
-		$this->aLibraryName = Manager::usePath();
+		$this->sLibraryName = Manager::usePath();
 		$this->sVersion = Manager::usePath();
 		$sExtension = Manager::usePath();
 		$this->bUseCompression = $sExtension === 'min.js';
@@ -22,7 +22,7 @@ class LocalJsLibraryFileModule extends FileModule {
 		$oIncluder = new ResourceIncluder();
 		// Don’t use SSL for downloads
 		// Don’t include dependencies either
-		$oIncluder->addJavaScriptLibrary($this->aLibraryName, $this->aVersion, $this->bUseCompression, false, false, ResourceIncluder::PRIORITY_NORMAL, false);
+		$oIncluder->addJavaScriptLibrary($this->sLibraryName, $this->aVersion, $this->bUseCompression, false, false, ResourceIncluder::PRIORITY_NORMAL, false);
 		$sContents = self::getResourceIncluderContents($oIncluder);
 		$oCache->setContents($sContents);
 		$oCache->sendCacheControlHeaders();
