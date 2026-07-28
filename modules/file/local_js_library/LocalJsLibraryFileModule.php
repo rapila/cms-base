@@ -22,7 +22,7 @@ class LocalJsLibraryFileModule extends FileModule {
 		$oIncluder = new ResourceIncluder();
 		// Don’t use SSL for downloads
 		// Don’t include dependencies either
-		$oIncluder->addJavaScriptLibrary($this->sLibraryName, $this->aVersion, $this->bUseCompression, false, false, ResourceIncluder::PRIORITY_NORMAL, false);
+		$oIncluder->addJavaScriptLibrary($this->sLibraryName, $this->sVersion, $this->bUseCompression, false, false, ResourceIncluder::PRIORITY_NORMAL, false);
 		$sContents = self::getResourceIncluderContents($oIncluder);
 		$oCache->setContents($sContents);
 		$oCache->sendCacheControlHeaders();
