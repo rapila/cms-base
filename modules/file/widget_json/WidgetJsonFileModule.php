@@ -2,6 +2,10 @@
 
 class WidgetJsonFileModule extends FileModule {
 
+	private $sWidgetType;
+
+	private $sAction;
+	
 	public static $JSON_ERRORS = array();
 
 	public function __construct($aRequestPath) {
