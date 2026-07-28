@@ -142,9 +142,9 @@ public function getTags()
 		$sClass = $builder->getStubObjectBuilder()->getClassname();
 		return "
 /**
- * Add a tag to the ${sClass} given by the id
+ * Add a tag to the {$sClass} given by the id
  */
-public static function addTagTo(\$s${sClass}Id, \$mTag)
+public static function addTagTo(\$s{$sClass}Id, \$mTag)
 {
 	if(\$mTag instanceof $sInstanceClass) {
 		\$mTag = \$mTag->get$sTagClass();
@@ -153,20 +153,20 @@ public static function addTagTo(\$s${sClass}Id, \$mTag)
 		\$mTag = \$mTag->getName();
 	}
 	\$sTagName = StringUtil::normalize(\$mTag);
-	\$oTag = ${sTagClass}Query::create()->findOneByName(\$sTagName);
+	\$oTag = {$sTagClass}Query::create()->findOneByName(\$sTagName);
 	if(\$oTag === null) {
 		\$oTag = new $sTagClass();
 		\$oTag->setName(\$sTagName);
 		\$oTag->save();
 	}
-	\$oTagInstance = ${sInstanceClass}Query::create()->findPk(array(\$oTag->getId(), \$s${sClass}Id, \"$sClass\"));
+	\$oTagInstance = {$sInstanceClass}Query::create()->findPk(array(\$oTag->getId(), \$s{$sClass}Id, \"$sClass\"));
 	if(\$oTagInstance !== null) {
 		return \$oTagInstance;
 	}
 	\$oTagInstance = new $sInstanceClass();
-	\$oTagInstance->set${sTagClass}(\$oTag);
+	\$oTagInstance->set{$sTagClass}(\$oTag);
 	\$oTagInstance->setModelName(\"$sClass\");
-	\$oTagInstance->setTaggedItemId(\$s${sClass}Id);
+	\$oTagInstance->setTaggedItemId(\$s{$sClass}Id);
 	\$oTagInstance->save();
 	return \$oTagInstance;
 }";
@@ -179,12 +179,12 @@ public static function addTagTo(\$s${sClass}Id, \$mTag)
 		$sClass = $builder->getStubObjectBuilder()->getClassname();
 		return "
 /**
- * Remove tag from the ${sClass} given by the id
+ * Remove tag from the {$sClass} given by the id
  */
-public static function removeTagFrom(\$s${sClass}Id, \$mTag)
+public static function removeTagFrom(\$s{$sClass}Id, \$mTag)
 {
 	if(is_string(\$mTag)) {
-		\$mTag = ${sTagClass}Query::create()->findOneByName(\$mTag);
+		\$mTag = {$sTagClass}Query::create()->findOneByName(\$mTag);
 	}
 	if(\$mTag instanceof $sInstanceClass) {
 		\$mTag = \$mTag->get$sTagClass();
@@ -192,8 +192,8 @@ public static function removeTagFrom(\$s${sClass}Id, \$mTag)
 	if(!(\$mTag instanceof $sTagClass)) {
 		return;
 	}
-	\$oQuery = ${sInstanceClass}Query::create();
-	\$oQuery->filterByTaggedItemId(\$s${sClass}Id);
+	\$oQuery = {$sInstanceClass}Query::create();
+	\$oQuery->filterByTaggedItemId(\$s{$sClass}Id);
 	\$oQuery->filterByModelName(\"$sClass\");
 	\$oQuery->filterByTag(\$mTag);
 	\$oTagInstance = \$oQuery->findOne();
@@ -210,11 +210,11 @@ public static function removeTagFrom(\$s${sClass}Id, \$mTag)
 		$sClass = $builder->getStubObjectBuilder()->getClassname();
 		return "
 /**
- * Remove all tags from the ${sClass} given by the id
+ * Remove all tags from the {$sClass} given by the id
  */
-public static function removeAllTagsFrom(\$s${sClass}Id)
+public static function removeAllTagsFrom(\$s{$sClass}Id)
 {
-	\$aTagInstances = self::tagsFor(\$s${sClass}Id, 'instances');
+	\$aTagInstances = self::tagsFor(\$s{$sClass}Id, 'instances');
 	foreach(\$aTagInstances as \$oTagInstance) {
 		\$oTagInstance->delete();
 	}
@@ -229,13 +229,13 @@ public static function removeAllTagsFrom(\$s${sClass}Id)
 		$sClass = $builder->getStubObjectBuilder()->getClassname();
 		return "
 /**
- * @return All tags for the ${sClass} given by the id
+ * @return All tags for the {$sClass} given by the id
  */
-public static function tagsFor(\$s${sClass}Id = null, \$sReturn = 'tag')
+public static function tagsFor(\$s{$sClass}Id = null, \$sReturn = 'tag')
 {
-	\$oQuery = ${sInstanceClass}Query::create();
-	if(\$s${sClass}Id !== null) {
-		\$oQuery->filterByTaggedItemId(\$s${sClass}Id);
+	\$oQuery = {$sInstanceClass}Query::create();
+	if(\$s{$sClass}Id !== null) {
+		\$oQuery->filterByTaggedItemId(\$s{$sClass}Id);
 	}
 	\$oQuery->filterByModelName(\"$sClass\");
 	if(\$sReturn === 'count') {

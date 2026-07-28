@@ -240,15 +240,15 @@ EOT;
 		$aMatches = $aMatches[1];
 		foreach($aMatches as $sClassName) {
 			$sClassPath = ResourceFinder::findResource(array(DIRNAME_GENERATED, DIRNAME_MODEL, "$sClassName.php"), ResourceFinder::SEARCH_MAIN_ONLY);
-			$sPeerClassPath = ResourceFinder::findResource(array(DIRNAME_GENERATED, DIRNAME_MODEL, "${sClassName}".self::$PEER_SUFFIX.".php"), ResourceFinder::SEARCH_MAIN_ONLY);
-			$sQueryClassPath = ResourceFinder::findResource(array(DIRNAME_GENERATED, DIRNAME_MODEL, "${sClassName}".self::$QUERY_SUFFIX.".php"), ResourceFinder::SEARCH_MAIN_ONLY);
+			$sPeerClassPath = ResourceFinder::findResource(array(DIRNAME_GENERATED, DIRNAME_MODEL, $sClassName.self::$PEER_SUFFIX.".php"), ResourceFinder::SEARCH_MAIN_ONLY);
+			$sQueryClassPath = ResourceFinder::findResource(array(DIRNAME_GENERATED, DIRNAME_MODEL, $sClassName.self::$QUERY_SUFFIX.".php"), ResourceFinder::SEARCH_MAIN_ONLY);
 
 			$sBaseClassPath = ResourceFinder::findResource(array(DIRNAME_GENERATED, DIRNAME_MODEL, 'om', self::$BASE_PREFIX."$sClassName.php"), ResourceFinder::SEARCH_MAIN_ONLY);
-			$sBasePeerClassPath = ResourceFinder::findResource(array(DIRNAME_GENERATED, DIRNAME_MODEL, 'om', self::$BASE_PREFIX."${sClassName}".self::$PEER_SUFFIX.".php"), ResourceFinder::SEARCH_MAIN_ONLY);
-			$sBaseQueryClassPath = ResourceFinder::findResource(array(DIRNAME_GENERATED, DIRNAME_MODEL, 'om', self::$BASE_PREFIX."${sClassName}".self::$QUERY_SUFFIX.".php"), ResourceFinder::SEARCH_MAIN_ONLY);
+			$sBasePeerClassPath = ResourceFinder::findResource(array(DIRNAME_GENERATED, DIRNAME_MODEL, 'om', self::$BASE_PREFIX.$sClassName.self::$PEER_SUFFIX.".php"), ResourceFinder::SEARCH_MAIN_ONLY);
+			$sBaseQueryClassPath = ResourceFinder::findResource(array(DIRNAME_GENERATED, DIRNAME_MODEL, 'om', self::$BASE_PREFIX.$sClassName.self::$QUERY_SUFFIX.".php"), ResourceFinder::SEARCH_MAIN_ONLY);
 
 			//No editable version of the map class exists
-			$sMapClassPath = ResourceFinder::findResource(array(DIRNAME_GENERATED, DIRNAME_MODEL, 'map', "${sClassName}".self::$MAP_SUFFIX.".php"), ResourceFinder::SEARCH_MAIN_ONLY);
+			$sMapClassPath = ResourceFinder::findResource(array(DIRNAME_GENERATED, DIRNAME_MODEL, 'map', $sClassName.self::$MAP_SUFFIX.".php"), ResourceFinder::SEARCH_MAIN_ONLY);
 
 			if($bIsDevVersion) {
 				//Over-writable by the user

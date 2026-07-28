@@ -35,7 +35,7 @@ class TagPeer extends BaseTagPeer {
 
 	public static function droppedOnto($mDroppedId, $sDroppableModelName, $sTagName) {
 		$sInstanceModel = $sDroppableModelName::TAG_INSTANCE_MODEL_NAME;
-		$sInstanceQuery = "${sInstanceModel}Query";
+		$sInstanceQuery = "{$sInstanceModel}Query";
 
 		$oQuery = $sInstanceQuery::create()->useTagQuery()->filterByName($mDroppedId)->endUse();
 		$oResult = new stdClass();
