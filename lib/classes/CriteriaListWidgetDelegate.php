@@ -36,7 +36,7 @@ class CriteriaListWidgetDelegate implements ListWidgetDelegate {
 		$this->oListSettings = new ListSettings();
 		$this->oCriteriaDelegate = $oCriteriaDelegate;
 		$this->sModelName = $sModelName;
-		$this->sPeerClassName = "${sModelName}Peer";
+		$this->sPeerClassName = "{$sModelName}Peer";
 		$this->bDatabaseColumnForColumnDefined = method_exists($this->oCriteriaDelegate, 'getDatabaseColumnForColumn');
 		if($sDefaultOrderColumn !== null) {
 			$this->oListSettings->addSortColumn($sDefaultOrderColumn, $sDefaultSortOrder);

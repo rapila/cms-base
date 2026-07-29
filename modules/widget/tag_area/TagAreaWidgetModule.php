@@ -34,12 +34,12 @@ class TagAreaWidgetModule extends PersistentWidgetModule {
 		}
 		$aResult = array();
 		foreach($aTagModels as $sTagModel) {
-			$sQuery = "${sTagModel}Query";
+			$sQuery = "{$sTagModel}Query";
 			if($sPrincipalModel === null) {
 				$oQuery = $sQuery::create()->select(['name']);
 			} else {
-				$sInstanceClassName = "${sTagModel}Instance";
-				$sJoinMethodName = "join${sInstanceClassName}";
+				$sInstanceClassName = "{$sTagModel}Instance";
+				$sJoinMethodName = "join{$sInstanceClassName}";
 				$oQuery = $sQuery::create()->$sJoinMethodName()->useQuery($sInstanceClassName)->filterByModelName($sPrincipalModel)->endUse();
 			}
 			$aResult = array_merge($aResult, $oQuery->select(['name'])->find()->getArrayCopy());
@@ -55,7 +55,7 @@ class TagAreaWidgetModule extends PersistentWidgetModule {
 		}
 		$sModel = $this->sModelName;
 		$sInstanceModel = $sModel::TAG_INSTANCE_MODEL_NAME;
-		$sInstanceQuery = "${sInstanceModel}Query";
+		$sInstanceQuery = "{$sInstanceModel}Query";
 		$oTag = $sInstanceQuery::create()->filterByModelName($this->sModelName)->filterByTaggedItemId($this->mTaggedItemId)->useTagQuery()->filterByName($sTagName)->endUse()->findOne();
 		$oResult = new stdClass();
 		$oResult->model_name = $this->sModelName;
