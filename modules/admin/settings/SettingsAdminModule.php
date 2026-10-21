@@ -1,6 +1,8 @@
 <?php
 class SettingsAdminModule extends AdminModule implements ListWidgetDelegate {
 	private $oChooserList;
+
+	private static $SETTING_OPTIONS = array('admin_menu', 'rich_text', 'dashboard');
 	
 	public function __construct() {
 		$this->oChooserList = WidgetModule::getWidget('list');
@@ -29,13 +31,16 @@ class SettingsAdminModule extends AdminModule implements ListWidgetDelegate {
 	
 	public function getListContents($iRowStart = 0, $iRowCount = null) {
 		$aResult = array();
-		$aSettingOptions = array('admin_menu', 'rich_text', 'dashboard');
-		foreach($aSettingOptions as $sAction) {
+		foreach(self::$SETTING_OPTIONS as $sAction) {
 			$aResult[] = array('key' => $sAction, 'title' => TranslationPeer::getString('wns.settings.type.'.$sAction));
 		}
 		if($iRowCount === null) {
 			$iRowCount = count($aResult);
 		}
 		return array_splice($aResult, $iRowStart, $iRowCount);
+	}
+
+	public function numberOfRows() {
+		return count(self::$SETTING_OPTIONS);
 	}
 }
