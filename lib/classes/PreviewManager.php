@@ -3,6 +3,7 @@
 class PreviewManager extends FrontendManager {
 	private $sOldSessionLanguage;
 	private $oAdminMenuWidget;
+	private $oPageTypeWidget;
 
 	private static $PREVIOUS_MANAGER;
 
