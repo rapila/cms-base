@@ -1,5 +1,5 @@
 <?php
-class SettingsAdminModule extends AdminModule {
+class SettingsAdminModule extends AdminModule implements ListWidgetDelegate {
 	private $oChooserList;
 	
 	public function __construct() {
